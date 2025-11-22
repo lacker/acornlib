@@ -1367,3 +1367,11 @@ theorem singleton_list_is_singleton_set[K](x: K) {
         List.singleton(x).contains(y) = Set.singleton(x).contains(y)
     }
 }
+
+theorem comp_contains_imp_not_contains[K](s: Set[K], k: K) {
+    s.c.contains(k) implies not s.contains(k)
+}
+
+theorem not_contains_imp_comp_contains[K](s: Set[K], k: K) {
+    not s.contains(k) implies s.c.contains(k)
+}

@@ -1307,7 +1307,7 @@ theorem increasing_seq_complement_decreasing(s: Nat -> Set[Nat]) {
     implies
     is_decreasing(seq_complement(s))
 } by {
-    from set import subset_refl
+    from set import subset_refl, negate_fun
 
     if set_seq_increasing(s) {
         forall(i: Nat) {
@@ -1315,8 +1315,10 @@ theorem increasing_seq_complement_decreasing(s: Nat -> Set[Nat]) {
 
             forall(x: Nat) {
                 if seq_complement(s)(i.suc).contains(x) {
+                    s(i.suc).c.contains(x)
                     not s(i.suc).contains(x)
                     not s(i).contains(x)
+                    s(i).c.contains(x)
                     seq_complement(s)(i).contains(x)
                 }
             }
