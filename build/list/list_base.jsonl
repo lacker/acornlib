@@ -43,8 +43,8 @@
 {"goal":"p(List.cons(head, tail))","proof":["function(x0: List[T]) { (not item ∈ x0.unique or item ∈ x0) = p(x0) }(List.cons(head, tail))"]}
 {"goal":"p(list)","proof":["function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not x0(List.nil[T0]) or exists(k0: T0, k1: List[T0]) { x0(k1) and not x0(List.cons[T0](k0, k1)) } or x0(x1) }[T](p, list)","exists(k0: T, k1: List[T]) { p(k1) and not p(List.cons(k0, k1)) }","let w9: T satisfy { exists(k2: List[T]) { p(k2) and not p(List.cons(w9, k2)) } }","exists(k3: List[T]) { p(k3) and not p(List.cons(w9, k3)) }","let w10: List[T] satisfy { p(w10) and not p(List.cons(w9, w10)) }","function(x0: List[T], x1: T) { not p(x0) or p(List.cons(x1, x0)) }(w10, w9)"]}
 {"goal":"unique_contains_imp_contains","proof":["function(x0: List[T]) { (not item ∈ x0.unique or item ∈ x0) = p(x0) }(list)"]}
-{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0.unique or x1 ∈ x0 }[T](list, item)","not item ∈ list"]}
-{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ x0.unique }[T](list, item)","item ∈ list"]}
+{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0.unique or x1 ∈ x0 }[T](list, item)"]}
+{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ x0.unique }[T](list, item)"]}
 {"goal":"unique_preserves_contains","proof":[]}
 {"goal":"f(List.nil[T])","proof":["function(x0: List[T]) { x0.unique.unique != x0.unique or f(x0) }(List.nil[T])","function[T0](x0: List[T0]) { List.nil[T0] != x0 or x0.unique = List.nil[T0] }[T](List.nil[T])"]}
 {"goal":"List.cons(head, tail).unique = tail.unique","proof":["function[T0](x0: List[T0], x1: T0, x2: List[T0]) { not x1 ∈ x0 or List.cons[T0](x1, x0) != x2 or x0.unique = x2.unique }[T](tail, head, List.cons(head, tail))"]}

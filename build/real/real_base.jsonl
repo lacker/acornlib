@@ -1,8 +1,8 @@
 {"goal":"is_lower(f) = forall(x0: Rat, x1: Rat) { f(x1) and x0 < x1 implies f(x0) }","proof":["function(x0: Rat -> Bool) { forall(x1: Rat, x2: Rat) { not x0(x2) or not x1 < x2 or x0(x1) } = is_lower(x0) }(f)"]}
-{"goal":"f(v) and u < v implies f(u)","proof":["is_lower(f) and f(y)","(forall(x0: Rat, x1: Rat) { not f(x1) or not x0 < x1 or f(x0) } = true)","function(x0: Rat) { forall(x1: Rat) { not f(x1) or not x0 < x1 or f(x0) } = true }(u)","function(x0: Rat, x1: Rat) { not (f(x0) and x1 < x0 and not f(x1)) }(v, u)","function(x0: Rat, x1: Rat) { not (f(x0) and x1 < x0) or f(x1) }(v, u)"]}
-{"goal":"f(y) and x < y implies f(x)","proof":["function(x0: Rat, x1: Rat) { not x0 < x1 or not f(x1) or f(x0) }(x, y)","f(y)","x < y"]}
-{"goal":"f(x)","proof":["not x < y or not f(y)","f(y)","x < y","not x < y"]}
-{"goal":"lower_contains_smaller","proof":["not x < y or not f(y)","x < y","not f(y)","is_lower(f) and f(y)"]}
+{"goal":"f(v) and u < v implies f(u)","proof":["is_lower(f) and f(y)","(forall(x0: Rat, x1: Rat) { not f(x1) or not x0 < x1 or f(x0) } = true)","function(x0: Rat) { forall(x1: Rat) { not f(x1) or not x0 < x1 or f(x0) } = true }(u)","function(x0: Rat, x1: Rat) { not (f(x0) and x1 < x0 and not f(x1)) }(v, u)"]}
+{"goal":"f(y) and x < y implies f(x)","proof":["function(x0: Rat, x1: Rat) { not x0 < x1 or not f(x1) or f(x0) }(x, y)"]}
+{"goal":"f(x)","proof":[]}
+{"goal":"lower_contains_smaller","proof":[]}
 {"goal":"not r > r","proof":["function(x0: Rat, x1: Rat) { not x0 < x1 or not x1 < x0 }(r, r)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Rat](r, r)"]}
 {"goal":"gt_is_cut","proof":["function(x0: Rat, x1: Rat) { not x0.is_positive or x1 > x1 - x0 }(Rat.3, r)","function(x0: Rat -> Bool, x1: Rat, x2: Rat) { not x0(x1) or is_cut(x0) or x0(x2) }(r.gt, r - Rat.3, r)"]}
 {"goal":"r > y","proof":[]}
@@ -23,13 +23,12 @@
 {"goal":"false","proof":["function(x0: Rat, x1: Rat) { not x0 <= x1 or not x1 <= x0 or x0 = x1 }(z, q)","function(x0: Rat -> Bool, x1: Rat, x2: Rat) { not is_greatest(x0, x1) or not x0(x2) or x2 <= x1 }(r.gt, q, z)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Rat](q, z)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or x0 != x1 }[Rat](q, z)"]}
 {"goal":"gt_has_no_greatest","proof":[]}
 {"goal":"gt_is_dedekind_cut","proof":["function(x0: Rat -> Bool) { (is_cut(x0) and is_lower(x0) and not has_greatest(x0)) = is_dedekind_cut(x0) }(r.gt)","function(x0: Rat) { not has_greatest(x0.gt) }(r)","function(x0: Rat) { is_lower(x0.gt) }(r)","function(x0: Rat) { is_cut(x0.gt) }(r)"]}
-{"goal":"exists(k0: Rat -> Bool) { is_dedekind_cut(k0) }","proof":["function(x0: Rat -> Bool) { not is_dedekind_cut(x0) }(lib(rat.rat_base).rat_zero.gt)","function(x0: Rat) { is_dedekind_cut(x0.gt) }(lib(rat.rat_base).rat_zero)"]}
 {"goal":"exists(k0: Real) { Real.new_option(r.gt) = Option.some(k0) }","proof":["function(x0: Rat -> Bool) { not Real.constraint(x0) or exists(k0: Real) { Real.new_option(x0) = Option.some(k0) } }(r.gt)","not Real.constraint(r.gt)","function(x0: Rat -> Bool) { Real.constraint(x0) = is_dedekind_cut(x0) }(r.gt)","not is_dedekind_cut(r.gt)","function(x0: Rat) { is_dedekind_cut(x0.gt) }(r)"]}
 {"goal":"lte_self","proof":["function(x0: Real, x1: Real) { exists(k0: Rat) { x0.gt_rat(k0) and not x1.gt_rat(k0) } or LTE.lte[Real](x0, x1) }(r, r)","exists(k0: Rat) { r.gt_rat(k0) and not r.gt_rat(k0) }","let w18: Rat satisfy { r.gt_rat(w18) and not r.gt_rat(w18) }"]}
 {"goal":"lte_trans","proof":["function(x0: Real, x1: Real) { exists(k0: Rat) { x0.gt_rat(k0) and not x1.gt_rat(k0) } or LTE.lte[Real](x0, x1) }(a, c)","LTE.lte[Real](b, c)","LTE.lte[Real](a, b)","exists(k0: Rat) { a.gt_rat(k0) and not c.gt_rat(k0) }","let w18: Rat satisfy { a.gt_rat(w18) and not c.gt_rat(w18) }","function(x0: Real, x1: Real, x2: Rat) { not LTE.lte[Real](x0, x1) or not x0.gt_rat(x2) or x1.gt_rat(x2) }(a, b, w18)","function(x0: Real, x1: Real, x2: Rat) { not LTE.lte[Real](x0, x1) or not x0.gt_rat(x2) or x1.gt_rat(x2) }(b, c, w18)"]}
 {"goal":"lte_trans_eq","proof":[]}
 {"goal":"is_lower(z.gt_rat)","proof":["function(x0: Rat -> Bool) { not is_dedekind_cut(x0) or is_lower(x0) }(z.gt_rat)","not is_dedekind_cut(z.gt_rat)","function(x0: Real) { is_dedekind_cut(x0.gt_rat) }(z)"]}
-{"goal":"z.gt_rat(r2)","proof":["function(x0: Rat, x1: Rat, x2: Rat -> Bool) { not x0 < x1 or not is_lower(x2) or not x2(x1) or x2(x0) }(r2, r1, z.gt_rat)","z.gt_rat(r1)","function(x0: Rat) { not r2 < x0 or not z.gt_rat(x0) }(r1)"]}
+{"goal":"z.gt_rat(r2)","proof":["function(x0: Rat, x1: Rat, x2: Rat -> Bool) { not x0 < x1 or not is_lower(x2) or not x2(x1) or x2(x0) }(r2, r1, z.gt_rat)"]}
 {"goal":"false","proof":[]}
 {"goal":"gt_rat_sorts","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lte(x0, x1) or T0.lt(x0, x1) or x0 = x1 }[Rat](r2, r1)","function(x0: Rat, x1: Rat) { x0 <= x1 or x1 <= x0 }(r2, r1)"]}
 {"goal":"exists(k0: Rat) { a.gt_rat(k0) and not b.gt_rat(k0) }","proof":["function(x0: Real, x1: Real) { exists(k0: Rat) { x0.gt_rat(k0) and not x1.gt_rat(k0) } or x0 <= x1 }(a, b)"]}
@@ -43,7 +42,7 @@
 {"goal":"false","proof":["b <= a","function(x0: Real, x1: Real, x2: Rat) { not x0 <= x1 or not x0.gt_rat(x2) or x1.gt_rat(x2) }(b, a, r)"]}
 {"goal":"a.gt_rat(r) = b.gt_rat(r)","proof":[]}
 {"goal":"a.gt_rat = b.gt_rat","proof":[]}
-{"goal":"lte_both_ways_imp_eq","proof":["b.gt_rat = a.gt_rat","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(a)","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(b)"]}
+{"goal":"lte_both_ways_imp_eq","proof":["function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Real](b, a)","function(x0: Real) { Real.new_option(x0.gt_rat) = Option.some(x0) }(a)","function(x0: Real) { Real.new_option(x0.gt_rat) = Option.some(x0) }(b)","b.gt_rat = a.gt_rat","Option.some(b) != Option.some(a)"]}
 {"goal":"real_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { exists(k0: T0) { not x0(k0, k0) } or is_reflexive[T0](x0) }[Real](LTE.lte[Real])","exists(k0: Real) { not LTE.lte[Real](k0, k0) }","let w12: Real satisfy { not LTE.lte[Real](w12, w12) }","function(x0: Real) { LTE.lte[Real](x0, x0) }(w12)"]}
 {"goal":"exists(k0: Real, k1: Real, k2: Real) { k0 <= k1 and k1 <= k2 and not k0 <= k2 }","proof":["function[T0](x0: (T0, T0) -> Bool) { exists(k0: T0, k1: T0, k2: T0) { x0(k0, k1) and x0(k1, k2) and not x0(k0, k2) } or is_transitive[T0](x0) }[Real](Real.lte)"]}
 {"goal":"false","proof":["function(x0: Real, x1: Real, x2: Real) { not LTE.lte[Real](x0, x1) or not LTE.lte[Real](x1, x2) or LTE.lte[Real](x0, x2) }(a, b, c)"]}
@@ -81,7 +80,7 @@
 {"goal":"exists_gte_rat","proof":["function(x0: Rat -> Bool) { not is_cut(x0) or exists(k0: Rat) { not x0(k0) } }(z.gt_rat)"]}
 {"goal":"exists(k0: Rat) { z1.gt_rat(k0) }","proof":["function(x0: Real) { exists(k0: Rat) { x0.gt_rat(k0) } }(z1)"]}
 {"goal":"exists(k0: Rat) { z2.gt_rat(k0) }","proof":["function(x0: Real) { exists(k0: Rat) { x0.gt_rat(k0) } }(z2)"]}
-{"goal":"add_gt(z1, z2, lower1 + lower2)","proof":["function(x0: Rat, x1: Rat, x2: Rat, x3: Real, x4: Real) { x0 + x1 != x2 or not x3.gt_rat(x0) or not x4.gt_rat(x1) or add_gt(x3, x4, x2) }(lower1, lower2, lower1 + lower2, z1, Real.new(z2.gt_rat))","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(z2)"]}
+{"goal":"add_gt(z1, z2, lower1 + lower2)","proof":["function(x0: Real, x1: Real, x2: Rat) { exists(k0: Rat, k1: Rat) { x0.gt_rat(k0) and x1.gt_rat(k1) and k0 + k1 = x2 } = add_gt(x0, x1, x2) }(z1, z2, lower1 + lower2)","not exists(k0: Rat, k1: Rat) { z1.gt_rat(k0) and z2.gt_rat(k1) and k0 + k1 = lower1 + lower2 }","function(x0: Rat) { not exists(k0: Rat) { z1.gt_rat(x0) and z2.gt_rat(k0) and x0 + k0 = lower1 + lower2 } }(lower1)","function(x0: Rat, x1: Rat) { not (z1.gt_rat(x0) and z2.gt_rat(x1) and x0 + x1 = lower1 + lower2) }(lower1, lower2)","function(x0: Rat, x1: Rat) { not (z1.gt_rat(x0) and z2.gt_rat(x1)) or lower1 + lower2 != x0 + x1 }(lower1, lower2)","not (z1.gt_rat(lower1) and z2.gt_rat(lower2))"]}
 {"goal":"exists(k0: Rat) { not z1.gt_rat(k0) }","proof":["function(x0: Real) { exists(k0: Rat) { not x0.gt_rat(k0) } }(z1)"]}
 {"goal":"exists(k0: Rat) { not z2.gt_rat(k0) }","proof":["function(x0: Real) { exists(k0: Rat) { not x0.gt_rat(k0) } }(z2)"]}
 {"goal":"exists(k0: Rat, k1: Rat) { z1.gt_rat(k0) and z2.gt_rat(k1) and upper1 + upper2 = k0 + k1 }","proof":["function(x0: Real, x1: Real, x2: Rat) { not add_gt(x0, x1, x2) or exists(k0: Rat, k1: Rat) { x0.gt_rat(k0) and x1.gt_rat(k1) and k0 + k1 = x2 } }(z1, z2, upper1 + upper2)"]}
@@ -109,7 +108,7 @@
 {"goal":"g1 > f1","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) <= x0 and x0.min(x1) <= x1 }[Rat](g1, f1)","function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) = x0 or x0 > x1 }[Rat](g1, f1)"]}
 {"goal":"g1 + f2 > f1 + f2","proof":["function(x0: Rat, x1: Rat, x2: Rat) { not x0 < x1 or x0 + x2 < x1 + x2 }(f1, g1, f2)","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Rat](g1, f1)","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Rat](g1 + f2, f1 + f2)"]}
 {"goal":"q < g1 + f2","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Rat](g1 + f2, f1 + f2)"]}
-{"goal":"add_gt(z1, z2, g1 + f2)","proof":["function(x0: Rat, x1: Rat, x2: Rat, x3: Real, x4: Real) { x0 + x1 != x2 or not x3.gt_rat(x0) or not x4.gt_rat(x1) or add_gt(x3, x4, x2) }(g1, f2, g1 + f2, z1, Real.new(z2.gt_rat))","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(z2)"]}
+{"goal":"add_gt(z1, z2, g1 + f2)","proof":["function(x0: Real, x1: Real, x2: Rat) { exists(k0: Rat, k1: Rat) { x0.gt_rat(k0) and x1.gt_rat(k1) and k0 + k1 = x2 } = add_gt(x0, x1, x2) }(z1, z2, g1 + f2)","z1.gt_rat(g1)","z1.gt_rat(f1) and z2.gt_rat(f2)","not exists(k0: Rat, k1: Rat) { z1.gt_rat(k0) and z2.gt_rat(k1) and k0 + k1 = g1 + f2 }","function(x0: Rat) { not exists(k0: Rat) { z1.gt_rat(x0) and z2.gt_rat(k0) and x0 + k0 = g1 + f2 } }(g1)","function(x0: Rat, x1: Rat) { not (z1.gt_rat(x0) and z2.gt_rat(x1) and x0 + x1 = g1 + f2) }(g1, f2)","function(x0: Rat, x1: Rat) { not (z1.gt_rat(x0) and z2.gt_rat(x1)) or g1 + f2 != x0 + x1 }(g1, f2)","not (z1.gt_rat(g1) and z2.gt_rat(f2))"]}
 {"goal":"false","proof":["function(x0: Rat, x1: Rat) { not x0 <= x1 or not x1 <= x0 or x0 = x1 }(g1 + f2, q)","function(x0: Rat -> Bool, x1: Rat, x2: Rat) { not is_greatest(x0, x1) or not x0(x2) or x2 <= x1 }(add_gt(z1, z2), q, g1 + f2)","function[T0: PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Rat](q, g1 + f2)","function[T0: PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or x0 != x1 }[Rat](q, g1 + f2)"]}
 {"goal":"add_gt_has_no_greatest","proof":[]}
 {"goal":"add_gt_is_dedekind_cut","proof":["function(x0: Rat -> Bool) { not is_lower(x0) or not is_cut(x0) or is_dedekind_cut(x0) or has_greatest(x0) }(add_gt(z1, z2))","function(x0: Real, x1: Real) { not has_greatest(add_gt(x0, x1)) }(z1, z2)","function(x0: Real, x1: Real) { is_lower(add_gt(x0, x1)) }(z1, z2)","not is_cut(add_gt(z1, z2))","function(x0: Real, x1: Real) { is_cut(add_gt(x0, x1)) }(z1, z2)"]}
@@ -134,7 +133,7 @@
 {"goal":"exists(k0: Rat, k1: Rat, k2: Rat) { z1.gt_rat(k0) and z2.gt_rat(k1) and z3.gt_rat(k2) and q = k0 + k1 + k2 }","proof":[]}
 {"goal":"q = r1 + r2 + r3","proof":[]}
 {"goal":"exists(k0: Rat, k1: Rat) { z1.gt_rat(k0) and z2.gt_rat(k1) and r1 + r2 = k0 + k1 }","proof":[]}
-{"goal":"add_gt(z1, z2, r1 + r2)","proof":["function(x0: Rat, x1: Rat, x2: Rat, x3: Real, x4: Real) { x0 + x1 != x2 or not x3.gt_rat(x0) or not x4.gt_rat(x1) or add_gt(x3, x4, x2) }(r1, r2, r1 + r2, z1, Real.new(z2.gt_rat))","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(z2)"]}
+{"goal":"add_gt(z1, z2, r1 + r2)","proof":["let w0: Rat satisfy { exists(k0: Rat) { z1.gt_rat(w0) and z2.gt_rat(k0) and w0 + k0 = r1 + r2 } }","function(x0: Real, x1: Real, x2: Rat) { exists(k0: Rat, k1: Rat) { x0.gt_rat(k0) and x1.gt_rat(k1) and k0 + k1 = x2 } = add_gt(x0, x1, x2) }(z1, z2, r1 + r2)"]}
 {"goal":"(z1 + z2).gt_rat(r1 + r2)","proof":["function(x0: Real, x1: Rat, x2: Real, x3: Rat) { not x0.gt_rat(x1) or not x2.gt_rat(x3) or (x0 + x2).gt_rat(x1 + x3) }(z1, r1, z2, r2)"]}
 {"goal":"exists(k0: Rat, k1: Rat) { (z1 + z2).gt_rat(k0) and z3.gt_rat(k1) and q = k0 + k1 }","proof":["function(x0: Rat, x1: Rat) { not (z1 + z2).gt_rat(x0) or not z3.gt_rat(x1) or x0 + x1 != q }(r1 + r2, r3)"]}
 {"goal":"add_gt(z1 + z2, z3, q)","proof":["function(x0: Real, x1: Real, x2: Rat) { not exists(k0: Rat, k1: Rat) { x0.gt_rat(k0) and x1.gt_rat(k1) and k0 + k1 = x2 } or add_gt(x0, x1, x2) }(z1 + z2, z3, q)"]}
@@ -150,7 +149,7 @@
 {"goal":"false","proof":[]}
 {"goal":"(a + b + c).gt_rat(r) = (a + (b + c)).gt_rat(r)","proof":[]}
 {"goal":"(a + b + c).gt_rat = (a + (b + c)).gt_rat","proof":[]}
-{"goal":"add_assoc","proof":["function(x0: Real) { Real.new(x0.gt_rat) = x0 }(a + b + c)","function(x0: Real) { Real.new(x0.gt_rat) = x0 }(a + (b + c))"]}
+{"goal":"add_assoc","proof":["function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Real](a + b + c, a + (b + c))","function(x0: Real) { Real.new_option(x0.gt_rat) = Option.some(x0) }(a + b + c)","function(x0: Real) { Real.new_option(x0.gt_rat) = Option.some(x0) }(a + (b + c))","(a + (b + c)).gt_rat = (a + b + c).gt_rat","Option.some(a + (b + c)) != Option.some(a + b + c)"]}
 {"goal":"gt_imp_not_lte","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { not T0.gt(x0, x1) or T0.min(x0, x1) = x1 }[Real](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not T0.lte(x0, x1) or T0.min(x0, x1) = x0 }[Real](a, b)","a.min(b) = a","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](a, b)","b < a","function[T0: PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or x0 != x1 }[Real](b, a)"]}
 {"goal":"not_lte_imp_gt","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { T0.min(x0, x1) = x1 or T0.lt(x0, x1) }[Real](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](a, b)","not b < a","function[T0: LinearOrder](x0: T0, x1: T0) { T0.min(x0, x1) <= x0 }[Real](b, a)"]}
 {"goal":"gte_imp_not_lt","proof":["function(x0: Real, x1: Real) { not x0 > x1 or not x0 <= x1 }(b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](b, a)","b > a","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](a, b)"]}

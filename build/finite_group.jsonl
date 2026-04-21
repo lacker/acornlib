@@ -15,14 +15,6 @@
 {"goal":"p(List.cons(head, tail))","proof":["function(x0: List[T]) { (not item ∈ x0 or f(item) ∈ map[T, U](x0, f)) = p(x0) }(List.cons(head, tail))"]}
 {"goal":"p(list)","proof":["function[T0](x0: List[T0] -> Bool) { not forall(x1: T0, x2: List[T0]) { not x0(x2) or x0(List.cons[T0](x1, x2)) } or not x0(List.nil[T0]) or forall(x3: List[T0]) { x0(x3) } = true }[T](p)","function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not forall(x2: T0, x3: List[T0]) { not x0(x3) or x0(List.cons[T0](x2, x3)) } or not x0(List.nil[T0]) or x0(x1) }[T](p, list)","let w0: T satisfy { exists(k0: List[T]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[T] satisfy { p(w1) and not p(List.cons(w0, w1)) }","function(x0: List[T], x1: T) { not p(x0) or p(List.cons(x1, x0)) }(w1, w0)"]}
 {"goal":"map_contains_image","proof":["function(x0: List[T]) { (not item ∈ x0 or f(item) ∈ map[T, U](x0, f)) = p(x0) }(list)"]}
-{"goal":"not identity_subgroup[G].contains(x)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[G](G.1, List.nil[G], s, x)","function[T0: Group](x0: T0) { not x0 ∈ identity_subgroup[T0] or T0.1 = x0 }[G](x)","function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[G](G.1)"]}
-{"goal":"not List.nil[G].contains(x)","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[G](List.nil[G], x)"]}
-{"goal":"List.cons(G.1, List.nil[G]) = List.singleton(G.1)","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[G](G.1)"]}
-{"goal":"s.contains(x) = (x = G.1)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x3) != x0 or x1 ∈ x3 or x1 = x2 }[G](s, x, G.1, List.nil[G])","function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[G](G.1, List.nil[G], List.singleton(G.1), G.1)"]}
-{"goal":"s.contains(x) = identity_subgroup[G].contains(x)","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0 -> Bool, x2: T0) { Option.some[Subgroup[T0]](x0) != Subgroup.new_option[T0](x1) or x2 ∈ x0 = x1(x2) }[G](identity_subgroup[G], is_identity[G], x)","function[T0: Group] { Option.some[Subgroup[T0]](identity_subgroup[T0]) = Subgroup.new_option[T0](is_identity[T0]) }[G]","function[T0: Group](x0: T0) { T0.1 != x0 or is_identity[T0](x0) }[G](x)"]}
-{"goal":"s.contains = identity_subgroup[G].contains","proof":[]}
-{"goal":"subgroup_constraint[G](s.contains)","proof":["function[T0: Group](x0: Subgroup[T0]) { subgroup_constraint[T0](x0.contains) }[G](identity_subgroup[G])"]}
-{"goal":"exists(k0: List[G]) { k0.is_unique and subgroup_constraint[G](k0.contains) }","proof":["function(x0: List[G]) { not subgroup_constraint[G](x0.contains) or not x0.is_unique }(List.singleton(G.1))","function[T0](x0: T0) { List.singleton[T0](x0).is_unique }[G](G.1)"]}
 {"goal":"identity_list_is_unique","proof":["function[T0: Group, T1: Group](x0: T0) { T1.1 = lib(group).trivial_hom[T0, T1](x0) }[Bool, G](true)","function[T0: Group](x0: T0) { not List.singleton(lib(group).trivial_hom[T0, G](x0)).is_unique }[Bool](true)","function[T0](x0: T0) { List.singleton[T0](x0).is_unique }[G](lib(group).trivial_hom[Bool, G](true))"]}
 {"goal":"identity_meets_identity_constraint","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[G](G.1, List.nil[G], List.singleton(G.1), G.1)","function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[G](G.1)","function[T0: Group](x0: T0 -> Bool) { identity_constraint[T0](x0) = x0(T0.1) }[G](List.singleton(G.1).contains)"]}
 {"goal":"not List.nil[G].contains(a)","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[G](List.nil[G], a)"]}
@@ -77,14 +69,14 @@
 {"goal":"G.1 * g.pow(lib(nat.nat_base).nat_mod(k)(m)) = g.pow(lib(nat.nat_base).nat_mod(k)(m))","proof":["function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](g.pow(lib(nat.nat_base).nat_mod(k, m)))"]}
 {"goal":"g.pow(lib(nat.nat_base).nat_mod(k)(m)) = g.pow(k)","proof":[]}
 {"goal":"pow_mod_order","proof":[]}
-{"goal":"1 <= m","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, m)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](m, 0)","m > 0","not 0.suc <= m","0 < m","not 0 < m"]}
+{"goal":"1 <= m","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, m)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](m, 0)"]}
 {"goal":"m - 1 + 1 = m","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or x1 - x0 + x0 = x1 }(1, m)"]}
 {"goal":"g.pow(m - 1) * g.pow(1) = g.pow(m - 1 + 1)","proof":["function[T0: lib(monoid).Monoid](x0: T0, x1: Nat, x2: Nat) { x0.pow(x1) * x0.pow(x2) = x0.pow(x1 + x2) }[G](g, m - 1, 1)"]}
 {"goal":"g.pow(1) = g","proof":["function[T0: lib(monoid).Monoid](x0: T0) { x0.pow(1) = x0 }[G](g)"]}
-{"goal":"g.pow(m - 1) * g = g.pow(m)","proof":["g.pow(m - 1) * g.pow(1) != g.pow(m)","g.pow(m - 1) * g.pow(1) = g.pow(m)"]}
-{"goal":"g.pow(m - 1) * g = G.1","proof":["g.pow(m) != G.1","g.pow(m) = G.1"]}
+{"goal":"g.pow(m - 1) * g = g.pow(m)","proof":[]}
+{"goal":"g.pow(m - 1) * g = G.1","proof":[]}
 {"goal":"g.inverse * g = G.1","proof":["function[T0: Group](x0: T0) { x0.inverse * x0 = T0.1 }[G](g)"]}
-{"goal":"g.pow(m - 1) * g = g.inverse * g","proof":["g.pow(m - 1) * g != G.1"]}
+{"goal":"g.pow(m - 1) * g = g.inverse * g","proof":[]}
 {"goal":"g.pow(m - 1) = g.inverse","proof":["function[T0: Group](x0: T0, x1: T0, x2: T0) { x0 * x1 != x2 * x1 or x0 = x2 }[G](g.inverse, g, g.pow(m - 1))"]}
 {"goal":"g.inverse = g.pow(m - 1)","proof":[]}
 {"goal":"inverse_is_power","proof":[]}

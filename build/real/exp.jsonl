@@ -279,7 +279,7 @@
 {"goal":"Real.0 <= Real.1 / two","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 > Real.0 or not x1 * x0 <= x2 or x1 <= x2 / x0 }(two, Real.0, Real.1)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Real](Real.0, Real.1)","function(x0: Real) { Real.0 * x0 = Real.0 }(two)","function[T0: lib(ordered_field).OrderedField] { T0.0 < T0.1 }[Real]"]}
 {"goal":"absolutely_converges(exp_term(x))","proof":["function(x0: Real, x1: Nat -> Real) { not x0 < lib(one).One.1[Real] or not lib(lte).LTE.lte[Real](lib(zero).Zero.0[Real], x0) or not has_ratio_bound_eventually(x1, x0) or not always_nonzero(x1) or absolutely_converges(x1) }(lib(one).One.1[Real] / two, exp_term(x))"]}
 {"goal":"exp_term_abs_converges","proof":[]}
-{"goal":"absolutely_converges(exp_term(x))","proof":["function(x0: Real) { Real.new(x0.gt_rat) = x0 }(x)","not absolutely_converges(exp_term(Real.new(x.gt_rat)))","function(x0: Real) { absolutely_converges(exp_term(x0)) }(Real.new(x.gt_rat))"]}
+{"goal":"absolutely_converges(exp_term(x))","proof":["function(x0: Real) { absolutely_converges(exp_term(x0)) }(x)"]}
 {"goal":"converges(partial[Real](abs_fn(exp_term(x))))","proof":["function(x0: Nat -> Real) { converges(partial[Real](abs_fn(x0))) = absolutely_converges(x0) }(exp_term(x))"]}
 {"goal":"converges(partial[Real](exp_term(x)))","proof":["function(x0: Nat -> Real) { not absolutely_converges(x0) or converges(partial[Real](x0)) }(exp_term(x))"]}
 {"goal":"exp_term_partial_converges","proof":[]}
@@ -397,7 +397,7 @@
 {"goal":"cauchy_product(exp_term(x), exp_term(y), n) = exp_term(x + y, n)","proof":["function(x0: Real, x1: Real, x2: Nat) { cauchy_product(exp_term(x0), exp_term(x1), x2) = exp_term(lib(add).Add.add[Real](x0, x1), x2) }(x, y, n)"]}
 {"goal":"cauchy_seq(exp_term(x), exp_term(y))(n) = exp_term(x + y)(n)","proof":[]}
 {"goal":"exp_cauchy_seq_eq","proof":[]}
-{"goal":"absolutely_converges(exp_term(x))","proof":["function(x0: Real) { absolutely_converges(exp_term(x0)) }(x)"]}
+{"goal":"absolutely_converges(exp_term(x))","proof":["function(x0: Real, x1: Nat, x2: Nat) { lib(real.rectangular_sum).const_fn_2(x0, x1, x2) = x0 }(x, Nat.zero, Nat.zero)","function(x0: Real) { absolutely_converges(exp_term(x0)) }(lib(real.rectangular_sum).const_fn_2(x, Nat.zero, Nat.zero))","function(x0: Nat, x1: Nat) { not absolutely_converges(exp_term(lib(real.rectangular_sum).const_fn_2(x, x0, x1))) }(Nat.zero, Nat.zero)"]}
 {"goal":"absolutely_converges(exp_term(y))","proof":["function(x0: Real) { absolutely_converges(exp_term(x0)) }(y)"]}
 {"goal":"converges_to(partial[Real](cauchy_seq(exp_term(x), exp_term(y))), limit(partial[Real](exp_term(x))) * limit(partial[Real](exp_term(y))))","proof":["function(x0: Nat -> Real, x1: Nat -> Real) { not absolutely_converges(x0) or not absolutely_converges(x1) or converges_to(partial[Real](cauchy_seq(x0, x1)), lib(mul).Mul.mul[Real](limit(partial[Real](x0)), limit(partial[Real](x1)))) }(exp_term(x), exp_term(y))"]}
 {"goal":"cauchy_seq(exp_term(x), exp_term(y)) = exp_term(x + y)","proof":["exists(k0: Nat) { exp_term(lib(add).Add.add[Real](x, y), k0) != cauchy_seq(exp_term(x), exp_term(y), k0) }","let w0: Nat satisfy { exp_term(lib(add).Add.add[Real](x, y), w0) != cauchy_seq(exp_term(x), exp_term(y), w0) }","function(x0: Real, x1: Real, x2: Nat) { cauchy_seq(exp_term(x0), exp_term(x1), x2) = exp_term(lib(add).Add.add[Real](x0, x1), x2) }(x, y, w0)"]}

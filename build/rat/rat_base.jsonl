@@ -1,6 +1,5 @@
 {"goal":"Int.1 > Int.0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Int](Int.1, Int.0)","not Int.0 < Int.1","function(x0: Int) { not x0.is_positive or Int.0 < x0 }(Int.1)"]}
 {"goal":"denom_one_is_reduced","proof":["function(x0: Int, x1: Int) { not x0 > Int.0 or Int.1 != x1.gcd(x0) or is_reduced(x1, x0) }(Int.1, a)","function(x0: Int) { x0.gcd(Int.1) = Int.1 }(a)"]}
-{"goal":"exists(k0: Int, k1: Int) { is_reduced(k0, k1) }","proof":["function(x0: Int, x1: Int) { not is_reduced(x0, x1) }(Int.2, Int.1)","function(x0: Int) { is_reduced(x0, Int.1) }(Int.2)"]}
 {"goal":"exists(k0: Rat) { Option.some(k0) = Rat.new_option(Int.0, Int.1) }","proof":["function(x0: Int, x1: Int) { not Rat.constraint(x0, x1) or exists(k0: Rat) { Option.some(k0) = Rat.new_option(x0, x1) } }(Int.0, Int.1)","not Rat.constraint(Int.0, Int.1)","function(x0: Int, x1: Int) { Rat.constraint(x0, x1) = is_reduced(x0, x1) }(Int.0, Int.1)","function(x0: Int) { is_reduced(x0, Int.1) }(Int.0)"]}
 {"goal":"zero_num","proof":["function(x0: Rat, x1: Int, x2: Int) { Option.some(x0) != Rat.new_option(x1, x2) or x0.num = x1 }(rat_zero, Int.0, Int.1)"]}
 {"goal":"zero_denom","proof":["function(x0: Rat, x1: Int, x2: Int) { Option.some(x0) != Rat.new_option(x1, x2) or x0.denom = x2 }(rat_zero, Int.0, Int.1)"]}
@@ -65,8 +64,8 @@
 {"goal":"r1.denom.is_positive","proof":["function(x0: Rat) { x0.denom.is_positive }(r1)"]}
 {"goal":"r2.num * r1.denom != r1.num * r1.denom or not r1.denom.is_positive or r2.num = r1.num","proof":["function(x0: Int, x1: Int, x2: Int) { x0 * x1 != x2 * x1 or Int.0 = x1 or x0 = x2 }(r1.num, r1.denom, r2.num)"]}
 {"goal":"Rat.new_option(r1.num, r1.denom) = Option.some(r1)","proof":["function(x0: Rat) { Rat.new_option(x0.num, x0.denom) = Option.some(x0) }(r1)"]}
-{"goal":"Rat.new_option(r2.num, r2.denom) = Option.some(r2)","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Rat, Int, Option[Rat]](Rat.new_option(r1.num), Rat.denom, r1)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Rat, Int, Int -> Option[Rat]](Rat.new_option, Rat.num, r1)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Rat, Int, Int -> Option[Rat]](Rat.new_option, Rat.num, r2)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Rat, Int, Option[Rat]](Rat.new_option(r2.num), Rat.denom, r1)","function(x0: Rat) { Rat.new(x0.num, x0.denom) = x0 }(r1)","function(x0: Rat) { Rat.new(x0.num, x0.denom) = x0 }(r2)"]}
-{"goal":"cross_eq_imp_eq","proof":["function(x0: Rat) { Rat.new(x0.num, x0.denom) = x0 }(r1)","function(x0: Rat) { Rat.new(x0.num, x0.denom) = x0 }(r2)"]}
+{"goal":"Rat.new_option(r2.num, r2.denom) = Option.some(r2)","proof":["function(x0: Rat) { Rat.new_option(x0.num, x0.denom) = Option.some(x0) }(r2)"]}
+{"goal":"cross_eq_imp_eq","proof":["function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Rat](r2, r1)","r2.num * r1.denom = r1.num * r2.denom","r2.num * r1.denom != r1.num * r1.denom or r2.num = r1.num","Option.some(r2) != Option.some(r1)","Rat.new_option(r2.num, r1.denom) = Option.some(r2)","r2.num * r1.denom = r1.num * r1.denom","r2.num = r1.num","Rat.new_option(r1.num, r1.denom) != Option.some(r2)","Rat.new_option(r1.num, r1.denom) = Option.some(r2)"]}
 {"goal":"is_reduced(a.num, a.denom)","proof":["function(x0: Rat) { is_reduced(x0.num, x0.denom) }(a)"]}
 {"goal":"is_reduced(-a.num, a.denom)","proof":["function(x0: Int, x1: Int) { not x0 > Int.0 or Int.1 != x1.gcd(x0) or is_reduced(x1, x0) }(a.denom, -a.num)","function(x0: Int, x1: Int) { Int.from_nat(abs(x0).gcd(abs(x1))) = x0.gcd(x1) }(a.num, a.denom)","function(x0: Int, x1: Int) { Int.from_nat(abs(x0).gcd(abs(x1))) = x0.gcd(x1) }(-a.num, a.denom)","function(x0: Int, x1: Int) { not is_reduced(x0, x1) or Int.1 = x0.gcd(x1) }(a.num, a.denom)","function(x0: Int, x1: Int) { not is_reduced(x0, x1) or x1 > Int.0 }(a.num, a.denom)","function(x0: Int) { abs(-x0) = abs(x0) }(a.num)"]}
 {"goal":"exists(k0: Rat) { Rat.new_option(-a.num, a.denom) = Option.some(k0) }","proof":["function(x0: Int, x1: Int) { not Rat.constraint(x0, x1) or exists(k0: Rat) { Option.some(k0) = Rat.new_option(x0, x1) } }(-a.num, a.denom)"]}
@@ -492,12 +491,12 @@
 {"goal":"a * a.inverse * a.inverse.inverse = a * a.inverse / a.inverse","proof":["function(x0: Rat, x1: Rat) { x0 * x1.inverse = x0 / x1 }(a * a.inverse, a.inverse)"]}
 {"goal":"a.inverse * a = Rat.1","proof":["function(x0: Rat) { x0.inverse * x0 = Rat.1 or Rat.0 = x0 }(a)"]}
 {"goal":"Rat.0 * a = Rat.0","proof":["function(x0: Rat, x1: Rat) { x0 * x1 = x1 * x0 }(a, Rat.0)","function(x0: Rat) { x0 * Rat.0 = Rat.0 }(a)"]}
-{"goal":"a.inverse * a = Rat.0 * a","proof":["a.inverse != Rat.0"]}
-{"goal":"a.inverse * a = Rat.0","proof":["Rat.0 * a != Rat.0"]}
+{"goal":"a.inverse * a = Rat.0 * a","proof":[]}
+{"goal":"a.inverse * a = Rat.0","proof":[]}
 {"goal":"false","proof":["function(x0: Rat) { Rat.1 * x0 = x0 }(a)"]}
-{"goal":"a.inverse * a / a.inverse = a","proof":["function(x0: Rat, x1: Rat) { x0 * x1 = x1 * x0 }(a, a.inverse)","a.inverse != Rat.0","a * a.inverse / a.inverse = a","a * a.inverse / a.inverse != a"]}
-{"goal":"Rat.1 / a.inverse = a","proof":["a.inverse * a / a.inverse != a"]}
-{"goal":"Rat.1 / a.inverse = Rat.1 * a.inverse.inverse","proof":["a * a.inverse = Rat.1","a * a.inverse * a.inverse.inverse != Rat.1 / a.inverse","a * a.inverse * a.inverse.inverse = Rat.1 / a.inverse"]}
+{"goal":"a.inverse * a / a.inverse = a","proof":[]}
+{"goal":"Rat.1 / a.inverse = a","proof":[]}
+{"goal":"Rat.1 / a.inverse = Rat.1 * a.inverse.inverse","proof":[]}
 {"goal":"Rat.1 * a.inverse.inverse = a","proof":[]}
 {"goal":"inverse_inverts","proof":["function(x0: Rat) { Rat.1 * x0 = x0 }(a.inverse.inverse)"]}
 {"goal":"exists(k0: Int) { a.inverse < rat_from_int(k0) }","proof":["function(x0: Int) { not a.inverse < rat_from_int(x0) }(floor_impl(a.inverse) + Int.1)","function(x0: Rat) { x0 < rat_from_int(floor_impl(x0) + Int.1) }(a.inverse)"]}
