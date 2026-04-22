@@ -2,13 +2,17 @@
 
 Goal: make core definitions and proof patterns stable enough that later libraries can build on them without constant local patching.
 
-- [ ] Extensionality lemmas for sets, predicates, and functions
-- [ ] A reusable API for images, preimages, inverse images, and composition
-- [ ] Relation algebra for reflexive, symmetric, transitive, and equivalence relations
-- [ ] Quotient constructions with good elimination and equality lemmas
-- [ ] Better finite and infinite set infrastructure
-- [ ] Indexed unions, indexed intersections, and family-level set combinators
-- [ ] Choice-style helper lemmas for existential witnesses and unique existence
-- [ ] Canonical APIs for products, sums, options, and dependent pairs
-- [ ] Rewriting and simplification lemmas for core logical constructions
-- [ ] Infrastructure for transporting structure across equality and equivalence
+- [ ] [Extensionality lemmas for sets, predicates, and functions](extensionality/todo.md)
+- [ ] [A reusable API for images, preimages, inverse images, and composition](images-and-composition/todo.md)
+- [ ] [Relation algebra for reflexive, symmetric, transitive, and equivalence relations](relation-algebra/todo.md)
+- [ ] [Quotient constructions with good elimination and equality lemmas](quotients/todo.md)
+- [ ] [Better finite and infinite set infrastructure](finite-and-infinite-sets/todo.md)
+- [ ] [Indexed unions, indexed intersections, and family-level set combinators](indexed-set-families/todo.md)
+- [ ] [Choice-style helper lemmas for existential witnesses and unique existence](witness-selection/todo.md)
+- [ ] [Canonical APIs for products, sums, options, and dependent pairs](core-type-constructions/todo.md)
+- [ ] [Rewriting and simplification lemmas for core logical constructions](logic-rewriting/todo.md)
+- [ ] [Infrastructure for transporting structure across equality and equivalence](transport-across-equality/todo.md)
+
+## Current Focus
+
+The active branch is [extensionality](extensionality/todo.md). Its items are intended to be session-sized, so this branch is narrow enough to work from directly.
