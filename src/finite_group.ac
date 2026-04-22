@@ -150,7 +150,7 @@ theorem identity_meets_fs_constraint[G: FiniteGroup] {
 }
 
 let isg[G: FiniteGroup]: FiniteSubgroup[G] satisfy {
-    FiniteSubgroup.new_option(List.singleton[G](G.1)) = Option.some(isg)
+    FiniteSubgroup.new(List.singleton[G](G.1)) = Option.some(isg)
 }
 
 theorem subgroup_has_order_at_most_G_order[G: FiniteGroup](s: FiniteSubgroup[G]) {
@@ -335,7 +335,7 @@ theorem cyclic_subgroup_constraint[G: FiniteGroup](g: G) {
 }
 
 let cyclic_subgroup_of[G: FiniteGroup](g: G) -> result: FiniteSubgroup[G] satisfy {
-    FiniteSubgroup.new_option(map(G.order.range, g.pow).unique) = Option.some(result)
+    FiniteSubgroup.new(map(G.order.range, g.pow).unique) = Option.some(result)
 } by {
     cyclic_subgroup_constraint(g)
 }

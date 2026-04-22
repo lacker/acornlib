@@ -12,11 +12,11 @@ structure FiniteSet[T] {
 }
 
 let fs_empty[T](s: Set[T]) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(Set[T].empty_set) = Option.some(result)
+    FiniteSet.new(Set[T].empty_set) = Option.some(result)
 }
 
 let fs_insert[T](s: FiniteSet[T], item: T) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(s.underlying_set.insert(item)) = Option.some(result)
+    FiniteSet.new(s.underlying_set.insert(item)) = Option.some(result)
 } by {
     let f = s.underlying_set.contains
     finite_constraint(f)
@@ -30,7 +30,7 @@ let fs_insert[T](s: FiniteSet[T], item: T) -> result: FiniteSet[T] satisfy {
 }
 
 let fs_remove[T](s: FiniteSet[T], item: T) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(s.underlying_set.remove(item)) = Option.some(result)
+    FiniteSet.new(s.underlying_set.remove(item)) = Option.some(result)
 } by {
     let f = s.underlying_set.contains
     finite_constraint(f)
@@ -44,15 +44,15 @@ let fs_remove[T](s: FiniteSet[T], item: T) -> result: FiniteSet[T] satisfy {
 }
 
 let fs_union[T](a: FiniteSet[T], b: FiniteSet[T]) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(a.underlying_set.union(b.underlying_set)) = Option.some(result)
+    FiniteSet.new(a.underlying_set.union(b.underlying_set)) = Option.some(result)
 }
 
 let fs_intersection[T](a: FiniteSet[T], b: FiniteSet[T]) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(a.underlying_set.intersection(b.underlying_set)) = Option.some(result)
+    FiniteSet.new(a.underlying_set.intersection(b.underlying_set)) = Option.some(result)
 }
 
 let fs_difference[T](a: FiniteSet[T], b: FiniteSet[T]) -> result: FiniteSet[T] satisfy {
-    FiniteSet.new_option(a.underlying_set.difference(b.underlying_set)) = Option.some(result)
+    FiniteSet.new(a.underlying_set.difference(b.underlying_set)) = Option.some(result)
 }
 
 attributes FiniteSet[T] {

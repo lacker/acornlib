@@ -125,7 +125,7 @@ structure Real {
 }
 
 let real_from_rat(r: Rat) -> a: Real satisfy {
-    Real.new_option(r.gt) = Option.some(a)
+    Real.new(r.gt) = Option.some(a)
 }
 
 attributes Real {
@@ -422,7 +422,7 @@ theorem add_gt_is_dedekind_cut(z1: Real, z2: Real) {
 }
 
 let add(a: Real, b: Real) -> c: Real satisfy {
-    Real.new_option(add_gt(a, b)) = Option.some(c)
+    Real.new(add_gt(a, b)) = Option.some(c)
 }
 
 /// The sum of two real numbers.
@@ -1147,7 +1147,7 @@ theorem neg_gt_is_dedekind_cut(a: Real) {
 }
 
 let neg(a: Real) -> b: Real satisfy {
-    Real.new_option(neg_gt((a))) = Option.some(b)
+    Real.new(neg_gt((a))) = Option.some(b)
 }
 
 /// The negative of this real number.

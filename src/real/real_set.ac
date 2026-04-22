@@ -173,7 +173,7 @@ theorem ub_imp_lub(s: Real -> Bool, x: Real) {
     }
 } by {
     is_dedekind_cut(sup_cut(s))
-    let Option.some(y) = Real.new_option(sup_cut(s))
+    let Option.some(y) = Real.new(sup_cut(s))
 
     // Part 1: Show y is an upper bound of s
     forall(z: Real) {

@@ -238,7 +238,7 @@ theorem cauchy_gt_is_dedekind_cut(q: Nat -> Real) {
 theorem limit_exists(q: Nat -> Real) {
     exists(lim: Real) {
         if converges(q) {
-            Real.new_option(cauchy_gt_rat(q)) = Option.some(lim)
+            Real.new(cauchy_gt_rat(q)) = Option.some(lim)
         } else {
             lim = Real.0
         }
@@ -248,11 +248,11 @@ theorem limit_exists(q: Nat -> Real) {
         is_dedekind_cut(cauchy_gt_rat(q))
         Real.constraint(cauchy_gt_rat(q))
         let lim: Real satisfy {
-            Real.new_option(cauchy_gt_rat(q)) = Option.some(lim)
+            Real.new(cauchy_gt_rat(q)) = Option.some(lim)
         }
         exists(lim2: Real) {
             if converges(q) {
-                Real.new_option(cauchy_gt_rat(q)) = Option.some(lim2)
+                Real.new(cauchy_gt_rat(q)) = Option.some(lim2)
             } else {
                 lim2 = Real.0
             }
@@ -260,7 +260,7 @@ theorem limit_exists(q: Nat -> Real) {
     } else {
         exists(lim: Real) {
             if converges(q) {
-                Real.new_option(cauchy_gt_rat(q)) = Option.some(lim)
+                Real.new(cauchy_gt_rat(q)) = Option.some(lim)
             } else {
                 lim = Real.0
             }
@@ -271,7 +271,7 @@ theorem limit_exists(q: Nat -> Real) {
 /// limit is defined with a "default" so that it's zero for things that don't converge.
 let limit(q: Nat -> Real) -> lim: Real satisfy {
     if converges(q) {
-        Real.new_option(cauchy_gt_rat(q)) = Option.some(lim)
+        Real.new(cauchy_gt_rat(q)) = Option.some(lim)
     } else {
         lim = Real.0
     }
@@ -334,7 +334,7 @@ theorem lb_lte_limit(q: Nat -> Real, lb: Real) {
                 lb2 > Real.from_rat(r) and eventual_lb(q, lb2)
             }
             cauchy_gt_rat(q, r)
-            Option.some(limit(q)) = Real.new_option(cauchy_gt_rat(q))
+            Option.some(limit(q)) = Real.new(cauchy_gt_rat(q))
             limit(q).gt_rat(r) = cauchy_gt_rat(q, r)
             limit(q).gt_rat(r)
             false
