@@ -10,7 +10,7 @@ from real.real_ring import mul_le_mul_nonneg
 from real.limits import vanishes, abs_seq
 from real.real_base import add_assoc, add_neg_eq_zero, add_zero_left, add_zero_right, neg_neg, sub_moves_sides, abs_neg, lte_trans, lte_lt_trans, lt_lte_trans, lt_trans, lt_add_pos, not_lt_imp_gte
 from real.prod_seq import prod_seq
-from set import Set, is_decreasing, seq_intersection, decreasing_seq_transitive, seq_union, seq_complement
+from set import Set, is_decreasing, seq_intersection, decreasing_seq_transitive, seq_union, seq_complement, set_ext
 
 numerals Real
 
@@ -1982,9 +1982,7 @@ theorem image_range_suc_eq_union(p: Nat -> Nat, m: Nat) {
         image_of_range(p, m.suc).contains(n) = image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains(n)
     }
 
-    // Contains functions are equal, so sets are equal
-    image_of_range(p, m.suc).contains = image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains
-    image_of_range(p, m.suc) = image_of_range(p, m).union(Set[Nat].singleton(p(m)))
+    set_ext(image_of_range(p, m.suc), image_of_range(p, m).union(Set[Nat].singleton(p(m))))
 }
 
 theorem partial_compose_eq_mask_sum(a: Nat -> Real, p: Nat -> Nat, k: Nat) {

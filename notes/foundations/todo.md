@@ -2,7 +2,6 @@
 
 Goal: make core definitions and proof patterns stable enough that later libraries can build on them without constant local patching.
 
-- [ ] [Extensionality lemmas for sets, predicates, and functions](extensionality/todo.md)
 - [ ] [A reusable API for images, preimages, inverse images, and composition](images-and-composition/todo.md)
 - [ ] [Relation algebra for reflexive, symmetric, transitive, and equivalence relations](relation-algebra/todo.md)
 - [ ] [Quotient constructions with good elimination and equality lemmas](quotients/todo.md)
@@ -15,4 +14,4 @@ Goal: make core definitions and proof patterns stable enough that later librarie
 
 ## Current Focus
 
-The active branch is [extensionality](extensionality/todo.md). Its items are intended to be session-sized, so this branch is narrow enough to work from directly.
+The next branch is [images-and-composition](images-and-composition/todo.md). It should be split into a narrower sub-branch before implementation.

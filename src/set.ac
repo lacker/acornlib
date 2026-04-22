@@ -159,17 +159,18 @@ attributes Set[K] {
 
 }
 
+/// Membership in the empty set is always false.
+theorem empty_set_contains_eq[K](x: K) {
+    (Set[K].empty_set).contains(x) = false
+}
+
 theorem empty_set_is_empty[K] {
     (Set[K].empty_set).is_empty
 } by {
     forall(x: K) {
+        empty_set_contains_eq[K](x)
         not (Set[K].empty_set).contains(x)
     }
-}
-
-/// Membership in the empty set is always false.
-theorem empty_set_contains_eq[K](x: K) {
-    (Set[K].empty_set).contains(x) = false
 }
 
 theorem singleton_set_is_singleton[K](a: K) {
@@ -177,6 +178,15 @@ theorem singleton_set_is_singleton[K](a: K) {
 } by {
     exists(b: K) {
         Set[K].singleton(a) = Set[K].singleton(b)
+    }
+}
+
+/// Set extensionality: two sets are equal when they have the same elements.
+theorem set_ext[K](a: Set[K], b: Set[K]) {
+    (forall(x: K) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: K) { a.contains(x) = b.contains(x) } {
+        a.contains = b.contains
     }
 }
 
@@ -194,7 +204,7 @@ theorem compl_of_compl_is_self[K](s: Set[K]) {
         s.c.c.contains(x) = s.contains(x)
     }
 
-    s.c.c.contains = s.contains
+    set_ext(s.c.c, s)
 }
 
 theorem empty_set_compl_is_universal[K] {
@@ -212,7 +222,7 @@ theorem empty_set_compl_is_universal[K] {
         e.c.contains(x) = u.contains(x)
     }
 
-    e.c.contains = u.contains
+    set_ext(e.c, u)
 }
 
 theorem universal_set_compl_is_empty[K] {
@@ -230,20 +240,20 @@ theorem universal_set_compl_is_empty[K] {
         u.c.contains(x) = e.contains(x)
     }
 
-    u.c.contains = e.contains
+    set_ext(u.c, e)
+}
+
+/// Membership in a singleton is equality with its unique element.
+theorem singleton_contains_eq[K](a: K, x: K) {
+    (Set[K].singleton(a)).contains(x) = (a = x)
 }
 
 theorem singleton_set_is_not_empty[K](a: K) {
     not (Set[K].singleton(a)).is_empty
 } by {
     let s = Set[K].singleton(a)
-    singleton_fun(a, a)
+    singleton_contains_eq(a, a)
     s.contains(a)
-}
-
-/// Membership in a singleton is equality with its unique element.
-theorem singleton_contains_eq[K](a: K, x: K) {
-    (Set[K].singleton(a)).contains(x) = (a = x)
 }
 
 /// Membership in a complement is Boolean negation of membership.
@@ -257,15 +267,6 @@ theorem universal_set_contains_eq[K](x: K) {
 } by {
     not constant_false(x)
     negate_fun(constant_false[K], x)
-}
-
-/// Set extensionality: two sets are equal when they have the same elements.
-theorem set_ext[K](a: Set[K], b: Set[K]) {
-    (forall(x: K) { a.contains(x) = b.contains(x) }) implies a = b
-} by {
-    if forall(x: K) { a.contains(x) = b.contains(x) } {
-        a.contains = b.contains
-    }
 }
 
 // Subsets
@@ -337,7 +338,7 @@ theorem double_inclusion[K](a: Set[K], b: Set[K]) {
         b.contains(x) implies a.contains(x)
         a.contains(x) = b.contains(x)
     }
-    a.contains = b.contains
+    set_ext(a, b)
 }
 
 /// Subset antisymmetry: two sets are equal when each is a subset of the other.
@@ -391,6 +392,35 @@ attributes Set[K] {
     }
 }
 
+/// True if `y` lies in the image of the set `s` under the function `f`.
+define image_contains[T, U](f: T -> U, s: Set[T], y: U) -> Bool {
+    exists(x: T) {
+        s.contains(x) and y = f(x)
+    }
+}
+
+/// The image of the set `s` under the function `f`.
+define set_image[T, U](s: Set[T], f: T -> U) -> Set[U] {
+    Set[U].new(image_contains(f, s))
+}
+
+/// Membership in the image set is equivalent to the image predicate.
+theorem set_image_contains_eq[T, U](s: Set[T], f: T -> U, y: U) {
+    set_image(s, f).contains(y) = image_contains(f, s, y)
+}
+
+/// An element of a set maps to an element of its image.
+theorem maps_into_set_image[T, U](s: Set[T], f: T -> U, x: T) {
+    s.contains(x) implies set_image(s, f).contains(f(x))
+} by {
+    if s.contains(x) {
+        exists(z: T) {
+            z = x and s.contains(z) and f(x) = f(z)
+        }
+        image_contains(f, s, f(x))
+    }
+}
+
 // Difference theorems
 // Basic properties of set difference
 /// Membership in a difference is membership in the left set together with non-membership in the right set.
@@ -403,7 +433,7 @@ theorem difference_subset[K](a: Set[K], b: Set[K]) {
 } by {
     forall(x: K) {
         if a.difference(b).contains(x) {
-            elem_in_difference(a, b, x)
+            difference_contains_eq(a, b, x)
             a.contains(x)
         }
     }
@@ -472,6 +502,40 @@ theorem remove_other_contains_eq[K](s: Set[K], item: K, other: K) {
     if s.contains(item) {
     } else {
         s.contains(item) = s.remove(other).contains(item)
+    }
+}
+
+/// Membership after insertion is equality with the inserted element or prior membership.
+theorem insert_contains_eq[K](s: Set[K], item: K, x: K) {
+    s.insert(item).contains(x) = (x = item or s.contains(x))
+} by {
+    if x = item {
+        insert_contains(s, item)
+        s.insert(item).contains(x)
+        x = item or s.contains(x)
+        s.insert(item).contains(x) = (x = item or s.contains(x))
+    } else {
+        insert_other_contains_eq(s, x, item)
+        s.contains(x) = s.insert(item).contains(x)
+        s.insert(item).contains(x) = s.contains(x)
+        s.insert(item).contains(x) = (x = item or s.contains(x))
+    }
+}
+
+/// Membership after removal is prior membership together with inequality from the removed element.
+theorem remove_contains_eq[K](s: Set[K], item: K, x: K) {
+    s.remove(item).contains(x) = (s.contains(x) and x != item)
+} by {
+    if x = item {
+        remove_does_not_contain(s, item)
+        not s.remove(item).contains(x)
+        not (s.contains(x) and x != item)
+        s.remove(item).contains(x) = (s.contains(x) and x != item)
+    } else {
+        remove_other_contains_eq(s, x, item)
+        s.contains(x) = s.remove(item).contains(x)
+        s.remove(item).contains(x) = s.contains(x)
+        s.remove(item).contains(x) = (s.contains(x) and x != item)
     }
 }
 
@@ -648,14 +712,14 @@ theorem sets_subset_union[K](a: Set[K], b: Set[K]) {
 } by {
     forall(x: K) {
         if a.contains(x) {
-            elem_in_union(a, b, x)
+            union_contains_eq(a, b, x)
             a.union(b).contains(x)
         }
     }
     a.subset(a.union(b))
     forall(x: K) {
         if b.contains(x) {
-            elem_in_union(a, b, x)
+            union_contains_eq(a, b, x)
             a.union(b).contains(x)
         }
     }
@@ -738,14 +802,14 @@ theorem sets_subset_intersection[K](a: Set[K], b: Set[K]) {
 } by {
     forall(x: K) {
         if a.intersection(b).contains(x) {
-            elem_in_intersection(a, b, x)
+            intersection_contains_eq(a, b, x)
             a.contains(x)
         }
     }
     a.intersection(b).subset(a)
     forall(x: K) {
         if a.intersection(b).contains(x) {
-            elem_in_intersection(a, b, x)
+            intersection_contains_eq(a, b, x)
             b.contains(x)
         }
     }
@@ -1097,7 +1161,7 @@ theorem seq_union_complement_eq_intersection_complement[T](s: Nat -> Set[T]) {
         u.contains(x) = v.contains(x)
     }
 
-    u.contains = v.contains
+    set_ext(u, v)
 }
 
 theorem seq_intersection_complement_eq_union_complement[T](s: Nat -> Set[T]) {
@@ -1149,7 +1213,7 @@ theorem seq_intersection_complement_eq_union_complement[T](s: Nat -> Set[T]) {
         u.contains(x) = v.contains(x)
     }
 
-    u.contains = v.contains
+    set_ext(u, v)
 }
 
 // Proving indexed union and intersection definitions are consistent

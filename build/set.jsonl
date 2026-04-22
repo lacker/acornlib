@@ -15,17 +15,18 @@
 {"goal":"negate_fun(negate_fun[K](f), x) = f(x)","proof":["not negate_fun(negate_fun[K](f), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](f, x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](negate_fun[K](f), x)"]}
 {"goal":"negate_fun(negate_fun[K](f), x) = f(x)","proof":["negate_fun(negate_fun[K](f), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](negate_fun[K](f), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](f, x)"]}
 {"goal":"neg_of_neg_is_self","proof":[]}
-{"goal":"not Set.empty_set[K].contains(x)","proof":["function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](constant_false[K], x)","function[T0] { Set.new[T0](constant_false[T0]) = Set.empty_set[T0] }[K]","function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)"]}
+{"goal":"empty_set_contains_eq","proof":["function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](constant_false[K], x)","function[T0] { Set.new[T0](constant_false[T0]) = Set.empty_set[T0] }[K]","function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)"]}
+{"goal":"not Set.empty_set[K].contains(x)","proof":[]}
 {"goal":"empty_set_is_empty","proof":["function[T0](x0: Set[T0]) { exists(k0: T0) { k0 ∈ x0 } or x0.is_empty }[K](Set.empty_set[K])","exists(k0: K) { k0 ∈ Set.empty_set[K] }","let w9: K satisfy { w9 ∈ Set.empty_set[K] }","function(x0: K) { not x0 ∈ Set.empty_set[K] }(w9)"]}
-{"goal":"empty_set_contains_eq","proof":["function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](constant_false[K], x)","function[T0] { Set.new[T0](constant_false[T0]) = Set.empty_set[T0] }[K]","function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)","x ∈ Set.new[K](constant_false[K])"]}
 {"goal":"exists(k0: K) { Set.singleton(a) = Set.singleton(k0) }","proof":[]}
 {"goal":"singleton_set_is_singleton","proof":["function[T0](x0: T0, x1: Set[T0]) { Set.singleton[T0](x0) != x1 or x1.is_singleton }[K](a, Set.singleton(a))"]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"set_ext","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](a)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](b)"]}
 {"goal":"not s.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)"]}
 {"goal":"s.c.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s.c)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.c.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.c.contains, x)"]}
 {"goal":"s.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)"]}
 {"goal":"not s.c.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s.c)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.c.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.c.contains, x)"]}
 {"goal":"s.c.c.contains(x) = s.contains(x)","proof":[]}
-{"goal":"s.c.c.contains = s.contains","proof":[]}
 {"goal":"compl_of_compl_is_self","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](s)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](s.c.c)"]}
 {"goal":"not e.contains(x)","proof":["function[T0](x0: Set[T0], x1: T0) { not x0.is_empty or not x1 ∈ x0 }[K](e, x)","function[T0] { Set.empty_set[T0].is_empty }[K]"]}
 {"goal":"e.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](e)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](e.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](e.contains, x)"]}
@@ -33,7 +34,6 @@
 {"goal":"negate_fun(constant_false[K], x)","proof":["function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](constant_false[K], x)"]}
 {"goal":"u.contains(x)","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)"]}
 {"goal":"e.c.contains(x) = u.contains(x)","proof":[]}
-{"goal":"e.c.contains = u.contains","proof":[]}
 {"goal":"empty_set_compl_is_universal","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](Set.universal_set[K])","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](Set.empty_set[K].c)"]}
 {"goal":"not constant_false(x)","proof":["function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)"]}
 {"goal":"negate_fun(constant_false[K], x)","proof":["function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](constant_false[K], x)"]}
@@ -41,22 +41,18 @@
 {"goal":"not u.c.contains(x)","proof":["function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](constant_false[K], x)","function[T0] { Set.empty_set[T0].c = Set.universal_set[T0] }[K]","function[T0](x0: Set[T0]) { x0.c.c = x0 }[K](Set.empty_set[K])","function[T0] { Set.new[T0](constant_false[T0]) = Set.empty_set[T0] }[K]"]}
 {"goal":"not e.contains(x)","proof":["function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[K], K, Bool](Set.contains[K], x, e)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[K], K, Bool](Set.contains[K], x, u.c)","function[T0] { Set.empty_set[T0].c = Set.universal_set[T0] }[K]","function[T0](x0: Set[T0]) { x0.c.c = x0 }[K](Set.empty_set[K])"]}
 {"goal":"u.c.contains(x) = e.contains(x)","proof":[]}
-{"goal":"u.c.contains = e.contains","proof":[]}
 {"goal":"universal_set_compl_is_empty","proof":["function[T0] { Set.empty_set[T0].c = Set.universal_set[T0] }[K]","function[T0](x0: Set[T0]) { x0.c.c = x0 }[K](Set.empty_set[K])"]}
-{"goal":"singleton_fun(a, a)","proof":["function[T0](x0: T0, x1: T0) { x0 != x1 or singleton_fun[T0](x0, x1) }[K](a, a)"]}
-{"goal":"s.contains(a)","proof":["function[T0](x0: T0) { Set.new[T0](singleton_fun[T0](x0)) = Set.singleton[T0](x0) }[K](a)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](singleton_fun(a), a)"]}
-{"goal":"singleton_set_is_not_empty","proof":["s.is_empty","function[T0](x0: Set[T0], x1: T0) { not x0.is_empty or not x1 ∈ x0 }[K](s, a)"]}
 {"goal":"singleton_contains_eq","proof":["function[T0](x0: T0) { Set.new[T0](singleton_fun[T0](x0)) = Set.singleton[T0](x0) }[K](a)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](function(x2: K) { a = x2 }, x)","function[T0] { singleton_fun[T0] = (=) }[K]"]}
-{"goal":"compl_contains_eq","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)","x ∈ Set.new[K](negate_fun[K](s.contains)) = x ∈ s"]}
+{"goal":"s.contains(a)","proof":[]}
+{"goal":"singleton_set_is_not_empty","proof":["s.is_empty","function[T0](x0: Set[T0], x1: T0) { not x0.is_empty or not x1 ∈ x0 }[K](s, a)"]}
+{"goal":"compl_contains_eq","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)"]}
 {"goal":"not constant_false(x)","proof":["function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)"]}
 {"goal":"negate_fun(constant_false[K], x)","proof":["function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](constant_false[K], x)"]}
-{"goal":"universal_set_contains_eq","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)","not x ∈ Set.new[K](negate_fun[K](constant_false[K]))","x ∈ Set.new[K](negate_fun[K](constant_false[K]))"]}
-{"goal":"a.contains = b.contains","proof":[]}
-{"goal":"set_ext","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](a)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](b)"]}
+{"goal":"universal_set_contains_eq","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)"]}
 {"goal":"false","proof":["function[T0](x0: Set[T0], x1: T0) { not x0.is_empty or not x1 ∈ x0 }[K](Set.empty_set[K], x)","function[T0] { Set.empty_set[T0].is_empty }[K]"]}
 {"goal":"empty_set_is_always_subset","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { exists(k0: T0) { k0 ∈ x0 and not k0 ∈ x1 } or x0 ⊂ x1 }[K](Set.empty_set[K], s)","exists(k0: K) { k0 ∈ Set.empty_set[K] and not k0 ∈ s }","let w9: K satisfy { w9 ∈ Set.empty_set[K] and not w9 ∈ s }","function(x0: K) { not x0 ∈ Set.empty_set[K] }(w9)"]}
 {"goal":"not constant_false(x)","proof":["function[T0](x0: T0) { not constant_false[T0](x0) }[K](x)"]}
-{"goal":"negate_fun(constant_false[K], x)","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)","function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[K](x)","not x ∈ Set.new[K](negate_fun[K](constant_false[K]))"]}
+{"goal":"negate_fun(constant_false[K], x)","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)","function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[K](x)"]}
 {"goal":"u.contains(x)","proof":["function[T0] { Set.new[T0](negate_fun[T0](constant_false[T0])) = Set.universal_set[T0] }[K]","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](constant_false[K]), x)"]}
 {"goal":"s.contains(x) implies u.contains(x)","proof":[]}
 {"goal":"all_sets_subset_universal","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](s, Set.universal_set[K])","exists(k0: K) { k0 ∈ s and not k0 ∈ Set.universal_set[K] }","let w9: K satisfy { w9 ∈ s and not w9 ∈ Set.universal_set[K] }","function(x0: K) { not x0 ∈ s or x0 ∈ u }(w9)"]}
@@ -67,14 +63,16 @@
 {"goal":"subset_trans","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a, c)"]}
 {"goal":"b.contains(x) implies a.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](b, a, x)"]}
 {"goal":"a.contains(x) = b.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](a, b, x)"]}
-{"goal":"a.contains = b.contains","proof":[]}
 {"goal":"double_inclusion","proof":["b.contains = a.contains","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](a)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](b)"]}
 {"goal":"subset_antisymm","proof":[]}
 {"goal":"a.subset(b) and b.subset(a)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[K](b, a)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[K](a, b)"]}
 {"goal":"superset_antisymm","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[K](b, a)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[K](a, b)"]}
-{"goal":"difference_contains_eq","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { (x1 ∈ x0 and not x1 ∈ x2) = elem_in_difference[T0](x0, x2, x1) }[K](a, x, b)","function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_difference[T0](x0, x1)) = x0 ∖ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_difference[K](a, b), x)","(x ∈ a and not x ∈ b) != x ∈ Set.new[K](elem_in_difference[K](a, b))"]}
-{"goal":"elem_in_difference(a, b, x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_difference[T0](x0, x1)) = x0 ∖ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_difference[K](a, b), x)"]}
-{"goal":"a.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not elem_in_difference[T0](x0, x1, x2) or x2 ∈ x0 }[K](a, b, x)"]}
+{"goal":"set_image_contains_eq","proof":["function[T0, T1](x0: T1 -> T0, x1: Set[T1]) { Set.new[T0](image_contains[T1, T0](x0, x1)) = set_image[T1, T0](x1, x0) }[U, T](f, s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[U](image_contains[T, U](f, s), y)"]}
+{"goal":"exists(k0: T) { k0 = x and s.contains(k0) and f(x) = f(k0) }","proof":["function(x0: T) { not (x0 = x and x0 ∈ s and f(x0) = f(x)) }(x)","function(x0: T) { not (x0 = x and x0 ∈ s) or f(x) != f(x0) }(x)","not (x = x and x ∈ s)"]}
+{"goal":"image_contains[T, U](f, s, f(x))","proof":["function[T0, T2](x0: Set[T0], x1: T0 -> T2, x2: T2) { exists(k0: T0) { k0 ∈ x0 and x1(k0) = x2 } = image_contains[T0, T2](x1, x0, x2) }[T, U](s, f, f(x))","not exists(k0: T) { k0 ∈ s and f(k0) = f(x) }","function(x0: T) { not (x0 ∈ s and f(x0) = f(x)) }(x)","function(x0: T) { not x0 ∈ s or f(x) != f(x0) }(x)"]}
+{"goal":"maps_into_set_image","proof":["function[T0, T1](x0: Set[T1], x1: T1 -> T0, x2: T0) { x2 ∈ set_image[T1, T0](x0, x1) = image_contains[T1, T0](x1, x0, x2) }[U, T](s, f, f(x))","image_contains[T, U](f, s, f(x))"]}
+{"goal":"difference_contains_eq","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { (x1 ∈ x0 and not x1 ∈ x2) = elem_in_difference[T0](x0, x2, x1) }[K](a, x, b)","function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_difference[T0](x0, x1)) = x0 ∖ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_difference[K](a, b), x)"]}
+{"goal":"a.contains(x)","proof":[]}
 {"goal":"difference_subset","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a ∖ b, a)","exists(k0: K) { k0 ∈ a ∖ b and not k0 ∈ a }","let w9: K satisfy { w9 ∈ a ∖ b and not w9 ∈ a }","function(x0: K) { not x0 ∈ a ∖ b or x0 ∈ a }(w9)"]}
 {"goal":"difference_contains_imp_not_contains","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_difference[T0](x0, x1)) = x0 ∖ x1 }[K](a, b)","function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not elem_in_difference[T0](x0, x1, x2) or not x2 ∈ x1 }[K](a, b, x)","function(x0: Set[K]) { not elem_in_difference(x0, b, x) }(a)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_difference[K](a, b), x)"]}
 {"goal":"difference_contains_imp_contains","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](a ∖ b, a, x)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ∖ x1 ⊂ x0 }[K](a, b)"]}
@@ -92,6 +90,20 @@
 {"goal":"insert_other_contains_eq","proof":["not item ∈ s.insert(other)","function[T0](x0: Set[T0], x1: T0, x2: T0) { not x1 ∈ x0 or x1 ∈ x0.insert(x2) }[K](s, item, other)"]}
 {"goal":"s.contains(item) = s.remove(other).contains(item)","proof":["function[T0](x0: Set[T0], x1: T0, x2: T0) { not x2 ∈ x0.remove(x1) or x2 ∈ x0 or x1 = x2 }[K](s, other, item)"]}
 {"goal":"remove_other_contains_eq","proof":["not item ∈ s.remove(other)","function[T0](x0: Set[T0], x1: T0, x2: T0) { not x1 ∈ x0 or x1 ∈ x0.remove(x2) or x1 = x2 }[K](s, item, other)"]}
+{"goal":"s.insert(item).contains(x)","proof":[]}
+{"goal":"x = item or s.contains(x)","proof":[]}
+{"goal":"s.insert(item).contains(x) = (x = item or s.contains(x))","proof":[]}
+{"goal":"s.contains(x) = s.insert(item).contains(x)","proof":[]}
+{"goal":"s.insert(item).contains(x) = s.contains(x)","proof":[]}
+{"goal":"s.insert(item).contains(x) = (x = item or s.contains(x))","proof":[]}
+{"goal":"insert_contains_eq","proof":[]}
+{"goal":"not s.remove(item).contains(x)","proof":[]}
+{"goal":"not (s.contains(x) and x != item)","proof":[]}
+{"goal":"s.remove(item).contains(x) = (s.contains(x) and x != item)","proof":[]}
+{"goal":"s.contains(x) = s.remove(item).contains(x)","proof":[]}
+{"goal":"s.remove(item).contains(x) = s.contains(x)","proof":[]}
+{"goal":"s.remove(item).contains(x) = (s.contains(x) and x != item)","proof":[]}
+{"goal":"remove_contains_eq","proof":[]}
 {"goal":"s.remove(item).insert(item).contains != s.contains","proof":["s.remove(item).insert(item).contains = s.contains","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](s)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](s.remove(item).insert(item))"]}
 {"goal":"exists(k0: K) { s.remove(item).insert(item).contains(k0) != s.contains(k0) }","proof":[]}
 {"goal":"false","proof":["function[T0](x0: Set[T0], x1: T0, x2: T0) { not x1 ∈ x0 or x1 ∈ x0.remove(x2) or x1 = x2 }[K](s, t, item)","function[T0](x0: Set[T0], x1: T0, x2: T0) { not x1 ∈ x0 or x1 ∈ x0.insert(x2) }[K](s.remove(item), t, item)"]}
@@ -150,12 +162,10 @@
 {"goal":"v.subset(u)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](v, u)","exists(k0: K) { k0 ∈ v and not k0 ∈ u }","let w9: K satisfy { w9 ∈ v and not w9 ∈ u }","function(x0: K) { not x0 ∈ v or x0 ∈ u }(w9)"]}
 {"goal":"union_with_difference_decomp_inter","proof":["s ∪ t != v","v != u","function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or not x1 ⊂ x0 or x0 = x1 }[K](v, u)"]}
 {"goal":"union_contains_eq","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { (x1 ∈ x0 or x1 ∈ x2) = elem_in_union[T0](x0, x2, x1) }[K](a, x, b)","function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_union[T0](x0, x1)) = x0 ∪ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_union[K](a, b), x)"]}
-{"goal":"intersection_contains_eq","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { (x1 ∈ x0 and x1 ∈ x2) = elem_in_intersection[T0](x0, x2, x1) }[K](a, x, b)","function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_intersection[T0](x0, x1)) = x0 ∩ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_intersection[K](a, b), x)","x ∈ Set.new[K](elem_in_intersection[K](a, b)) != (x ∈ a and x ∈ b)"]}
-{"goal":"elem_in_union(a, b, x)","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { not x1 ∈ x0 or elem_in_union[T0](x0, x2, x1) }[K](a, x, b)"]}
-{"goal":"a.union(b).contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_union[T0](x0, x1)) = x0 ∪ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_union[K](a, b), x)"]}
+{"goal":"intersection_contains_eq","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { (x1 ∈ x0 and x1 ∈ x2) = elem_in_intersection[T0](x0, x2, x1) }[K](a, x, b)","function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_intersection[T0](x0, x1)) = x0 ∩ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_intersection[K](a, b), x)"]}
+{"goal":"a.union(b).contains(x)","proof":[]}
 {"goal":"a.subset(a.union(b))","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a, a ∪ b)","exists(k0: K) { k0 ∈ a and not k0 ∈ a ∪ b }","let w9: K satisfy { w9 ∈ a and not w9 ∈ a ∪ b }","function(x0: K) { not x0 ∈ a or x0 ∈ a ∪ b }(w9)"]}
-{"goal":"elem_in_union(a, b, x)","proof":["function[T0](x0: Set[T0], x1: T0, x2: Set[T0]) { not x1 ∈ x0 or elem_in_union[T0](x2, x0, x1) }[K](b, x, a)"]}
-{"goal":"a.union(b).contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_union[T0](x0, x1)) = x0 ∪ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_union[K](a, b), x)"]}
+{"goal":"a.union(b).contains(x)","proof":[]}
 {"goal":"b.subset(a.union(b))","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](b, a ∪ b)","exists(k0: K) { k0 ∈ b and not k0 ∈ a ∪ b }","let w9: K satisfy { w9 ∈ b and not w9 ∈ a ∪ b }","function(x0: K) { not x0 ∈ b or x0 ∈ a ∪ b }(w9)"]}
 {"goal":"sets_subset_union","proof":[]}
 {"goal":"elem_in_union(a, b, x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_union[T0](x0, x1)) = x0 ∪ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_union[K](a, b), x)"]}
@@ -185,11 +195,9 @@
 {"goal":"union_subset_is_set","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: Set[T0]) { not x0 ⊂ x1 or not x2 ⊂ x1 or x0 ∪ x2 ⊂ x1 }[K](a, b, b)","function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or not x1 ⊂ x0 or x0 = x1 }[K](b, a ∪ b)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊂ x1 ∪ x0 }[K](b, a)","function[T0](x0: Set[T0]) { x0 ⊂ x0 }[K](b)"]}
 {"goal":"union_with_empty_is_self","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or x0 ∪ x1 = x1 }[K](Set.empty_set[K], s)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ∪ x1 = x1 ∪ x0 }[K](Set.empty_set[K], s)","Set.empty_set[K] ∪ s != s","function[T0](x0: Set[T0]) { Set.empty_set[T0] ⊂ x0 }[K](s)"]}
 {"goal":"union_with_universal_is_universal","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or x0 ∪ x1 = x1 }[K](s, Set.universal_set[K])","not s ⊂ Set.universal_set[K]","function[T0](x0: Set[T0]) { x0 ⊂ Set.universal_set[T0] }[K](s)"]}
-{"goal":"elem_in_intersection(a, b, x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_intersection[T0](x0, x1)) = x0 ∩ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_intersection[K](a, b), x)"]}
-{"goal":"a.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not elem_in_intersection[T0](x0, x1, x2) or x2 ∈ x0 }[K](a, b, x)"]}
+{"goal":"a.contains(x)","proof":[]}
 {"goal":"a.intersection(b).subset(a)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a ∩ b, a)","exists(k0: K) { k0 ∈ a ∩ b and not k0 ∈ a }","let w9: K satisfy { w9 ∈ a ∩ b and not w9 ∈ a }","function(x0: K) { not x0 ∈ a ∩ b or x0 ∈ a }(w9)"]}
-{"goal":"elem_in_intersection(a, b, x)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { Set.new[T0](elem_in_intersection[T0](x0, x1)) = x0 ∩ x1 }[K](a, b)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](elem_in_intersection[K](a, b), x)"]}
-{"goal":"b.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not elem_in_intersection[T0](x0, x1, x2) or x2 ∈ x1 }[K](a, b, x)"]}
+{"goal":"b.contains(x)","proof":[]}
 {"goal":"a.intersection(b).subset(b)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a ∩ b, b)","exists(k0: K) { k0 ∈ a ∩ b and not k0 ∈ b }","let w9: K satisfy { w9 ∈ a ∩ b and not w9 ∈ b }","function(x0: K) { not x0 ∈ a ∩ b or x0 ∈ b }(w9)"]}
 {"goal":"sets_subset_intersection","proof":[]}
 {"goal":"a.contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](c, a, x)","function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[K](a, c)"]}
@@ -314,7 +322,6 @@
 {"goal":"u_simp.contains(x)","proof":["function[T0, T1](x0: T0 -> Set[T1], x1: T1) { not exists(k0: T0) { x1 ∈ x0(k0) } or or_family[T1, T0](x0, x1) }[Nat, T](sc, x)","function[T0, T1](x0: T1 -> Set[T0]) { Set.new[T0](or_family[T0, T1](x0)) = union_family[T0, T1](x0) }[T, Nat](sc)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u_simp)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](or_family[T, Nat](sc), x)","function[T0](x0: Nat -> Set[T0]) { union_family[T0, Nat](x0) = seq_union[T0](x0) }[T](sc)","seq_complement[T](s) = sc","function[T0, T1](x0: T1 -> Set[T0], x1: T1, x2: T0) { not x2 ∈ x0(x1) or or_family[T0, T1](x0, x2) }[T, Nat](sc, i, x)"]}
 {"goal":"u.contains(x)","proof":["function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u_simp)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u)","function[T0](x0: Nat -> Set[T0]) { union_family[T0, Nat](x0) = seq_union[T0](x0) }[T](sc)"]}
 {"goal":"u.contains(x) = v.contains(x)","proof":[]}
-{"goal":"u.contains = v.contains","proof":[]}
 {"goal":"seq_union_complement_eq_intersection_complement","proof":["seq_complement[T](s) = sc","function[T0](x0: Nat -> Set[T0]) { union_family[T0, Nat](x0) = seq_union[T0](x0) }[T](sc)","v.contains = u.contains","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](seq_intersection[T](s).c)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](union_family[T, Nat](sc))"]}
 {"goal":"u_simp.contains(x)","proof":["function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u_simp)","function[T0](x0: Nat -> Set[T0]) { intersection_family[T0, Nat](x0) = seq_intersection[T0](x0) }[T](sc)"]}
 {"goal":"sc(i).contains(x)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { Set.new[T0](and_family[T0, T1](x0)) = intersection_family[T0, T1](x0) }[T, Nat](sc)","function[T0, T1](x0: T1 -> Set[T0], x1: T0, x2: T1) { not and_family[T0, T1](x0, x1) or x1 ∈ x0(x2) }[T, Nat](sc, x, i)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](and_family[T, Nat](sc), x)"]}
@@ -338,7 +345,6 @@
 {"goal":"u_simp.contains(x)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { Set.new[T0](and_family[T0, T1](x0)) = intersection_family[T0, T1](x0) }[T, Nat](sc)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](and_family[T, Nat](sc), x)"]}
 {"goal":"u.contains(x)","proof":["function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u_simp)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Set[T], T, Bool](Set.contains[T], x, u)","function[T0](x0: Nat -> Set[T0]) { intersection_family[T0, Nat](x0) = seq_intersection[T0](x0) }[T](sc)"]}
 {"goal":"u.contains(x) = v.contains(x)","proof":[]}
-{"goal":"u.contains = v.contains","proof":[]}
 {"goal":"seq_intersection_complement_eq_union_complement","proof":["seq_complement[T](s) = sc","function[T0](x0: Nat -> Set[T0]) { intersection_family[T0, Nat](x0) = seq_intersection[T0](x0) }[T](sc)","v.contains = u.contains","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](seq_union[T](s).c)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](intersection_family[T, Nat](sc))"]}
 {"goal":"f_two(TwoType.first) = a","proof":["function(x0: TwoType) { fun_of_two[K](a, b, x0) = f_two(x0) }(TwoType.first)","function[T0](x0: TwoType, x1: Set[T0], x2: Set[T0]) { TwoType.first != x0 or fun_of_two[T0](x1, x2, x0) = x1 }[K](TwoType.first, a, b)"]}
 {"goal":"f_two(TwoType.second) = b","proof":["function(x0: TwoType) { fun_of_two[K](a, b, x0) = f_two(x0) }(TwoType.second)","function[T0](x0: TwoType, x1: Set[T0], x2: Set[T0]) { TwoType.second != x0 or fun_of_two[T0](x1, x2, x0) = x2 }[K](TwoType.second, a, b)"]}

@@ -66,6 +66,7 @@ When the user says to "work off the notes", do not stop at note maintenance. Use
 6. Then switch from note-taking to implementation: read the relevant code, write Acorn code, and verify the change.
 7. Prefer actually finishing the todo item over discussing it abstractly.
 8. After the code verifies, update the notes immediately.
+9. If progress runs into what looks like an Acorn bug, prover limitation, or missing language feature that materially blocks the next step, tell the user explicitly instead of silently working around it.
 
 ## Updating Notes After Work
 
@@ -88,6 +89,7 @@ In execution mode, the notes are not enough by themselves. Always try to verify 
 
 - For Acorn library work, prefer `acorn` or the narrowest verifying command that still justifies the note update.
 - If verification fails, keep the todo item or replace it with narrower remaining work.
+- If the failure appears to come from Acorn itself rather than the library code, report that to the user clearly and keep the notes honest about the blocker.
 
 ## Naming Conventions
 
