@@ -124,3 +124,17 @@ structure GroupHom[G: Group, H: Group] {
 } constraint {
     is_hom(hom)
 }
+
+/// Group homomorphism extensionality: two homomorphisms are equal when they agree on every input.
+theorem group_hom_ext[G: Group, H: Group](f: GroupHom[G, H], g: GroupHom[G, H]) {
+    (forall(a: G) { f.hom(a) = g.hom(a) }) implies f = g
+} by {
+    if forall(a: G) { f.hom(a) = g.hom(a) } {
+        f.hom = g.hom
+    }
+}
+
+attributes GroupHom[G: Group, H: Group] {
+    /// Group homomorphism extensionality from pointwise equality of the homomorphism.
+    let ext = group_hom_ext[G, H]
+}

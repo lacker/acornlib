@@ -167,6 +167,11 @@ theorem empty_set_is_empty[K] {
     }
 }
 
+/// Membership in the empty set is always false.
+theorem empty_set_contains_eq[K](x: K) {
+    (Set[K].empty_set).contains(x) = false
+}
+
 theorem singleton_set_is_singleton[K](a: K) {
     (Set[K].singleton(a)).is_singleton
 } by {
@@ -236,8 +241,38 @@ theorem singleton_set_is_not_empty[K](a: K) {
     s.contains(a)
 }
 
+/// Membership in a singleton is equality with its unique element.
+theorem singleton_contains_eq[K](a: K, x: K) {
+    (Set[K].singleton(a)).contains(x) = (a = x)
+}
+
+/// Membership in a complement is Boolean negation of membership.
+theorem compl_contains_eq[K](s: Set[K], x: K) {
+    s.c.contains(x) = not s.contains(x)
+}
+
+/// Membership in the universal set is always true.
+theorem universal_set_contains_eq[K](x: K) {
+    (Set[K].universal_set).contains(x) = true
+} by {
+    not constant_false(x)
+    negate_fun(constant_false[K], x)
+}
+
+/// Set extensionality: two sets are equal when they have the same elements.
+theorem set_ext[K](a: Set[K], b: Set[K]) {
+    (forall(x: K) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: K) { a.contains(x) = b.contains(x) } {
+        a.contains = b.contains
+    }
+}
+
 // Subsets
 attributes Set[K] {
+    /// Set extensionality from pointwise equality of membership.
+    let ext = set_ext[K]
+
     /// self ⊆ s
     define subset(self, s: Set[K]) -> Bool {
         forall(x: K) {
@@ -305,6 +340,23 @@ theorem double_inclusion[K](a: Set[K], b: Set[K]) {
     a.contains = b.contains
 }
 
+/// Subset antisymmetry: two sets are equal when each is a subset of the other.
+theorem subset_antisymm[K](a: Set[K], b: Set[K]) {
+    a.subset(b) and b.subset(a) implies a = b
+} by {
+    double_inclusion(a, b)
+}
+
+/// Superset antisymmetry: two sets are equal when each is a superset of the other.
+theorem superset_antisymm[K](a: Set[K], b: Set[K]) {
+    a.superset(b) and b.superset(a) implies a = b
+} by {
+    if a.superset(b) and b.superset(a) {
+        a.subset(b) and b.subset(a)
+        double_inclusion(a, b)
+    }
+}
+
 // "Standard" union and intersection of two sets
 define elem_in_union[K](a: Set[K], b: Set[K], x: K) -> Bool {
     a.contains(x) or b.contains(x)
@@ -320,6 +372,9 @@ define elem_in_difference[K](a: Set[K], b: Set[K], x: K) -> Bool {
 }
 
 attributes Set[K] {
+    /// Subset antisymmetry from mutual inclusion.
+    let antisymm = subset_antisymm[K]
+
     /// self ∪ s
     define union(self, s: Set[K]) -> Set[K] {
         Set.new(elem_in_union(self, s))
@@ -338,6 +393,10 @@ attributes Set[K] {
 
 // Difference theorems
 // Basic properties of set difference
+/// Membership in a difference is membership in the left set together with non-membership in the right set.
+theorem difference_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    a.difference(b).contains(x) = (a.contains(x) and not b.contains(x))
+}
 
 theorem difference_subset[K](a: Set[K], b: Set[K]) {
     a.difference(b).subset(a)
@@ -574,6 +633,16 @@ theorem union_with_difference_decomp_inter[K](s: Set[K], t: Set[K]) {
 
 // Union theorems
 // A \subseteq A \cup B (and same with B)
+/// Membership in a union is Boolean disjunction of membership.
+theorem union_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    a.union(b).contains(x) = (a.contains(x) or b.contains(x))
+}
+
+/// Membership in an intersection is Boolean conjunction of membership.
+theorem intersection_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+}
+
 theorem sets_subset_union[K](a: Set[K], b: Set[K]) {
     a.subset(a.union(b)) and b.subset(a.union(b))
 } by {

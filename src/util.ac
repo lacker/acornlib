@@ -20,6 +20,42 @@ define is_constant[T, U](f: T -> U) -> Bool {
     }
 }
 
+/// Predicate extensionality: two predicates are equal when they have the same truth value on every input.
+theorem predicate_extensionality[T](p: T -> Bool, q: T -> Bool) {
+    (forall(x: T) { p(x) = q(x) }) implies p = q
+} by {
+    if forall(x: T) { p(x) = q(x) } {
+        forall(x: T) {
+            p(x) = q(x)
+        }
+    }
+}
+
+/// Function extensionality: two functions are equal when they agree on every input.
+theorem function_extensionality[T, U](f: T -> U, g: T -> U) {
+    (forall(x: T) { f(x) = g(x) }) implies f = g
+} by {
+    if forall(x: T) { f(x) = g(x) } {
+        forall(x: T) {
+            f(x) = g(x)
+        }
+    }
+}
+
+/// Binary function extensionality: two functions are equal when they agree on every pair of inputs.
+theorem binary_function_extensionality[T, U, V](f: (T, U) -> V, g: (T, U) -> V) {
+    (forall(x: T, y: U) { f(x, y) = g(x, y) }) implies f = g
+} by {
+    if forall(x: T, y: U) { f(x, y) = g(x, y) } {
+        forall(x: T) {
+            forall(y: U) {
+                f(x, y) = g(x, y)
+            }
+            function_extensionality(f(x), g(x))
+        }
+    }
+}
+
 theorem constant_is_constant[T, U](u: U) {
     is_constant(constant[T, U](u))
 }

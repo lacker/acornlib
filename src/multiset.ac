@@ -8,7 +8,19 @@ structure Multiset[T] {
     multiplicity: T -> Nat
 }
 
+/// Multiset extensionality: two multisets are equal when every element has the same multiplicity.
+theorem multiset_ext[T](a: Multiset[T], b: Multiset[T]) {
+    (forall(x: T) { a.multiplicity(x) = b.multiplicity(x) }) implies a = b
+} by {
+    if forall(x: T) { a.multiplicity(x) = b.multiplicity(x) } {
+        a.multiplicity = b.multiplicity
+    }
+}
+
 attributes Multiset[T] {
+    /// Multiset extensionality from pointwise equality of multiplicity.
+    let ext = multiset_ext[T]
+
     /// True if the multiset contains at least one copy of the given item.
     define contains(self, item: T) -> Bool {
         self.multiplicity(item) != 0

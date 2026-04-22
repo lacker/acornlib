@@ -127,9 +127,21 @@ let real_from_rat(r: Rat) -> a: Real satisfy {
     Real.new(r.gt) = Option.some(a)
 }
 
+/// Real extensionality: two real numbers are equal when they have the same cut.
+theorem real_ext(a: Real, b: Real) {
+    (forall(r: Rat) { a.gt_rat(r) = b.gt_rat(r) }) implies a = b
+} by {
+    if forall(r: Rat) { a.gt_rat(r) = b.gt_rat(r) } {
+        a.gt_rat = b.gt_rat
+    }
+}
+
 attributes Real {
     /// Converts a rational number to a real number.
     let from_rat = real_from_rat
+
+    /// Real extensionality from pointwise equality of the cut.
+    let ext = real_ext
 }
 
 from zero import Zero
@@ -214,7 +226,7 @@ theorem lte_both_ways_imp_eq(a: Real, b: Real) {
             a.gt_rat(r) = b.gt_rat(r)
         }
     }
-    a.gt_rat = b.gt_rat
+    Real.ext(a, b)
 }
 
 // The real numbers form a total order.
@@ -518,7 +530,7 @@ theorem add_assoc(a: Real, b: Real, c: Real) {
             (a + b + c).gt_rat(r) = (a + (b + c)).gt_rat(r)
         }
     }
-    (a + b + c).gt_rat = (a + (b + c)).gt_rat
+    Real.ext(a + b + c, a + (b + c))
 }
 
 theorem gt_imp_not_lte(a: Real, b: Real) {

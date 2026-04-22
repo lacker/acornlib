@@ -55,7 +55,15 @@ let fs_difference[T](a: FiniteSet[T], b: FiniteSet[T]) -> result: FiniteSet[T] s
     FiniteSet.new(a.underlying_set.difference(b.underlying_set)) = Option.some(result)
 }
 
+/// Finite set extensionality reduces equality to equality of the underlying sets.
+theorem finite_set_ext[T](a: FiniteSet[T], b: FiniteSet[T]) {
+    a.underlying_set = b.underlying_set implies a = b
+}
+
 attributes FiniteSet[T] {
+    /// Finite set extensionality from equality of the underlying sets.
+    let ext = finite_set_ext[T]
+
     /// Access the underlying set.
     define as_set(self) -> Set[T] {
         self.underlying_set

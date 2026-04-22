@@ -61,6 +61,20 @@ structure Subgroup[G: Group] {
     subgroup_constraint(contains)
 }
 
+/// Subgroup extensionality: two subgroups are equal when they have the same elements.
+theorem subgroup_ext[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    (forall(x: G) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: G) { a.contains(x) = b.contains(x) } {
+        a.contains = b.contains
+    }
+}
+
+attributes Subgroup[G: Group] {
+    /// Subgroup extensionality from pointwise equality of membership.
+    let ext = subgroup_ext[G]
+}
+
 /// The trivial subgroup containing only the identity element.
 let identity_subgroup[G: Group]: Subgroup[G] satisfy {
     Subgroup.new(is_identity[G]) = Option.some(identity_subgroup)
