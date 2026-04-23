@@ -613,6 +613,47 @@ theorem set_image_monotone[T, U](a: Set[T], b: Set[T], f: T -> U) {
     }
 }
 
+/// Image under a composition is iterated image.
+theorem set_image_compose[A, B, C](s: Set[A], g: A -> B, f: B -> C) {
+    set_image(set_image(s, g), f) = set_image(s, compose(f, g))
+} by {
+    let u = set_image(set_image(s, g), f)
+    let v = set_image(s, compose(f, g))
+    forall(y: C) {
+        if u.contains(y) {
+            set_image_contains_witness(set_image(s, g), f, y)
+            let z: B satisfy {
+                set_image(s, g).contains(z) and y = f(z)
+            }
+            set_image_contains_witness(s, g, z)
+            let x: A satisfy {
+                s.contains(x) and z = g(x)
+            }
+            z = g(x)
+            y = f(g(x))
+            compose(f, g, x) = f(g(x))
+            y = compose(f, g, x)
+            image_contains(compose(f, g), s, y)
+            v.contains(y)
+        }
+        if v.contains(y) {
+            set_image_contains_witness(s, compose(f, g), y)
+            let x: A satisfy {
+                s.contains(x) and y = compose(f, g, x)
+            }
+            compose(f, g, x) = f(g(x))
+            y = f(g(x))
+            maps_into_set_image(s, g, x)
+            set_image(s, g).contains(g(x))
+            maps_into_set_image(set_image(s, g), f, g(x))
+            u.contains(f(g(x)))
+            u.contains(y)
+        }
+        u.contains(y) = v.contains(y)
+    }
+    set_ext(u, v)
+}
+
 // Difference theorems
 // Basic properties of set difference
 /// Membership in a difference is membership in the left set together with non-membership in the right set.
@@ -1020,6 +1061,92 @@ theorem set_image_intersection_of_injective[T, U](a: Set[T], b: Set[T], f: T -> 
         set_image(a, f).intersection(set_image(b, f)).subset(set_image(a.intersection(b), f))
         double_inclusion(set_image(a.intersection(b), f), set_image(a, f).intersection(set_image(b, f)))
         set_image(a.intersection(b), f) = set_image(a, f).intersection(set_image(b, f))
+    }
+}
+
+/// Under injectivity, the image of a difference is contained in the difference of the images.
+theorem set_image_difference_subset_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    (forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 })
+    implies
+    set_image(a.difference(b), f).subset(set_image(a, f).difference(set_image(b, f)))
+} by {
+    if forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 } {
+        forall(y: U) {
+            if set_image(a.difference(b), f).contains(y) {
+                set_image_contains_witness(a.difference(b), f, y)
+                let x: T satisfy {
+                    a.difference(b).contains(x) and y = f(x)
+                }
+                difference_contains_eq(a, b, x)
+                a.contains(x)
+                not b.contains(x)
+                maps_into_set_image(a, f, x)
+                set_image(a, f).contains(f(x))
+                set_image(a, f).contains(y)
+                if set_image(b, f).contains(y) {
+                    set_image_contains_witness(b, f, y)
+                    let xb: T satisfy {
+                        b.contains(xb) and y = f(xb)
+                    }
+                    y = f(x)
+                    y = f(xb)
+                    f(x) = f(xb)
+                    x = xb
+                    b.contains(x)
+                    false
+                }
+                difference_contains_eq(set_image(a, f), set_image(b, f), y)
+                set_image(a, f).difference(set_image(b, f)).contains(y)
+            }
+        }
+    }
+}
+
+/// Under injectivity, the difference of the images comes from the image of the difference.
+theorem set_image_difference_reverse_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    (forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 })
+    implies
+    set_image(a, f).difference(set_image(b, f)).subset(set_image(a.difference(b), f))
+} by {
+    if forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 } {
+        forall(y: U) {
+            if set_image(a, f).difference(set_image(b, f)).contains(y) {
+                difference_contains_eq(set_image(a, f), set_image(b, f), y)
+                set_image(a, f).contains(y)
+                not set_image(b, f).contains(y)
+                set_image_contains_witness(a, f, y)
+                let x: T satisfy {
+                    a.contains(x) and y = f(x)
+                }
+                if b.contains(x) {
+                    maps_into_set_image(b, f, x)
+                    set_image(b, f).contains(f(x))
+                    set_image(b, f).contains(y)
+                    false
+                }
+                difference_contains_of_membership(a, b, x)
+                a.difference(b).contains(x)
+                maps_into_set_image(a.difference(b), f, x)
+                set_image(a.difference(b), f).contains(f(x))
+                set_image(a.difference(b), f).contains(y)
+            }
+        }
+    }
+}
+
+/// Under injectivity, the image of a difference is the difference of the images.
+theorem set_image_difference_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    (forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 })
+    implies
+    set_image(a.difference(b), f) = set_image(a, f).difference(set_image(b, f))
+} by {
+    if forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 } {
+        set_image_difference_subset_of_injective(a, b, f)
+        set_image_difference_reverse_of_injective(a, b, f)
+        set_image(a.difference(b), f).subset(set_image(a, f).difference(set_image(b, f)))
+        set_image(a, f).difference(set_image(b, f)).subset(set_image(a.difference(b), f))
+        double_inclusion(set_image(a.difference(b), f), set_image(a, f).difference(set_image(b, f)))
+        set_image(a.difference(b), f) = set_image(a, f).difference(set_image(b, f))
     }
 }
 
