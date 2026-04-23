@@ -1,6 +1,6 @@
 from list import List
 from nat import Nat
-from util import compose
+from util import compose, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
 
 /// Sets with elements of type `K` are defined as Boolean functions over `K`
 structure Set[K] {
@@ -268,6 +268,21 @@ theorem universal_set_contains_eq[K](x: K) {
 } by {
     not constant_false(x)
     negate_fun(constant_false[K], x)
+}
+
+/// True if a natural number lies below a given bound.
+define nat_lt_fun(bound: Nat, n: Nat) -> Bool {
+    n < bound
+}
+
+/// The initial segment `{n : Nat | n < bound}`.
+define nat_lt_set(bound: Nat) -> Set[Nat] {
+    Set[Nat].new(nat_lt_fun(bound))
+}
+
+/// Membership in `nat_lt_set(bound)` is the inequality `n < bound`.
+theorem nat_lt_set_contains_eq(bound: Nat, n: Nat) {
+    nat_lt_set(bound).contains(n) = (n < bound)
 }
 
 // Subsets
@@ -654,6 +669,177 @@ theorem set_image_compose[A, B, C](s: Set[A], g: A -> B, f: B -> C) {
     set_ext(u, v)
 }
 
+/// Every set is contained in the preimage of its image.
+theorem subset_set_preimage_image[T, U](s: Set[T], f: T -> U) {
+    s.subset(set_preimage(f, set_image(s, f)))
+} by {
+    forall(x: T) {
+        if s.contains(x) {
+            maps_into_set_image(s, f, x)
+            set_image(s, f).contains(f(x))
+            set_preimage_contains_eq(f, set_image(s, f), x)
+            set_preimage(f, set_image(s, f)).contains(x)
+        }
+    }
+}
+
+/// Under injectivity, taking preimage after image recovers the original set.
+theorem set_preimage_image_of_injective[T, U](s: Set[T], f: T -> U) {
+    is_injective_fn(f) implies set_preimage(f, set_image(s, f)) = s
+} by {
+    let u = set_preimage(f, set_image(s, f))
+    let v = s
+    if is_injective_fn(f) {
+        subset_set_preimage_image(s, f)
+        s.subset(u)
+        forall(x: T) {
+            if u.contains(x) {
+                set_preimage_contains_eq(f, set_image(s, f), x)
+                set_image(s, f).contains(f(x))
+                set_image_contains_witness(s, f, f(x))
+                let x2: T satisfy {
+                    s.contains(x2) and f(x) = f(x2)
+                }
+                injective_fn_eq(f, x, x2)
+                x = x2
+                s.contains(x)
+            }
+        }
+        u.subset(v)
+        double_inclusion(u, v)
+        u = v
+    }
+}
+
+/// The image of a preimage is contained in the target set.
+theorem set_image_preimage_subset[T, U](s: Set[U], f: T -> U) {
+    set_image(set_preimage(f, s), f).subset(s)
+} by {
+    forall(y: U) {
+        if set_image(set_preimage(f, s), f).contains(y) {
+            set_image_contains_witness(set_preimage(f, s), f, y)
+            let x: T satisfy {
+                set_preimage(f, s).contains(x) and y = f(x)
+            }
+            set_preimage_contains_eq(f, s, x)
+            s.contains(f(x))
+            s.contains(y)
+        }
+    }
+}
+
+/// Under surjectivity, taking image after preimage recovers the original set.
+theorem set_image_preimage_of_surjective[T, U](s: Set[U], f: T -> U) {
+    is_surjective_fn(f) implies set_image(set_preimage(f, s), f) = s
+} by {
+    let u = set_image(set_preimage(f, s), f)
+    let v = s
+    if is_surjective_fn(f) {
+        set_image_preimage_subset(s, f)
+        u.subset(v)
+        forall(y: U) {
+            if s.contains(y) {
+                surjective_fn_has_preimage(f, y)
+                let x: T satisfy {
+                    f(x) = y
+                }
+                set_preimage_contains_eq(f, s, x)
+                set_preimage(f, s).contains(x)
+                maps_into_set_image(set_preimage(f, s), f, x)
+                u.contains(f(x))
+                u.contains(y)
+            }
+        }
+        v.subset(u)
+        double_inclusion(u, v)
+        u = v
+    }
+}
+
+/// Under injectivity, image inclusion reflects to source inclusion.
+theorem set_image_subset_imp_subset_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    is_injective_fn(f) and set_image(a, f).subset(set_image(b, f)) implies a.subset(b)
+} by {
+    let u = set_image(a, f)
+    let v = set_image(b, f)
+    if is_injective_fn(f) and set_image(a, f).subset(set_image(b, f)) {
+        if u.subset(v) {
+            forall(x: T) {
+                if a.contains(x) {
+                    maps_into_set_image(a, f, x)
+                    u.contains(f(x))
+                    v.contains(f(x))
+                    set_image_contains_witness(b, f, f(x))
+                    let x2: T satisfy {
+                        b.contains(x2) and f(x) = f(x2)
+                    }
+                    injective_fn_eq(f, x, x2)
+                    x = x2
+                    b.contains(x)
+                }
+            }
+        }
+    }
+}
+
+/// Under injectivity, equal images come from equal source sets.
+theorem set_image_eq_imp_eq_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    is_injective_fn(f) and set_image(a, f) = set_image(b, f) implies a = b
+} by {
+    if is_injective_fn(f) and set_image(a, f) = set_image(b, f) {
+        set_image(a, f).subset(set_image(b, f))
+        set_image_subset_imp_subset_of_injective(a, b, f)
+        a.subset(b)
+        set_image(b, f).subset(set_image(a, f))
+        set_image_subset_imp_subset_of_injective(b, a, f)
+        b.subset(a)
+        double_inclusion(a, b)
+        a = b
+    }
+}
+
+/// Under surjectivity, preimage inclusion reflects to target inclusion.
+theorem set_preimage_subset_imp_subset_of_surjective[T, U](a: Set[U], b: Set[U], f: T -> U) {
+    is_surjective_fn(f) and set_preimage(f, a).subset(set_preimage(f, b)) implies a.subset(b)
+} by {
+    let u = set_preimage(f, a)
+    let v = set_preimage(f, b)
+    if is_surjective_fn(f) and set_preimage(f, a).subset(set_preimage(f, b)) {
+        if u.subset(v) {
+            forall(y: U) {
+                if a.contains(y) {
+                    surjective_fn_has_preimage(f, y)
+                    let x: T satisfy {
+                        f(x) = y
+                    }
+                    set_preimage_contains_eq(f, a, x)
+                    u.contains(x)
+                    v.contains(x)
+                    set_preimage_contains_eq(f, b, x)
+                    b.contains(f(x))
+                    b.contains(y)
+                }
+            }
+        }
+    }
+}
+
+/// Under surjectivity, equal preimages come from equal target sets.
+theorem set_preimage_eq_imp_eq_of_surjective[T, U](a: Set[U], b: Set[U], f: T -> U) {
+    is_surjective_fn(f) and set_preimage(f, a) = set_preimage(f, b) implies a = b
+} by {
+    if is_surjective_fn(f) and set_preimage(f, a) = set_preimage(f, b) {
+        set_preimage(f, a).subset(set_preimage(f, b))
+        set_preimage_subset_imp_subset_of_surjective(a, b, f)
+        a.subset(b)
+        set_preimage(f, b).subset(set_preimage(f, a))
+        set_preimage_subset_imp_subset_of_surjective(b, a, f)
+        b.subset(a)
+        double_inclusion(a, b)
+        a = b
+    }
+}
+
 // Difference theorems
 // Basic properties of set difference
 /// Membership in a difference is membership in the left set together with non-membership in the right set.
@@ -935,6 +1121,44 @@ theorem union_contains_eq[K](a: Set[K], b: Set[K], x: K) {
     a.union(b).contains(x) = (a.contains(x) or b.contains(x))
 }
 
+/// The successor initial segment is the previous one together with its endpoint.
+theorem nat_lt_set_suc_eq_union(bound: Nat) {
+    nat_lt_set(bound.suc) = nat_lt_set(bound).union(Set[Nat].singleton(bound))
+} by {
+    let u = nat_lt_set(bound.suc)
+    let v = nat_lt_set(bound).union(Set[Nat].singleton(bound))
+    forall(n: Nat) {
+        if u.contains(n) {
+            nat_lt_set_contains_eq(bound.suc, n)
+            union_contains_eq(nat_lt_set(bound), Set[Nat].singleton(bound), n)
+            if n = bound {
+                singleton_contains_eq[Nat](bound, n)
+                v.contains(n)
+            } else {
+                n < bound
+                nat_lt_set_contains_eq(bound, n)
+                nat_lt_set(bound).contains(n)
+                v.contains(n)
+            }
+        }
+        if v.contains(n) {
+            union_contains_eq(nat_lt_set(bound), Set[Nat].singleton(bound), n)
+            if nat_lt_set(bound).contains(n) {
+                nat_lt_set_contains_eq(bound, n)
+                nat_lt_set_contains_eq(bound.suc, n)
+                u.contains(n)
+            } else {
+                singleton_contains_eq[Nat](bound, n)
+                n = bound
+                nat_lt_set_contains_eq(bound.suc, n)
+                u.contains(n)
+            }
+        }
+        u.contains(n) = v.contains(n)
+    }
+    set_ext(u, v)
+}
+
 /// Membership in an intersection is Boolean conjunction of membership.
 theorem intersection_contains_eq[K](a: Set[K], b: Set[K], x: K) {
     a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
@@ -1147,6 +1371,115 @@ theorem set_image_difference_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U)
         set_image(a, f).difference(set_image(b, f)).subset(set_image(a.difference(b), f))
         double_inclusion(set_image(a.difference(b), f), set_image(a, f).difference(set_image(b, f)))
         set_image(a.difference(b), f) = set_image(a, f).difference(set_image(b, f))
+    }
+}
+
+/// A surjective map hits every element of the codomain from the universal set.
+theorem set_image_universal_contains_of_surjective[T, U](f: T -> U, y: U) {
+    is_surjective_fn(f) implies set_image(Set[T].universal_set, f).contains(y)
+} by {
+    if is_surjective_fn(f) {
+        surjective_fn_has_preimage(f, y)
+        let x: T satisfy {
+            f(x) = y
+        }
+        universal_set_contains_eq[T](x)
+        Set[T].universal_set.contains(x)
+        maps_into_set_image(Set[T].universal_set, f, x)
+        set_image(Set[T].universal_set, f).contains(f(x))
+        set_image(Set[T].universal_set, f).contains(y)
+    }
+}
+
+/// A surjective map sends the universal set to the universal set.
+theorem set_image_universal_of_surjective[T, U](f: T -> U) {
+    is_surjective_fn(f) implies set_image(Set[T].universal_set, f) = Set[U].universal_set
+} by {
+    if is_surjective_fn(f) {
+        set_preimage_universal(f)
+        set_image_preimage_of_surjective(Set[U].universal_set, f)
+        set_image(set_preimage(f, Set[U].universal_set), f) = Set[U].universal_set
+        set_image(Set[T].universal_set, f) = Set[U].universal_set
+    }
+}
+
+/// A bijection sends the image of a complement into the complement of the image.
+theorem set_image_compl_subset_of_bijection[T, U](s: Set[T], f: T -> U) {
+    is_bijection_fn(f) implies set_image(s.c, f).subset(set_image(s, f).c)
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        forall(y: U) {
+            if set_image(s.c, f).contains(y) {
+                set_image_contains_witness(s.c, f, y)
+                let x1: T satisfy {
+                    s.c.contains(x1) and y = f(x1)
+                }
+                compl_contains_eq(s, x1)
+                not s.contains(x1)
+                if set_image(s, f).contains(y) {
+                    set_image_contains_witness(s, f, y)
+                    let x2: T satisfy {
+                        s.contains(x2) and y = f(x2)
+                    }
+                    y = f(x1)
+                    y = f(x2)
+                    f(x1) = f(x2)
+                    injective_fn_eq(f, x1, x2)
+                    x1 = x2
+                    s.contains(x1)
+                    false
+                }
+                compl_contains_eq(set_image(s, f), y)
+                set_image(s, f).c.contains(y)
+            }
+        }
+    }
+}
+
+/// A bijection sends the complement of the image back into the image of the complement.
+theorem set_image_compl_reverse_of_bijection[T, U](s: Set[T], f: T -> U) {
+    is_bijection_fn(f) implies set_image(s, f).c.subset(set_image(s.c, f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(y: U) {
+            if set_image(s, f).c.contains(y) {
+                compl_contains_eq(set_image(s, f), y)
+                not set_image(s, f).contains(y)
+                surjective_fn_has_preimage(f, y)
+                let x: T satisfy {
+                    f(x) = y
+                }
+                if s.contains(x) {
+                    maps_into_set_image(s, f, x)
+                    set_image(s, f).contains(f(x))
+                    set_image(s, f).contains(y)
+                    false
+                }
+                compl_contains_eq(s, x)
+                s.c.contains(x)
+                maps_into_set_image(s.c, f, x)
+                set_image(s.c, f).contains(f(x))
+                set_image(s.c, f).contains(y)
+            }
+        }
+    }
+}
+
+/// A bijection sends complements to complements.
+theorem set_image_compl_of_bijection[T, U](s: Set[T], f: T -> U) {
+    is_bijection_fn(f) implies set_image(s.c, f) = set_image(s, f).c
+} by {
+    if is_bijection_fn(f) {
+        set_image_compl_subset_of_bijection(s, f)
+        set_image_compl_reverse_of_bijection(s, f)
+        set_image(s.c, f).subset(set_image(s, f).c)
+        set_image(s, f).c.subset(set_image(s.c, f))
+        double_inclusion(set_image(s.c, f), set_image(s, f).c)
+        set_image(s.c, f) = set_image(s, f).c
     }
 }
 

@@ -107,6 +107,59 @@ define is_equivalence[T](f: (T, T) -> Bool) -> Bool {
     is_reflexive(f) and is_symmetric(f) and is_transitive(f)
 }
 
+/// True if f is an injective function from T to U.
+define is_injective_fn[T, U](f: T -> U) -> Bool {
+    forall(x: T, y: T) {
+        f(x) = f(y) implies x = y
+    }
+}
+
+/// True if f is a surjective function from T onto U.
+define is_surjective_fn[T, U](f: T -> U) -> Bool {
+    forall(y: U) {
+        exists(x: T) {
+            f(x) = y
+        }
+    }
+}
+
+/// True if f is a bijection from T to U.
+define is_bijection_fn[T, U](f: T -> U) -> Bool {
+    is_injective_fn(f) and is_surjective_fn(f)
+}
+
+/// A bijection is injective.
+theorem bijection_fn_is_injective[T, U](f: T -> U) {
+    is_bijection_fn(f) implies is_injective_fn(f)
+}
+
+/// A bijection is surjective.
+theorem bijection_fn_is_surjective[T, U](f: T -> U) {
+    is_bijection_fn(f) implies is_surjective_fn(f)
+}
+
+/// Injectivity turns equal outputs into equal inputs.
+theorem injective_fn_eq[T, U](f: T -> U, x1: T, x2: T) {
+    is_injective_fn(f) and f(x1) = f(x2) implies x1 = x2
+} by {
+    if is_injective_fn(f) and f(x1) = f(x2) {
+        x1 = x2
+    }
+}
+
+/// Surjectivity provides a preimage for every codomain point.
+theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
+    is_surjective_fn(f) implies exists(x: T) {
+        f(x) = y
+    }
+} by {
+    if is_surjective_fn(f) {
+        exists(x: T) {
+            f(x) = y
+        }
+    }
+}
+
 /// True if f is an injective (one-to-one) function.
 define is_injective[T](f: T -> T) -> Bool {
     forall(x: T, y: T) {

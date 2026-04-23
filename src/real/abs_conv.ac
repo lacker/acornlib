@@ -10,7 +10,7 @@ from real.real_ring import mul_le_mul_nonneg
 from real.limits import vanishes, abs_seq
 from real.real_base import add_assoc, add_neg_eq_zero, add_zero_left, add_zero_right, neg_neg, sub_moves_sides, abs_neg, lte_trans, lte_lt_trans, lt_lte_trans, lt_trans, lt_add_pos, not_lt_imp_gte
 from real.prod_seq import prod_seq
-from set import Set, is_decreasing, seq_intersection, decreasing_seq_transitive, seq_union, seq_complement, set_ext
+from set import Set, is_decreasing, seq_intersection, decreasing_seq_transitive, seq_union, seq_complement, set_ext, nat_lt_set, nat_lt_set_contains_eq, nat_lt_set_suc_eq_union, set_image, set_image_union, set_image_singleton, set_image_contains_witness, maps_into_set_image
 
 numerals Real
 
@@ -1609,6 +1609,39 @@ define image_of_range(p: Nat -> Nat, k: Nat) -> Set[Nat] {
     Set[Nat].new(in_image_of_range(p, k))
 }
 
+/// The image of a finite initial segment agrees with the generic set image construction.
+theorem image_of_range_eq_set_image(p: Nat -> Nat, k: Nat) {
+    image_of_range(p, k) = set_image(nat_lt_set(k), p)
+} by {
+    let u = image_of_range(p, k)
+    let v = set_image(nat_lt_set(k), p)
+    forall(n: Nat) {
+        if u.contains(n) {
+            in_image_of_range(p, k, n)
+            let i: Nat satisfy {
+                i < k and p(i) = n
+            }
+            nat_lt_set_contains_eq(k, i)
+            nat_lt_set(k).contains(i)
+            maps_into_set_image(nat_lt_set(k), p, i)
+            v.contains(p(i))
+            v.contains(n)
+        }
+        if v.contains(n) {
+            set_image_contains_witness(nat_lt_set(k), p, n)
+            let i: Nat satisfy {
+                nat_lt_set(k).contains(i) and n = p(i)
+            }
+            nat_lt_set_contains_eq(k, i)
+            i < k
+            in_image_of_range(p, k, n)
+            u.contains(n)
+        }
+        u.contains(n) = v.contains(n)
+    }
+    set_ext(u, v)
+}
+
 /// If p is injective, the image sequence is increasing.
 theorem image_of_range_increasing(p: Nat -> Nat) {
     is_injective(p)
@@ -1936,53 +1969,12 @@ theorem image_disjoint_from_next(p: Nat -> Nat, m: Nat) {
 theorem image_range_suc_eq_union(p: Nat -> Nat, m: Nat) {
     image_of_range(p, m.suc) = image_of_range(p, m).union(Set[Nat].singleton(p(m)))
 } by {
-    forall(n: Nat) {
-        // Direction 1: image_of_range(p, m.suc).contains(n) → union.contains(n)
-        if image_of_range(p, m.suc).contains(n) {
-            in_image_of_range(p, m.suc, n)
-            let i: Nat satisfy {
-                i < m.suc and p(i) = n
-            }
-            if i = m {
-                n = p(i)
-                n = p(m)
-                Set[Nat].singleton(p(m)).contains(n)
-                image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains(n)
-            } else {
-                i < m
-                p(i) = n
-                in_image_of_range(p, m, n)
-                image_of_range(p, m).contains(n)
-                image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains(n)
-            }
-        }
-
-        // Direction 2: union.contains(n) → image_of_range(p, m.suc).contains(n)
-        if image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains(n) {
-            if image_of_range(p, m).contains(n) {
-                in_image_of_range(p, m, n)
-                let i: Nat satisfy {
-                    i < m and p(i) = n
-                }
-                i < m.suc
-                p(i) = n
-                in_image_of_range(p, m.suc, n)
-                image_of_range(p, m.suc).contains(n)
-            } else {
-                Set[Nat].singleton(p(m)).contains(n)
-                n = p(m)
-                m < m.suc
-                p(m) = n
-                in_image_of_range(p, m.suc, n)
-                image_of_range(p, m.suc).contains(n)
-            }
-        }
-
-        // Both directions proven
-        image_of_range(p, m.suc).contains(n) = image_of_range(p, m).union(Set[Nat].singleton(p(m))).contains(n)
-    }
-
-    set_ext(image_of_range(p, m.suc), image_of_range(p, m).union(Set[Nat].singleton(p(m))))
+    image_of_range_eq_set_image(p, m.suc)
+    nat_lt_set_suc_eq_union(m)
+    set_image_union(nat_lt_set(m), Set[Nat].singleton(m), p)
+    set_image_singleton(m, p)
+    image_of_range_eq_set_image(p, m)
+    image_of_range(p, m.suc) = image_of_range(p, m).union(Set[Nat].singleton(p(m)))
 }
 
 theorem partial_compose_eq_mask_sum(a: Nat -> Real, p: Nat -> Nat, k: Nat) {

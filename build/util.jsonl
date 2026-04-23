@@ -1,10 +1,16 @@
 {"goal":"p(x) = q(x)","proof":[]}
 {"goal":"predicate_extensionality","proof":[]}
-{"goal":"f(x) = g(x)","proof":["function(x0: T) { g(x0) = f(x0) }(x)"]}
+{"goal":"f(x) = g(x)","proof":[]}
 {"goal":"function_extensionality","proof":[]}
-{"goal":"f(x, y) = g(x, y)","proof":["function(x0: T, x1: U) { g(x0, x1) = f(x0, x1) }(x, y)"]}
+{"goal":"f(x, y) = g(x, y)","proof":[]}
 {"goal":"binary_function_extensionality","proof":[]}
 {"goal":"constant_is_constant","proof":["function[T0, T1](x0: T1 -> T0) { not exists(k0: T0) { forall(x1: T1) { x0(x1) = k0 } } or is_constant[T1, T0](x0) }[U, T](constant[T, U](u))","function[T0, T1](x0: T0 -> T1, x1: T1) { exists(k0: T0) { x0(k0) != x1 } or is_constant[T0, T1](x0) }[T, U](constant[T, U](u), u)","function(x0: U) { exists(k0: T) { constant(u, k0) != x0 } }(u)","let w1: T satisfy { constant(u, w1) != u }","let w0(arg0: U) -> w0_result: T satisfy { constant(u, w0_result) != arg0 }","function(x0: U) { constant(u, w0(x0)) != x0 }(u)","function[T0, T1](x0: T1, x1: T0) { constant[T0, T1](x0, x1) = x0 }[T, U](u, w0(u))"]}
 {"goal":"exists(k0: T) { true }","proof":[]}
 {"goal":"constant[T, U](u)(x) = f(x)","proof":["function[T0, T1](x0: T0 -> T1) { not is_constant[T0, T1](x0) or exists(k0: T1) { forall(x1: T0) { x0(x1) = k0 } } }[T, U](f)","function[T0, T1](x0: T1, x1: T0) { constant[T0, T1](x0, x1) = x0 }[T, U](u, x)","f(x) != u","f(x) != f(t)","exists(k0: U) { forall(x0: T) { f(x0) = k0 } }","let w0: U satisfy { forall(x1: T) { f(x1) = w0 } }","function(x0: T) { w0 = f(x0) }(x)","function(x0: T) { w0 = f(x0) }(t)"]}
 {"goal":"is_constant_imp_eq_constant","proof":["function(x0: U) { not constant[T, U](x0) = f }(u)"]}
+{"goal":"bijection_fn_is_injective","proof":["function[T0, T1](x0: T0 -> T1) { (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_bijection_fn[T0, T1](x0) }[T, U](f)","function[T0, T1](x0: T0 -> T1) { not is_bijection_fn[T0, T1](x0) or (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) }[T, U](f)","function[T0, T1](x0: T0 -> T1) { not is_bijection_fn[T0, T1](x0) or is_injective_fn[T0, T1](x0) }[T, U](f)"]}
+{"goal":"bijection_fn_is_surjective","proof":["function[T0, T1](x0: T0 -> T1) { (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_bijection_fn[T0, T1](x0) }[T, U](f)","function[T0, T1](x0: T0 -> T1) { not is_bijection_fn[T0, T1](x0) or (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) }[T, U](f)","function[T0, T1](x0: T0 -> T1) { not is_bijection_fn[T0, T1](x0) or is_surjective_fn[T0, T1](x0) }[T, U](f)"]}
+{"goal":"x1 = x2","proof":["function[T0, T1](x0: T0 -> T1) { forall(x3: T0, x4: T0) { x0(x4) != x0(x3) or x4 = x3 } = is_injective_fn[T0, T1](x0) }[T, U](f)","f(x2) = f(x1)","(forall(x0: T, x3: T) { f(x3) != f(x0) or x3 = x0 } and f(x1) = f(x2))","function(x0: T) { forall(x3: T) { f(x0) != f(x3) or x0 = x3 } = true }(x1)","function(x0: T, x3: T) { not (f(x0) = f(x3) and x0 != x3) }(x1, x2)","function(x0: T, x3: T) { f(x0) != f(x3) or x0 = x3 }(x1, x2)"]}
+{"goal":"injective_fn_eq","proof":["not is_injective_fn[T, U](f) or f(x2) != f(x1)","f(x2) = f(x1)","is_injective_fn[T, U](f)","not is_injective_fn[T, U](f)"]}
+{"goal":"exists(k0: T) { f(k0) = y }","proof":["function[T0, T1](x0: T1 -> T0) { forall(x1: T0) { exists(k0: T1) { x0(k0) = x1 } } = is_surjective_fn[T1, T0](x0) }[U, T](f)","function[T0, T1](x0: T0 -> T1) { not is_surjective_fn[T0, T1](x0) or forall(x1: T1) { exists(k0: T0) { x0(k0) = x1 } } = true }[T, U](f)","function[T0, T1](x0: T0 -> T1, x1: T1) { not is_surjective_fn[T0, T1](x0) or exists(k0: T0) { x0(k0) = x1 } }[T, U](f, y)"]}
+{"goal":"surjective_fn_has_preimage","proof":["not is_surjective_fn[T, U](f)"]}
