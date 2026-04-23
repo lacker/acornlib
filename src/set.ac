@@ -973,6 +973,40 @@ theorem set_image_intersection_subset[T, U](a: Set[T], b: Set[T], f: T -> U) {
     }
 }
 
+/// Under injectivity, the intersection of the images comes from the image of the intersection.
+theorem set_image_intersection_reverse_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    (forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 })
+    implies
+    set_image(a, f).intersection(set_image(b, f)).subset(set_image(a.intersection(b), f))
+} by {
+    if forall(x1: T, x2: T) { f(x1) = f(x2) implies x1 = x2 } {
+        forall(y: U) {
+            if set_image(a, f).intersection(set_image(b, f)).contains(y) {
+                intersection_contains_eq(set_image(a, f), set_image(b, f), y)
+                set_image(a, f).contains(y)
+                set_image_contains_witness(a, f, y)
+                let x1: T satisfy {
+                    a.contains(x1) and y = f(x1)
+                }
+                set_image(b, f).contains(y)
+                set_image_contains_witness(b, f, y)
+                let x2: T satisfy {
+                    b.contains(x2) and y = f(x2)
+                }
+                y = f(x1)
+                y = f(x2)
+                f(x1) = f(x2)
+                x1 = x2
+                b.contains(x1)
+                intersection_contains_eq(a, b, x1)
+                a.intersection(b).contains(x1)
+                image_contains(f, a.intersection(b), y)
+                set_image(a.intersection(b), f).contains(y)
+            }
+        }
+    }
+}
+
 /// Preimage distributes over union.
 theorem set_preimage_union[T, U](f: T -> U, a: Set[U], b: Set[U]) {
     set_preimage(f, a.union(b)) = set_preimage(f, a).union(set_preimage(f, b))

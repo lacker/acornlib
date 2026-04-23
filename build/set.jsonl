@@ -230,6 +230,19 @@
 {"goal":"set_image[T, U](b, f).contains(y)","proof":[]}
 {"goal":"set_image[T, U](a, f).intersection(set_image[T, U](b, f)).contains(y)","proof":[]}
 {"goal":"set_image_intersection_subset","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[U](set_image[T, U](a ∩ b, f), set_image[T, U](a, f) ∩ set_image[T, U](b, f))","let w0: U satisfy { w0 ∈ set_image[T, U](a ∩ b, f) and not w0 ∈ set_image[T, U](a, f) ∩ set_image[T, U](b, f) }","function(x0: U) { not x0 ∈ set_image[T, U](a ∩ b, f) or x0 ∈ set_image[T, U](a, f) ∩ set_image[T, U](b, f) }(w0)"]}
+{"goal":"set_image[T, U](a, f).contains(y)","proof":[]}
+{"goal":"exists(k0: T) { a.contains(k0) and y = f(k0) }","proof":[]}
+{"goal":"set_image[T, U](b, f).contains(y)","proof":[]}
+{"goal":"exists(k0: T) { b.contains(k0) and y = f(k0) }","proof":[]}
+{"goal":"y = f(x1)","proof":[]}
+{"goal":"y = f(x2)","proof":[]}
+{"goal":"f(x1) = f(x2)","proof":[]}
+{"goal":"x1 = x2","proof":["function(x0: T, x3: T) { f(x0) != f(x3) or x0 = x3 }(x1, x2)"]}
+{"goal":"b.contains(x1)","proof":[]}
+{"goal":"a.intersection(b).contains(x1)","proof":[]}
+{"goal":"image_contains[T, U](f, a.intersection(b), y)","proof":["function[T0, T2](x0: Set[T0], x3: T0 -> T2, x4: T2) { exists(k0: T0) { k0 ∈ x0 and x3(k0) = x4 } = image_contains[T0, T2](x3, x0, x4) }[T, U](a ∩ b, f, y)","not exists(k0: T) { k0 ∈ a ∩ b and f(k0) = y }","function(x0: T) { not (x0 ∈ a ∩ b and f(x0) = y) }(x1)"]}
+{"goal":"set_image[T, U](a.intersection(b), f).contains(y)","proof":["function[T0, T1](x0: Set[T1], x3: T1 -> T0, x4: T0) { x4 ∈ set_image[T1, T0](x0, x3) = image_contains[T1, T0](x3, x0, x4) }[U, T](a ∩ b, f, y)"]}
+{"goal":"set_image_intersection_reverse_of_injective","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[U](set_image[T, U](a, f) ∩ set_image[T, U](b, f), set_image[T, U](a ∩ b, f))","let w0: U satisfy { w0 ∈ set_image[T, U](a, f) ∩ set_image[T, U](b, f) and not w0 ∈ set_image[T, U](a ∩ b, f) }","let w1: T satisfy { exists(k0: T) { f(k0) = f(w1) and k0 != w1 } }","let w2: T satisfy { f(w2) = f(w1) and w2 != w1 }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w1, w2)"]}
 {"goal":"u.contains(x) = v.contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, a ∪ b, x)","function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, b, x)","function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, a, x)"]}
 {"goal":"set_preimage_union","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, a ∪ b))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, a) ∪ set_preimage[T, U](f, b))"]}
 {"goal":"u.contains(x) = v.contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, a ∩ b, x)","function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, b, x)","function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, a, x)"]}
