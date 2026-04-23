@@ -88,8 +88,9 @@ When an execution-mode task is completed:
 
 - remove the completed bullet from the active `todo.md`
 - if useful, add one or more new follow-up bullets that reflect the new frontier
-- if a subtopic file becomes empty, remove or collapse that branch in the parent notes
+- if a subtopic file becomes empty, delete that `todo.md` and remove the branch from the parent notes
 - keep parent indexes consistent with the remaining children
+- do not keep completed `todo.md` files around as archives
 
 If the task was only partially completed:
 
@@ -118,6 +119,7 @@ In execution mode, the notes are not enough by themselves. Always try to verify 
 - If a topic becomes too large for session-sized work, split it into subtopics before attempting the work itself.
 - When splitting a topic, make the parent `todo.md` point to the narrower subfolders.
 - Stop splitting when a single bullet is concrete enough to plausibly complete in one session.
+- When a `todo.md` is totally complete, remove the file and delete all references to it from parent notes instead of keeping a completed marker.
 
 ## Output
 
