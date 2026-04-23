@@ -6,6 +6,7 @@
 {"goal":"v(x, y) = relation_compose(relation_power[T](r, n), r, x, y)","proof":[]}
 {"goal":"u(x, y) = v(x, y)","proof":[]}
 {"goal":"relation_power_suc","proof":[]}
+{"goal":"relation_power_one","proof":[]}
 {"goal":"eq_relation(x, x)","proof":["function[T0](x0: T0, x1: T0) { eq_relation[T0](x0, x1) = (x0 = x1) }[T](x, x)"]}
 {"goal":"relation_power(r, Nat.zero, x, x)","proof":["function[T1](x0: Nat, x1: T1, x2: T1, x3: (T1, T1) -> Bool) { Nat.zero != x0 or eq_relation[T1](x1, x2) = relation_power[T1](x3, x0, x1, x2) }[T](Nat.zero, x, x, r)"]}
 {"goal":"relation_power_zero_self","proof":[]}
@@ -27,12 +28,110 @@
 {"goal":"exists(k0: Nat) { k0 = n.suc and relation_power(r, k0, x, y) }","proof":[]}
 {"goal":"relation_refl_trans_closure(r, x, y)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: Nat, x2: T0, x3: T0) { not relation_power[T0](x0, x1, x2, x3) or relation_refl_trans_closure[T0](x0, x2, x3) }[T](r, n.suc, x, y)"]}
 {"goal":"relation_trans_closure_subset_refl_trans_closure","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_trans_closure[T](r), relation_refl_trans_closure[T](r))","let w0: T satisfy { exists(k0: T) { relation_trans_closure(r, w0, k0) and not relation_refl_trans_closure(r, w0, k0) } }","let w1: T satisfy { relation_trans_closure(r, w0, w1) and not relation_refl_trans_closure(r, w0, w1) }","function(x0: T, x1: T) { not relation_trans_closure(r, x0, x1) or relation_refl_trans_closure(r, x0, x1) }(w0, w1)"]}
-{"goal":"relation_power_add_step_compose","proof":["relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k)) = relation_power[T](r, m + k)","function[T0](x0: (T0, T0) -> Bool, x1: Nat) { relation_compose[T0, T0, T0](relation_power[T0](x0, x1), x0) = relation_power[T0](x0, x1.suc) }[T](r, k)","relation_compose[T, T, T](relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k)), r) = relation_compose[T, T, T](relation_power[T](r, m), relation_compose[T, T, T](relation_power[T](r, k), r))","relation_compose[T, T, T](relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k)), r) != relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k.suc))","relation_compose[T, T, T](relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k)), r) = relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k.suc))"]}
-{"goal":"relation_power_add_step_power","proof":["relation_compose[T, T, T](relation_power[T](r, m + k), r) != relation_power[T](r, (m + k).suc)","relation_compose[T, T, T](relation_power[T](r, m + k), r) = relation_power[T](r, (m + k).suc)"]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
+{"goal":"relation_power(r, Nat.zero, x, y)","proof":[]}
+{"goal":"eq_relation(x, y)","proof":[]}
+{"goal":"exists(k0: Nat) { n = k0.suc }","proof":[]}
+{"goal":"relation_power(r, k.suc, x, y)","proof":[]}
+{"goal":"relation_trans_closure(r, x, y)","proof":[]}
+{"goal":"eq_relation(x, y) or relation_trans_closure(r, x, y)","proof":[]}
+{"goal":"relation_power(r, Nat.zero, x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure(r, x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure(r, x, y)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0.suc, x1, x2) } = relation_trans_closure[T0](x0, x1, x2) }[T](r, x, y)","function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, x, y)","not eq_relation(x, y)","relation_trans_closure(r, x, y)","not exists(k0: Nat) { relation_power(r, k0, x, y) }","let w0: Nat satisfy { relation_power(r, w0.suc, x, y) }","function(x0: Nat) { not relation_power(r, x0, x, y) }(w0.suc)"]}
+{"goal":"relation_refl_trans_closure_eq_eq_or_trans_closure","proof":[]}
+{"goal":"relation_power_add_step_compose","proof":["relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, k)) = relation_power[T](r, m + k)","function[T0](x0: (T0, T0) -> Bool, x1: Nat) { relation_compose[T0, T0, T0](relation_power[T0](x0, x1), x0) = relation_power[T0](x0, x1.suc) }[T](r, k)"]}
+{"goal":"relation_power_add_step_power","proof":[]}
 {"goal":"p(Nat.zero)","proof":["function(x0: Nat) { relation_power[T](r, m + x0) = relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, x0)) = p(x0) }(Nat.zero)"]}
 {"goal":"p(k.suc)","proof":["function(x0: Nat) { relation_power[T](r, m + x0) = relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, x0)) = p(x0) }(k)","function(x0: Nat) { relation_power[T](r, m + x0) = relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, x0)) = p(x0) }(k.suc)"]}
 {"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.zero) or forall(x2: Nat) { x0(x2) } = true }(p)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.zero) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not p(x0) or p(x0.suc) }(w0)"]}
 {"goal":"relation_power_add","proof":["function(x0: Nat) { relation_power[T](r, m + x0) = relation_compose[T, T, T](relation_power[T](r, m), relation_power[T](r, x0)) = p(x0) }(n)"]}
+{"goal":"exists(k0: T) { relation_power(r, n, x, k0) and r(k0, y) }","proof":[]}
+{"goal":"relation_power(s, n, x, z)","proof":[]}
+{"goal":"s(z, y)","proof":[]}
+{"goal":"relation_power(s, n.suc, x, y)","proof":[]}
+{"goal":"relation_power_monotone_step","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_power[T](r, n.suc), relation_power[T](s, n.suc))"]}
+{"goal":"eq_relation(x, y)","proof":[]}
+{"goal":"relation_power(s, Nat.zero, x, y)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, Nat.zero), relation_power[T](s, Nat.zero))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_power[T](r, Nat.zero), relation_power[T](s, Nat.zero))","let w0: T satisfy { exists(k0: T) { relation_power(r, Nat.zero, w0, k0) and not relation_power(s, Nat.zero, w0, k0) } }","let w1: T satisfy { relation_power(r, Nat.zero, w0, w1) and not relation_power(s, Nat.zero, w0, w1) }","function(x0: T, x1: T) { not relation_power(r, Nat.zero, x0, x1) or relation_power(s, Nat.zero, x0, x1) }(w0, w1)"]}
+{"goal":"p(Nat.zero)","proof":["function(x0: Nat) { (not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), relation_power[T](s, x0))) = p(x0) }(Nat.zero)"]}
+{"goal":"p(k)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k), relation_power[T](s, k))","proof":["function(x0: Nat) { (not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), relation_power[T](s, x0))) = p(x0) }(k)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k.suc), relation_power[T](s, k.suc))","proof":[]}
+{"goal":"p(k.suc)","proof":["function(x0: Nat) { (not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), relation_power[T](s, x0))) = p(x0) }(k)","function(x0: Nat) { (not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), relation_power[T](s, x0))) = p(x0) }(k.suc)"]}
+{"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.zero) or forall(x2: Nat) { x0(x2) } = true }(p)","p(Nat.zero)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.zero) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not relation_subset[T, T](r, s) or not p(x0) or p(x0.suc) }(w0)"]}
+{"goal":"relation_power_monotone","proof":["function(x0: Nat) { (not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), relation_power[T](s, x0))) = p(x0) }(n)"]}
+{"goal":"relation_power_suc_left","proof":[]}
+{"goal":"relation_power_converse_suc_compose","proof":["relation_compose[T, T, T](relation_power[T](r, k), r) = relation_power[T](r, k.suc)","relation_compose[T, T, T](relation_converse[T, T](r), relation_converse[T, T](relation_power[T](r, k))) = relation_converse[T, T](relation_compose[T, T, T](relation_power[T](r, k), r))","relation_compose[T, T, T](relation_converse[T, T](r), relation_converse[T, T](relation_power[T](r, k))) != relation_converse[T, T](relation_compose[T, T, T](relation_power[T](r, k), r))"]}
+{"goal":"relation_power_converse_suc_target","proof":[]}
+{"goal":"relation_power_converse_step","proof":["relation_converse[T, T](relation_power[T](r, k)) = relation_power[T](relation_converse[T, T](r), k)","function[T0](x0: (T0, T0) -> Bool, x1: Nat) { relation_compose[T0, T0, T0](x0, relation_power[T0](x0, x1)) = relation_power[T0](x0, x1.suc) }[T](relation_converse[T, T](r), k)","function[T0](x0: (T0, T0) -> Bool, x1: Nat) { relation_compose[T0, T0, T0](relation_converse[T0, T0](x0), relation_converse[T0, T0](relation_power[T0](x0, x1))) = relation_converse[T0, T0](relation_power[T0](x0, x1.suc)) }[T](r, k)"]}
+{"goal":"p(Nat.zero)","proof":["function(x0: Nat) { relation_converse[T, T](relation_power[T](r, x0)) = relation_power[T](relation_converse[T, T](r), x0) = p(x0) }(Nat.zero)"]}
+{"goal":"p(k.suc)","proof":["function(x0: Nat) { relation_converse[T, T](relation_power[T](r, x0)) = relation_power[T](relation_converse[T, T](r), x0) = p(x0) }(k)","function(x0: Nat) { relation_converse[T, T](relation_power[T](r, x0)) = relation_power[T](relation_converse[T, T](r), x0) = p(x0) }(k.suc)"]}
+{"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.zero) or forall(x2: Nat) { x0(x2) } = true }(p)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.zero) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not p(x0) or p(x0.suc) }(w0)"]}
+{"goal":"relation_power_converse","proof":["function(x0: Nat) { relation_converse[T, T](relation_power[T](r, x0)) = relation_power[T](relation_converse[T, T](r), x0) = p(x0) }(n)"]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n), relation_power[T](s, n))","proof":[]}
+{"goal":"relation_power(s, n, x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure(s, x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure_monotone","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_refl_trans_closure[T](r), relation_refl_trans_closure[T](s))"]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0.suc, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0.suc, x1, x2) } = relation_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n.suc), relation_power[T](s, n.suc))","proof":[]}
+{"goal":"relation_power(s, n.suc, x, y)","proof":[]}
+{"goal":"relation_trans_closure(s, x, y)","proof":[]}
+{"goal":"relation_trans_closure_monotone","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_trans_closure[T](r), relation_trans_closure[T](s))"]}
+{"goal":"exists(k0: Nat) { relation_power(relation_converse[T, T](r), k0, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](relation_converse[T, T](r), x, y)"]}
+{"goal":"relation_converse(relation_power[T](r, n), x, y)","proof":[]}
+{"goal":"relation_power(r, n, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](relation_power[T](r, n), x, y)"]}
+{"goal":"relation_refl_trans_closure(r, y, x)","proof":[]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0, y, x) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, y, x)"]}
+{"goal":"relation_converse(relation_power[T](r, n), x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](relation_power[T](r, n), x, y)"]}
+{"goal":"relation_power(relation_converse[T, T](r), n, x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure(relation_converse[T, T](r), x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure_converse","proof":[]}
+{"goal":"exists(k0: Nat) { relation_power(relation_converse[T, T](r), k0.suc, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0.suc, x1, x2) } = relation_trans_closure[T0](x0, x1, x2) }[T](relation_converse[T, T](r), x, y)"]}
+{"goal":"relation_converse(relation_power[T](r, n.suc), x, y)","proof":[]}
+{"goal":"relation_power(r, n.suc, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](relation_power[T](r, n.suc), x, y)"]}
+{"goal":"relation_trans_closure(r, y, x)","proof":[]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0.suc, y, x) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0.suc, x1, x2) } = relation_trans_closure[T0](x0, x1, x2) }[T](r, y, x)"]}
+{"goal":"relation_converse(relation_power[T](r, n.suc), x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](relation_power[T](r, n.suc), x, y)"]}
+{"goal":"relation_power(relation_converse[T, T](r), n.suc, x, y)","proof":[]}
+{"goal":"relation_trans_closure(relation_converse[T, T](r), x, y)","proof":[]}
+{"goal":"relation_trans_closure_converse","proof":[]}
+{"goal":"eq_relation(x, y)","proof":[]}
+{"goal":"s(x, y)","proof":["function[T0, T1, T5](x0: (T0, T1) -> Bool, x1: T0, x2: T1, x3: (T1, T5) -> Bool, x4: T5) { not x0(x1, x2) or not x3(x2, x4) or relation_compose[T0, T1, T5](x0, x3, x1, x4) }[T, T, T](eq_relation[T], x, y, s, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: T0, x2: T1) { relation_compose[T0, T0, T1](eq_relation[T0], x0, x1, x2) = x0(x1, x2) }[T, T](s, x, y)","function[T0](x0: (T0, T0) -> Bool, x1: T0) { not is_reflexive[T0](x0) or x0(x1, x1) }[T](s, y)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, Nat.zero), s)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_power[T](r, Nat.zero), s)","let w0: T satisfy { exists(k0: T) { relation_power(r, Nat.zero, w0, k0) and not s(w0, k0) } }","let w1: T satisfy { relation_power(r, Nat.zero, w0, w1) and not s(w0, w1) }","function(x0: T, x1: T) { not relation_power(r, Nat.zero, x0, x1) or s(x0, x1) }(w0, w1)"]}
+{"goal":"p(Nat.zero)","proof":["function(x0: Nat) { (not is_reflexive[T](s) or not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), s)) = p(x0) }(Nat.zero)"]}
+{"goal":"p(k)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k), s)","proof":["function(x0: Nat) { (not is_reflexive[T](s) or not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), s)) = p(x0) }(k)"]}
+{"goal":"exists(k0: T) { relation_power(r, k, x, k0) and r(k0, y) }","proof":[]}
+{"goal":"s(x, z)","proof":[]}
+{"goal":"s(z, y)","proof":[]}
+{"goal":"s(x, y)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k.suc), s)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_power[T](r, k.suc), s)","let w0: T satisfy { exists(k0: T) { relation_power(r, k.suc, w0, k0) and not s(w0, k0) } }","let w1: T satisfy { relation_power(r, k.suc, w0, w1) and not s(w0, w1) }","function(x0: T, x1: T) { not relation_power(r, k.suc, x0, x1) or s(x0, x1) }(w0, w1)"]}
+{"goal":"p(k.suc)","proof":["function(x0: Nat) { (not is_reflexive[T](s) or not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), s)) = p(x0) }(k)","function(x0: Nat) { (not is_reflexive[T](s) or not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), s)) = p(x0) }(k.suc)"]}
+{"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.zero) or forall(x2: Nat) { x0(x2) } = true }(p)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.zero) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not p(x0) or p(x0.suc) }(w0)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n), s)","proof":["function(x0: Nat) { (not is_reflexive[T](s) or not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0), s)) = p(x0) }(n)"]}
+{"goal":"relation_power_subset_of_reflexive_transitive","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, Nat.zero.suc), s)","proof":[]}
+{"goal":"p(Nat.zero)","proof":["function(x0: Nat) { (not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0.suc), s)) = p(x0) }(Nat.zero)"]}
+{"goal":"p(k)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k.suc), s)","proof":["function(x0: Nat) { (not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0.suc), s)) = p(x0) }(k)"]}
+{"goal":"exists(k0: T) { relation_power(r, k.suc, x, k0) and r(k0, y) }","proof":[]}
+{"goal":"s(x, z)","proof":[]}
+{"goal":"s(z, y)","proof":[]}
+{"goal":"s(x, y)","proof":[]}
+{"goal":"relation_subset[T, T](relation_power[T](r, k.suc.suc), s)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_power[T](r, k.suc.suc), s)","let w0: T satisfy { exists(k0: T) { relation_power(r, k.suc.suc, w0, k0) and not s(w0, k0) } }","let w1: T satisfy { relation_power(r, k.suc.suc, w0, w1) and not s(w0, w1) }","function(x0: T, x1: T) { not relation_power(r, k.suc.suc, x0, x1) or s(x0, x1) }(w0, w1)"]}
+{"goal":"p(k.suc)","proof":["function(x0: Nat) { (not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0.suc), s)) = p(x0) }(k)","function(x0: Nat) { (not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0.suc), s)) = p(x0) }(k.suc)"]}
+{"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.zero) or forall(x2: Nat) { x0(x2) } = true }(p)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.zero) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not p(x0) or p(x0.suc) }(w0)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n.suc), s)","proof":["function(x0: Nat) { (not is_transitive[T](s) or not relation_subset[T, T](r, s) or relation_subset[T, T](relation_power[T](r, x0.suc), s)) = p(x0) }(n)"]}
+{"goal":"relation_power_positive_subset_of_transitive","proof":[]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n), s)","proof":[]}
+{"goal":"s(x, y)","proof":[]}
+{"goal":"relation_refl_trans_closure_subset_of_reflexive_transitive","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_refl_trans_closure[T](r), s)"]}
+{"goal":"exists(k0: Nat) { relation_power(r, k0.suc, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0.suc, x1, x2) } = relation_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
+{"goal":"relation_subset[T, T](relation_power[T](r, n.suc), s)","proof":[]}
+{"goal":"s(x, y)","proof":[]}
+{"goal":"relation_trans_closure_subset_of_transitive","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_trans_closure[T](r), s)"]}
 {"goal":"exists(k0: Nat) { relation_power(r, k0, x, y) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, x, y)"]}
 {"goal":"exists(k0: Nat) { relation_power(r, k0, y, z) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { exists(k0: Nat) { relation_power[T0](x0, k0, x1, x2) } = relation_refl_trans_closure[T0](x0, x1, x2) }[T](r, y, z)"]}
 {"goal":"relation_compose(relation_power[T](r, m), relation_power[T](r, n), x, z)","proof":[]}

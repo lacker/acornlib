@@ -1,6 +1,6 @@
 from nat import Nat
-from nat.nat_base import add_zero_right, add_suc_right, add_suc_left
-from util import eq_relation, binary_function_extensionality, relation_compose, relation_compose_intro, relation_compose_assoc, relation_compose_eq_relation_right, relation_subset, is_reflexive, is_transitive
+from nat.nat_base import add_zero_right, add_zero_left, add_suc_right, add_suc_left, zero_or_suc
+from util import eq_relation, binary_function_extensionality, relation_compose, relation_compose_intro, relation_compose_has_witness, relation_compose_assoc, relation_compose_eq_relation_left, relation_compose_eq_relation_right, relation_converse, relation_converse_compose, relation_converse_eq_relation, relation_subset, relation_subset_step, reflexive_self, transitive_step, is_reflexive, is_transitive
 
 /// General constructions on homogeneous relations indexed by natural numbers.
 
@@ -56,6 +56,15 @@ theorem relation_power_suc[T](r: (T, T) -> Bool, n: Nat) {
         u(x, y) = v(x, y)
     }
     binary_function_extensionality(u, v)
+}
+
+/// The first positive relation power is the original relation.
+theorem relation_power_one[T](r: (T, T) -> Bool) {
+    relation_power(r, Nat.zero.suc) = r
+} by {
+    relation_power_suc(r, Nat.zero)
+    relation_power_zero(r)
+    relation_compose_eq_relation_left(r)
 }
 
 /// The zeroth relation power is reflexive.
@@ -155,6 +164,42 @@ theorem relation_trans_closure_subset_refl_trans_closure[T](r: (T, T) -> Bool) {
     }
 }
 
+/// Reflexive-transitive closure splits into equality or positive-length reachability.
+theorem relation_refl_trans_closure_eq_eq_or_trans_closure[T](r: (T, T) -> Bool, x: T, y: T) {
+    relation_refl_trans_closure(r, x, y) = (eq_relation[T](x, y) or relation_trans_closure(r, x, y))
+} by {
+    if relation_refl_trans_closure(r, x, y) {
+        let n: Nat satisfy {
+            relation_power(r, n, x, y)
+        }
+        zero_or_suc(n)
+        if n = Nat.zero {
+            relation_power(r, Nat.zero, x, y)
+            relation_power_zero(r)
+            eq_relation[T](x, y)
+        } else {
+            let k: Nat satisfy {
+                n = k.suc
+            }
+            relation_power(r, k.suc, x, y)
+            relation_power_positive_in_trans_closure(r, k, x, y)
+            relation_trans_closure(r, x, y)
+        }
+        eq_relation[T](x, y) or relation_trans_closure(r, x, y)
+    }
+    if eq_relation[T](x, y) or relation_trans_closure(r, x, y) {
+        if eq_relation[T](x, y) {
+            relation_power_zero(r)
+            relation_power(r, Nat.zero, x, y)
+            relation_power_in_refl_trans_closure(r, Nat.zero, x, y)
+            relation_refl_trans_closure(r, x, y)
+        } else {
+            relation_trans_closure_subset_refl_trans_closure(r)
+            relation_refl_trans_closure(r, x, y)
+        }
+    }
+}
+
 /// The first successor-step rewrite for the additive law on relation powers.
 theorem relation_power_add_step_compose[T](r: (T, T) -> Bool, m: Nat, k: Nat) {
     relation_compose(relation_power(r, m), relation_power(r, k)) = relation_power(r, m + k)
@@ -194,6 +239,347 @@ theorem relation_power_add[T](r: (T, T) -> Bool, m: Nat, n: Nat) {
         }
     }
     p(n)
+}
+
+/// The successor-step monotonicity law for relation powers.
+theorem relation_power_monotone_step[T](r: (T, T) -> Bool, s: (T, T) -> Bool, n: Nat) {
+    relation_subset(r, s) and relation_subset(relation_power(r, n), relation_power(s, n))
+    implies
+    relation_subset(relation_power(r, n.suc), relation_power(s, n.suc))
+} by {
+    if relation_subset(r, s) and relation_subset(relation_power(r, n), relation_power(s, n)) {
+        forall(x: T, y: T) {
+            if relation_power(r, n.suc, x, y) {
+                relation_power_suc(r, n)
+                relation_compose_has_witness(relation_power(r, n), r, x, y)
+                let z: T satisfy {
+                    relation_power(r, n, x, z) and r(z, y)
+                }
+                relation_subset_step(relation_power(r, n), relation_power(s, n), x, z)
+                relation_power(s, n, x, z)
+                relation_subset_step(r, s, z, y)
+                s(z, y)
+                relation_compose_intro(relation_power(s, n), s, x, z, y)
+                relation_power_suc(s, n)
+                relation_power(s, n.suc, x, y)
+            }
+        }
+    }
+}
+
+/// Relation powers are monotone in the base relation.
+theorem relation_power_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool, n: Nat) {
+    relation_subset(r, s) implies relation_subset(relation_power(r, n), relation_power(s, n))
+} by {
+    define p(k: Nat) -> Bool {
+        relation_subset(r, s) implies relation_subset(relation_power(r, k), relation_power(s, k))
+    }
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_power(r, Nat.zero, x, y) {
+                relation_power_zero(r)
+                eq_relation[T](x, y)
+                relation_power_zero(s)
+                relation_power(s, Nat.zero, x, y)
+            }
+        }
+        relation_subset(relation_power(r, Nat.zero), relation_power(s, Nat.zero))
+        p(Nat.zero)
+    }
+    forall(k: Nat) {
+        if p(k) {
+            if relation_subset(r, s) {
+                p(k)
+                relation_subset(relation_power(r, k), relation_power(s, k))
+                relation_power_monotone_step(r, s, k)
+                relation_subset(relation_power(r, k.suc), relation_power(s, k.suc))
+                p(k.suc)
+            }
+        }
+    }
+    p(n)
+}
+
+/// One more step on the left also yields the successor relation power.
+theorem relation_power_suc_left[T](r: (T, T) -> Bool, n: Nat) {
+    relation_compose(r, relation_power(r, n)) = relation_power(r, n.suc)
+} by {
+    relation_power_one(r)
+    relation_power_add(r, Nat.zero.suc, n)
+    add_suc_left(Nat.zero, n)
+    add_zero_left(n)
+}
+
+/// The converse of a successor relation power becomes a left composition.
+theorem relation_power_converse_suc_compose[T](r: (T, T) -> Bool, k: Nat) {
+    relation_converse(relation_power(r, k.suc)) = relation_compose(relation_converse(r), relation_converse(relation_power(r, k)))
+} by {
+    relation_power_suc(r, k)
+    relation_converse_compose(relation_power(r, k), r)
+}
+
+/// A left composition by the converse relation is the next converse power.
+theorem relation_power_converse_suc_target[T](r: (T, T) -> Bool, k: Nat) {
+    relation_compose(relation_converse(r), relation_power(relation_converse(r), k)) = relation_power(relation_converse(r), k.suc)
+} by {
+    relation_power_suc_left(relation_converse(r), k)
+}
+
+/// The successor-step converse law for relation powers.
+theorem relation_power_converse_step[T](r: (T, T) -> Bool, k: Nat) {
+    relation_converse(relation_power(r, k)) = relation_power(relation_converse(r), k)
+    implies
+    relation_converse(relation_power(r, k.suc)) = relation_power(relation_converse(r), k.suc)
+} by {
+    if relation_converse(relation_power(r, k)) = relation_power(relation_converse(r), k) {
+        relation_power_converse_suc_compose(r, k)
+        relation_power_converse_suc_target(r, k)
+    }
+}
+
+/// Taking converse commutes with relation powers.
+theorem relation_power_converse[T](r: (T, T) -> Bool, n: Nat) {
+    relation_converse(relation_power(r, n)) = relation_power(relation_converse(r), n)
+} by {
+    define p(k: Nat) -> Bool {
+        relation_converse(relation_power(r, k)) = relation_power(relation_converse(r), k)
+    }
+    relation_power_zero(r)
+    relation_converse_eq_relation[T]
+    relation_power_zero(relation_converse(r))
+    p(Nat.zero)
+    forall(k: Nat) {
+        if p(k) {
+            relation_power_converse_step(r, k)
+            p(k.suc)
+        }
+    }
+    p(n)
+}
+
+/// Reflexive-transitive closure is monotone in the base relation.
+theorem relation_refl_trans_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies relation_subset(relation_refl_trans_closure(r), relation_refl_trans_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_refl_trans_closure(r, x, y) {
+                let n: Nat satisfy {
+                    relation_power(r, n, x, y)
+                }
+                relation_power_monotone(r, s, n)
+                relation_subset(relation_power(r, n), relation_power(s, n))
+                relation_subset_step(relation_power(r, n), relation_power(s, n), x, y)
+                relation_power(s, n, x, y)
+                relation_power_in_refl_trans_closure(s, n, x, y)
+                relation_refl_trans_closure(s, x, y)
+            }
+        }
+    }
+}
+
+/// Transitive closure is monotone in the base relation.
+theorem relation_trans_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies relation_subset(relation_trans_closure(r), relation_trans_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_trans_closure(r, x, y) {
+                let n: Nat satisfy {
+                    relation_power(r, n.suc, x, y)
+                }
+                relation_power_monotone(r, s, n.suc)
+                relation_subset(relation_power(r, n.suc), relation_power(s, n.suc))
+                relation_subset_step(relation_power(r, n.suc), relation_power(s, n.suc), x, y)
+                relation_power(s, n.suc, x, y)
+                relation_power_positive_in_trans_closure(s, n, x, y)
+                relation_trans_closure(s, x, y)
+            }
+        }
+    }
+}
+
+/// Reflexive-transitive closure commutes with converse.
+theorem relation_refl_trans_closure_converse[T](r: (T, T) -> Bool, x: T, y: T) {
+    relation_refl_trans_closure(relation_converse(r), x, y) = relation_refl_trans_closure(r, y, x)
+} by {
+    if relation_refl_trans_closure(relation_converse(r), x, y) {
+        let n: Nat satisfy {
+            relation_power(relation_converse(r), n, x, y)
+        }
+        relation_power_converse(r, n)
+        relation_converse(relation_power(r, n), x, y)
+        relation_power(r, n, y, x)
+        relation_power_in_refl_trans_closure(r, n, y, x)
+        relation_refl_trans_closure(r, y, x)
+    }
+    if relation_refl_trans_closure(r, y, x) {
+        let n: Nat satisfy {
+            relation_power(r, n, y, x)
+        }
+        relation_power_converse(r, n)
+        relation_converse(relation_power(r, n), x, y)
+        relation_power(relation_converse(r), n, x, y)
+        relation_power_in_refl_trans_closure(relation_converse(r), n, x, y)
+        relation_refl_trans_closure(relation_converse(r), x, y)
+    }
+}
+
+/// Transitive closure commutes with converse.
+theorem relation_trans_closure_converse[T](r: (T, T) -> Bool, x: T, y: T) {
+    relation_trans_closure(relation_converse(r), x, y) = relation_trans_closure(r, y, x)
+} by {
+    if relation_trans_closure(relation_converse(r), x, y) {
+        let n: Nat satisfy {
+            relation_power(relation_converse(r), n.suc, x, y)
+        }
+        relation_power_converse(r, n.suc)
+        relation_converse(relation_power(r, n.suc), x, y)
+        relation_power(r, n.suc, y, x)
+        relation_power_positive_in_trans_closure(r, n, y, x)
+        relation_trans_closure(r, y, x)
+    }
+    if relation_trans_closure(r, y, x) {
+        let n: Nat satisfy {
+            relation_power(r, n.suc, y, x)
+        }
+        relation_power_converse(r, n.suc)
+        relation_converse(relation_power(r, n.suc), x, y)
+        relation_power(relation_converse(r), n.suc, x, y)
+        relation_power_positive_in_trans_closure(relation_converse(r), n, x, y)
+        relation_trans_closure(relation_converse(r), x, y)
+    }
+}
+
+/// Any finite relation power lies in every reflexive transitive superrelation containing the base relation.
+theorem relation_power_subset_of_reflexive_transitive[T](r: (T, T) -> Bool, s: (T, T) -> Bool, n: Nat) {
+    is_reflexive(s) and is_transitive(s) and relation_subset(r, s)
+    implies
+    relation_subset(relation_power(r, n), s)
+} by {
+    if is_reflexive(s) and is_transitive(s) and relation_subset(r, s) {
+        define p(k: Nat) -> Bool {
+            relation_subset(relation_power(r, k), s)
+        }
+        forall(x: T, y: T) {
+            if relation_power(r, Nat.zero, x, y) {
+                relation_power_zero(r)
+                eq_relation[T](x, y)
+                reflexive_self(s, x)
+                s(x, y)
+            }
+        }
+        relation_subset(relation_power(r, Nat.zero), s)
+        p(Nat.zero)
+        forall(k: Nat) {
+            if p(k) {
+                p(k)
+                relation_subset(relation_power(r, k), s)
+                forall(x: T, y: T) {
+                    if relation_power(r, k.suc, x, y) {
+                        relation_power_suc(r, k)
+                        relation_compose_has_witness(relation_power(r, k), r, x, y)
+                        let z: T satisfy {
+                            relation_power(r, k, x, z) and r(z, y)
+                        }
+                        relation_subset_step(relation_power(r, k), s, x, z)
+                        s(x, z)
+                        relation_subset_step(r, s, z, y)
+                        s(z, y)
+                        transitive_step(s, x, z, y)
+                        s(x, y)
+                    }
+                }
+                relation_subset(relation_power(r, k.suc), s)
+                p(k.suc)
+            }
+        }
+        p(n)
+        relation_subset(relation_power(r, n), s)
+    }
+}
+
+/// Any positive relation power lies in every transitive superrelation containing the base relation.
+theorem relation_power_positive_subset_of_transitive[T](r: (T, T) -> Bool, s: (T, T) -> Bool, n: Nat) {
+    is_transitive(s) and relation_subset(r, s)
+    implies
+    relation_subset(relation_power(r, n.suc), s)
+} by {
+    if is_transitive(s) and relation_subset(r, s) {
+        define p(k: Nat) -> Bool {
+            relation_subset(relation_power(r, k.suc), s)
+        }
+        relation_power_one(r)
+        relation_subset(relation_power(r, Nat.zero.suc), s)
+        p(Nat.zero)
+        forall(k: Nat) {
+            if p(k) {
+                p(k)
+                relation_subset(relation_power(r, k.suc), s)
+                forall(x: T, y: T) {
+                    if relation_power(r, k.suc.suc, x, y) {
+                        relation_power_suc(r, k.suc)
+                        relation_compose_has_witness(relation_power(r, k.suc), r, x, y)
+                        let z: T satisfy {
+                            relation_power(r, k.suc, x, z) and r(z, y)
+                        }
+                        relation_subset_step(relation_power(r, k.suc), s, x, z)
+                        s(x, z)
+                        relation_subset_step(r, s, z, y)
+                        s(z, y)
+                        transitive_step(s, x, z, y)
+                        s(x, y)
+                    }
+                }
+                relation_subset(relation_power(r, k.suc.suc), s)
+                p(k.suc)
+            }
+        }
+        p(n)
+        relation_subset(relation_power(r, n.suc), s)
+    }
+}
+
+/// Reflexive-transitive closure is the smallest reflexive transitive relation containing the base relation.
+theorem relation_refl_trans_closure_subset_of_reflexive_transitive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_reflexive(s) and is_transitive(s) and relation_subset(r, s)
+    implies
+    relation_subset(relation_refl_trans_closure(r), s)
+} by {
+    if is_reflexive(s) and is_transitive(s) and relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_refl_trans_closure(r, x, y) {
+                let n: Nat satisfy {
+                    relation_power(r, n, x, y)
+                }
+                relation_power_subset_of_reflexive_transitive(r, s, n)
+                relation_subset(relation_power(r, n), s)
+                relation_subset_step(relation_power(r, n), s, x, y)
+                s(x, y)
+            }
+        }
+    }
+}
+
+/// Transitive closure is the smallest transitive relation containing the base relation.
+theorem relation_trans_closure_subset_of_transitive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_transitive(s) and relation_subset(r, s)
+    implies
+    relation_subset(relation_trans_closure(r), s)
+} by {
+    if is_transitive(s) and relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_trans_closure(r, x, y) {
+                let n: Nat satisfy {
+                    relation_power(r, n.suc, x, y)
+                }
+                relation_power_positive_subset_of_transitive(r, s, n)
+                relation_subset(relation_power(r, n.suc), s)
+                relation_subset_step(relation_power(r, n.suc), s, x, y)
+                s(x, y)
+            }
+        }
+    }
 }
 
 /// Reflexive-transitive closure is transitive.
