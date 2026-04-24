@@ -1,7 +1,7 @@
 /// Transport and compatibility lemmas for unbundled relations along functions.
 
 from functions import compose, identity_fn, binary_function_extensionality, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
-from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
+from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, eq_relation_is_equivalence, relation_intersection_is_equivalence, relation_converse_is_equivalence, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
 
 /// The pullback of a homogeneous relation along a function.
 define relation_pullback[A, B](f: A -> B, r: (B, B) -> Bool, x: A, y: A) -> Bool {
@@ -856,5 +856,1011 @@ theorem relation_pullback_is_reflexive_transitive_antisymmetric_iff_of_bijection
          is_transitive(relation_pullback(f, r)) and
          is_antisymmetric(relation_pullback(f, r))) =
         (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
+    }
+}
+
+/// True if a unary operation sends related inputs to related outputs.
+define respects_unary_op[T](r: (T, T) -> Bool, op: T -> T) -> Bool {
+    forall(x: T, y: T) {
+        r(x, y) implies r(op(x), op(y))
+    }
+}
+
+/// True if a binary operation sends pairwise related inputs to related outputs.
+define respects_binary_op[T](r: (T, T) -> Bool, op: (T, T) -> T) -> Bool {
+    forall(x1: T, y1: T, x2: T, y2: T) {
+        r(x1, y1) and r(x2, y2) implies r(op(x1, x2), op(y1, y2))
+    }
+}
+
+/// True if a function intertwines two unary operations.
+define preserves_unary_op[A, B](f: A -> B, op_a: A -> A, op_b: B -> B) -> Bool {
+    forall(x: A) {
+        f(op_a(x)) = op_b(f(x))
+    }
+}
+
+/// True if a function intertwines two binary operations.
+define preserves_binary_op[A, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B) -> Bool {
+    forall(x: A, y: A) {
+        f(op_a(x, y)) = op_b(f(x), f(y))
+    }
+}
+
+/// True if a relation is an equivalence relation compatible with a unary operation.
+define is_unary_congruence[T](r: (T, T) -> Bool, op: T -> T) -> Bool {
+    is_equivalence(r) and respects_unary_op(r, op)
+}
+
+/// True if a relation is an equivalence relation compatible with a binary operation.
+define is_binary_congruence[T](r: (T, T) -> Bool, op: (T, T) -> T) -> Bool {
+    is_equivalence(r) and respects_binary_op(r, op)
+}
+
+/// A unary-compatible relation may be applied at any related pair.
+theorem respects_unary_op_step[T](r: (T, T) -> Bool, op: T -> T, x: T, y: T) {
+    respects_unary_op(r, op) and r(x, y) implies r(op(x), op(y))
+} by {
+    if respects_unary_op(r, op) and r(x, y) {
+        respects_unary_op(r, op) = forall(x0: T, y0: T) {
+            r(x0, y0) implies r(op(x0), op(y0))
+        }
+        r(op(x), op(y))
+    }
+}
+
+/// A binary-compatible relation may be applied at any pair of related inputs.
+theorem respects_binary_op_step[T](r: (T, T) -> Bool, op: (T, T) -> T, x1: T, y1: T, x2: T, y2: T) {
+    respects_binary_op(r, op) and r(x1, y1) and r(x2, y2) implies r(op(x1, x2), op(y1, y2))
+} by {
+    if respects_binary_op(r, op) and r(x1, y1) and r(x2, y2) {
+        respects_binary_op(r, op) = forall(a1: T, b1: T, a2: T, b2: T) {
+            r(a1, b1) and r(a2, b2) implies r(op(a1, a2), op(b1, b2))
+        }
+        r(op(x1, x2), op(y1, y2))
+    }
+}
+
+/// An operation-preserving map may be rewritten at any input.
+theorem preserves_unary_op_step[A, B](f: A -> B, op_a: A -> A, op_b: B -> B, x: A) {
+    preserves_unary_op(f, op_a, op_b) implies f(op_a(x)) = op_b(f(x))
+} by {
+    if preserves_unary_op(f, op_a, op_b) {
+        preserves_unary_op(f, op_a, op_b) = forall(x0: A) {
+            f(op_a(x0)) = op_b(f(x0))
+        }
+        f(op_a(x)) = op_b(f(x))
+    }
+}
+
+/// A binary-operation-preserving map may be rewritten at any pair of inputs.
+theorem preserves_binary_op_step[A, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B, x: A, y: A) {
+    preserves_binary_op(f, op_a, op_b) implies f(op_a(x, y)) = op_b(f(x), f(y))
+} by {
+    if preserves_binary_op(f, op_a, op_b) {
+        preserves_binary_op(f, op_a, op_b) = forall(x0: A, y0: A) {
+            f(op_a(x0, y0)) = op_b(f(x0), f(y0))
+        }
+        f(op_a(x, y)) = op_b(f(x), f(y))
+    }
+}
+
+/// Every relation is compatible with the identity unary operation.
+theorem identity_unary_op_respects_relation[T](r: (T, T) -> Bool) {
+    respects_unary_op(r, identity_fn[T])
+} by {
+    forall(x: T, y: T) {
+        if r(x, y) {
+            identity_fn[T](x) = x
+            identity_fn[T](y) = y
+            r(identity_fn[T](x), identity_fn[T](y))
+        }
+    }
+}
+
+/// Compatibility with unary operations is closed under composition.
+theorem respects_unary_op_compose[T](r: (T, T) -> Bool, op1: T -> T, op2: T -> T) {
+    respects_unary_op(r, op1) and respects_unary_op(r, op2) implies
+    respects_unary_op(r, compose(op1, op2))
+} by {
+    if respects_unary_op(r, op1) and respects_unary_op(r, op2) {
+        forall(x: T, y: T) {
+            if r(x, y) {
+                respects_unary_op_step(r, op2, x, y)
+                r(op2(x), op2(y))
+                respects_unary_op_step(r, op1, op2(x), op2(y))
+                r(op1(op2(x)), op1(op2(y)))
+                compose(op1, op2, x) = op1(op2(x))
+                compose(op1, op2, y) = op1(op2(y))
+                r(compose(op1, op2)(x), compose(op1, op2)(y))
+            }
+        }
+    }
+}
+
+/// The identity function preserves any unary operation.
+theorem identity_fn_preserves_unary_op[T](op: T -> T) {
+    preserves_unary_op(identity_fn[T], op, op)
+} by {
+    forall(x: T) {
+        identity_fn[T](op(x)) = op(x)
+        identity_fn[T](x) = x
+        op(identity_fn[T](x)) = op(x)
+        identity_fn[T](op(x)) = op(identity_fn[T](x))
+    }
+}
+
+/// The identity function preserves any binary operation.
+theorem identity_fn_preserves_binary_op[T](op: (T, T) -> T) {
+    preserves_binary_op(identity_fn[T], op, op)
+} by {
+    forall(x: T, y: T) {
+        identity_fn[T](op(x, y)) = op(x, y)
+        identity_fn[T](x) = x
+        identity_fn[T](y) = y
+        op(identity_fn[T](x), identity_fn[T](y)) = op(x, y)
+        identity_fn[T](op(x, y)) = op(identity_fn[T](x), identity_fn[T](y))
+    }
+}
+
+/// Composition preserves unary-operation preservation.
+theorem compose_preserves_unary_op[A, B, C](f: B -> C, g: A -> B, op_a: A -> A, op_b: B -> B, op_c: C -> C) {
+    preserves_unary_op(f, op_b, op_c) and preserves_unary_op(g, op_a, op_b) implies
+    preserves_unary_op(compose(f, g), op_a, op_c)
+} by {
+    if preserves_unary_op(f, op_b, op_c) and preserves_unary_op(g, op_a, op_b) {
+        forall(x: A) {
+            compose(f, g, op_a(x)) = f(g(op_a(x)))
+            preserves_unary_op_step(g, op_a, op_b, x)
+            g(op_a(x)) = op_b(g(x))
+            compose(f, g, op_a(x)) = f(op_b(g(x)))
+            preserves_unary_op_step(f, op_b, op_c, g(x))
+            f(op_b(g(x))) = op_c(f(g(x)))
+            compose(f, g, op_a(x)) = op_c(f(g(x)))
+            compose(f, g, x) = f(g(x))
+            op_c(compose(f, g)(x)) = op_c(f(g(x)))
+            compose(f, g, op_a(x)) = op_c(compose(f, g)(x))
+        }
+    }
+}
+
+/// Composition preserves binary-operation preservation.
+theorem compose_preserves_binary_op[A, B, C](
+    f: B -> C,
+    g: A -> B,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B,
+    op_c: (C, C) -> C
+) {
+    preserves_binary_op(f, op_b, op_c) and preserves_binary_op(g, op_a, op_b) implies
+    preserves_binary_op(compose(f, g), op_a, op_c)
+} by {
+    if preserves_binary_op(f, op_b, op_c) and preserves_binary_op(g, op_a, op_b) {
+        forall(x: A, y: A) {
+            compose(f, g, op_a(x, y)) = f(g(op_a(x, y)))
+            preserves_binary_op_step(g, op_a, op_b, x, y)
+            g(op_a(x, y)) = op_b(g(x), g(y))
+            compose(f, g, op_a(x, y)) = f(op_b(g(x), g(y)))
+            preserves_binary_op_step(f, op_b, op_c, g(x), g(y))
+            f(op_b(g(x), g(y))) = op_c(f(g(x)), f(g(y)))
+            compose(f, g, op_a(x, y)) = op_c(f(g(x)), f(g(y)))
+            compose(f, g, x) = f(g(x))
+            compose(f, g, y) = f(g(y))
+            op_c(compose(f, g)(x), compose(f, g)(y)) = op_c(f(g(x)), f(g(y)))
+            compose(f, g, op_a(x, y)) = op_c(compose(f, g)(x), compose(f, g)(y))
+        }
+    }
+}
+
+/// Equality is compatible with every unary operation.
+theorem eq_relation_respects_unary_op[T](op: T -> T) {
+    respects_unary_op(eq_relation[T], op)
+} by {
+    forall(x: T, y: T) {
+        if eq_relation[T](x, y) {
+            eq_relation[T](x, y) = (x = y)
+            x = y
+            op(x) = op(y)
+            eq_relation[T](op(x), op(y))
+        }
+    }
+}
+
+/// Equality is compatible with every binary operation.
+theorem eq_relation_respects_binary_op[T](op: (T, T) -> T) {
+    respects_binary_op(eq_relation[T], op)
+} by {
+    forall(x1: T, y1: T, x2: T, y2: T) {
+        if eq_relation[T](x1, y1) and eq_relation[T](x2, y2) {
+            eq_relation[T](x1, y1) = (x1 = y1)
+            x1 = y1
+            eq_relation[T](x2, y2) = (x2 = y2)
+            x2 = y2
+            op(x1, x2) = op(y1, y2)
+            eq_relation[T](op(x1, x2), op(y1, y2))
+        }
+    }
+}
+
+/// Converse preserves unary compatibility.
+theorem relation_converse_respects_unary_op[T](r: (T, T) -> Bool, op: T -> T) {
+    respects_unary_op(r, op) implies respects_unary_op(relation_converse(r), op)
+} by {
+    if respects_unary_op(r, op) {
+        forall(x: T, y: T) {
+            if relation_converse(r, x, y) {
+                relation_converse(r, x, y) = r(y, x)
+                r(y, x)
+                respects_unary_op_step(r, op, y, x)
+                r(op(y), op(x))
+                relation_converse(r, op(x), op(y)) = r(op(y), op(x))
+                relation_converse(r, op(x), op(y))
+            }
+        }
+    }
+}
+
+/// Converse preserves binary compatibility.
+theorem relation_converse_respects_binary_op[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    respects_binary_op(r, op) implies respects_binary_op(relation_converse(r), op)
+} by {
+    if respects_binary_op(r, op) {
+        forall(x1: T, y1: T, x2: T, y2: T) {
+            if relation_converse(r, x1, y1) and relation_converse(r, x2, y2) {
+                relation_converse(r, x1, y1) = r(y1, x1)
+                r(y1, x1)
+                relation_converse(r, x2, y2) = r(y2, x2)
+                r(y2, x2)
+                respects_binary_op_step(r, op, y1, x1, y2, x2)
+                r(op(y1, y2), op(x1, x2))
+                relation_converse(r, op(x1, x2), op(y1, y2)) = r(op(y1, y2), op(x1, x2))
+                relation_converse(r, op(x1, x2), op(y1, y2))
+            }
+        }
+    }
+}
+
+/// Intersection preserves unary compatibility.
+theorem relation_intersection_respects_unary_op[T](r: (T, T) -> Bool, s: (T, T) -> Bool, op: T -> T) {
+    respects_unary_op(r, op) and respects_unary_op(s, op) implies
+    respects_unary_op(relation_intersection(r, s), op)
+} by {
+    if respects_unary_op(r, op) and respects_unary_op(s, op) {
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                r(x, y)
+                respects_unary_op_step(r, op, x, y)
+                r(op(x), op(y))
+                s(x, y)
+                respects_unary_op_step(s, op, x, y)
+                s(op(x), op(y))
+                relation_intersection(r, s, op(x), op(y))
+            }
+        }
+    }
+}
+
+/// Intersection preserves binary compatibility.
+theorem relation_intersection_respects_binary_op[T](r: (T, T) -> Bool, s: (T, T) -> Bool, op: (T, T) -> T) {
+    respects_binary_op(r, op) and respects_binary_op(s, op) implies
+    respects_binary_op(relation_intersection(r, s), op)
+} by {
+    if respects_binary_op(r, op) and respects_binary_op(s, op) {
+        forall(x1: T, y1: T, x2: T, y2: T) {
+            if relation_intersection(r, s, x1, y1) and relation_intersection(r, s, x2, y2) {
+                r(x1, y1)
+                r(x2, y2)
+                respects_binary_op_step(r, op, x1, y1, x2, y2)
+                r(op(x1, x2), op(y1, y2))
+                s(x1, y1)
+                s(x2, y2)
+                respects_binary_op_step(s, op, x1, y1, x2, y2)
+                s(op(x1, x2), op(y1, y2))
+                relation_intersection(r, s, op(x1, x2), op(y1, y2))
+            }
+        }
+    }
+}
+
+/// Symmetric closure preserves unary compatibility.
+theorem relation_symmetric_closure_respects_unary_op[T](r: (T, T) -> Bool, op: T -> T) {
+    respects_unary_op(r, op) implies respects_unary_op(relation_symmetric_closure(r), op)
+} by {
+    if respects_unary_op(r, op) {
+        relation_converse_respects_unary_op(r, op)
+        respects_unary_op(relation_converse(r), op)
+        forall(x: T, y: T) {
+            if relation_symmetric_closure(r, x, y) {
+                relation_symmetric_closure(r, x, y) = (r(x, y) or relation_converse(r, x, y))
+                if r(x, y) {
+                    respects_unary_op_step(r, op, x, y)
+                    r(op(x), op(y))
+                    relation_symmetric_closure(r, op(x), op(y))
+                } else {
+                    respects_unary_op_step(relation_converse(r), op, x, y)
+                    relation_converse(r, op(x), op(y))
+                    relation_symmetric_closure(r, op(x), op(y))
+                }
+            }
+        }
+    }
+}
+
+/// Reflexive closure preserves unary compatibility.
+theorem relation_reflexive_closure_respects_unary_op[T](r: (T, T) -> Bool, op: T -> T) {
+    respects_unary_op(r, op) implies respects_unary_op(relation_reflexive_closure(r), op)
+} by {
+    if respects_unary_op(r, op) {
+        forall(x: T, y: T) {
+            if relation_reflexive_closure(r, x, y) {
+                relation_reflexive_closure(r, x, y) = (eq_relation[T](x, y) or r(x, y))
+                if eq_relation[T](x, y) {
+                    eq_relation[T](x, y) = (x = y)
+                    x = y
+                    op(x) = op(y)
+                    eq_relation[T](op(x), op(y))
+                    relation_reflexive_closure(r, op(x), op(y))
+                } else {
+                    respects_unary_op_step(r, op, x, y)
+                    r(op(x), op(y))
+                    relation_reflexive_closure(r, op(x), op(y))
+                }
+            }
+        }
+    }
+}
+
+/// Pullback preserves unary compatibility when the function preserves the operation.
+theorem relation_pullback_respects_unary_op_of_preserves_unary_op[A, B](f: A -> B, r: (B, B) -> Bool, op_a: A -> A, op_b: B -> B) {
+    respects_unary_op(r, op_b) and preserves_unary_op(f, op_a, op_b) implies
+    respects_unary_op(relation_pullback(f, r), op_a)
+} by {
+    if respects_unary_op(r, op_b) and preserves_unary_op(f, op_a, op_b) {
+        forall(x: A, y: A) {
+            if relation_pullback(f, r, x, y) {
+                relation_pullback(f, r, x, y) = r(f(x), f(y))
+                r(f(x), f(y))
+                respects_unary_op_step(r, op_b, f(x), f(y))
+                r(op_b(f(x)), op_b(f(y)))
+                preserves_unary_op_step(f, op_a, op_b, x)
+                f(op_a(x)) = op_b(f(x))
+                preserves_unary_op_step(f, op_a, op_b, y)
+                f(op_a(y)) = op_b(f(y))
+                relation_pullback(f, r, op_a(x), op_a(y)) = r(f(op_a(x)), f(op_a(y)))
+                relation_pullback(f, r, op_a(x), op_a(y))
+            }
+        }
+    }
+}
+
+/// Pullback preserves binary compatibility when the function preserves the operation.
+theorem relation_pullback_respects_binary_op_of_preserves_binary_op[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    respects_binary_op(r, op_b) and preserves_binary_op(f, op_a, op_b) implies
+    respects_binary_op(relation_pullback(f, r), op_a)
+} by {
+    if respects_binary_op(r, op_b) and preserves_binary_op(f, op_a, op_b) {
+        forall(x1: A, y1: A, x2: A, y2: A) {
+            if relation_pullback(f, r, x1, y1) and relation_pullback(f, r, x2, y2) {
+                relation_pullback(f, r, x1, y1) = r(f(x1), f(y1))
+                r(f(x1), f(y1))
+                relation_pullback(f, r, x2, y2) = r(f(x2), f(y2))
+                r(f(x2), f(y2))
+                respects_binary_op_step(r, op_b, f(x1), f(y1), f(x2), f(y2))
+                r(op_b(f(x1), f(x2)), op_b(f(y1), f(y2)))
+                preserves_binary_op_step(f, op_a, op_b, x1, x2)
+                f(op_a(x1, x2)) = op_b(f(x1), f(x2))
+                preserves_binary_op_step(f, op_a, op_b, y1, y2)
+                f(op_a(y1, y2)) = op_b(f(y1), f(y2))
+                relation_pullback(f, r, op_a(x1, x2), op_a(y1, y2)) = r(f(op_a(x1, x2)), f(op_a(y1, y2)))
+                relation_pullback(f, r, op_a(x1, x2), op_a(y1, y2))
+            }
+        }
+    }
+}
+
+/// Surjective pullback reflects unary compatibility for operation-preserving maps.
+theorem relation_pullback_reflects_respects_unary_op_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_surjective_fn(f) and respects_unary_op(relation_pullback(f, r), op_a) and preserves_unary_op(f, op_a, op_b) implies
+    respects_unary_op(r, op_b)
+} by {
+    if is_surjective_fn(f) and respects_unary_op(relation_pullback(f, r), op_a) and preserves_unary_op(f, op_a, op_b) {
+        forall(y1: B, y2: B) {
+            if r(y1, y2) {
+                surjective_fn_has_preimage(f, y1)
+                let x1: A satisfy {
+                    f(x1) = y1
+                }
+                surjective_fn_has_preimage(f, y2)
+                let x2: A satisfy {
+                    f(x2) = y2
+                }
+                relation_pullback(f, r, x1, x2) = r(f(x1), f(x2))
+                f(x1) = y1
+                f(x2) = y2
+                relation_pullback(f, r, x1, x2)
+                respects_unary_op_step(relation_pullback(f, r), op_a, x1, x2)
+                relation_pullback(f, r, op_a(x1), op_a(x2))
+                relation_pullback(f, r, op_a(x1), op_a(x2)) = r(f(op_a(x1)), f(op_a(x2)))
+                preserves_unary_op_step(f, op_a, op_b, x1)
+                f(op_a(x1)) = op_b(f(x1))
+                preserves_unary_op_step(f, op_a, op_b, x2)
+                f(op_a(x2)) = op_b(f(x2))
+                r(op_b(y1), op_b(y2))
+            }
+        }
+    }
+}
+
+/// Surjective pullback reflects binary compatibility for operation-preserving maps.
+theorem relation_pullback_reflects_respects_binary_op_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_surjective_fn(f) and respects_binary_op(relation_pullback(f, r), op_a) and preserves_binary_op(f, op_a, op_b) implies
+    respects_binary_op(r, op_b)
+} by {
+    if is_surjective_fn(f) and respects_binary_op(relation_pullback(f, r), op_a) and preserves_binary_op(f, op_a, op_b) {
+        forall(y1: B, z1: B, y2: B, z2: B) {
+            if r(y1, z1) and r(y2, z2) {
+                surjective_fn_has_preimage(f, y1)
+                let x1: A satisfy {
+                    f(x1) = y1
+                }
+                surjective_fn_has_preimage(f, z1)
+                let w1: A satisfy {
+                    f(w1) = z1
+                }
+                surjective_fn_has_preimage(f, y2)
+                let x2: A satisfy {
+                    f(x2) = y2
+                }
+                surjective_fn_has_preimage(f, z2)
+                let w2: A satisfy {
+                    f(w2) = z2
+                }
+                relation_pullback(f, r, x1, w1) = r(f(x1), f(w1))
+                f(x1) = y1
+                f(w1) = z1
+                relation_pullback(f, r, x1, w1)
+                relation_pullback(f, r, x2, w2) = r(f(x2), f(w2))
+                f(x2) = y2
+                f(w2) = z2
+                relation_pullback(f, r, x2, w2)
+                respects_binary_op_step(relation_pullback(f, r), op_a, x1, w1, x2, w2)
+                relation_pullback(f, r, op_a(x1, x2), op_a(w1, w2))
+                relation_pullback(f, r, op_a(x1, x2), op_a(w1, w2)) = r(f(op_a(x1, x2)), f(op_a(w1, w2)))
+                preserves_binary_op_step(f, op_a, op_b, x1, x2)
+                f(op_a(x1, x2)) = op_b(f(x1), f(x2))
+                preserves_binary_op_step(f, op_a, op_b, w1, w2)
+                f(op_a(w1, w2)) = op_b(f(w1), f(w2))
+                r(op_b(y1, y2), op_b(z1, z2))
+            }
+        }
+    }
+}
+
+/// Surjective pullback exactly detects unary compatibility for operation-preserving maps.
+theorem relation_pullback_respects_unary_op_iff_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_surjective_fn(f) and preserves_unary_op(f, op_a, op_b) implies
+    respects_unary_op(relation_pullback(f, r), op_a) = respects_unary_op(r, op_b)
+} by {
+    if is_surjective_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        if respects_unary_op(relation_pullback(f, r), op_a) {
+            relation_pullback_reflects_respects_unary_op_of_surjective(f, r, op_a, op_b)
+            respects_unary_op(r, op_b)
+        }
+        if respects_unary_op(r, op_b) {
+            relation_pullback_respects_unary_op_of_preserves_unary_op(f, r, op_a, op_b)
+            respects_unary_op(relation_pullback(f, r), op_a)
+        }
+        respects_unary_op(relation_pullback(f, r), op_a) = respects_unary_op(r, op_b)
+    }
+}
+
+/// Surjective pullback exactly detects binary compatibility for operation-preserving maps.
+theorem relation_pullback_respects_binary_op_iff_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_surjective_fn(f) and preserves_binary_op(f, op_a, op_b) implies
+    respects_binary_op(relation_pullback(f, r), op_a) = respects_binary_op(r, op_b)
+} by {
+    if is_surjective_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        if respects_binary_op(relation_pullback(f, r), op_a) {
+            relation_pullback_reflects_respects_binary_op_of_surjective(f, r, op_a, op_b)
+            respects_binary_op(r, op_b)
+        }
+        if respects_binary_op(r, op_b) {
+            relation_pullback_respects_binary_op_of_preserves_binary_op(f, r, op_a, op_b)
+            respects_binary_op(relation_pullback(f, r), op_a)
+        }
+        respects_binary_op(relation_pullback(f, r), op_a) = respects_binary_op(r, op_b)
+    }
+}
+
+/// The equality pullback of a unary-operation-preserving map is unary-compatible.
+theorem relation_pullback_eq_relation_respects_unary_op[A, B](f: A -> B, op_a: A -> A, op_b: B -> B) {
+    preserves_unary_op(f, op_a, op_b) implies respects_unary_op(relation_pullback(f, eq_relation[B]), op_a)
+} by {
+    if preserves_unary_op(f, op_a, op_b) {
+        eq_relation_respects_unary_op(op_b)
+        relation_pullback_respects_unary_op_of_preserves_unary_op(f, eq_relation[B], op_a, op_b)
+        respects_unary_op(relation_pullback(f, eq_relation[B]), op_a)
+    }
+}
+
+/// The equality pullback of a binary-operation-preserving map is binary-compatible.
+theorem relation_pullback_eq_relation_respects_binary_op[A, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B) {
+    preserves_binary_op(f, op_a, op_b) implies respects_binary_op(relation_pullback(f, eq_relation[B]), op_a)
+} by {
+    if preserves_binary_op(f, op_a, op_b) {
+        eq_relation_respects_binary_op(op_b)
+        relation_pullback_respects_binary_op_of_preserves_binary_op(f, eq_relation[B], op_a, op_b)
+        respects_binary_op(relation_pullback(f, eq_relation[B]), op_a)
+    }
+}
+
+/// A unary congruence relation is in particular an equivalence relation.
+theorem unary_congruence_is_equivalence[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies is_equivalence(r)
+} by {
+    if is_unary_congruence(r, op) {
+        is_unary_congruence(r, op) = (is_equivalence(r) and respects_unary_op(r, op))
+        is_equivalence(r)
+    }
+}
+
+/// A unary congruence relation is compatible with its unary operation.
+theorem unary_congruence_respects_unary_op[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies respects_unary_op(r, op)
+} by {
+    if is_unary_congruence(r, op) {
+        is_unary_congruence(r, op) = (is_equivalence(r) and respects_unary_op(r, op))
+        respects_unary_op(r, op)
+    }
+}
+
+/// A binary congruence relation is in particular an equivalence relation.
+theorem binary_congruence_is_equivalence[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies is_equivalence(r)
+} by {
+    if is_binary_congruence(r, op) {
+        is_binary_congruence(r, op) = (is_equivalence(r) and respects_binary_op(r, op))
+        is_equivalence(r)
+    }
+}
+
+/// A binary congruence relation is compatible with its binary operation.
+theorem binary_congruence_respects_binary_op[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies respects_binary_op(r, op)
+} by {
+    if is_binary_congruence(r, op) {
+        is_binary_congruence(r, op) = (is_equivalence(r) and respects_binary_op(r, op))
+        respects_binary_op(r, op)
+    }
+}
+
+/// A unary congruence relation is reflexive.
+theorem unary_congruence_is_reflexive[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies is_reflexive(r)
+} by {
+    if is_unary_congruence(r, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_reflexive(r)
+        is_reflexive(r)
+    }
+}
+
+/// A unary congruence relation is symmetric.
+theorem unary_congruence_is_symmetric[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies is_symmetric(r)
+} by {
+    if is_unary_congruence(r, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_symmetric(r)
+        is_symmetric(r)
+    }
+}
+
+/// A unary congruence relation is transitive.
+theorem unary_congruence_is_transitive[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies is_transitive(r)
+} by {
+    if is_unary_congruence(r, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_transitive(r)
+        is_transitive(r)
+    }
+}
+
+/// A binary congruence relation is reflexive.
+theorem binary_congruence_is_reflexive[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies is_reflexive(r)
+} by {
+    if is_binary_congruence(r, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_reflexive(r)
+        is_reflexive(r)
+    }
+}
+
+/// A binary congruence relation is symmetric.
+theorem binary_congruence_is_symmetric[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies is_symmetric(r)
+} by {
+    if is_binary_congruence(r, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_symmetric(r)
+        is_symmetric(r)
+    }
+}
+
+/// A binary congruence relation is transitive.
+theorem binary_congruence_is_transitive[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies is_transitive(r)
+} by {
+    if is_binary_congruence(r, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        equivalence_is_transitive(r)
+        is_transitive(r)
+    }
+}
+
+/// A unary congruence relation may be applied at any related pair.
+theorem unary_congruence_step[T](r: (T, T) -> Bool, op: T -> T, x: T, y: T) {
+    is_unary_congruence(r, op) and r(x, y) implies r(op(x), op(y))
+} by {
+    if is_unary_congruence(r, op) and r(x, y) {
+        unary_congruence_respects_unary_op(r, op)
+        respects_unary_op(r, op)
+        respects_unary_op_step(r, op, x, y)
+        r(op(x), op(y))
+    }
+}
+
+/// A binary congruence relation may be applied at any pair of related inputs.
+theorem binary_congruence_step[T](r: (T, T) -> Bool, op: (T, T) -> T, x1: T, y1: T, x2: T, y2: T) {
+    is_binary_congruence(r, op) and r(x1, y1) and r(x2, y2) implies r(op(x1, x2), op(y1, y2))
+} by {
+    if is_binary_congruence(r, op) and r(x1, y1) and r(x2, y2) {
+        binary_congruence_respects_binary_op(r, op)
+        respects_binary_op(r, op)
+        respects_binary_op_step(r, op, x1, y1, x2, y2)
+        r(op(x1, x2), op(y1, y2))
+    }
+}
+
+/// A unary congruence relation relates every element to itself.
+theorem unary_congruence_self[T](r: (T, T) -> Bool, op: T -> T, x: T) {
+    is_unary_congruence(r, op) implies r(x, x)
+} by {
+    if is_unary_congruence(r, op) {
+        unary_congruence_is_reflexive(r, op)
+        reflexive_self(r, x)
+        r(x, x)
+    }
+}
+
+/// A binary congruence relation relates every element to itself.
+theorem binary_congruence_self[T](r: (T, T) -> Bool, op: (T, T) -> T, x: T) {
+    is_binary_congruence(r, op) implies r(x, x)
+} by {
+    if is_binary_congruence(r, op) {
+        binary_congruence_is_reflexive(r, op)
+        reflexive_self(r, x)
+        r(x, x)
+    }
+}
+
+/// A unary congruence relation is symmetric at each related pair.
+theorem unary_congruence_flip[T](r: (T, T) -> Bool, op: T -> T, x: T, y: T) {
+    is_unary_congruence(r, op) and r(x, y) implies r(y, x)
+} by {
+    if is_unary_congruence(r, op) and r(x, y) {
+        unary_congruence_is_symmetric(r, op)
+        symmetric_flip(r, x, y)
+        r(y, x)
+    }
+}
+
+/// A binary congruence relation is symmetric at each related pair.
+theorem binary_congruence_flip[T](r: (T, T) -> Bool, op: (T, T) -> T, x: T, y: T) {
+    is_binary_congruence(r, op) and r(x, y) implies r(y, x)
+} by {
+    if is_binary_congruence(r, op) and r(x, y) {
+        binary_congruence_is_symmetric(r, op)
+        symmetric_flip(r, x, y)
+        r(y, x)
+    }
+}
+
+/// Equality is always a unary congruence relation.
+theorem eq_relation_is_unary_congruence[T](op: T -> T) {
+    is_unary_congruence(eq_relation[T], op)
+} by {
+    eq_relation_is_equivalence[T]
+    is_equivalence(eq_relation[T])
+    eq_relation_respects_unary_op(op)
+    respects_unary_op(eq_relation[T], op)
+    is_unary_congruence(eq_relation[T], op)
+}
+
+/// Equality is always a binary congruence relation.
+theorem eq_relation_is_binary_congruence[T](op: (T, T) -> T) {
+    is_binary_congruence(eq_relation[T], op)
+} by {
+    eq_relation_is_equivalence[T]
+    is_equivalence(eq_relation[T])
+    eq_relation_respects_binary_op(op)
+    respects_binary_op(eq_relation[T], op)
+    is_binary_congruence(eq_relation[T], op)
+}
+
+/// Converse preserves unary congruence relations.
+theorem relation_converse_is_unary_congruence[T](r: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) implies is_unary_congruence(relation_converse(r), op)
+} by {
+    if is_unary_congruence(r, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        relation_converse_is_equivalence(r)
+        is_equivalence(relation_converse(r))
+        unary_congruence_respects_unary_op(r, op)
+        respects_unary_op(r, op)
+        relation_converse_respects_unary_op(r, op)
+        respects_unary_op(relation_converse(r), op)
+        is_unary_congruence(relation_converse(r), op)
+    }
+}
+
+/// Converse preserves binary congruence relations.
+theorem relation_converse_is_binary_congruence[T](r: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) implies is_binary_congruence(relation_converse(r), op)
+} by {
+    if is_binary_congruence(r, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        relation_converse_is_equivalence(r)
+        is_equivalence(relation_converse(r))
+        binary_congruence_respects_binary_op(r, op)
+        respects_binary_op(r, op)
+        relation_converse_respects_binary_op(r, op)
+        respects_binary_op(relation_converse(r), op)
+        is_binary_congruence(relation_converse(r), op)
+    }
+}
+
+/// Intersection preserves unary congruence relations.
+theorem relation_intersection_is_unary_congruence[T](r: (T, T) -> Bool, s: (T, T) -> Bool, op: T -> T) {
+    is_unary_congruence(r, op) and is_unary_congruence(s, op) implies
+    is_unary_congruence(relation_intersection(r, s), op)
+} by {
+    if is_unary_congruence(r, op) and is_unary_congruence(s, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        unary_congruence_is_equivalence(s, op)
+        is_equivalence(s)
+        relation_intersection_is_equivalence(r, s)
+        is_equivalence(relation_intersection(r, s))
+        unary_congruence_respects_unary_op(r, op)
+        respects_unary_op(r, op)
+        unary_congruence_respects_unary_op(s, op)
+        respects_unary_op(s, op)
+        relation_intersection_respects_unary_op(r, s, op)
+        respects_unary_op(relation_intersection(r, s), op)
+        is_unary_congruence(relation_intersection(r, s), op)
+    }
+}
+
+/// Intersection preserves binary congruence relations.
+theorem relation_intersection_is_binary_congruence[T](r: (T, T) -> Bool, s: (T, T) -> Bool, op: (T, T) -> T) {
+    is_binary_congruence(r, op) and is_binary_congruence(s, op) implies
+    is_binary_congruence(relation_intersection(r, s), op)
+} by {
+    if is_binary_congruence(r, op) and is_binary_congruence(s, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        binary_congruence_is_equivalence(s, op)
+        is_equivalence(s)
+        relation_intersection_is_equivalence(r, s)
+        is_equivalence(relation_intersection(r, s))
+        binary_congruence_respects_binary_op(r, op)
+        respects_binary_op(r, op)
+        binary_congruence_respects_binary_op(s, op)
+        respects_binary_op(s, op)
+        relation_intersection_respects_binary_op(r, s, op)
+        respects_binary_op(relation_intersection(r, s), op)
+        is_binary_congruence(relation_intersection(r, s), op)
+    }
+}
+
+/// Pullback preserves unary congruence relations along unary-operation-preserving maps.
+theorem relation_pullback_is_unary_congruence_of_preserves_unary_op[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_unary_congruence(r, op_b) and preserves_unary_op(f, op_a, op_b) implies
+    is_unary_congruence(relation_pullback(f, r), op_a)
+} by {
+    if is_unary_congruence(r, op_b) and preserves_unary_op(f, op_a, op_b) {
+        unary_congruence_is_equivalence(r, op_b)
+        is_equivalence(r)
+        relation_pullback_is_equivalence(f, r)
+        is_equivalence(relation_pullback(f, r))
+        unary_congruence_respects_unary_op(r, op_b)
+        respects_unary_op(r, op_b)
+        relation_pullback_respects_unary_op_of_preserves_unary_op(f, r, op_a, op_b)
+        respects_unary_op(relation_pullback(f, r), op_a)
+        is_unary_congruence(relation_pullback(f, r), op_a)
+    }
+}
+
+/// Pullback preserves binary congruence relations along binary-operation-preserving maps.
+theorem relation_pullback_is_binary_congruence_of_preserves_binary_op[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_binary_congruence(r, op_b) and preserves_binary_op(f, op_a, op_b) implies
+    is_binary_congruence(relation_pullback(f, r), op_a)
+} by {
+    if is_binary_congruence(r, op_b) and preserves_binary_op(f, op_a, op_b) {
+        binary_congruence_is_equivalence(r, op_b)
+        is_equivalence(r)
+        relation_pullback_is_equivalence(f, r)
+        is_equivalence(relation_pullback(f, r))
+        binary_congruence_respects_binary_op(r, op_b)
+        respects_binary_op(r, op_b)
+        relation_pullback_respects_binary_op_of_preserves_binary_op(f, r, op_a, op_b)
+        respects_binary_op(relation_pullback(f, r), op_a)
+        is_binary_congruence(relation_pullback(f, r), op_a)
+    }
+}
+
+/// Surjective pullback reflects unary congruence relations along unary-operation-preserving maps.
+theorem relation_pullback_reflects_unary_congruence_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_surjective_fn(f) and is_unary_congruence(relation_pullback(f, r), op_a) and preserves_unary_op(f, op_a, op_b) implies
+    is_unary_congruence(r, op_b)
+} by {
+    if is_surjective_fn(f) and is_unary_congruence(relation_pullback(f, r), op_a) and preserves_unary_op(f, op_a, op_b) {
+        relation_pullback_is_equivalence_iff_of_surjective(f, r)
+        is_equivalence(relation_pullback(f, r)) = is_equivalence(r)
+        unary_congruence_is_equivalence(relation_pullback(f, r), op_a)
+        is_equivalence(relation_pullback(f, r))
+        is_equivalence(r)
+        unary_congruence_respects_unary_op(relation_pullback(f, r), op_a)
+        respects_unary_op(relation_pullback(f, r), op_a)
+        relation_pullback_reflects_respects_unary_op_of_surjective(f, r, op_a, op_b)
+        respects_unary_op(r, op_b)
+        is_unary_congruence(r, op_b)
+    }
+}
+
+/// Surjective pullback reflects binary congruence relations along binary-operation-preserving maps.
+theorem relation_pullback_reflects_binary_congruence_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_surjective_fn(f) and is_binary_congruence(relation_pullback(f, r), op_a) and preserves_binary_op(f, op_a, op_b) implies
+    is_binary_congruence(r, op_b)
+} by {
+    if is_surjective_fn(f) and is_binary_congruence(relation_pullback(f, r), op_a) and preserves_binary_op(f, op_a, op_b) {
+        relation_pullback_is_equivalence_iff_of_surjective(f, r)
+        is_equivalence(relation_pullback(f, r)) = is_equivalence(r)
+        binary_congruence_is_equivalence(relation_pullback(f, r), op_a)
+        is_equivalence(relation_pullback(f, r))
+        is_equivalence(r)
+        binary_congruence_respects_binary_op(relation_pullback(f, r), op_a)
+        respects_binary_op(relation_pullback(f, r), op_a)
+        relation_pullback_reflects_respects_binary_op_of_surjective(f, r, op_a, op_b)
+        respects_binary_op(r, op_b)
+        is_binary_congruence(r, op_b)
+    }
+}
+
+/// Surjective pullback exactly detects unary congruence relations along unary-operation-preserving maps.
+theorem relation_pullback_is_unary_congruence_iff_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_surjective_fn(f) and preserves_unary_op(f, op_a, op_b) implies
+    is_unary_congruence(relation_pullback(f, r), op_a) = is_unary_congruence(r, op_b)
+} by {
+    if is_surjective_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        if is_unary_congruence(relation_pullback(f, r), op_a) {
+            relation_pullback_reflects_unary_congruence_of_surjective(f, r, op_a, op_b)
+            is_unary_congruence(r, op_b)
+        }
+        if is_unary_congruence(r, op_b) {
+            relation_pullback_is_unary_congruence_of_preserves_unary_op(f, r, op_a, op_b)
+            is_unary_congruence(relation_pullback(f, r), op_a)
+        }
+        is_unary_congruence(relation_pullback(f, r), op_a) = is_unary_congruence(r, op_b)
+    }
+}
+
+/// Surjective pullback exactly detects binary congruence relations along binary-operation-preserving maps.
+theorem relation_pullback_is_binary_congruence_iff_of_surjective[A, B](
+    f: A -> B,
+    r: (B, B) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_surjective_fn(f) and preserves_binary_op(f, op_a, op_b) implies
+    is_binary_congruence(relation_pullback(f, r), op_a) = is_binary_congruence(r, op_b)
+} by {
+    if is_surjective_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        if is_binary_congruence(relation_pullback(f, r), op_a) {
+            relation_pullback_reflects_binary_congruence_of_surjective(f, r, op_a, op_b)
+            is_binary_congruence(r, op_b)
+        }
+        if is_binary_congruence(r, op_b) {
+            relation_pullback_is_binary_congruence_of_preserves_binary_op(f, r, op_a, op_b)
+            is_binary_congruence(relation_pullback(f, r), op_a)
+        }
+        is_binary_congruence(relation_pullback(f, r), op_a) = is_binary_congruence(r, op_b)
+    }
+}
+
+/// The equality pullback of a unary-operation-preserving map is a unary congruence relation.
+theorem relation_pullback_eq_relation_is_unary_congruence[A, B](f: A -> B, op_a: A -> A, op_b: B -> B) {
+    preserves_unary_op(f, op_a, op_b) implies
+    is_unary_congruence(relation_pullback(f, eq_relation[B]), op_a)
+} by {
+    if preserves_unary_op(f, op_a, op_b) {
+        eq_relation_is_unary_congruence(op_b)
+        is_unary_congruence(eq_relation[B], op_b)
+        relation_pullback_is_unary_congruence_of_preserves_unary_op(f, eq_relation[B], op_a, op_b)
+        is_unary_congruence(relation_pullback(f, eq_relation[B]), op_a)
+    }
+}
+
+/// The equality pullback of a binary-operation-preserving map is a binary congruence relation.
+theorem relation_pullback_eq_relation_is_binary_congruence[A, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B) {
+    preserves_binary_op(f, op_a, op_b) implies
+    is_binary_congruence(relation_pullback(f, eq_relation[B]), op_a)
+} by {
+    if preserves_binary_op(f, op_a, op_b) {
+        eq_relation_is_binary_congruence(op_b)
+        is_binary_congruence(eq_relation[B], op_b)
+        relation_pullback_is_binary_congruence_of_preserves_binary_op(f, eq_relation[B], op_a, op_b)
+        is_binary_congruence(relation_pullback(f, eq_relation[B]), op_a)
     }
 }
