@@ -1,4 +1,20 @@
 /// Compatibility shim re-exporting function and relation infrastructure from narrower modules.
 
-from functions import Inhabited, binary_function_extensionality, compose, flip, function_extensionality, injective_fn_eq, is_bijection, is_bijection_fn, is_constant, is_injective, is_injective_fn, is_surjective, is_surjective_fn, bijection_fn_is_injective, bijection_fn_is_surjective, surjective_fn_has_preimage
-from relation_basic import antisymmetric_eq, eq_relation, equivalence_flip, equivalence_imp_relation_converse_eq, equivalence_self, equivalence_step, is_antisymmetric, is_asymmetric, is_equivalence, is_irreflexive, is_partial_equivalence, is_reflexive, is_symmetric, is_total, is_transitive, partial_equivalence_flip, partial_equivalence_is_transitive, reflexive_self, relation_compose, relation_compose_assoc, relation_compose_eq_relation_left, relation_compose_eq_relation_right, relation_compose_has_witness, relation_compose_intro, relation_converse, relation_converse_compose, relation_converse_eq_relation, relation_pullback, relation_pullback_eq_relation_of_injective, relation_pullback_is_antisymmetric_of_injective, relation_pullback_is_asymmetric, relation_pullback_is_irreflexive, relation_pullback_is_reflexive, relation_pullback_is_total, relation_pullback_is_transitive, relation_subset, relation_subset_refl, relation_subset_step, respects_equivalence, symmetric_flip, transitive_step
+from functions import Inhabited, binary_function_extensionality, compose, flip,
+    function_extensionality, injective_fn_eq, is_bijection, is_bijection_fn, is_constant,
+    is_injective, is_injective_fn, is_surjective, is_surjective_fn,
+    bijection_fn_is_injective, bijection_fn_is_surjective, surjective_fn_has_preimage
+from relation_basic import antisymmetric_eq, eq_relation, equivalence_flip,
+    equivalence_imp_relation_converse_eq, equivalence_self, equivalence_step,
+    is_antisymmetric, is_asymmetric, is_equivalence, is_irreflexive,
+    is_partial_equivalence, is_reflexive, is_symmetric, is_total, is_transitive,
+    partial_equivalence_flip, partial_equivalence_is_transitive, reflexive_self,
+    relation_compose, relation_compose_assoc, relation_compose_eq_relation_left,
+    relation_compose_eq_relation_right, relation_compose_has_witness,
+    relation_compose_intro, relation_converse, relation_converse_compose,
+    relation_converse_eq_relation, relation_subset, relation_subset_refl,
+    relation_subset_step, symmetric_flip, transitive_step
+from relation_transport import relation_pullback, relation_pullback_eq_relation_of_injective,
+    relation_pullback_is_antisymmetric_of_injective, relation_pullback_is_asymmetric,
+    relation_pullback_is_irreflexive, relation_pullback_is_reflexive,
+    relation_pullback_is_total, relation_pullback_is_transitive, respects_equivalence
