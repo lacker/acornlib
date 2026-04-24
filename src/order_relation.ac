@@ -1,0 +1,121 @@
+from order import PartialOrder, lte_refl, lte_trans, lt_trans
+from relation import relation_refl_trans_closure, relation_trans_closure, relation_subset_refl_trans_closure, relation_subset_trans_closure, relation_refl_trans_closure_subset_of_reflexive_transitive, relation_trans_closure_subset_of_transitive, relation_refl_trans_closure_pullback_of_bijection, relation_trans_closure_pullback_of_surjective
+from util import is_reflexive, is_transitive, relation_pullback, relation_subset, relation_subset_refl, relation_subset_step, binary_function_extensionality, is_bijection_fn, is_surjective_fn
+
+theorem lte_relation_is_reflexive[P: PartialOrder] {
+    is_reflexive(P.lte)
+} by {
+    forall(a: P) {
+        lte_refl(a)
+        a <= a
+    }
+}
+
+theorem lte_relation_is_transitive[P: PartialOrder] {
+    is_transitive(P.lte)
+} by {
+    forall(a: P, b: P, c: P) {
+        if a <= b and b <= c {
+            lte_trans(a, b, c)
+            a <= c
+        }
+    }
+}
+
+theorem lt_relation_is_transitive[P: PartialOrder] {
+    is_transitive(P.lt)
+} by {
+    forall(a: P, b: P, c: P) {
+        if a < b and b < c {
+            lt_trans(a, b, c)
+            a < c
+        }
+    }
+}
+
+theorem lte_refl_trans_closure_at[P: PartialOrder](a: P, b: P) {
+    relation_refl_trans_closure(P.lte, a, b) = (a <= b)
+} by {
+    if relation_refl_trans_closure(P.lte, a, b) {
+        lte_relation_is_reflexive[P]
+        lte_relation_is_transitive[P]
+        relation_subset_refl(P.lte)
+        relation_refl_trans_closure_subset_of_reflexive_transitive(P.lte, P.lte)
+        relation_subset(relation_refl_trans_closure(P.lte), P.lte)
+        relation_subset_step(relation_refl_trans_closure(P.lte), P.lte, a, b)
+        a <= b
+    }
+    if a <= b {
+        relation_subset_refl_trans_closure(P.lte)
+        relation_subset_step(P.lte, relation_refl_trans_closure(P.lte), a, b)
+        relation_refl_trans_closure(P.lte, a, b)
+    }
+    relation_refl_trans_closure(P.lte, a, b) = (a <= b)
+}
+
+theorem lte_refl_trans_closure[P: PartialOrder] {
+    relation_refl_trans_closure(P.lte) = P.lte
+} by {
+    let u = relation_refl_trans_closure(P.lte)
+    let v = P.lte
+    forall(a: P, b: P) {
+        lte_refl_trans_closure_at(a, b)
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
+}
+
+theorem lt_trans_closure_at[P: PartialOrder](a: P, b: P) {
+    relation_trans_closure(P.lt, a, b) = (a < b)
+} by {
+    if relation_trans_closure(P.lt, a, b) {
+        lt_relation_is_transitive[P]
+        relation_subset_refl(P.lt)
+        relation_trans_closure_subset_of_transitive(P.lt, P.lt)
+        relation_subset(relation_trans_closure(P.lt), P.lt)
+        relation_subset_step(relation_trans_closure(P.lt), P.lt, a, b)
+        a < b
+    }
+    if a < b {
+        relation_subset_trans_closure(P.lt)
+        relation_subset_step(P.lt, relation_trans_closure(P.lt), a, b)
+        relation_trans_closure(P.lt, a, b)
+    }
+    relation_trans_closure(P.lt, a, b) = (a < b)
+}
+
+theorem lt_trans_closure[P: PartialOrder] {
+    relation_trans_closure(P.lt) = P.lt
+} by {
+    let u = relation_trans_closure(P.lt)
+    let v = P.lt
+    forall(a: P, b: P) {
+        lt_trans_closure_at(a, b)
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
+}
+
+theorem lte_pullback_refl_trans_closure_of_bijection[A, B: PartialOrder](f: A -> B) {
+    is_bijection_fn(f) implies relation_refl_trans_closure(relation_pullback(f, B.lte)) = relation_pullback(f, B.lte)
+} by {
+    if is_bijection_fn(f) {
+        relation_refl_trans_closure_pullback_of_bijection(f, B.lte)
+        relation_pullback(f, relation_refl_trans_closure(B.lte)) = relation_refl_trans_closure(relation_pullback(f, B.lte))
+        lte_refl_trans_closure[B]
+        relation_pullback(f, relation_refl_trans_closure(B.lte)) = relation_pullback(f, B.lte)
+        relation_refl_trans_closure(relation_pullback(f, B.lte)) = relation_pullback(f, B.lte)
+    }
+}
+
+theorem lt_pullback_trans_closure_of_surjective[A, B: PartialOrder](f: A -> B) {
+    is_surjective_fn(f) implies relation_trans_closure(relation_pullback(f, B.lt)) = relation_pullback(f, B.lt)
+} by {
+    if is_surjective_fn(f) {
+        relation_trans_closure_pullback_of_surjective(f, B.lt)
+        relation_pullback(f, relation_trans_closure(B.lt)) = relation_trans_closure(relation_pullback(f, B.lt))
+        lt_trans_closure[B]
+        relation_pullback(f, relation_trans_closure(B.lt)) = relation_pullback(f, B.lt)
+        relation_trans_closure(relation_pullback(f, B.lt)) = relation_pullback(f, B.lt)
+    }
+}

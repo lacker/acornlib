@@ -1,0 +1,28 @@
+{"goal":"a <= a","proof":[]}
+{"goal":"lte_relation_is_reflexive","proof":["function[T0: PartialOrder] { is_reflexive[T0](T0.lte) }[P]"]}
+{"goal":"a <= c","proof":[]}
+{"goal":"lte_relation_is_transitive","proof":["function[T0: PartialOrder] { is_transitive[T0](T0.lte) }[P]"]}
+{"goal":"a < c","proof":[]}
+{"goal":"lt_relation_is_transitive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[P](P.lt)","let w0: P satisfy { exists(k0: P, k1: P) { w0 < k0 and k0 < k1 and not w0 < k1 } }","let w1: P satisfy { exists(k2: P) { w0 < w1 and w1 < k2 and not w0 < k2 } }","let w2: P satisfy { w0 < w1 and w1 < w2 and not w0 < w2 }","function[T0: PartialOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or x0 < x2 }[P](w0, w1, w2)"]}
+{"goal":"relation_subset[P, P](relation_refl_trans_closure[P](P.lte), P.lte)","proof":[]}
+{"goal":"a <= b","proof":[]}
+{"goal":"relation_refl_trans_closure(P.lte, a, b)","proof":[]}
+{"goal":"relation_refl_trans_closure(P.lte, a, b) = a <= b","proof":[]}
+{"goal":"lte_refl_trans_closure_at","proof":[]}
+{"goal":"u(a, b) = v(a, b)","proof":[]}
+{"goal":"lte_refl_trans_closure","proof":[]}
+{"goal":"relation_subset[P, P](relation_trans_closure[P](P.lt), P.lt)","proof":[]}
+{"goal":"a < b","proof":[]}
+{"goal":"relation_trans_closure(P.lt, a, b)","proof":[]}
+{"goal":"relation_trans_closure(P.lt, a, b) = a < b","proof":[]}
+{"goal":"lt_trans_closure_at","proof":[]}
+{"goal":"u(a, b) = v(a, b)","proof":[]}
+{"goal":"lt_trans_closure","proof":[]}
+{"goal":"relation_pullback[A, B](f, relation_refl_trans_closure[B](B.lte)) = relation_refl_trans_closure[A](relation_pullback[A, B](f, B.lte))","proof":[]}
+{"goal":"relation_pullback[A, B](f, relation_refl_trans_closure[B](B.lte)) = relation_pullback[A, B](f, B.lte)","proof":[]}
+{"goal":"relation_refl_trans_closure[A](relation_pullback[A, B](f, B.lte)) = relation_pullback[A, B](f, B.lte)","proof":[]}
+{"goal":"lte_pullback_refl_trans_closure_of_bijection","proof":[]}
+{"goal":"relation_pullback[A, B](f, relation_trans_closure[B](B.lt)) = relation_trans_closure[A](relation_pullback[A, B](f, B.lt))","proof":[]}
+{"goal":"relation_pullback[A, B](f, relation_trans_closure[B](B.lt)) = relation_pullback[A, B](f, B.lt)","proof":[]}
+{"goal":"relation_trans_closure[A](relation_pullback[A, B](f, B.lt)) = relation_pullback[A, B](f, B.lt)","proof":[]}
+{"goal":"lt_pullback_trans_closure_of_surjective","proof":[]}
