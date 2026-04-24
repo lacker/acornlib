@@ -1033,6 +1033,15 @@ theorem relation_pullback_is_equivalence[A, B](f: A -> B, r: (B, B) -> Bool) {
     }
 }
 
+/// Every function respects the pullback of a relation along itself.
+theorem function_respects_pullback[T, U](f: T -> U, r: (U, U) -> Bool) {
+    respects_equivalence(f, relation_pullback(f, r), r)
+} by {
+    relation_subset_refl(relation_pullback(f, r))
+    respects_equivalence_eq_relation_subset_pullback(f, relation_pullback(f, r), r)
+    respects_equivalence(f, relation_pullback(f, r), r)
+}
+
 /// The identity function respects any relation.
 theorem identity_fn_respects_equivalence[T](r: (T, T) -> Bool) {
     respects_equivalence(identity_fn[T], r, r)
@@ -1111,6 +1120,112 @@ theorem injective_fn_eq[T, U](f: T -> U, x1: T, x2: T) {
     }
 }
 
+/// Injectivity identifies each equality pullback instance with ordinary equality.
+theorem relation_pullback_eq_relation_of_injective_at[T, U](f: T -> U, x: T, y: T) {
+    is_injective_fn(f) implies relation_pullback(f, eq_relation[U], x, y) = eq_relation[T](x, y)
+} by {
+    if is_injective_fn(f) {
+        if relation_pullback(f, eq_relation[U], x, y) {
+            relation_pullback(f, eq_relation[U], x, y) = eq_relation[U](f(x), f(y))
+            eq_relation[U](f(x), f(y)) = (f(x) = f(y))
+            f(x) = f(y)
+            injective_fn_eq(f, x, y)
+            x = y
+            eq_relation[T](x, y)
+        }
+        if eq_relation[T](x, y) {
+            eq_relation[T](x, y) = (x = y)
+            x = y
+            f(x) = f(y)
+            eq_relation[U](f(x), f(y))
+            relation_pullback(f, eq_relation[U], x, y)
+        }
+        relation_pullback(f, eq_relation[U], x, y) = eq_relation[T](x, y)
+    }
+}
+
+/// Pulling back equality along an injective function recovers equality.
+theorem relation_pullback_eq_relation_of_injective[T, U](f: T -> U) {
+    is_injective_fn(f) implies relation_pullback(f, eq_relation[U]) = eq_relation[T]
+} by {
+    let u = relation_pullback(f, eq_relation[U])
+    let v = eq_relation[T]
+    if is_injective_fn(f) {
+        forall(x: T, y: T) {
+            relation_pullback_eq_relation_of_injective_at(f, x, y)
+            u(x, y) = v(x, y)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+/// Injective pullback preserves antisymmetry.
+theorem relation_pullback_is_antisymmetric_of_injective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_injective_fn(f) and is_antisymmetric(r) implies is_antisymmetric(relation_pullback(f, r))
+} by {
+    if is_injective_fn(f) and is_antisymmetric(r) {
+        forall(x: A, y: A) {
+            if relation_pullback(f, r, x, y) and relation_pullback(f, r, y, x) {
+                antisymmetric_eq(r, f(x), f(y))
+                f(x) = f(y)
+                injective_fn_eq(f, x, y)
+                x = y
+            }
+        }
+    }
+}
+
+/// Injective pullback preserves reflexive, transitive, and antisymmetric order data.
+theorem relation_pullback_is_reflexive_transitive_antisymmetric_of_injective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_injective_fn(f) and is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) implies
+    is_reflexive(relation_pullback(f, r)) and
+    is_transitive(relation_pullback(f, r)) and
+    is_antisymmetric(relation_pullback(f, r))
+} by {
+    if is_injective_fn(f) and is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) {
+        relation_pullback_is_reflexive(f, r)
+        is_reflexive(relation_pullback(f, r))
+        relation_pullback_is_transitive(f, r)
+        is_transitive(relation_pullback(f, r))
+        relation_pullback_is_antisymmetric_of_injective(f, r)
+        is_antisymmetric(relation_pullback(f, r))
+    }
+}
+
+/// Injectivity identifies each reflexive-closure pullback instance with the pullback reflexive closure.
+theorem relation_pullback_reflexive_closure_of_injective_at[A, B](f: A -> B, r: (B, B) -> Bool, x: A, y: A) {
+    is_injective_fn(f) implies
+    relation_pullback(f, relation_reflexive_closure(r), x, y) = relation_reflexive_closure(relation_pullback(f, r), x, y)
+} by {
+    if is_injective_fn(f) {
+        relation_pullback_eq_relation_of_injective_at(f, x, y)
+        relation_pullback(f, relation_reflexive_closure(r), x, y) = relation_reflexive_closure(r, f(x), f(y))
+        relation_reflexive_closure(r, f(x), f(y)) = (eq_relation[B](f(x), f(y)) or r(f(x), f(y)))
+        relation_pullback(f, eq_relation[B], x, y) = eq_relation[B](f(x), f(y))
+        relation_pullback(f, eq_relation[B], x, y) = eq_relation[A](x, y)
+        eq_relation[B](f(x), f(y)) = eq_relation[A](x, y)
+        relation_pullback(f, r, x, y) = r(f(x), f(y))
+        relation_pullback(f, relation_reflexive_closure(r), x, y) = (eq_relation[A](x, y) or relation_pullback(f, r, x, y))
+        relation_reflexive_closure(relation_pullback(f, r), x, y) = (eq_relation[A](x, y) or relation_pullback(f, r, x, y))
+        relation_pullback(f, relation_reflexive_closure(r), x, y) = relation_reflexive_closure(relation_pullback(f, r), x, y)
+    }
+}
+
+/// Injective pullback commutes with reflexive closure.
+theorem relation_pullback_reflexive_closure_of_injective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_injective_fn(f) implies relation_pullback(f, relation_reflexive_closure(r)) = relation_reflexive_closure(relation_pullback(f, r))
+} by {
+    let u = relation_pullback(f, relation_reflexive_closure(r))
+    let v = relation_reflexive_closure(relation_pullback(f, r))
+    if is_injective_fn(f) {
+        forall(x: A, y: A) {
+            relation_pullback_reflexive_closure_of_injective_at(f, r, x, y)
+            u(x, y) = v(x, y)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
@@ -1140,6 +1255,246 @@ theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
         exists(x: T) {
             f(x) = y
         }
+    }
+}
+
+/// Surjective pullback reflects reflexivity.
+theorem relation_pullback_reflects_reflexive_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_reflexive(relation_pullback(f, r)) implies is_reflexive(r)
+} by {
+    if is_surjective_fn(f) and is_reflexive(relation_pullback(f, r)) {
+        forall(y: B) {
+            surjective_fn_has_preimage(f, y)
+            let x: A satisfy {
+                f(x) = y
+            }
+            reflexive_self(relation_pullback(f, r), x)
+            relation_pullback(f, r, x, x)
+            relation_pullback(f, r, x, x) = r(f(x), f(x))
+            f(x) = y
+            r(y, y)
+        }
+    }
+}
+
+/// Surjective pullback preserves and reflects reflexivity.
+theorem relation_pullback_is_reflexive_iff_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies is_reflexive(relation_pullback(f, r)) = is_reflexive(r)
+} by {
+    if is_surjective_fn(f) {
+        if is_reflexive(relation_pullback(f, r)) {
+            relation_pullback_reflects_reflexive_of_surjective(f, r)
+            is_reflexive(r)
+        }
+        if is_reflexive(r) {
+            relation_pullback_is_reflexive(f, r)
+            is_reflexive(relation_pullback(f, r))
+        }
+        is_reflexive(relation_pullback(f, r)) = is_reflexive(r)
+    }
+}
+
+/// Surjective pullback reflects symmetry.
+theorem relation_pullback_reflects_symmetric_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_symmetric(relation_pullback(f, r)) implies is_symmetric(r)
+} by {
+    if is_surjective_fn(f) and is_symmetric(relation_pullback(f, r)) {
+        forall(y1: B, y2: B) {
+            if r(y1, y2) {
+                surjective_fn_has_preimage(f, y1)
+                let x1: A satisfy {
+                    f(x1) = y1
+                }
+                surjective_fn_has_preimage(f, y2)
+                let x2: A satisfy {
+                    f(x2) = y2
+                }
+                relation_pullback(f, r, x1, x2) = r(f(x1), f(x2))
+                f(x1) = y1
+                f(x2) = y2
+                relation_pullback(f, r, x1, x2)
+                symmetric_flip(relation_pullback(f, r), x1, x2)
+                relation_pullback(f, r, x2, x1)
+                relation_pullback(f, r, x2, x1) = r(f(x2), f(x1))
+                r(y2, y1)
+            }
+        }
+    }
+}
+
+/// Surjective pullback preserves and reflects symmetry.
+theorem relation_pullback_is_symmetric_iff_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies is_symmetric(relation_pullback(f, r)) = is_symmetric(r)
+} by {
+    if is_surjective_fn(f) {
+        if is_symmetric(relation_pullback(f, r)) {
+            relation_pullback_reflects_symmetric_of_surjective(f, r)
+            is_symmetric(r)
+        }
+        if is_symmetric(r) {
+            relation_pullback_is_symmetric(f, r)
+            is_symmetric(relation_pullback(f, r))
+        }
+        is_symmetric(relation_pullback(f, r)) = is_symmetric(r)
+    }
+}
+
+/// Surjective pullback reflects transitivity.
+theorem relation_pullback_reflects_transitive_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_transitive(relation_pullback(f, r)) implies is_transitive(r)
+} by {
+    if is_surjective_fn(f) and is_transitive(relation_pullback(f, r)) {
+        forall(y1: B, y2: B, y3: B) {
+            if r(y1, y2) and r(y2, y3) {
+                surjective_fn_has_preimage(f, y1)
+                let x1: A satisfy {
+                    f(x1) = y1
+                }
+                surjective_fn_has_preimage(f, y2)
+                let x2: A satisfy {
+                    f(x2) = y2
+                }
+                surjective_fn_has_preimage(f, y3)
+                let x3: A satisfy {
+                    f(x3) = y3
+                }
+                relation_pullback(f, r, x1, x2) = r(f(x1), f(x2))
+                f(x1) = y1
+                f(x2) = y2
+                relation_pullback(f, r, x1, x2)
+                relation_pullback(f, r, x2, x3) = r(f(x2), f(x3))
+                f(x3) = y3
+                relation_pullback(f, r, x2, x3)
+                transitive_step(relation_pullback(f, r), x1, x2, x3)
+                relation_pullback(f, r, x1, x3)
+                relation_pullback(f, r, x1, x3) = r(f(x1), f(x3))
+                r(y1, y3)
+            }
+        }
+    }
+}
+
+/// Surjective pullback preserves and reflects transitivity.
+theorem relation_pullback_is_transitive_iff_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies is_transitive(relation_pullback(f, r)) = is_transitive(r)
+} by {
+    if is_surjective_fn(f) {
+        if is_transitive(relation_pullback(f, r)) {
+            relation_pullback_reflects_transitive_of_surjective(f, r)
+            is_transitive(r)
+        }
+        if is_transitive(r) {
+            relation_pullback_is_transitive(f, r)
+            is_transitive(relation_pullback(f, r))
+        }
+        is_transitive(relation_pullback(f, r)) = is_transitive(r)
+    }
+}
+
+/// Surjective pullback reflects antisymmetry.
+theorem relation_pullback_reflects_antisymmetric_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_antisymmetric(relation_pullback(f, r)) implies is_antisymmetric(r)
+} by {
+    if is_surjective_fn(f) and is_antisymmetric(relation_pullback(f, r)) {
+        forall(y1: B, y2: B) {
+            if r(y1, y2) and r(y2, y1) {
+                surjective_fn_has_preimage(f, y1)
+                let x1: A satisfy {
+                    f(x1) = y1
+                }
+                surjective_fn_has_preimage(f, y2)
+                let x2: A satisfy {
+                    f(x2) = y2
+                }
+                relation_pullback(f, r, x1, x2) = r(f(x1), f(x2))
+                f(x1) = y1
+                f(x2) = y2
+                relation_pullback(f, r, x1, x2)
+                relation_pullback(f, r, x2, x1) = r(f(x2), f(x1))
+                relation_pullback(f, r, x2, x1)
+                antisymmetric_eq(relation_pullback(f, r), x1, x2)
+                x1 = x2
+                f(x1) = f(x2)
+                y1 = y2
+            }
+        }
+    }
+}
+
+/// Surjective pullback reflects equivalence relations.
+theorem relation_pullback_reflects_equivalence_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_equivalence(relation_pullback(f, r)) implies is_equivalence(r)
+} by {
+    if is_surjective_fn(f) and is_equivalence(relation_pullback(f, r)) {
+        equivalence_is_reflexive(relation_pullback(f, r))
+        relation_pullback_reflects_reflexive_of_surjective(f, r)
+        is_reflexive(r)
+        equivalence_is_symmetric(relation_pullback(f, r))
+        relation_pullback_reflects_symmetric_of_surjective(f, r)
+        is_symmetric(r)
+        equivalence_is_transitive(relation_pullback(f, r))
+        relation_pullback_reflects_transitive_of_surjective(f, r)
+        is_transitive(r)
+        is_equivalence(r)
+    }
+}
+
+/// Surjective pullback preserves and reflects equivalence relations.
+theorem relation_pullback_is_equivalence_iff_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies is_equivalence(relation_pullback(f, r)) = is_equivalence(r)
+} by {
+    if is_surjective_fn(f) {
+        if is_equivalence(relation_pullback(f, r)) {
+            relation_pullback_reflects_equivalence_of_surjective(f, r)
+            is_equivalence(r)
+        }
+        if is_equivalence(r) {
+            relation_pullback_is_equivalence(f, r)
+            is_equivalence(relation_pullback(f, r))
+        }
+        is_equivalence(relation_pullback(f, r)) = is_equivalence(r)
+    }
+}
+
+/// Bijective pullback preserves and reflects antisymmetry.
+theorem relation_pullback_is_antisymmetric_iff_of_bijection[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_bijection_fn(f) implies is_antisymmetric(relation_pullback(f, r)) = is_antisymmetric(r)
+} by {
+    if is_bijection_fn(f) {
+        if is_antisymmetric(relation_pullback(f, r)) {
+            bijection_fn_is_surjective(f)
+            relation_pullback_reflects_antisymmetric_of_surjective(f, r)
+            is_antisymmetric(r)
+        }
+        if is_antisymmetric(r) {
+            bijection_fn_is_injective(f)
+            relation_pullback_is_antisymmetric_of_injective(f, r)
+            is_antisymmetric(relation_pullback(f, r))
+        }
+        is_antisymmetric(relation_pullback(f, r)) = is_antisymmetric(r)
+    }
+}
+
+/// Bijective pullback preserves and reflects reflexive, transitive, and antisymmetric order data.
+theorem relation_pullback_is_reflexive_transitive_antisymmetric_iff_of_bijection[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_bijection_fn(f) implies
+    (is_reflexive(relation_pullback(f, r)) and
+     is_transitive(relation_pullback(f, r)) and
+     is_antisymmetric(relation_pullback(f, r))) =
+    (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        relation_pullback_is_reflexive_iff_of_surjective(f, r)
+        is_reflexive(relation_pullback(f, r)) = is_reflexive(r)
+        relation_pullback_is_transitive_iff_of_surjective(f, r)
+        is_transitive(relation_pullback(f, r)) = is_transitive(r)
+        relation_pullback_is_antisymmetric_iff_of_bijection(f, r)
+        is_antisymmetric(relation_pullback(f, r)) = is_antisymmetric(r)
+        (is_reflexive(relation_pullback(f, r)) and
+         is_transitive(relation_pullback(f, r)) and
+         is_antisymmetric(relation_pullback(f, r))) =
+        (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
     }
 }
 
