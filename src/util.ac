@@ -186,6 +186,11 @@ define is_equivalence[T](f: (T, T) -> Bool) -> Bool {
     is_reflexive(f) and is_symmetric(f) and is_transitive(f)
 }
 
+/// True if a relation is symmetric and transitive.
+define is_partial_equivalence[T](f: (T, T) -> Bool) -> Bool {
+    is_symmetric(f) and is_transitive(f)
+}
+
 /// The equality relation on a type.
 define eq_relation[T](x: T, y: T) -> Bool {
     x = y
@@ -196,6 +201,11 @@ define relation_compose[A, B, C](r: (A, B) -> Bool, s: (B, C) -> Bool, x: A, z: 
     exists(y: B) {
         r(x, y) and s(y, z)
     }
+}
+
+/// The pointwise intersection of two relations.
+define relation_intersection[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, x: A, y: B) -> Bool {
+    r(x, y) and s(x, y)
 }
 
 /// True if every pair related by `r` is also related by `s`.
@@ -236,6 +246,45 @@ theorem relation_subset_trans[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A,
                 s(x, y)
                 relation_subset_step(s, t, x, y)
                 t(x, y)
+            }
+        }
+    }
+}
+
+/// The intersection relation is contained in its left factor.
+theorem relation_intersection_left_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(relation_intersection(r, s), r)
+} by {
+    forall(x: A, y: B) {
+        if relation_intersection(r, s, x, y) {
+            r(x, y)
+        }
+    }
+}
+
+/// The intersection relation is contained in its right factor.
+theorem relation_intersection_right_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(relation_intersection(r, s), s)
+} by {
+    forall(x: A, y: B) {
+        if relation_intersection(r, s, x, y) {
+            s(x, y)
+        }
+    }
+}
+
+/// Any relation contained in both factors is contained in their intersection.
+theorem relation_subset_intersection[A, B](t: (A, B) -> Bool, r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(t, r) and relation_subset(t, s) implies relation_subset(t, relation_intersection(r, s))
+} by {
+    if relation_subset(t, r) and relation_subset(t, s) {
+        forall(x: A, y: B) {
+            if t(x, y) {
+                relation_subset_step(t, r, x, y)
+                r(x, y)
+                relation_subset_step(t, s, x, y)
+                s(x, y)
+                relation_intersection(r, s, x, y)
             }
         }
     }
@@ -543,6 +592,61 @@ theorem relation_converse_is_irreflexive[T](r: (T, T) -> Bool) {
     }
 }
 
+/// Converse preserves reflexivity.
+theorem relation_converse_is_reflexive[T](r: (T, T) -> Bool) {
+    is_reflexive(r) implies is_reflexive(relation_converse(r))
+} by {
+    if is_reflexive(r) {
+        forall(x: T) {
+            is_reflexive(r) = forall(x0: T) {
+                r(x0, x0)
+            }
+            r(x, x)
+            relation_converse(r, x, x)
+        }
+    }
+}
+
+/// Converse preserves symmetry.
+theorem relation_converse_is_symmetric[T](r: (T, T) -> Bool) {
+    is_symmetric(r) implies is_symmetric(relation_converse(r))
+} by {
+    if is_symmetric(r) {
+        forall(x: T, y: T) {
+            if relation_converse(r, x, y) {
+                relation_converse(r, x, y) = r(y, x)
+                r(y, x)
+                is_symmetric(r) = forall(x0: T, y0: T) {
+                    r(x0, y0) implies r(y0, x0)
+                }
+                r(x, y)
+                relation_converse(r, y, x)
+            }
+        }
+    }
+}
+
+/// Converse preserves transitivity.
+theorem relation_converse_is_transitive[T](r: (T, T) -> Bool) {
+    is_transitive(r) implies is_transitive(relation_converse(r))
+} by {
+    if is_transitive(r) {
+        forall(x: T, y: T, z: T) {
+            if relation_converse(r, x, y) and relation_converse(r, y, z) {
+                relation_converse(r, x, y) = r(y, x)
+                r(y, x)
+                relation_converse(r, y, z) = r(z, y)
+                r(z, y)
+                is_transitive(r) = forall(x0: T, y0: T, z0: T) {
+                    r(x0, y0) and r(y0, z0) implies r(x0, z0)
+                }
+                r(z, x)
+                relation_converse(r, x, z)
+            }
+        }
+    }
+}
+
 /// Converse preserves asymmetry.
 theorem relation_converse_is_asymmetric[T](r: (T, T) -> Bool) {
     is_asymmetric(r) implies is_asymmetric(relation_converse(r))
@@ -598,6 +702,36 @@ theorem relation_pullback_converse[A, B](f: A -> B, r: (B, B) -> Bool) {
         relation_converse(r, f(x), f(y)) = r(f(y), f(x))
         v(x, y) = relation_pullback(f, r, y, x)
         relation_pullback(f, r, y, x) = r(f(y), f(x))
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Converse commutes with relation intersection.
+theorem relation_converse_intersection[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_converse(relation_intersection(r, s)) =
+    relation_intersection(relation_converse(r), relation_converse(s))
+} by {
+    let u = relation_converse(relation_intersection(r, s))
+    let v = relation_intersection(relation_converse(r), relation_converse(s))
+    forall(x: B, y: A) {
+        if u(x, y) {
+            relation_converse(relation_intersection(r, s), x, y)
+            relation_intersection(r, s, y, x)
+            r(y, x)
+            s(y, x)
+            relation_converse(r, x, y)
+            relation_converse(s, x, y)
+            v(x, y)
+        }
+        if v(x, y) {
+            relation_converse(r, x, y)
+            relation_converse(s, x, y)
+            r(y, x)
+            s(y, x)
+            relation_intersection(r, s, y, x)
+            u(x, y)
+        }
         u(x, y) = v(x, y)
     }
     binary_function_extensionality(u, v)
@@ -825,6 +959,15 @@ theorem equivalence_is_symmetric[T](f: (T, T) -> Bool) {
     }
 }
 
+/// A partial equivalence relation is symmetric.
+theorem partial_equivalence_is_symmetric[T](f: (T, T) -> Bool) {
+    is_partial_equivalence(f) implies is_symmetric(f)
+} by {
+    if is_partial_equivalence(f) {
+        is_symmetric(f)
+    }
+}
+
 /// An equivalence relation is fixed by converse.
 theorem equivalence_imp_relation_converse_eq[T](r: (T, T) -> Bool) {
     is_equivalence(r) implies relation_converse(r) = r
@@ -835,11 +978,30 @@ theorem equivalence_imp_relation_converse_eq[T](r: (T, T) -> Bool) {
     }
 }
 
+/// A partial equivalence relation is fixed by converse.
+theorem partial_equivalence_imp_relation_converse_eq[T](r: (T, T) -> Bool) {
+    is_partial_equivalence(r) implies relation_converse(r) = r
+} by {
+    if is_partial_equivalence(r) {
+        partial_equivalence_is_symmetric(r)
+        symmetric_imp_relation_converse_eq(r)
+    }
+}
+
 /// An equivalence relation is transitive.
 theorem equivalence_is_transitive[T](f: (T, T) -> Bool) {
     is_equivalence(f) implies is_transitive(f)
 } by {
     if is_equivalence(f) {
+        is_transitive(f)
+    }
+}
+
+/// A partial equivalence relation is transitive.
+theorem partial_equivalence_is_transitive[T](f: (T, T) -> Bool) {
+    is_partial_equivalence(f) implies is_transitive(f)
+} by {
+    if is_partial_equivalence(f) {
         is_transitive(f)
     }
 }
@@ -862,6 +1024,18 @@ theorem symmetric_flip[T](f: (T, T) -> Bool, x: T, y: T) {
     }
 }
 
+/// A partial equivalence relation can reverse any related pair.
+theorem partial_equivalence_flip[T](f: (T, T) -> Bool, x: T, y: T) {
+    is_partial_equivalence(f) and f(x, y) implies f(y, x)
+} by {
+    if is_partial_equivalence(f) and f(x, y) {
+        partial_equivalence_is_symmetric(f)
+        is_symmetric(f)
+        symmetric_flip(f, x, y)
+        f(y, x)
+    }
+}
+
 /// A transitive relation composes two consecutive steps.
 theorem transitive_step[T](f: (T, T) -> Bool, x: T, y: T, z: T) {
     is_transitive(f) and f(x, y) and f(y, z) implies f(x, z)
@@ -870,6 +1044,18 @@ theorem transitive_step[T](f: (T, T) -> Bool, x: T, y: T, z: T) {
         if f(x, y) and f(y, z) {
             f(x, z)
         }
+    }
+}
+
+/// A partial equivalence relation composes two consecutive steps.
+theorem partial_equivalence_step[T](f: (T, T) -> Bool, x: T, y: T, z: T) {
+    is_partial_equivalence(f) and f(x, y) and f(y, z) implies f(x, z)
+} by {
+    if is_partial_equivalence(f) and f(x, y) and f(y, z) {
+        partial_equivalence_is_transitive(f)
+        is_transitive(f)
+        transitive_step(f, x, y, z)
+        f(x, z)
     }
 }
 
@@ -908,6 +1094,18 @@ theorem eq_relation_is_equivalence[T] {
     is_transitive(eq_relation[T])
 
     is_equivalence(eq_relation[T])
+}
+
+/// Equality is also a partial equivalence relation.
+theorem eq_relation_is_partial_equivalence[T] {
+    is_partial_equivalence(eq_relation[T])
+} by {
+    eq_relation_is_equivalence[T]
+    equivalence_is_symmetric(eq_relation[T])
+    is_symmetric(eq_relation[T])
+    equivalence_is_transitive(eq_relation[T])
+    is_transitive(eq_relation[T])
+    is_partial_equivalence(eq_relation[T])
 }
 
 /// Equality of relations transports reflexivity.
@@ -955,12 +1153,43 @@ theorem relation_eq_imp_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     }
 }
 
+/// Equality of relations transports partial-equivalence structure.
+theorem relation_eq_imp_partial_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_partial_equivalence(f) implies is_partial_equivalence(g)
+} by {
+    if f = g and is_partial_equivalence(f) {
+        is_partial_equivalence(g)
+    }
+}
+
 /// Reflexivity, symmetry, and transitivity together give an equivalence relation.
 theorem reflexive_symmetric_transitive_imp_equivalence[T](f: (T, T) -> Bool) {
     is_reflexive(f) and is_symmetric(f) and is_transitive(f) implies is_equivalence(f)
 } by {
     if is_reflexive(f) and is_symmetric(f) and is_transitive(f) {
         is_equivalence(f)
+    }
+}
+
+/// Symmetry and transitivity together give a partial equivalence relation.
+theorem symmetric_transitive_imp_partial_equivalence[T](f: (T, T) -> Bool) {
+    is_symmetric(f) and is_transitive(f) implies is_partial_equivalence(f)
+} by {
+    if is_symmetric(f) and is_transitive(f) {
+        is_partial_equivalence(f)
+    }
+}
+
+/// Every equivalence relation is a partial equivalence relation.
+theorem equivalence_imp_partial_equivalence[T](f: (T, T) -> Bool) {
+    is_equivalence(f) implies is_partial_equivalence(f)
+} by {
+    if is_equivalence(f) {
+        equivalence_is_symmetric(f)
+        is_symmetric(f)
+        equivalence_is_transitive(f)
+        is_transitive(f)
+        is_partial_equivalence(f)
     }
 }
 
@@ -1066,6 +1295,36 @@ theorem relation_pullback_compose[A, B, C](g: A -> B, f: B -> C, r: (C, C) -> Bo
         compose(f, g, y) = f(g(y))
         v(x, y) = relation_pullback(f, r, g(x), g(y))
         relation_pullback(f, r, g(x), g(y)) = r(f(g(x)), f(g(y)))
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pullback commutes with relation intersection.
+theorem relation_pullback_intersection[A, B](f: A -> B, r: (B, B) -> Bool, s: (B, B) -> Bool) {
+    relation_pullback(f, relation_intersection(r, s)) =
+    relation_intersection(relation_pullback(f, r), relation_pullback(f, s))
+} by {
+    let u = relation_pullback(f, relation_intersection(r, s))
+    let v = relation_intersection(relation_pullback(f, r), relation_pullback(f, s))
+    forall(x: A, y: A) {
+        if u(x, y) {
+            relation_pullback(f, relation_intersection(r, s), x, y)
+            relation_intersection(r, s, f(x), f(y))
+            r(f(x), f(y))
+            s(f(x), f(y))
+            relation_pullback(f, r, x, y)
+            relation_pullback(f, s, x, y)
+            v(x, y)
+        }
+        if v(x, y) {
+            relation_pullback(f, r, x, y)
+            relation_pullback(f, s, x, y)
+            r(f(x), f(y))
+            s(f(x), f(y))
+            relation_intersection(r, s, f(x), f(y))
+            u(x, y)
+        }
         u(x, y) = v(x, y)
     }
     binary_function_extensionality(u, v)
@@ -1202,6 +1461,177 @@ theorem relation_pullback_is_equivalence[A, B](f: A -> B, r: (B, B) -> Bool) {
         relation_pullback_is_transitive(f, r)
         is_transitive(relation_pullback(f, r))
         is_equivalence(relation_pullback(f, r))
+    }
+}
+
+/// Pullback preserves partial equivalence relations.
+theorem relation_pullback_is_partial_equivalence[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_partial_equivalence(r) implies is_partial_equivalence(relation_pullback(f, r))
+} by {
+    if is_partial_equivalence(r) {
+        partial_equivalence_is_symmetric(r)
+        relation_pullback_is_symmetric(f, r)
+        is_symmetric(relation_pullback(f, r))
+        partial_equivalence_is_transitive(r)
+        relation_pullback_is_transitive(f, r)
+        is_transitive(relation_pullback(f, r))
+        is_partial_equivalence(relation_pullback(f, r))
+    }
+}
+
+/// Relation intersection preserves reflexivity.
+theorem relation_intersection_is_reflexive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_reflexive(r) and is_reflexive(s) implies is_reflexive(relation_intersection(r, s))
+} by {
+    if is_reflexive(r) and is_reflexive(s) {
+        forall(x: T) {
+            reflexive_self(r, x)
+            reflexive_self(s, x)
+            r(x, x) and s(x, x)
+            relation_intersection(r, s, x, x)
+        }
+    }
+}
+
+/// Relation intersection preserves symmetry.
+theorem relation_intersection_is_symmetric[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_symmetric(r) and is_symmetric(s) implies is_symmetric(relation_intersection(r, s))
+} by {
+    if is_symmetric(r) and is_symmetric(s) {
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                r(x, y)
+                symmetric_flip(r, x, y)
+                r(y, x)
+                s(x, y)
+                symmetric_flip(s, x, y)
+                s(y, x)
+                r(y, x) and s(y, x)
+                relation_intersection(r, s, y, x)
+            }
+        }
+    }
+}
+
+/// Relation intersection preserves transitivity.
+theorem relation_intersection_is_transitive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_transitive(r) and is_transitive(s) implies is_transitive(relation_intersection(r, s))
+} by {
+    if is_transitive(r) and is_transitive(s) {
+        forall(x: T, y: T, z: T) {
+            if relation_intersection(r, s, x, y) and relation_intersection(r, s, y, z) {
+                r(x, y)
+                r(y, z)
+                transitive_step(r, x, y, z)
+                r(x, z)
+                s(x, y)
+                s(y, z)
+                transitive_step(s, x, y, z)
+                s(x, z)
+                r(x, z) and s(x, z)
+                relation_intersection(r, s, x, z)
+            }
+        }
+    }
+}
+
+/// Relation intersection preserves equivalence relations.
+theorem relation_intersection_is_equivalence[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_equivalence(r) and is_equivalence(s) implies is_equivalence(relation_intersection(r, s))
+} by {
+    if is_equivalence(r) and is_equivalence(s) {
+        forall(x: T) {
+            equivalence_self(r, x)
+            equivalence_self(s, x)
+            r(x, x) and s(x, x)
+            relation_intersection(r, s, x, x)
+        }
+        is_reflexive(relation_intersection(r, s))
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                equivalence_flip(r, x, y)
+                r(y, x)
+                equivalence_flip(s, x, y)
+                s(y, x)
+                relation_intersection(r, s, y, x)
+            }
+        }
+        is_symmetric(relation_intersection(r, s))
+        forall(x: T, y: T, z: T) {
+            if relation_intersection(r, s, x, y) and relation_intersection(r, s, y, z) {
+                relation_intersection_left_subset(r, s)
+                relation_subset_step(relation_intersection(r, s), r, x, y)
+                r(x, y)
+                relation_subset_step(relation_intersection(r, s), r, y, z)
+                r(y, z)
+                equivalence_is_transitive(r)
+                is_transitive(r) = forall(x0: T, y0: T, z0: T) {
+                    r(x0, y0) and r(y0, z0) implies r(x0, z0)
+                }
+                r(x, z)
+                relation_intersection_right_subset(r, s)
+                relation_subset_step(relation_intersection(r, s), s, x, y)
+                s(x, y)
+                relation_subset_step(relation_intersection(r, s), s, y, z)
+                s(y, z)
+                equivalence_is_transitive(s)
+                is_transitive(s) = forall(x0: T, y0: T, z0: T) {
+                    s(x0, y0) and s(y0, z0) implies s(x0, z0)
+                }
+                s(x, z)
+                r(x, z) and s(x, z)
+                relation_intersection(r, s, x, z)
+            }
+        }
+        is_transitive(relation_intersection(r, s))
+        is_equivalence(relation_intersection(r, s))
+    }
+}
+
+/// Relation intersection preserves partial equivalence relations.
+theorem relation_intersection_is_partial_equivalence[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_partial_equivalence(r) and is_partial_equivalence(s) implies
+    is_partial_equivalence(relation_intersection(r, s))
+} by {
+    if is_partial_equivalence(r) and is_partial_equivalence(s) {
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                partial_equivalence_flip(r, x, y)
+                r(y, x)
+                partial_equivalence_flip(s, x, y)
+                s(y, x)
+                relation_intersection(r, s, y, x)
+            }
+        }
+        is_symmetric(relation_intersection(r, s))
+        forall(x: T, y: T, z: T) {
+            if relation_intersection(r, s, x, y) and relation_intersection(r, s, y, z) {
+                relation_intersection_left_subset(r, s)
+                relation_subset_step(relation_intersection(r, s), r, x, y)
+                r(x, y)
+                relation_subset_step(relation_intersection(r, s), r, y, z)
+                r(y, z)
+                partial_equivalence_is_transitive(r)
+                is_transitive(r) = forall(x0: T, y0: T, z0: T) {
+                    r(x0, y0) and r(y0, z0) implies r(x0, z0)
+                }
+                r(x, z)
+                relation_intersection_right_subset(r, s)
+                relation_subset_step(relation_intersection(r, s), s, x, y)
+                s(x, y)
+                relation_subset_step(relation_intersection(r, s), s, y, z)
+                s(y, z)
+                partial_equivalence_is_transitive(s)
+                is_transitive(s) = forall(x0: T, y0: T, z0: T) {
+                    s(x0, y0) and s(y0, z0) implies s(x0, z0)
+                }
+                s(x, z)
+                r(x, z) and s(x, z)
+                relation_intersection(r, s, x, z)
+            }
+        }
+        is_transitive(relation_intersection(r, s))
+        is_partial_equivalence(relation_intersection(r, s))
     }
 }
 
@@ -1761,6 +2191,72 @@ theorem relation_pullback_is_equivalence_iff_of_surjective[A, B](f: A -> B, r: (
             is_equivalence(relation_pullback(f, r))
         }
         is_equivalence(relation_pullback(f, r)) = is_equivalence(r)
+    }
+}
+
+/// Surjective pullback reflects partial equivalence relations.
+theorem relation_pullback_reflects_partial_equivalence_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and is_partial_equivalence(relation_pullback(f, r)) implies is_partial_equivalence(r)
+} by {
+    if is_surjective_fn(f) and is_partial_equivalence(relation_pullback(f, r)) {
+        partial_equivalence_is_symmetric(relation_pullback(f, r))
+        relation_pullback_reflects_symmetric_of_surjective(f, r)
+        is_symmetric(r)
+        partial_equivalence_is_transitive(relation_pullback(f, r))
+        relation_pullback_reflects_transitive_of_surjective(f, r)
+        is_transitive(r)
+        is_partial_equivalence(r)
+    }
+}
+
+/// Surjective pullback preserves and reflects partial equivalence relations.
+theorem relation_pullback_is_partial_equivalence_iff_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies
+    is_partial_equivalence(relation_pullback(f, r)) = is_partial_equivalence(r)
+} by {
+    if is_surjective_fn(f) {
+        if is_partial_equivalence(relation_pullback(f, r)) {
+            relation_pullback_reflects_partial_equivalence_of_surjective(f, r)
+            is_partial_equivalence(r)
+        }
+        if is_partial_equivalence(r) {
+            relation_pullback_is_partial_equivalence(f, r)
+            is_partial_equivalence(relation_pullback(f, r))
+        }
+        is_partial_equivalence(relation_pullback(f, r)) = is_partial_equivalence(r)
+    }
+}
+
+/// Converse preserves equivalence relations.
+theorem relation_converse_is_equivalence[T](r: (T, T) -> Bool) {
+    is_equivalence(r) implies is_equivalence(relation_converse(r))
+} by {
+    if is_equivalence(r) {
+        equivalence_is_reflexive(r)
+        relation_converse_is_reflexive(r)
+        is_reflexive(relation_converse(r))
+        equivalence_is_symmetric(r)
+        relation_converse_is_symmetric(r)
+        is_symmetric(relation_converse(r))
+        equivalence_is_transitive(r)
+        relation_converse_is_transitive(r)
+        is_transitive(relation_converse(r))
+        is_equivalence(relation_converse(r))
+    }
+}
+
+/// Converse preserves partial equivalence relations.
+theorem relation_converse_is_partial_equivalence[T](r: (T, T) -> Bool) {
+    is_partial_equivalence(r) implies is_partial_equivalence(relation_converse(r))
+} by {
+    if is_partial_equivalence(r) {
+        partial_equivalence_is_symmetric(r)
+        relation_converse_is_symmetric(r)
+        is_symmetric(relation_converse(r))
+        partial_equivalence_is_transitive(r)
+        relation_converse_is_transitive(r)
+        is_transitive(relation_converse(r))
+        is_partial_equivalence(relation_converse(r))
     }
 }
 

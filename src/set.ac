@@ -1,6 +1,6 @@
 from list import List
 from nat import Nat
-from util import compose, is_equivalence, eq_relation, relation_converse, respects_equivalence, equivalence_flip, equivalence_self, equivalence_step, equivalence_imp_relation_converse_eq, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
+from util import compose, is_symmetric, is_transitive, is_equivalence, is_partial_equivalence, eq_relation, relation_converse, respects_equivalence, symmetric_flip, equivalence_flip, equivalence_self, equivalence_step, equivalence_imp_relation_converse_eq, partial_equivalence_flip, partial_equivalence_is_transitive, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage, transitive_step
 
 /// Sets with elements of type `K` are defined as Boolean functions over `K`
 structure Set[K] {
@@ -191,6 +191,18 @@ theorem set_ext[K](a: Set[K], b: Set[K]) {
     }
 }
 
+/// The characteristic predicate of the support of a relation.
+define relation_support_fun[T](r: (T, T) -> Bool, x: T) -> Bool {
+    exists(y: T) {
+        r(x, y)
+    }
+}
+
+/// The support of a relation, consisting of elements related to something.
+define relation_support[T](r: (T, T) -> Bool) -> Set[T] {
+    Set[T].new(relation_support_fun(r))
+}
+
 /// The characteristic predicate of the equivalence class of `a`.
 define equivalence_class_fun[T](r: (T, T) -> Bool, a: T, x: T) -> Bool {
     r(a, x)
@@ -205,6 +217,52 @@ define equivalence_class[T](r: (T, T) -> Bool, a: T) -> Set[T] {
 define is_saturated_under[T](s: Set[T], r: (T, T) -> Bool) -> Bool {
     forall(x: T, y: T) {
         s.contains(x) and r(x, y) implies s.contains(y)
+    }
+}
+
+/// Membership in the support is given by the support predicate.
+theorem relation_support_contains_eq[T](r: (T, T) -> Bool, x: T) {
+    relation_support(r).contains(x) = relation_support_fun(r, x)
+}
+
+/// A support element comes with a relation witness.
+theorem relation_support_contains_witness[T](r: (T, T) -> Bool, x: T) {
+    relation_support(r).contains(x) implies exists(y: T) {
+        r(x, y)
+    }
+} by {
+    if relation_support(r).contains(x) {
+        relation_support_contains_eq(r, x)
+        relation_support_fun(r, x)
+        exists(y: T) {
+            r(x, y)
+        }
+    }
+}
+
+/// Any related left endpoint lies in the support.
+theorem relation_support_contains_of_related_left[T](r: (T, T) -> Bool, x: T, y: T) {
+    r(x, y) implies relation_support(r).contains(x)
+} by {
+    if r(x, y) {
+        exists(z: T) {
+            z = y and r(x, z)
+        }
+        relation_support_fun(r, x)
+        relation_support_contains_eq(r, x)
+        relation_support(r).contains(x)
+    }
+}
+
+/// Symmetry moves support membership across a related pair.
+theorem relation_support_contains_of_related_right[T](r: (T, T) -> Bool, x: T, y: T) {
+    is_symmetric(r) and r(x, y) implies relation_support(r).contains(y)
+} by {
+    if is_symmetric(r) and r(x, y) {
+        symmetric_flip(r, x, y)
+        r(y, x)
+        relation_support_contains_of_related_left(r, y, x)
+        relation_support(r).contains(y)
     }
 }
 
@@ -332,6 +390,330 @@ theorem saturated_contains_equivalence_class[T](s: Set[T], r: (T, T) -> Bool, a:
         s.contains(a) and r(a, x)
         s.contains(a) and r(a, x) implies s.contains(x)
         s.contains(x)
+    }
+}
+
+/// A supported element is related to itself under a partial equivalence relation.
+theorem partial_equivalence_self_of_support[T](r: (T, T) -> Bool, x: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(x) implies r(x, x)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(x) {
+        relation_support_contains_witness(r, x)
+        let y: T satisfy {
+            r(x, y)
+        }
+        partial_equivalence_flip(r, x, y)
+        r(y, x)
+        partial_equivalence_is_transitive(r)
+        is_transitive(r)
+        transitive_step(r, x, y, x)
+        r(x, x)
+    }
+}
+
+/// Self-related elements lie in the support.
+theorem partial_equivalence_support_contains_of_self[T](r: (T, T) -> Bool, x: T) {
+    r(x, x) implies relation_support(r).contains(x)
+} by {
+    if r(x, x) {
+        relation_support_contains_of_related_left(r, x, x)
+        relation_support(r).contains(x)
+    }
+}
+
+/// On a partial equivalence relation, support membership is equivalent to self-relatedness.
+theorem partial_equivalence_support_iff_self[T](r: (T, T) -> Bool, x: T) {
+    is_partial_equivalence(r) implies relation_support(r).contains(x) = r(x, x)
+} by {
+    if is_partial_equivalence(r) {
+        if relation_support(r).contains(x) {
+            partial_equivalence_self_of_support(r, x)
+            r(x, x)
+        }
+        if r(x, x) {
+            partial_equivalence_support_contains_of_self(r, x)
+            relation_support(r).contains(x)
+        }
+        relation_support(r).contains(x) = r(x, x)
+    }
+}
+
+/// Any related left endpoint lies in the support of a partial equivalence relation.
+theorem partial_equivalence_related_imp_support_left[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and r(a, b) implies relation_support(r).contains(a)
+} by {
+    if is_partial_equivalence(r) and r(a, b) {
+        relation_support_contains_of_related_left(r, a, b)
+        relation_support(r).contains(a)
+    }
+}
+
+/// Any related right endpoint also lies in the support of a partial equivalence relation.
+theorem partial_equivalence_related_imp_support_right[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and r(a, b) implies relation_support(r).contains(b)
+} by {
+    if is_partial_equivalence(r) and r(a, b) {
+        partial_equivalence_flip(r, a, b)
+        r(b, a)
+        relation_support_contains_of_related_left(r, b, a)
+        relation_support(r).contains(b)
+    }
+}
+
+/// The support of a partial equivalence relation is saturated.
+theorem partial_equivalence_support_is_saturated[T](r: (T, T) -> Bool) {
+    is_partial_equivalence(r) implies is_saturated_under(relation_support(r), r)
+} by {
+    if is_partial_equivalence(r) {
+        forall(x: T, y: T) {
+            if relation_support(r).contains(x) and r(x, y) {
+                partial_equivalence_related_imp_support_right(r, x, y)
+                relation_support(r).contains(y)
+            }
+        }
+    }
+}
+
+/// A supported representative belongs to its own class.
+theorem partial_equivalence_class_contains_self_of_support[T](r: (T, T) -> Bool, a: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) implies equivalence_class(r, a).contains(a)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) {
+        partial_equivalence_self_of_support(r, a)
+        r(a, a)
+        equivalence_class_contains_eq(r, a, a)
+        equivalence_class(r, a).contains(a)
+    }
+}
+
+/// Related elements have the same class under a partial equivalence relation.
+theorem partial_equivalence_class_membership_eq_of_related[T](r: (T, T) -> Bool, a: T, b: T, x: T) {
+    is_partial_equivalence(r) and r(a, b) implies
+    equivalence_class(r, a).contains(x) = equivalence_class(r, b).contains(x)
+} by {
+    if is_partial_equivalence(r) and r(a, b) {
+        if equivalence_class(r, a).contains(x) {
+            equivalence_class_contains_eq(r, a, x)
+            partial_equivalence_flip(r, a, b)
+            r(b, a)
+            partial_equivalence_is_transitive(r)
+            is_transitive(r)
+            transitive_step(r, b, a, x)
+            r(b, x)
+            equivalence_class_contains_eq(r, b, x)
+            equivalence_class(r, b).contains(x)
+        }
+        if equivalence_class(r, b).contains(x) {
+            equivalence_class_contains_eq(r, b, x)
+            partial_equivalence_is_transitive(r)
+            is_transitive(r)
+            transitive_step(r, a, b, x)
+            r(a, x)
+            equivalence_class_contains_eq(r, a, x)
+            equivalence_class(r, a).contains(x)
+        }
+        equivalence_class(r, a).contains(x) = equivalence_class(r, b).contains(x)
+    }
+}
+
+/// Related elements have equal classes under a partial equivalence relation.
+theorem partial_equivalence_class_eq_of_related[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and r(a, b) implies equivalence_class(r, a) = equivalence_class(r, b)
+} by {
+    if is_partial_equivalence(r) and r(a, b) {
+        let u = equivalence_class(r, a)
+        let v = equivalence_class(r, b)
+        forall(x: T) {
+            partial_equivalence_class_membership_eq_of_related(r, a, b, x)
+            u.contains(x) = v.contains(x)
+        }
+        set_ext(u, v)
+        equivalence_class(r, a) = equivalence_class(r, b)
+    }
+}
+
+/// Equal classes recover relation membership once the left representative is supported.
+theorem partial_equivalence_of_class_eq_and_support[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) and
+    equivalence_class(r, a) = equivalence_class(r, b) implies r(a, b)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) and
+        equivalence_class(r, a) = equivalence_class(r, b) {
+        partial_equivalence_class_contains_self_of_support(r, a)
+        equivalence_class(r, a).contains(a)
+        equivalence_class(r, b).contains(a)
+        equivalence_class_contains_eq(r, b, a)
+        r(b, a)
+        partial_equivalence_flip(r, b, a)
+        r(a, b)
+    }
+}
+
+/// The class of a supported element is saturated under a partial equivalence relation.
+theorem partial_equivalence_class_is_saturated[T](r: (T, T) -> Bool, a: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) implies
+    is_saturated_under(equivalence_class(r, a), r)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) {
+        forall(x: T, y: T) {
+            if equivalence_class(r, a).contains(x) and r(x, y) {
+                equivalence_class_contains_eq(r, a, x)
+                r(a, x)
+                partial_equivalence_is_transitive(r)
+                is_transitive(r)
+                transitive_step(r, a, x, y)
+                r(a, y)
+                equivalence_class_contains_eq(r, a, y)
+                equivalence_class(r, a).contains(y)
+            }
+        }
+    }
+}
+
+/// A saturated set containing a supported representative contains its whole class.
+theorem saturated_contains_partial_equivalence_class[T](s: Set[T], r: (T, T) -> Bool, a: T, x: T) {
+    is_partial_equivalence(r) and is_saturated_under(s, r) and s.contains(a) and
+    equivalence_class(r, a).contains(x) implies s.contains(x)
+} by {
+    if is_partial_equivalence(r) and is_saturated_under(s, r) and s.contains(a) and
+        equivalence_class(r, a).contains(x) {
+        is_saturated_under(s, r) = forall(y1: T, y2: T) {
+            s.contains(y1) and r(y1, y2) implies s.contains(y2)
+        }
+        forall(y1: T, y2: T) {
+            s.contains(y1) and r(y1, y2) implies s.contains(y2)
+        }
+        equivalence_class_contains_eq(r, a, x)
+        r(a, x)
+        s.contains(a) and r(a, x)
+        s.contains(x)
+    }
+}
+
+/// Any class of a supported element is contained in the support.
+theorem partial_equivalence_support_contains_class[T](r: (T, T) -> Bool, a: T, x: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) and
+    equivalence_class(r, a).contains(x) implies relation_support(r).contains(x)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) and
+        equivalence_class(r, a).contains(x) {
+        partial_equivalence_support_is_saturated(r)
+        is_saturated_under(relation_support(r), r)
+        saturated_contains_partial_equivalence_class(relation_support(r), r, a, x)
+        relation_support(r).contains(x)
+    }
+}
+
+/// Any class element forces the representative into the support.
+theorem partial_equivalence_class_contains_imp_support_left[T](r: (T, T) -> Bool, a: T, x: T) {
+    is_partial_equivalence(r) and equivalence_class(r, a).contains(x) implies relation_support(r).contains(a)
+} by {
+    if is_partial_equivalence(r) and equivalence_class(r, a).contains(x) {
+        equivalence_class_contains_eq(r, a, x)
+        r(a, x)
+        relation_support_contains_of_related_left(r, a, x)
+        relation_support(r).contains(a)
+    }
+}
+
+/// Any class element also lies in the support.
+theorem partial_equivalence_class_contains_imp_support_right[T](r: (T, T) -> Bool, a: T, x: T) {
+    is_partial_equivalence(r) and equivalence_class(r, a).contains(x) implies relation_support(r).contains(x)
+} by {
+    if is_partial_equivalence(r) and equivalence_class(r, a).contains(x) {
+        equivalence_class_contains_eq(r, a, x)
+        r(a, x)
+        partial_equivalence_related_imp_support_right(r, a, x)
+        relation_support(r).contains(x)
+    }
+}
+
+/// A supported class is nonempty.
+theorem partial_equivalence_class_nonempty_of_support[T](r: (T, T) -> Bool, a: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) implies exists(x: T) {
+        equivalence_class(r, a).contains(x)
+    }
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) {
+        partial_equivalence_class_contains_self_of_support(r, a)
+        equivalence_class(r, a).contains(a)
+        exists(x: T) {
+            x = a and equivalence_class(r, a).contains(x)
+        }
+    }
+}
+
+/// A nonempty class forces its representative into the support.
+theorem partial_equivalence_support_of_class_nonempty[T](r: (T, T) -> Bool, a: T) {
+    is_partial_equivalence(r) and exists(x: T) {
+        equivalence_class(r, a).contains(x)
+    } implies relation_support(r).contains(a)
+} by {
+    if is_partial_equivalence(r) and exists(x: T) {
+        equivalence_class(r, a).contains(x)
+    } {
+        let x: T satisfy {
+            equivalence_class(r, a).contains(x)
+        }
+        partial_equivalence_class_contains_imp_support_left(r, a, x)
+        relation_support(r).contains(a)
+    }
+}
+
+/// For a partial equivalence relation, support membership is equivalent to class nonemptiness.
+theorem partial_equivalence_class_nonempty_iff_support[T](r: (T, T) -> Bool, a: T) {
+    is_partial_equivalence(r) implies relation_support(r).contains(a) = exists(x: T) {
+        equivalence_class(r, a).contains(x)
+    }
+} by {
+    if is_partial_equivalence(r) {
+        if relation_support(r).contains(a) {
+            partial_equivalence_class_nonempty_of_support(r, a)
+            exists(x: T) {
+                equivalence_class(r, a).contains(x)
+            }
+        }
+        if exists(x: T) {
+            equivalence_class(r, a).contains(x)
+        } {
+            partial_equivalence_support_of_class_nonempty(r, a)
+            relation_support(r).contains(a)
+        }
+        relation_support(r).contains(a) = exists(x: T) {
+            equivalence_class(r, a).contains(x)
+        }
+    }
+}
+
+/// Supported class equality is equivalent to relatedness.
+theorem partial_equivalence_class_eq_iff_of_support[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) implies
+    equivalence_class(r, a) = equivalence_class(r, b) = r(a, b)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) {
+        if equivalence_class(r, a) = equivalence_class(r, b) {
+            partial_equivalence_of_class_eq_and_support(r, a, b)
+            r(a, b)
+        }
+        if r(a, b) {
+            partial_equivalence_class_eq_of_related(r, a, b)
+            equivalence_class(r, a) = equivalence_class(r, b)
+        }
+        equivalence_class(r, a) = equivalence_class(r, b) = r(a, b)
+    }
+}
+
+/// Supported class equality also forces the right representative into the support.
+theorem partial_equivalence_class_eq_imp_support_right[T](r: (T, T) -> Bool, a: T, b: T) {
+    is_partial_equivalence(r) and relation_support(r).contains(a) and
+    equivalence_class(r, a) = equivalence_class(r, b) implies relation_support(r).contains(b)
+} by {
+    if is_partial_equivalence(r) and relation_support(r).contains(a) and
+        equivalence_class(r, a) = equivalence_class(r, b) {
+        partial_equivalence_of_class_eq_and_support(r, a, b)
+        r(a, b)
+        partial_equivalence_related_imp_support_right(r, a, b)
+        relation_support(r).contains(b)
     }
 }
 

@@ -22,6 +22,17 @@
 {"goal":"singleton_set_is_singleton","proof":["function[T0](x0: T0, x1: Set[T0]) { Set.singleton[T0](x0) != x1 or x1.is_singleton }[K](a, Set.singleton(a))"]}
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"set_ext","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](a)","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[K](b)"]}
+{"goal":"relation_support_contains_eq","proof":["function[T0](x0: (T0, T0) -> Bool) { Set.new[T0](relation_support_fun[T0](x0)) = relation_support[T0](x0) }[T](r)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](relation_support_fun[T](r), x)"]}
+{"goal":"relation_support_fun(r, x)","proof":[]}
+{"goal":"exists(k0: T) { r(x, k0) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { exists(k0: T0) { x0(x1, k0) } = relation_support_fun[T0](x0, x1) }[T](r, x)"]}
+{"goal":"relation_support_contains_witness","proof":[]}
+{"goal":"exists(k0: T) { k0 = y and r(x, k0) }","proof":[]}
+{"goal":"relation_support_fun(r, x)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { exists(k0: T0) { x0(x1, k0) } = relation_support_fun[T0](x0, x1) }[T](r, x)","not exists(k0: T) { r(x, k0) }","function(x0: T) { not r(x, x0) }(y)"]}
+{"goal":"relation_support[T](r).contains(x)","proof":[]}
+{"goal":"relation_support_contains_of_related_left","proof":[]}
+{"goal":"r(y, x)","proof":[]}
+{"goal":"relation_support[T](r).contains(y)","proof":[]}
+{"goal":"relation_support_contains_of_related_right","proof":[]}
 {"goal":"equivalence_class_contains_eq","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { Set.new[T0](equivalence_class_fun[T0](x0, x1)) = equivalence_class[T0](x0, x1) }[T](r, a)","function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { equivalence_class_fun[T0](x0, x1, x2) = x0(x1, x2) }[T](r, a, x)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](equivalence_class_fun(r, a), x)"]}
 {"goal":"equivalence_class(r, a).contains(b)","proof":[]}
 {"goal":"equivalence_class_contains_of_related","proof":[]}
@@ -56,6 +67,81 @@
 {"goal":"s.contains(a) and r(a, x) implies s.contains(x)","proof":["function(x0: T, x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s }(a, x)"]}
 {"goal":"s.contains(x)","proof":[]}
 {"goal":"saturated_contains_equivalence_class","proof":[]}
+{"goal":"exists(k0: T) { r(x, k0) }","proof":[]}
+{"goal":"r(y, x)","proof":[]}
+{"goal":"is_transitive[T](r)","proof":[]}
+{"goal":"r(x, x)","proof":[]}
+{"goal":"partial_equivalence_self_of_support","proof":[]}
+{"goal":"relation_support[T](r).contains(x)","proof":[]}
+{"goal":"partial_equivalence_support_contains_of_self","proof":[]}
+{"goal":"r(x, x)","proof":[]}
+{"goal":"relation_support[T](r).contains(x)","proof":[]}
+{"goal":"relation_support[T](r).contains(x) = r(x, x)","proof":[]}
+{"goal":"partial_equivalence_support_iff_self","proof":[]}
+{"goal":"relation_support[T](r).contains(a)","proof":[]}
+{"goal":"partial_equivalence_related_imp_support_left","proof":[]}
+{"goal":"r(b, a)","proof":[]}
+{"goal":"relation_support[T](r).contains(b)","proof":[]}
+{"goal":"partial_equivalence_related_imp_support_right","proof":[]}
+{"goal":"relation_support[T](r).contains(y)","proof":[]}
+{"goal":"partial_equivalence_support_is_saturated","proof":["function[T0](x0: Set[T0], x1: (T0, T0) -> Bool) { forall(x2: T0, x3: T0) { not x2 ∈ x0 or not x1(x2, x3) or x3 ∈ x0 } = is_saturated_under[T0](x0, x1) }[T](relation_support[T](r), r)"]}
+{"goal":"r(a, a)","proof":[]}
+{"goal":"equivalence_class(r, a).contains(a)","proof":[]}
+{"goal":"partial_equivalence_class_contains_self_of_support","proof":[]}
+{"goal":"r(b, a)","proof":[]}
+{"goal":"is_transitive[T](r)","proof":[]}
+{"goal":"r(b, x)","proof":[]}
+{"goal":"equivalence_class(r, b).contains(x)","proof":[]}
+{"goal":"is_transitive[T](r)","proof":[]}
+{"goal":"r(a, x)","proof":[]}
+{"goal":"equivalence_class(r, a).contains(x)","proof":[]}
+{"goal":"equivalence_class(r, a).contains(x) = equivalence_class(r, b).contains(x)","proof":[]}
+{"goal":"partial_equivalence_class_membership_eq_of_related","proof":[]}
+{"goal":"u.contains(x) = v.contains(x)","proof":[]}
+{"goal":"equivalence_class(r, a) = equivalence_class(r, b)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](equivalence_class(r, a))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](equivalence_class(r, b))"]}
+{"goal":"partial_equivalence_class_eq_of_related","proof":[]}
+{"goal":"equivalence_class(r, a).contains(a)","proof":[]}
+{"goal":"equivalence_class(r, b).contains(a)","proof":[]}
+{"goal":"r(b, a)","proof":[]}
+{"goal":"r(a, b)","proof":[]}
+{"goal":"partial_equivalence_of_class_eq_and_support","proof":[]}
+{"goal":"r(a, x)","proof":[]}
+{"goal":"is_transitive[T](r)","proof":[]}
+{"goal":"r(a, y)","proof":[]}
+{"goal":"equivalence_class(r, a).contains(y)","proof":[]}
+{"goal":"partial_equivalence_class_is_saturated","proof":["function[T0](x0: Set[T0], x1: (T0, T0) -> Bool) { forall(x2: T0, x3: T0) { not x2 ∈ x0 or not x1(x2, x3) or x3 ∈ x0 } = is_saturated_under[T0](x0, x1) }[T](equivalence_class(r, a), r)"]}
+{"goal":"is_saturated_under[T](s, r) = forall(x0: T, x1: T) { s.contains(x0) and r(x0, x1) implies s.contains(x1) }","proof":["function[T0](x0: Set[T0], x1: (T0, T0) -> Bool) { forall(x2: T0, x3: T0) { not x2 ∈ x0 or not x1(x2, x3) or x3 ∈ x0 } = is_saturated_under[T0](x0, x1) }[T](s, r)"]}
+{"goal":"s.contains(y1) and r(y1, y2) implies s.contains(y2)","proof":["is_partial_equivalence[T](r) and is_saturated_under[T](s, r) and a ∈ s","not is_saturated_under[T](s, r) or forall(x0: T, x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s } = true","is_saturated_under[T](s, r)","function(x0: T) { forall(x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s } = true }(y1)","function(x0: T, x1: T) { not (x0 ∈ s and r(x0, x1) and not x1 ∈ s) }(y1, y2)"]}
+{"goal":"r(a, x)","proof":[]}
+{"goal":"s.contains(a) and r(a, x)","proof":[]}
+{"goal":"s.contains(x)","proof":["function(x0: T, x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s }(a, x)"]}
+{"goal":"saturated_contains_partial_equivalence_class","proof":[]}
+{"goal":"is_saturated_under[T](relation_support[T](r), r)","proof":[]}
+{"goal":"relation_support[T](r).contains(x)","proof":[]}
+{"goal":"partial_equivalence_support_contains_class","proof":[]}
+{"goal":"r(a, x)","proof":["not x ∈ equivalence_class(r, a)","x ∈ equivalence_class(r, a)"]}
+{"goal":"relation_support[T](r).contains(a)","proof":["not r(a, x)"]}
+{"goal":"partial_equivalence_class_contains_imp_support_left","proof":["not x ∈ equivalence_class(r, a) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","x ∈ equivalence_class(r, a)","not x ∈ equivalence_class(r, a)"]}
+{"goal":"r(a, x)","proof":["not x ∈ equivalence_class(r, a)","x ∈ equivalence_class(r, a)"]}
+{"goal":"relation_support[T](r).contains(x)","proof":["not is_partial_equivalence[T](r) or not r(a, x)","not is_partial_equivalence[T](r)"]}
+{"goal":"partial_equivalence_class_contains_imp_support_right","proof":["not x ∈ equivalence_class(r, a) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","x ∈ equivalence_class(r, a)","not x ∈ equivalence_class(r, a)"]}
+{"goal":"equivalence_class(r, a).contains(a)","proof":["not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"exists(k0: T) { k0 = a and equivalence_class(r, a).contains(k0) }","proof":["function(x0: T) { not (x0 = a and x0 ∈ equivalence_class(r, a)) }(a)","function(x0: T) { not x0 ∈ equivalence_class(r, a) or a != x0 }(a)"]}
+{"goal":"partial_equivalence_class_nonempty_of_support","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { not x1 ∈ relation_support[T0](x0) or not is_partial_equivalence[T0](x0) or x1 ∈ equivalence_class[T0](x0, x1) }[T](r, a)","function(x0: T) { not x0 ∈ equivalence_class(r, a) }(a)","is_partial_equivalence[T](r)","a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"exists(k0: T) { equivalence_class(r, a).contains(k0) }","proof":[]}
+{"goal":"relation_support[T](r).contains(a)","proof":["not x ∈ equivalence_class(r, a) or not is_partial_equivalence[T](r)","not is_partial_equivalence[T](r)"]}
+{"goal":"partial_equivalence_support_of_class_nonempty","proof":["not exists(k0: T) { k0 ∈ equivalence_class(r, a) } or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","exists(k1: T) { k1 ∈ equivalence_class(r, a) }","not exists(k2: T) { k2 ∈ equivalence_class(r, a) }"]}
+{"goal":"exists(k0: T) { equivalence_class(r, a).contains(k0) }","proof":["not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"relation_support[T](r).contains(a)","proof":["exists(k0: T) { k0 ∈ equivalence_class(r, a) }","not exists(k1: T) { k1 ∈ equivalence_class(r, a) } or not is_partial_equivalence[T](r)","not exists(k2: T) { k2 ∈ equivalence_class(r, a) }"]}
+{"goal":"relation_support[T](r).contains(a) = exists(k0: T) { equivalence_class(r, a).contains(k0) }","proof":["exists(k0: T) { k0 ∈ equivalence_class(r, a) } or a ∈ relation_support[T](r)","not exists(k1: T) { k1 ∈ equivalence_class(r, a) } or not a ∈ relation_support[T](r)","exists(k2: T) { k2 ∈ equivalence_class(r, a) }","not exists(k3: T) { k3 ∈ equivalence_class(r, a) }"]}
+{"goal":"partial_equivalence_class_nonempty_iff_support","proof":["not is_partial_equivalence[T](r)"]}
+{"goal":"r(a, b)","proof":["not a ∈ relation_support[T](r) or equivalence_class(r, b) != equivalence_class(r, a) or not is_partial_equivalence[T](r)","not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"equivalence_class(r, a) = equivalence_class(r, b)","proof":["not is_partial_equivalence[T](r) or not r(a, b)","not is_partial_equivalence[T](r)"]}
+{"goal":"equivalence_class(r, a) = equivalence_class(r, b) = r(a, b)","proof":["equivalence_class(r, b) = equivalence_class(r, a) or r(a, b)","r(a, b)","equivalence_class(r, b) = equivalence_class(r, a)","equivalence_class(r, b) != equivalence_class(r, a)"]}
+{"goal":"partial_equivalence_class_eq_iff_of_support","proof":["not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r)","a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"r(a, b)","proof":["not a ∈ relation_support[T](r) or equivalence_class(r, b) != equivalence_class(r, a) or not is_partial_equivalence[T](r)","equivalence_class(r, b) = equivalence_class(r, a)","not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r) and a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
+{"goal":"relation_support[T](r).contains(b)","proof":["not is_partial_equivalence[T](r) or not r(a, b)","not is_partial_equivalence[T](r)","is_partial_equivalence[T](r) and a ∈ relation_support[T](r)"]}
+{"goal":"partial_equivalence_class_eq_imp_support_right","proof":["not a ∈ relation_support[T](r) or equivalence_class(r, b) != equivalence_class(r, a) or not is_partial_equivalence[T](r)","equivalence_class(r, b) = equivalence_class(r, a)","not a ∈ relation_support[T](r) or not is_partial_equivalence[T](r)","is_partial_equivalence[T](r) and a ∈ relation_support[T](r)","not a ∈ relation_support[T](r)"]}
 {"goal":"not s.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)"]}
 {"goal":"s.c.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s.c)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.c.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.c.contains, x)"]}
 {"goal":"s.c.contains(x)","proof":["function[T0](x0: Set[T0]) { Set.new[T0](negate_fun[T0](x0.contains)) = x0.c }[K](s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[K](negate_fun[K](s.contains), x)","function[T0](x0: T0 -> Bool, x1: T0) { negate_fun[T0](x0, x1) != x0(x1) }[K](s.contains, x)"]}

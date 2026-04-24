@@ -36,6 +36,14 @@
 {"goal":"s(x, y)","proof":[]}
 {"goal":"t(x, y)","proof":[]}
 {"goal":"relation_subset_trans","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, B](r, t)"]}
+{"goal":"r(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, x, y)"]}
+{"goal":"relation_intersection_left_subset","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, B](relation_intersection[A, B](r, s), r)","let w0: A satisfy { exists(k0: B) { relation_intersection(r, s, w0, k0) and not r(w0, k0) } }","let w1: B satisfy { relation_intersection(r, s, w0, w1) and not r(w0, w1) }","function(x0: A, x1: B) { not relation_intersection(r, s, x0, x1) or r(x0, x1) }(w0, w1)"]}
+{"goal":"s(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, x, y)"]}
+{"goal":"relation_intersection_right_subset","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, B](relation_intersection[A, B](r, s), s)","let w0: A satisfy { exists(k0: B) { relation_intersection(r, s, w0, k0) and not s(w0, k0) } }","let w1: B satisfy { relation_intersection(r, s, w0, w1) and not s(w0, w1) }","function(x0: A, x1: B) { not relation_intersection(r, s, x0, x1) or s(x0, x1) }(w0, w1)"]}
+{"goal":"r(x, y)","proof":[]}
+{"goal":"s(x, y)","proof":[]}
+{"goal":"relation_intersection(r, s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, x, y)"]}
+{"goal":"relation_subset_intersection","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, B](t, relation_intersection[A, B](r, s))"]}
 {"goal":"is_reflexive[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
 {"goal":"equivalence_is_reflexive","proof":[]}
 {"goal":"exists(k0: B) { k0 = y and r(x, k0) and s(k0, z) }","proof":[]}
@@ -104,7 +112,7 @@
 {"goal":"relation_converse(r2, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](r2, y, x)"]}
 {"goal":"relation_converse_monotone","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[B, A](relation_converse[A, B](r1), relation_converse[A, B](r2))"]}
 {"goal":"is_asymmetric[T](r) = forall(x0: T, x1: T) { r(x0, x1) implies not r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) } = is_asymmetric[T0](x0) }[T](r)"]}
-{"goal":"not r(x, x)","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](x)","r(x, identity_fn(x))","r(identity_fn(x), x)","(forall(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or not r(x1, x0) } = true }(x)","function(x0: T, x1: T) { not (r(x0, x1) and r(x1, x0)) }(x, identity_fn(x))","function(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) }(x, identity_fn(x))"]}
+{"goal":"not r(x, x)","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](x)","r(x, identity_fn(x))","r(identity_fn(x), x)","(forall(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or not r(x1, x0) } = true }(x)","function(x0: T, x1: T) { not (r(x0, x1) and r(x1, x0)) }(x, identity_fn(x))"]}
 {"goal":"false","proof":[]}
 {"goal":"asymmetric_imp_irreflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { not x0(x1, x1) } = is_irreflexive[T0](x0) }[T](r)","(forall(x0: T) { not r(x0, x0) or false } = true)","let w0: T satisfy { r(w0, w0) }","function(x0: T) { not (r(x0, x0) and not false) }(w0)"]}
 {"goal":"is_asymmetric[T](r) = forall(x0: T, x1: T) { r(x0, x1) implies not r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) } = is_asymmetric[T0](x0) }[T](r)"]}
@@ -114,10 +122,28 @@
 {"goal":"r(x, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, x)"]}
 {"goal":"false","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { not x0(x1, x1) } = is_irreflexive[T0](x0) }[T](r)","function[T0](x0: (T0, T0) -> Bool) { not is_irreflexive[T0](x0) or forall(x1: T0) { not x0(x1, x1) } = true }[T](r)","function[T0](x0: (T0, T0) -> Bool, x1: T0) { not is_irreflexive[T0](x0) or not x0(x1, x1) }[T](r, x)"]}
 {"goal":"relation_converse_is_irreflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { not x0(x1, x1) } = is_irreflexive[T0](x0) }[T](relation_converse[T, T](r))","(forall(x0: T) { not relation_converse(r, x0, x0) or false } = true)","let w0: T satisfy { relation_converse(r, w0, w0) }","function(x0: T) { not (relation_converse(r, x0, x0) and not false) }(w0)"]}
+{"goal":"is_reflexive[T](r) = forall(x0: T) { r(x0, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](r)"]}
+{"goal":"r(x, x)","proof":["(forall(x0: T) { r(x0, x0) } = true)","function(x0: T) { r(x0, x0) }(x)"]}
+{"goal":"relation_converse(r, x, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, x)"]}
+{"goal":"relation_converse_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](relation_converse[T, T](r))"]}
+{"goal":"relation_converse(r, x, y) = r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, y)"]}
+{"goal":"r(y, x)","proof":[]}
+{"goal":"is_symmetric[T](r) = forall(x0: T, x1: T) { r(x0, x1) implies r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](r)"]}
+{"goal":"r(x, y)","proof":["(forall(x0: T, x1: T) { not r(x0, x1) or r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or r(x1, x0) } = true }(y)","function(x0: T, x1: T) { not (r(x0, x1) and not r(x1, x0)) }(y, x)"]}
+{"goal":"relation_converse(r, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, y, x)"]}
+{"goal":"relation_converse_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](relation_converse[T, T](r))"]}
+{"goal":"relation_converse(r, x, y) = r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, y)"]}
+{"goal":"r(y, x)","proof":[]}
+{"goal":"relation_converse(r, y, z) = r(z, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, y, z)"]}
+{"goal":"r(z, y)","proof":[]}
+{"goal":"is_transitive[T](r) = forall(x0: T, x1: T, x2: T) { r(x0, x1) and r(x1, x2) implies r(x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](r)"]}
+{"goal":"r(z, x)","proof":["(forall(x0: T, x1: T, x2: T) { not r(x0, x1) or not r(x1, x2) or r(x0, x2) } = true)","function(x0: T) { forall(x1: T, x2: T) { not r(x0, x1) or not r(x1, x2) or r(x0, x2) } = true }(z)","function(x0: T, x1: T) { forall(x2: T) { not r(x0, x1) or not r(x1, x2) or r(x0, x2) } = true }(z, y)","function(x0: T, x1: T, x2: T) { not (r(x0, x1) and r(x1, x2) and not r(x0, x2)) }(z, y, x)"]}
+{"goal":"relation_converse(r, x, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, z)"]}
+{"goal":"relation_converse_is_transitive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](relation_converse[T, T](r))"]}
 {"goal":"is_asymmetric[T](r) = forall(x0: T, x1: T) { r(x0, x1) implies not r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) } = is_asymmetric[T0](x0) }[T](r)"]}
 {"goal":"relation_converse(r, x, y) = r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, y)"]}
 {"goal":"r(y, x)","proof":[]}
-{"goal":"not r(x, y)","proof":["(forall(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or not r(x1, x0) } = true }(y)","function(x0: T, x1: T) { not (r(x0, x1) and r(x1, x0)) }(y, x)","function(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) }(y, x)"]}
+{"goal":"not r(x, y)","proof":["(forall(x0: T, x1: T) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or not r(x1, x0) } = true }(y)","function(x0: T, x1: T) { not (r(x0, x1) and r(x1, x0)) }(y, x)"]}
 {"goal":"relation_converse(r, y, x) = r(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, y, x)"]}
 {"goal":"r(x, y)","proof":[]}
 {"goal":"false","proof":[]}
@@ -135,6 +161,21 @@
 {"goal":"relation_pullback[A, B](f, r, y, x) = r(f(y), f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, y, x)"]}
 {"goal":"u(x, y) = v(x, y)","proof":[]}
 {"goal":"relation_pullback_converse","proof":[]}
+{"goal":"relation_converse(relation_intersection[A, B](r, s), x, y)","proof":[]}
+{"goal":"relation_intersection(r, s, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](relation_intersection[A, B](r, s), x, y)"]}
+{"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, y, x)"]}
+{"goal":"s(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, y, x)"]}
+{"goal":"relation_converse(r, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](r, x, y)"]}
+{"goal":"relation_converse(s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](s, x, y)"]}
+{"goal":"v(x, y)","proof":["function(x0: B, x1: A) { relation_intersection(relation_converse[A, B](r), relation_converse[A, B](s), x0, x1) = v(x0, x1) }(x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, y, x)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, A](relation_converse[A, B](r), relation_converse[A, B](s), x, y)"]}
+{"goal":"relation_converse(r, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { not relation_subset[T0, T1](x0, x1) or not x0(x2, x3) or x1(x2, x3) }[B, A](v, relation_converse[A, B](r), x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { relation_subset[T0, T1](relation_intersection[T0, T1](x0, x1), x0) }[B, A](relation_converse[A, B](r), relation_converse[A, B](s))"]}
+{"goal":"relation_converse(s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { not relation_subset[T0, T1](x0, x1) or not x0(x2, x3) or x1(x2, x3) }[B, A](v, relation_converse[A, B](s), x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { relation_subset[T0, T1](relation_intersection[T0, T1](x0, x1), x1) }[B, A](relation_converse[A, B](r), relation_converse[A, B](s))"]}
+{"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](r, x, y)"]}
+{"goal":"s(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](s, x, y)"]}
+{"goal":"relation_intersection(r, s, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, B](r, s, y, x)"]}
+{"goal":"u(x, y)","proof":["function(x0: B, x1: A) { relation_converse(relation_intersection[A, B](r, s), x0, x1) = u(x0, x1) }(x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, B](relation_intersection[A, B](r, s), x, y)"]}
+{"goal":"u(x, y) = v(x, y)","proof":[]}
+{"goal":"relation_converse_intersection","proof":[]}
 {"goal":"is_symmetric[T](r) = forall(x0: T, x1: T) { r(x0, x1) implies r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](r)"]}
 {"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[T, T](r, x, y)"]}
 {"goal":"r(x, y)","proof":["(forall(x0: T, x1: T) { not r(x0, x1) or r(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or r(x1, x0) } = true }(y)","function(x0: T, x1: T) { not (r(x0, x1) and not r(x1, x0)) }(y, x)"]}
@@ -190,15 +231,26 @@
 {"goal":"relation_symmetric_closure_subset_of_symmetric","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[T, T](relation_symmetric_closure[T](r), s)"]}
 {"goal":"is_symmetric[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
 {"goal":"equivalence_is_symmetric","proof":[]}
+{"goal":"is_symmetric[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](f)"]}
+{"goal":"partial_equivalence_is_symmetric","proof":[]}
 {"goal":"equivalence_imp_relation_converse_eq","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_equivalence[T0](x0) or is_symmetric[T0](x0) }[T](r)"]}
+{"goal":"partial_equivalence_imp_relation_converse_eq","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_partial_equivalence[T0](x0) or is_symmetric[T0](x0) }[T](r)"]}
 {"goal":"is_transitive[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
 {"goal":"equivalence_is_transitive","proof":[]}
+{"goal":"is_transitive[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](f)"]}
+{"goal":"partial_equivalence_is_transitive","proof":[]}
 {"goal":"f(x, x)","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](f)","function[T0](x0: (T0, T0) -> Bool) { not is_reflexive[T0](x0) or forall(x1: T0) { x0(x1, x1) } = true }[T](f)","function[T0](x0: (T0, T0) -> Bool, x1: T0) { not is_reflexive[T0](x0) or x0(x1, x1) }[T](f, x)"]}
 {"goal":"reflexive_self","proof":[]}
 {"goal":"f(y, x)","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](f)","function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](y)","f(x, y)","is_symmetric[T](f)","not f(identity_fn(y), x)","f(x, identity_fn(y))","(forall(x0: T, x1: T) { not f(x0, x1) or f(x1, x0) } = true)","function(x0: T) { forall(x1: T) { not f(x0, x1) or f(x1, x0) } = true }(x)","function(x0: T, x1: T) { not (f(x0, x1) and not f(x1, x0)) }(x, identity_fn(y))"]}
 {"goal":"symmetric_flip","proof":[]}
+{"goal":"is_symmetric[T](f)","proof":[]}
+{"goal":"f(y, x)","proof":[]}
+{"goal":"partial_equivalence_flip","proof":[]}
 {"goal":"f(x, z)","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](f)","function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](z)","not f(x, identity_fn(z))","f(x, y) and f(y, identity_fn(z))","(forall(x0: T, x1: T, x2: T) { not f(x0, x1) or not f(x1, x2) or f(x0, x2) } = true)","function(x0: T) { forall(x1: T, x2: T) { not f(x0, x1) or not f(x1, x2) or f(x0, x2) } = true }(x)","function(x0: T, x1: T) { forall(x2: T) { not f(x0, x1) or not f(x1, x2) or f(x0, x2) } = true }(x, y)","function(x0: T, x1: T, x2: T) { not (f(x0, x1) and f(x1, x2) and not f(x0, x2)) }(x, y, identity_fn(z))"]}
 {"goal":"transitive_step","proof":[]}
+{"goal":"is_transitive[T](f)","proof":[]}
+{"goal":"f(x, z)","proof":[]}
+{"goal":"partial_equivalence_step","proof":[]}
 {"goal":"x = y","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) or x2 = x1 } = is_antisymmetric[T0](x0) }[T](f)","f(y, x)","is_antisymmetric[T](f) and f(x, y)","(forall(x0: T, x1: T) { not f(x0, x1) or not f(x1, x0) or x1 = x0 } and f(x, y) and f(y, x))","(forall(x2: T, x3: T) { not f(x2, x3) or not f(x3, x2) or x3 = x2 } = true)","function(x0: T) { forall(x1: T) { not f(x0, x1) or not f(x1, x0) or x0 = x1 } = true }(y)","function(x0: T, x1: T) { not (f(x0, x1) and f(x1, x0) and x0 != x1) }(y, x)"]}
 {"goal":"antisymmetric_eq","proof":[]}
 {"goal":"eq_relation(x, x)","proof":["function[T0](x0: T0, x1: T0) { eq_relation[T0](x0, x1) = (x0 = x1) }[T](x, x)"]}
@@ -211,6 +263,10 @@
 {"goal":"is_transitive[T](eq_relation[T])","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](eq_relation[T])","let w0: T satisfy { exists(k0: T, k1: T) { eq_relation(w0, k0) and eq_relation(k0, k1) and not eq_relation(w0, k1) } }","let w1: T satisfy { exists(k2: T) { eq_relation(w0, w1) and eq_relation(w1, k2) and not eq_relation(w0, k2) } }","let w2: T satisfy { eq_relation(w0, w1) and eq_relation(w1, w2) and not eq_relation(w0, w2) }","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[T, T, Bool](eq_relation[T], w2, w0)","function[T0](x0: T0, x1: T0) { eq_relation[T0](x0, x1) = (x0 = x1) }[T](w0, w1)"]}
 {"goal":"is_equivalence[T](eq_relation[T])","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](eq_relation[T])"]}
 {"goal":"eq_relation_is_equivalence","proof":[]}
+{"goal":"is_symmetric[T](eq_relation[T])","proof":[]}
+{"goal":"is_transitive[T](eq_relation[T])","proof":[]}
+{"goal":"is_partial_equivalence[T](eq_relation[T])","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](eq_relation[T])"]}
+{"goal":"eq_relation_is_partial_equivalence","proof":[]}
 {"goal":"is_reflexive[T](g)","proof":[]}
 {"goal":"relation_eq_imp_reflexive","proof":[]}
 {"goal":"is_symmetric[T](g)","proof":[]}
@@ -221,8 +277,16 @@
 {"goal":"relation_eq_imp_antisymmetric","proof":[]}
 {"goal":"is_equivalence[T](g)","proof":[]}
 {"goal":"relation_eq_imp_equivalence","proof":[]}
+{"goal":"is_partial_equivalence[T](g)","proof":[]}
+{"goal":"relation_eq_imp_partial_equivalence","proof":[]}
 {"goal":"is_equivalence[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
 {"goal":"reflexive_symmetric_transitive_imp_equivalence","proof":[]}
+{"goal":"is_partial_equivalence[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](f)"]}
+{"goal":"symmetric_transitive_imp_partial_equivalence","proof":[]}
+{"goal":"is_symmetric[T](f)","proof":[]}
+{"goal":"is_transitive[T](f)","proof":[]}
+{"goal":"is_partial_equivalence[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_transitive[T0](x0) or not is_symmetric[T0](x0) or is_partial_equivalence[T0](x0) }[T](f)"]}
+{"goal":"equivalence_imp_partial_equivalence","proof":[]}
 {"goal":"is_reflexive[T](f)","proof":[]}
 {"goal":"f(x, x)","proof":[]}
 {"goal":"equivalence_self","proof":[]}
@@ -254,6 +318,21 @@
 {"goal":"relation_pullback[B, C](f, r, g(x), g(y)) = r(f(g(x)), f(g(y)))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[B, C](f, r, g(x), g(y))"]}
 {"goal":"u(x, y) = v(x, y)","proof":[]}
 {"goal":"relation_pullback_compose","proof":[]}
+{"goal":"relation_pullback[A, B](f, relation_intersection[B, B](r, s), x, y)","proof":[]}
+{"goal":"relation_intersection(r, s, f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_intersection[B, B](r, s), x, y)"]}
+{"goal":"r(f(x), f(y))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, B](r, s, f(x), f(y))"]}
+{"goal":"s(f(x), f(y))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, B](r, s, f(x), f(y))"]}
+{"goal":"relation_pullback[A, B](f, r, x, y)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)"]}
+{"goal":"relation_pullback[A, B](f, s, x, y)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, s, x, y)"]}
+{"goal":"v(x, y)","proof":["function(x0: A, x1: A) { relation_intersection(relation_pullback[A, B](f, r), relation_pullback[A, B](f, s), x0, x1) = v(x0, x1) }(x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, B](r, s, f(x), f(y))","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s), x, y)"]}
+{"goal":"relation_pullback[A, B](f, r, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { not relation_subset[T0, T1](x0, x1) or not x0(x2, x3) or x1(x2, x3) }[A, A](v, relation_pullback[A, B](f, r), x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { relation_subset[T0, T1](relation_intersection[T0, T1](x0, x1), x0) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s))"]}
+{"goal":"relation_pullback[A, B](f, s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { not relation_subset[T0, T1](x0, x1) or not x0(x2, x3) or x1(x2, x3) }[A, A](v, relation_pullback[A, B](f, s), x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { relation_subset[T0, T1](relation_intersection[T0, T1](x0, x1), x1) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s))"]}
+{"goal":"r(f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)"]}
+{"goal":"s(f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, s, x, y)"]}
+{"goal":"relation_intersection(r, s, f(x), f(y))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, B](r, s, f(x), f(y))"]}
+{"goal":"u(x, y)","proof":["function(x0: A, x1: A) { relation_pullback[A, B](f, relation_intersection[B, B](r, s), x0, x1) = u(x0, x1) }(x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_intersection[B, B](r, s), x, y)"]}
+{"goal":"u(x, y) = v(x, y)","proof":[]}
+{"goal":"relation_pullback_intersection","proof":[]}
 {"goal":"relation_pullback[A, B](f, s, x, y)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, s, x, y)"]}
 {"goal":"relation_pullback_monotone","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s))"]}
 {"goal":"relation_pullback[A, B](f, r, x, x)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, x)"]}
@@ -267,7 +346,7 @@
 {"goal":"is_asymmetric[B](r) = forall(x0: B, x1: B) { r(x0, x1) implies not r(x1, x0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) } = is_asymmetric[T0](x0) }[B](r)"]}
 {"goal":"relation_pullback[A, B](f, r, x, y) = r(f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)"]}
 {"goal":"r(f(x), f(y))","proof":[]}
-{"goal":"not r(f(y), f(x))","proof":["(forall(x0: B, x1: B) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: B) { forall(x1: B) { not r(x0, x1) or not r(x1, x0) } = true }(f(y))","function(x0: B, x1: B) { not (r(x0, x1) and r(x1, x0)) }(f(y), f(x))","function(x0: B, x1: B) { not r(x0, x1) or not r(x1, x0) }(f(y), f(x))"]}
+{"goal":"not r(f(y), f(x))","proof":["(forall(x0: B, x1: B) { not r(x0, x1) or not r(x1, x0) } = true)","function(x0: B) { forall(x1: B) { not r(x0, x1) or not r(x1, x0) } = true }(f(y))","function(x0: B, x1: B) { not (r(x0, x1) and r(x1, x0)) }(f(y), f(x))"]}
 {"goal":"relation_pullback[A, B](f, r, y, x) = r(f(y), f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, y, x)"]}
 {"goal":"r(f(y), f(x))","proof":[]}
 {"goal":"false","proof":[]}
@@ -289,6 +368,66 @@
 {"goal":"is_transitive[A](relation_pullback[A, B](f, r))","proof":[]}
 {"goal":"is_equivalence[A](relation_pullback[A, B](f, r))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[B](r)","function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
 {"goal":"relation_pullback_is_equivalence","proof":[]}
+{"goal":"is_symmetric[A](relation_pullback[A, B](f, r))","proof":[]}
+{"goal":"is_transitive[A](relation_pullback[A, B](f, r))","proof":[]}
+{"goal":"is_partial_equivalence[A](relation_pullback[A, B](f, r))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[B](r)","function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_is_partial_equivalence","proof":[]}
+{"goal":"r(x, x) and s(x, x)","proof":[]}
+{"goal":"relation_intersection(r, s, x, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, x)"]}
+{"goal":"relation_intersection_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](relation_intersection[T, T](r, s))"]}
+{"goal":"r(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"r(y, x)","proof":[]}
+{"goal":"s(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"s(y, x)","proof":[]}
+{"goal":"r(y, x) and s(y, x)","proof":[]}
+{"goal":"relation_intersection(r, s, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, y, x)"]}
+{"goal":"relation_intersection_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](relation_intersection[T, T](r, s))"]}
+{"goal":"r(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"r(y, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, y, z)"]}
+{"goal":"r(x, z)","proof":[]}
+{"goal":"s(x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"s(y, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, y, z)"]}
+{"goal":"s(x, z)","proof":[]}
+{"goal":"r(x, z) and s(x, z)","proof":[]}
+{"goal":"relation_intersection(r, s, x, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, z)"]}
+{"goal":"relation_intersection_is_transitive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](relation_intersection[T, T](r, s))"]}
+{"goal":"r(x, x) and s(x, x)","proof":[]}
+{"goal":"relation_intersection(r, s, x, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, x)"]}
+{"goal":"is_reflexive[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](relation_intersection[T, T](r, s))","let w0: T satisfy { not relation_intersection(r, s, w0, w0) }","function(x0: T) { relation_intersection(r, s, x0, x0) }(w0)"]}
+{"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"s(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"relation_intersection(r, s, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, y, x)"]}
+{"goal":"is_symmetric[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](relation_intersection[T, T](r, s))","let w0: T satisfy { exists(k0: T) { relation_intersection(r, s, w0, k0) and not relation_intersection(r, s, k0, w0) } }","let w1: T satisfy { relation_intersection(r, s, w0, w1) and not relation_intersection(r, s, w1, w0) }","function(x0: T, x1: T) { not relation_intersection(r, s, x0, x1) or relation_intersection(r, s, x1, x0) }(w0, w1)"]}
+{"goal":"r(x, y)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), r) or not relation_intersection(r, s, x, y)","not relation_intersection(r, s, x, y)","relation_intersection(r, s, x, y)"]}
+{"goal":"r(y, z)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), r) or not relation_intersection(r, s, y, z)","not relation_intersection(r, s, y, z)","relation_intersection(r, s, y, z)"]}
+{"goal":"is_transitive[T](r) = forall(x0: T, x1: T, x2: T) { r(x0, x1) and r(x1, x2) implies r(x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](r)"]}
+{"goal":"r(x, z)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_equivalence[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[T](r, x, y, z)","is_equivalence[T](r)","function(x0: T) { not r(x0, z) or not r(x, x0) }(y)"]}
+{"goal":"s(x, y)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), s) or not relation_intersection(r, s, x, y)","not relation_intersection(r, s, x, y)","relation_intersection(r, s, x, y)"]}
+{"goal":"s(y, z)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), s) or not relation_intersection(r, s, y, z)","not relation_intersection(r, s, y, z)","relation_intersection(r, s, y, z)"]}
+{"goal":"is_transitive[T](s) = forall(x0: T, x1: T, x2: T) { s(x0, x1) and s(x1, x2) implies s(x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](s)"]}
+{"goal":"s(x, z)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_equivalence[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[T](s, x, y, z)","is_equivalence[T](s)","function(x0: T) { not s(x0, z) or not s(x, x0) }(y)"]}
+{"goal":"r(x, z) and s(x, z)","proof":["not r(x, z)"]}
+{"goal":"relation_intersection(r, s, x, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, z)"]}
+{"goal":"is_transitive[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](relation_intersection[T, T](r, s))","let w0: T satisfy { exists(k0: T, k1: T) { relation_intersection(r, s, w0, k0) and relation_intersection(r, s, k0, k1) and not relation_intersection(r, s, w0, k1) } }","let w1: T satisfy { exists(k2: T) { relation_intersection(r, s, w0, w1) and relation_intersection(r, s, w1, k2) and not relation_intersection(r, s, w0, k2) } }","let w2: T satisfy { relation_intersection(r, s, w0, w1) and relation_intersection(r, s, w1, w2) and not relation_intersection(r, s, w0, w2) }","function(x0: T, x1: T, x2: T) { not relation_intersection(r, s, x0, x1) or not relation_intersection(r, s, x1, x2) or relation_intersection(r, s, x0, x2) }(w0, identity_fn(w1), w2)","function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](w1)"]}
+{"goal":"is_equivalence[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](relation_intersection[T, T](r, s))"]}
+{"goal":"relation_intersection_is_equivalence","proof":[]}
+{"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"s(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, y)"]}
+{"goal":"relation_intersection(r, s, y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, y, x)"]}
+{"goal":"is_symmetric[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](relation_intersection[T, T](r, s))","let w0: T satisfy { exists(k0: T) { relation_intersection(r, s, w0, k0) and not relation_intersection(r, s, k0, w0) } }","let w1: T satisfy { relation_intersection(r, s, w0, w1) and not relation_intersection(r, s, w1, w0) }","function(x0: T, x1: T) { not relation_intersection(r, s, x0, x1) or relation_intersection(r, s, x1, x0) }(w0, w1)"]}
+{"goal":"r(x, y)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), r) or not relation_intersection(r, s, x, y)","not relation_intersection(r, s, x, y)","relation_intersection(r, s, x, y)"]}
+{"goal":"r(y, z)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), r) or not relation_intersection(r, s, y, z)","not relation_intersection(r, s, y, z)","relation_intersection(r, s, y, z)"]}
+{"goal":"is_transitive[T](r) = forall(x0: T, x1: T, x2: T) { r(x0, x1) and r(x1, x2) implies r(x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](r)"]}
+{"goal":"r(x, z)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_partial_equivalence[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[T](r, x, y, z)","is_partial_equivalence[T](r)","function(x0: T) { not r(x0, z) or not r(x, x0) }(y)"]}
+{"goal":"s(x, y)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), s) or not relation_intersection(r, s, x, y)","not relation_intersection(r, s, x, y)","relation_intersection(r, s, x, y)"]}
+{"goal":"s(y, z)","proof":["not relation_subset[T, T](relation_intersection[T, T](r, s), s) or not relation_intersection(r, s, y, z)","not relation_intersection(r, s, y, z)","relation_intersection(r, s, y, z)"]}
+{"goal":"is_transitive[T](s) = forall(x0: T, x1: T, x2: T) { s(x0, x1) and s(x1, x2) implies s(x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](s)"]}
+{"goal":"s(x, z)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_partial_equivalence[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[T](s, x, y, z)","is_partial_equivalence[T](s)","function(x0: T) { not s(x0, z) or not s(x, x0) }(y)"]}
+{"goal":"r(x, z) and s(x, z)","proof":["not r(x, z)"]}
+{"goal":"relation_intersection(r, s, x, z)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[T, T](r, s, x, z)"]}
+{"goal":"is_transitive[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](relation_intersection[T, T](r, s))","let w0: T satisfy { exists(k0: T, k1: T) { relation_intersection(r, s, w0, k0) and relation_intersection(r, s, k0, k1) and not relation_intersection(r, s, w0, k1) } }","let w1: T satisfy { exists(k2: T) { relation_intersection(r, s, w0, w1) and relation_intersection(r, s, w1, k2) and not relation_intersection(r, s, w0, k2) } }","let w2: T satisfy { relation_intersection(r, s, w0, w1) and relation_intersection(r, s, w1, w2) and not relation_intersection(r, s, w0, w2) }","function(x0: T, x1: T, x2: T) { not relation_intersection(r, s, x0, x1) or not relation_intersection(r, s, x1, x2) or relation_intersection(r, s, x0, x2) }(w0, identity_fn(w1), w2)","function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[T](w1)"]}
+{"goal":"is_partial_equivalence[T](relation_intersection[T, T](r, s))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](relation_intersection[T, T](r, s))"]}
+{"goal":"relation_intersection_is_partial_equivalence","proof":[]}
 {"goal":"respects_equivalence[T, U](f, relation_pullback[T, U](f, r), r)","proof":[]}
 {"goal":"function_respects_pullback","proof":[]}
 {"goal":"relation_subset[T, T](r, relation_pullback[T, T](identity_fn[T], r))","proof":[]}
@@ -451,6 +590,23 @@
 {"goal":"is_equivalence[A](relation_pullback[A, B](f, r))","proof":[]}
 {"goal":"is_equivalence[A](relation_pullback[A, B](f, r)) = is_equivalence[B](r)","proof":[]}
 {"goal":"relation_pullback_is_equivalence_iff_of_surjective","proof":[]}
+{"goal":"is_symmetric[B](r)","proof":[]}
+{"goal":"is_transitive[B](r)","proof":[]}
+{"goal":"is_partial_equivalence[B](r)","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_transitive[T0](x0) or not is_symmetric[T0](x0) or is_partial_equivalence[T0](x0) }[B](r)"]}
+{"goal":"relation_pullback_reflects_partial_equivalence_of_surjective","proof":[]}
+{"goal":"is_partial_equivalence[B](r)","proof":[]}
+{"goal":"is_partial_equivalence[A](relation_pullback[A, B](f, r))","proof":[]}
+{"goal":"is_partial_equivalence[A](relation_pullback[A, B](f, r)) = is_partial_equivalence[B](r)","proof":[]}
+{"goal":"relation_pullback_is_partial_equivalence_iff_of_surjective","proof":[]}
+{"goal":"is_reflexive[T](relation_converse[T, T](r))","proof":[]}
+{"goal":"is_symmetric[T](relation_converse[T, T](r))","proof":[]}
+{"goal":"is_transitive[T](relation_converse[T, T](r))","proof":[]}
+{"goal":"is_equivalence[T](relation_converse[T, T](r))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](r)","function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](relation_converse[T, T](r))"]}
+{"goal":"relation_converse_is_equivalence","proof":[]}
+{"goal":"is_symmetric[T](relation_converse[T, T](r))","proof":[]}
+{"goal":"is_transitive[T](relation_converse[T, T](r))","proof":[]}
+{"goal":"is_partial_equivalence[T](relation_converse[T, T](r))","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](r)","function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](relation_converse[T, T](r))"]}
+{"goal":"relation_converse_is_partial_equivalence","proof":[]}
 {"goal":"is_antisymmetric[B](r)","proof":[]}
 {"goal":"is_antisymmetric[A](relation_pullback[A, B](f, r))","proof":[]}
 {"goal":"is_antisymmetric[A](relation_pullback[A, B](f, r)) = is_antisymmetric[B](r)","proof":[]}
