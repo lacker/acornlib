@@ -1,6 +1,7 @@
 from nat import Nat
 from group import Group, has_finite_order, is_torsion_free
 from order import PartialOrder, LinearOrder
+from order_relation import lt_relation_is_transitive
 from util import antisymmetric_eq, transitive_step
 
 /// A left-ordered group is a group with a left-invariant order.

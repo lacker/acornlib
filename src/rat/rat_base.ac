@@ -838,7 +838,7 @@ instance Rat: LTE {
     }
 }
 
-from util import is_reflexive, is_transitive, is_antisymmetric
+from util import is_reflexive, is_transitive, is_antisymmetric, transitive_step
 
 theorem rat_is_reflexive {
     is_reflexive(Rat.lte)
@@ -879,6 +879,7 @@ theorem rat_is_antisymmetric {
 }
 
 from order import PartialOrder
+from order_relation import lt_relation_is_transitive
 
 instance Rat: PartialOrder
 
@@ -893,10 +894,11 @@ theorem zero_lt_imp_pos(a: Rat) {
 theorem lt_trans(a: Rat, b: Rat, c: Rat) {
     a < b and b < c implies a < c
 } by {
-    a <= b
-    b <= c
-    a <= c
-    a != c
+    if a < b and b < c {
+        lt_relation_is_transitive[Rat]
+        transitive_step(Rat.lt, a, b, c)
+        a < c
+    }
 }
 
 theorem neg_imp_lt_zero(a: Rat) {

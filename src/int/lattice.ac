@@ -121,7 +121,7 @@ attributes Int {
     }
 }
 
-from util import is_reflexive, is_transitive, is_antisymmetric
+from util import is_reflexive, is_transitive, is_antisymmetric, transitive_step
 
 theorem int_is_reflexive {
     is_reflexive(Int.lte)
@@ -175,6 +175,7 @@ theorem int_is_antisymmetric {
 }
 
 from order import PartialOrder, LinearOrder
+from order_relation import lt_relation_is_transitive
 
 instance Int: PartialOrder
 
@@ -338,9 +339,11 @@ theorem lt_mul_neg(a: Int, b: Int, c: Int) { a < b and c.is_negative implies b *
 }
 
 theorem lt_trans(a: Int, b: Int, c: Int) { a < b and b < c implies a < c } by {
-    a < b implies a <= b
-    b < c implies b <= c
-    a <= b and b <= c implies a <= c
+    if a < b and b < c {
+        lt_relation_is_transitive[Int]
+        transitive_step(Int.lt, a, b, c)
+        a < c
+    }
 }
 
 theorem lt_and_lte(a: Int, b: Int, c: Int) { a < b and b <= c implies a < c } by {

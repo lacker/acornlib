@@ -1,13 +1,4 @@
-{"goal":"a <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[G](a, b)"]}
-{"goal":"a != b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[G](a, b)"]}
-{"goal":"b <= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[G](b, c)"]}
-{"goal":"a <= c","proof":["function[T0: PartialOrder] { lib(util).is_transitive[T0](T0.lte) }[G]"]}
-{"goal":"c <= b","proof":[]}
-{"goal":"b <= a","proof":[]}
-{"goal":"a = b","proof":["function[T0: PartialOrder] { lib(util).is_antisymmetric[T0](T0.lte) }[G]"]}
-{"goal":"false","proof":[]}
-{"goal":"a != c","proof":[]}
-{"goal":"a < c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[G](a, c)"]}
+{"goal":"a < c","proof":[]}
 {"goal":"lt_trans","proof":[]}
 {"goal":"negative_of_nonnegative","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not T0.lte(x0, x1) or T0.add(x2, x0) <= T0.add(x2, x1) }[G](G.0, --a, -a)","function[T0: AddGroup](x0: T0) { T0.add(x0, T0.neg(x0)) = T0.0 }[G](-a)","function[T0: AddGroup](x0: T0) { -T0.neg(x0) = x0 }[G](a)","function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.add(x0, T0.0) = x0 }[G](-a)"]}
 {"goal":"negative_of_negative","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not T0.lte(x0, x1) or T0.add(x2, x0) <= T0.add(x2, x1) }[G](--a, G.0, -a)","function[T0: AddGroup](x0: T0) { T0.add(x0, T0.neg(x0)) = T0.0 }[G](-a)","function[T0: AddGroup](x0: T0) { -T0.neg(x0) = x0 }[G](a)","function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.add(x0, T0.0) = x0 }[G](-a)"]}

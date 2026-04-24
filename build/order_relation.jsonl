@@ -27,9 +27,9 @@
 {"goal":"false","proof":[]}
 {"goal":"gt_relation_is_asymmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or not x0(x2, x1) } = is_asymmetric[T0](x0) }[P](P.gt)","let w0: P satisfy { exists(k0: P) { w0 > k0 and k0 > w0 } }","let w1: P satisfy { w0 > w1 and w1 > w0 }","function(x0: P, x1: P) { not x0 > x1 or not x1 > x0 or false = true }(w0, w1)"]}
 {"goal":"a <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[P](a, b)"]}
-{"goal":"lt_relation_subset_lte","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[P, P](P.lt, P.lte)","let w0: P satisfy { exists(k0: P) { w0 < k0 and not w0 <= k0 } }","let w1: P satisfy { w0 < w1 and not w0 <= w1 }","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[P](w0, w1)","not w0 <= w1","w0 < w1","not w0 < w1"]}
+{"goal":"lt_relation_subset_lte","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[P, P](P.lt, P.lte)","let w0: P satisfy { exists(k0: P) { w0 < k0 and not w0 <= k0 } }","let w1: P satisfy { w0 < w1 and not w0 <= w1 }","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[P](w0, w1)"]}
 {"goal":"a >= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 >= x1 }[P](a, b)"]}
-{"goal":"gt_relation_subset_gte","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[P, P](P.gt, P.gte)","let w0: P satisfy { exists(k0: P) { w0 > k0 and not w0 >= k0 } }","let w1: P satisfy { w0 > w1 and not w0 >= w1 }","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 >= x1 }[P](w0, w1)","not w0 >= w1","w0 > w1","not w0 > w1"]}
+{"goal":"gt_relation_subset_gte","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[P, P](P.gt, P.gte)","let w0: P satisfy { exists(k0: P) { w0 > k0 and not w0 >= k0 } }","let w1: P satisfy { w0 > w1 and not w0 >= w1 }","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 >= x1 }[P](w0, w1)"]}
 {"goal":"a <= b or a >= b","proof":[]}
 {"goal":"lte_relation_is_total","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { x0(x1, x2) or x0(x2, x1) } = is_total[T0](x0) }[L](L.lte)","let w0: L satisfy { exists(k0: L) { not w0 <= k0 and not k0 <= w0 } }","let w1: L satisfy { not w0 <= w1 and not w1 <= w0 }","function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](w0, w1)"]}
 {"goal":"a <= b or a >= b","proof":[]}
@@ -127,8 +127,9 @@
 {"goal":"a <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](a, b)"]}
 {"goal":"a < b","proof":["function[T0](x0: T0, x1: T0) { lib(util).eq_relation[T0](x0, x1) = (x0 = x1) }[L](a, b)"]}
 {"goal":"a <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, b)"]}
-{"goal":"relation_refl_trans_closure(L.lt, a, a)","proof":[]}
+{"goal":"not a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or not x0 <= x1 }[L](a, b)"]}
 {"goal":"relation_refl_trans_closure(L.lt, a, b)","proof":[]}
+{"goal":"relation_refl_trans_closure(L.lt, a, a)","proof":[]}
 {"goal":"relation_refl_trans_closure(L.lt, a, b)","proof":[]}
 {"goal":"relation_refl_trans_closure(L.lt, a, b) = a <= b","proof":[]}
 {"goal":"lt_refl_trans_closure_at","proof":[]}
@@ -137,8 +138,9 @@
 {"goal":"a >= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[L](a, b)"]}
 {"goal":"a > b","proof":["function[T0](x0: T0, x1: T0) { lib(util).eq_relation[T0](x0, x1) = (x0 = x1) }[L](a, b)"]}
 {"goal":"a >= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x0 = x0 >= x1 }[L](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 > x1 or x0.max(x1) = x0 }[L](a, b)"]}
-{"goal":"relation_refl_trans_closure(L.gt, a, a)","proof":[]}
+{"goal":"not a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 >= x1 or not x0 < x1 }[L](a, b)"]}
 {"goal":"relation_refl_trans_closure(L.gt, a, b)","proof":[]}
+{"goal":"relation_refl_trans_closure(L.gt, a, a)","proof":[]}
 {"goal":"relation_refl_trans_closure(L.gt, a, b)","proof":[]}
 {"goal":"relation_refl_trans_closure(L.gt, a, b) = a >= b","proof":[]}
 {"goal":"gt_refl_trans_closure_at","proof":[]}

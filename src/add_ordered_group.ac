@@ -1,6 +1,7 @@
 from nat import Nat
 from add_group import AddGroup
 from order import PartialOrder, LinearOrder
+from order_relation import lt_relation_is_transitive
 from util import antisymmetric_eq, transitive_step
 
 /// A left-ordered group is a group with a left-invariant order.
@@ -16,19 +17,8 @@ theorem lt_trans[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
     a < b and b < c implies a < c
 } by {
     if a < b and b < c {
-        a <= b
-        a != b
-        b <= c
-        transitive_step(G.lte, a, b, c)
-        a <= c
-        if a = c {
-            c <= b
-            b <= a
-            antisymmetric_eq(G.lte, a, b)
-            a = b
-            false
-        }
-        a != c
+        lt_relation_is_transitive[G]
+        transitive_step(G.lt, a, b, c)
         a < c
     }
 }
