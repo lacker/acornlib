@@ -256,6 +256,7 @@ theorem real_is_antisymmetric {
 }
 
 from order import PartialOrder, LinearOrder
+from order_cases import min_eq_left_of_lt, min_eq_right_of_not_lt, max_eq_left_of_gt, max_eq_right_of_not_gt, lt_min_iff, max_lt_iff
 
 instance Real: PartialOrder
 
@@ -1489,9 +1490,11 @@ theorem min_pos_pos(a: Real, b: Real) {
     a.min(b).is_positive
 } by {
     if a < b {
+        min_eq_left_of_lt(a, b)
         a.min(b) = a
         a.min(b).is_positive
     } else {
+        min_eq_right_of_not_lt(a, b)
         a.min(b) = b
         a.min(b).is_positive
     }
@@ -1503,9 +1506,11 @@ theorem max_pos_pos(a: Real, b: Real) {
     a.max(b).is_positive
 } by {
     if a > b {
+        max_eq_left_of_gt(a, b)
         a.max(b) = a
         a.max(b).is_positive
     } else {
+        max_eq_right_of_not_gt(a, b)
         a.max(b) = b
         a.max(b).is_positive
     }
@@ -1546,11 +1551,8 @@ theorem max_gte_right(a: Real, b: Real) {
 theorem lt_both_imp_lt_min(a: Real, b: Real, c: Real) {
     a < b and a < c implies a < b.min(c)
 } by {
-    if b < c {
-        b.min(c) = b
-        a < b.min(c)
-    } else {
-        b.min(c) = c
+    if a < b and a < c {
+        lt_min_iff(a, b, c)
         a < b.min(c)
     }
 }
@@ -1566,11 +1568,11 @@ theorem lt_min_imp_lt_right(a: Real, b: Real, c: Real) {
 theorem gt_both_imp_gt_max(a: Real, b: Real, c: Real) {
     a > b and a > c implies a > b.max(c)
 } by {
-    if b > c {
-        b.max(c) = b
-        a > b.max(c)
-    } else {
-        b.max(c) = c
+    if a > b and a > c {
+        a > b = b < a
+        a > c = c < a
+        max_lt_iff(b, c, a)
+        b.max(c) < a
         a > b.max(c)
     }
 }
