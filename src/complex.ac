@@ -398,12 +398,60 @@ theorem conj_add(a: Complex, b: Complex) {
     a.conj + b.conj = Complex.new(a.re + b.re, -a.im + -b.im)
 }
 
+theorem conj_from_real(a: Real) {
+    Complex.from_real(a).conj = Complex.from_real(a)
+} by {
+    Complex.from_real(a) = Complex.new(a, Real.0)
+    Complex.from_real(a).conj = Complex.new(Complex.from_real(a).re, -Complex.from_real(a).im)
+    Complex.from_real(a).re = a
+    Complex.from_real(a).im = Real.0
+    Complex.from_real(a).conj = Complex.new(a, -Real.0)
+    -Real.0 = Real.0
+}
+
+theorem abs_squared_from_real(a: Real) {
+    Complex.from_real(a).abs_squared = a * a
+} by {
+    Complex.from_real(a) = Complex.new(a, Real.0)
+    Complex.from_real(a).re = a
+    Complex.from_real(a).im = Real.0
+    Complex.from_real(a).abs_squared = Complex.from_real(a).re * Complex.from_real(a).re + Complex.from_real(a).im * Complex.from_real(a).im
+    Complex.from_real(a).abs_squared = a * a + Real.0 * Real.0
+    Real.0 * Real.0 = Real.0
+    a * a + Real.0 = a * a
+}
+
 /// Computes the multiplicative inverse (1/z) for non-zero complex numbers.
 /// Yields 0 when applied to 0 (division by zero yields zero).
 instance Complex: Inverse {
     define inverse(self) -> Complex {
         self.conj * Complex.from_real(self.abs_squared.inverse)
     }
+}
+
+theorem zero_inverse {
+    Complex.0.inverse = Complex.0
+} by {
+    Complex.0 = Complex.new(Real.0, Real.0)
+    Complex.0.re = Real.0
+    Complex.0.im = Real.0
+    Complex.0.conj = Complex.new(Complex.0.re, -Complex.0.im)
+    Complex.0.conj = Complex.new(Real.0, -Real.0)
+    -Real.0 = Real.0
+    Complex.0.conj = Complex.0
+    Complex.0.abs_squared = Complex.0.re * Complex.0.re + Complex.0.im * Complex.0.im
+    Complex.0.abs_squared = Real.0 * Real.0 + Real.0 * Real.0
+    Real.0 * Real.0 = Real.0
+    Complex.0.abs_squared = Real.0
+    Complex.0.inverse = Complex.0.conj * Complex.from_real(Complex.0.abs_squared.inverse)
+    Real.0.inverse = Real.0
+    Complex.from_real(Complex.0.abs_squared.inverse) = Complex.from_real(Real.0)
+    Complex.from_real(Real.0) = Complex.0
+    Complex.0.inverse = Complex.0 * Complex.0
+    Complex.0 * Complex.0 = Complex.new(Complex.0.re * Complex.0.re - Complex.0.im * Complex.0.im, Complex.0.re * Complex.0.im + Complex.0.im * Complex.0.re)
+    Complex.0 * Complex.0 = Complex.new(Real.0 * Real.0 - Real.0 * Real.0, Real.0 * Real.0 + Real.0 * Real.0)
+    Real.0 - Real.0 = Real.0
+    Real.0 + Real.0 = Real.0
 }
 
 theorem mul_from_real(c: Complex, r: Real) {
@@ -507,19 +555,8 @@ theorem inverse_lifts(a: Real) {
     Real.1 * Real.0 = Real.0
     Complex.from_real(a).re = a
     Complex.from_real(a).im = Real.0
-
-    // Abs squared and conj from definitions
-    Complex.from_real(a).re * Complex.from_real(a).re + Complex.from_real(a).im * Complex.from_real(a).im = Complex.from_real(a).abs_squared
-    a * a + Real.0 * Real.0 = Complex.from_real(a).abs_squared
-    Real.0 * Real.0 = Real.0
-    a * a + Real.0 = a * a
     Complex.from_real(a).abs_squared = a * a
     Complex.from_real(a).conj * Complex.from_real(Complex.from_real(a).abs_squared.inverse) = Complex.from_real(a).inverse
-
-    // Conj of from_real(a)
-    Complex.from_real(a).conj = Complex.new(a, -Real.0)
-    -Real.0 = Real.0
-    Complex.from_real(a).conj = Complex.new(a, Real.0)
     Complex.from_real(a).conj = Complex.from_real(a)
 
     // Compute the mul_from_real result
@@ -555,10 +592,6 @@ theorem inverse_lifts(a: Real) {
         Complex.from_real(a * (a * a).inverse) = Complex.from_real(a.inverse)
         Complex.from_real(a).inverse = Complex.from_real(a.inverse)
     }
-}
-
-theorem zero_inverse {
-    Complex.0.inverse = Complex.0
 }
 
 attributes Complex {

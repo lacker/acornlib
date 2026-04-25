@@ -163,6 +163,42 @@
 {"goal":"b.conj = Complex.new(b.re, -b.im)","proof":["function(x0: Complex) { Complex.new(x0.re, -x0.im) = x0.conj }(b)"]}
 {"goal":"a.conj + b.conj = Complex.new(a.re + b.re, -a.im + -b.im)","proof":["function(x0: Complex, x1: Complex) { Complex.new(x0.re + x1.re, x0.im + x1.im) = x0 + x1 }(a.conj, b.conj)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Real, Real, Complex](Complex.new(a.conj.re + b.conj.re), a.conj.im.add, b.conj.im)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Real, Real, Real -> Complex](Complex.new, a.conj.re.add, b.conj.re)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Real, Real, Real -> Complex](Complex.new, a.re.add, b.re)","function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { lib(util).compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Real, Real, Complex](Complex.new(a.re + b.re), (-a.im).add, -b.im)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(b.re, -b.im)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(a.re, -a.im)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(b.re, -b.im)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(a.re, -a.im)"]}
 {"goal":"conj_add","proof":[]}
+{"goal":"Complex.from_real(a) = Complex.new(a, Real.0)","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)"]}
+{"goal":"Complex.from_real(a).conj = Complex.new(Complex.from_real(a).re, -Complex.from_real(a).im)","proof":["function(x0: Complex) { Complex.new(x0.re, -x0.im) = x0.conj }(Complex.from_real(a))"]}
+{"goal":"Complex.from_real(a).re = a","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(a, Real.0)"]}
+{"goal":"Complex.from_real(a).im = Real.0","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(a, Real.0)"]}
+{"goal":"Complex.from_real(a).conj = Complex.new(a, -Real.0)","proof":[]}
+{"goal":"-Real.0 = Real.0","proof":[]}
+{"goal":"conj_from_real","proof":[]}
+{"goal":"Complex.from_real(a) = Complex.new(a, Real.0)","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)"]}
+{"goal":"Complex.from_real(a).re = a","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(a, Real.0)"]}
+{"goal":"Complex.from_real(a).im = Real.0","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(a, Real.0)"]}
+{"goal":"Complex.from_real(a).abs_squared = Complex.from_real(a).re * Complex.from_real(a).re + Complex.from_real(a).im * Complex.from_real(a).im","proof":["function(x0: Complex) { x0.re * x0.re + x0.im * x0.im = x0.abs_squared }(Complex.from_real(a))"]}
+{"goal":"Complex.from_real(a).abs_squared = a * a + Real.0 * Real.0","proof":[]}
+{"goal":"Real.0 * Real.0 = Real.0","proof":["function(x0: Real) { Real.0 * x0 = Real.0 }(Real.0)"]}
+{"goal":"a * a + Real.0 = a * a","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { T0.add(x0, x1) = T0.add(x1, x0) }[Real](a * a, Real.0)","function(x0: Real) { Real.0 + x0 = x0 }(a * a)"]}
+{"goal":"abs_squared_from_real","proof":[]}
+{"goal":"Complex.0 = Complex.new(Real.0, Real.0)","proof":[]}
+{"goal":"Complex.0.re = Real.0","proof":["function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(Real.0, Real.0)"]}
+{"goal":"Complex.0.im = Real.0","proof":["function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(Real.0, Real.0)"]}
+{"goal":"Complex.0.conj = Complex.new(Complex.0.re, -Complex.0.im)","proof":["function(x0: Complex) { Complex.new(x0.re, -x0.im) = x0.conj }(Complex.0)"]}
+{"goal":"Complex.0.conj = Complex.new(Real.0, -Real.0)","proof":["Complex.new(Complex.0.re, -Real.0) != Complex.0.conj","Complex.new(Complex.0.re, -Real.0) = Complex.0.conj"]}
+{"goal":"-Real.0 = Real.0","proof":[]}
+{"goal":"Complex.0.conj = Complex.0","proof":["Complex.new(Real.0, -Real.0) = Complex.0","Complex.new(Real.0, -Real.0) != Complex.0"]}
+{"goal":"Complex.0.abs_squared = Complex.0.re * Complex.0.re + Complex.0.im * Complex.0.im","proof":["function(x0: Complex) { x0.re * x0.re + x0.im * x0.im = x0.abs_squared }(Complex.0)"]}
+{"goal":"Complex.0.abs_squared = Real.0 * Real.0 + Real.0 * Real.0","proof":[]}
+{"goal":"Real.0 * Real.0 = Real.0","proof":["function(x0: Real) { Real.0 * x0 = Real.0 }(Real.0)"]}
+{"goal":"Complex.0.abs_squared = Real.0","proof":["function(x0: Real) { Complex.from_real(x0).abs_squared = x0 * x0 }(Complex.0.re)","function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(Real.0)"]}
+{"goal":"Complex.0.inverse = Complex.0.conj * Complex.from_real(Complex.0.abs_squared.inverse)","proof":["function(x0: Complex) { x0.conj * Complex.from_real(x0.abs_squared.inverse) = x0.inverse }(Complex.0)"]}
+{"goal":"Real.0.inverse = Real.0","proof":[]}
+{"goal":"Complex.from_real(Complex.0.abs_squared.inverse) = Complex.from_real(Real.0)","proof":["Complex.0.abs_squared.inverse != Real.0","Complex.0.abs_squared.inverse = Real.0"]}
+{"goal":"Complex.from_real(Real.0) = Complex.0","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(Real.0)"]}
+{"goal":"Complex.0.inverse = Complex.0 * Complex.0","proof":[]}
+{"goal":"Complex.0 * Complex.0 = Complex.new(Complex.0.re * Complex.0.re - Complex.0.im * Complex.0.im, Complex.0.re * Complex.0.im + Complex.0.im * Complex.0.re)","proof":["function(x0: Complex, x1: Complex) { Complex.new(x0.re * x1.re - x0.im * x1.im, x0.re * x1.im + x0.im * x1.re) = x0 * x1 }(Complex.0, Complex.0)"]}
+{"goal":"Complex.0 * Complex.0 = Complex.new(Real.0 * Real.0 - Real.0 * Real.0, Real.0 * Real.0 + Real.0 * Real.0)","proof":[]}
+{"goal":"Real.0 - Real.0 = Real.0","proof":["function[T0: lib(add_group).AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[Real](Real.0, Real.0)","function(x0: Real, x1: Real) { x0 + x1 = x0 + x1 }(Complex.0.re * Complex.0.im, Complex.0.im * Complex.0.re)","function(x0: Real) { -x0 = -x0 }(Complex.0.im)"]}
+{"goal":"Real.0 + Real.0 = Real.0","proof":[]}
+{"goal":"zero_inverse","proof":[]}
 {"goal":"Complex.from_real(r) = Complex.new(r, Real.0)","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(r)"]}
 {"goal":"Complex.new(r, Real.0).re = r","proof":["function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(r, Real.0)"]}
 {"goal":"Complex.new(r, Real.0).im = Real.0","proof":["function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(r, Real.0)"]}
@@ -188,7 +224,7 @@
 {"goal":"Complex.from_real(a) = Complex.new(a, Real.0)","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(a)"]}
 {"goal":"Complex.from_real(b) = Complex.new(b, Real.0)","proof":["function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(b)"]}
 {"goal":"Complex.from_real(a) + Complex.from_real(b) = Complex.new(a + b, Real.0 + Real.0)","proof":["function(x0: Complex, x1: Complex) { Complex.new(x0.re + x1.re, x0.im + x1.im) = x0 + x1 }(Complex.from_real(a), Complex.from_real(b))","function(x0: Real, x1: Real) { lib(real.real_seq).limit_rat(lib(real.real_seq).add_rat_seq(lib(real.real_seq).rat_seq(x0), lib(real.real_seq).rat_seq(x1))) = x0 + x1 }(Complex.from_real(a).re, Complex.from_real(b).re)","function(x0: Real, x1: Real) { lib(real.real_seq).limit_rat(lib(real.real_seq).add_rat_seq(lib(real.real_seq).rat_seq(x0), lib(real.real_seq).rat_seq(x1))) = x0 + x1 }(a, b)","function(x0: Real, x1: Real) { lib(real.real_seq).limit_rat(lib(real.real_seq).add_rat_seq(lib(real.real_seq).rat_seq(x0), lib(real.real_seq).rat_seq(x1))) = x0 + x1 }(Complex.from_real(a).im, Complex.from_real(b).im)","function(x0: Real, x1: Real) { lib(real.real_seq).limit_rat(lib(real.real_seq).add_rat_seq(lib(real.real_seq).rat_seq(x0), lib(real.real_seq).rat_seq(x1))) = x0 + x1 }(Real.0, Real.0)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Real, Real, Complex](Complex.new, Complex.from_real(a).im + Complex.from_real(b).im, Complex.from_real(a).re + Complex.from_real(b).re)","function[T0, T1, T2](x0: (T0, T1) -> T2, x1: T1, x2: T0) { lib(util).flip[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[Real, Real, Complex](Complex.new, Real.0 + Real.0, a + b)","function(x0: Real) { Real.0 + x0 = x0 }(Real.0)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(b, Real.0)","function(x0: Real, x1: Real) { Complex.new(x0, x1).im = x1 }(a, Real.0)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(b, Real.0)","function(x0: Real, x1: Real) { Complex.new(x0, x1).re = x0 }(a, Real.0)"]}
-{"goal":"Real.0 + Real.0 = Real.0","proof":["function(x0: Real, x1: Real) { Real.0 != x0 - x1 or x0 = x1 }(Real.0 + Real.0, Real.0)","function(x0: Real, x1: Real) { x0 + x1 - x1 = x0 }(Real.0, Real.0)"]}
+{"goal":"Real.0 + Real.0 = Real.0","proof":["function(x0: Real, x1: Real) { x0 - x1 != Real.0 or x0 = x1 }(Real.0 + Real.0, Real.0)","function(x0: Real, x1: Real) { x0 + x1 - x1 = x0 }(Real.0, Real.0)"]}
 {"goal":"real_add_lifts","proof":[]}
 {"goal":"neg_eq_mul_neg_one","proof":["function(x0: Complex, x1: Real) { Complex.new(x0.re * x1, x0.im * x1) = x0 * Complex.from_real(x1) }(a, -Real.1)","function(x0: Complex) { Complex.new(-x0.re, -x0.im) = -x0 }(a)","function[T0: lib(ring).Ring](x0: T0) { T0.mul(x0, -T0.1) = T0.neg(x0) }[Real](a.im)","function[T0: lib(ring).Ring](x0: T0) { T0.mul(x0, -T0.1) = T0.neg(x0) }[Real](a.re)","function(x0: Complex, x1: Complex) { x0 * x1 = x1 * x0 }(a, -Complex.1)"]}
 {"goal":"a.abs_squared = a.re * a.re + a.im * a.im","proof":["function(x0: Complex) { x0.re * x0.re + x0.im * x0.im = x0.abs_squared }(a)"]}
@@ -230,16 +266,9 @@
 {"goal":"Real.1 * Real.0 = Real.0","proof":["function[T0: lib(comm_semigroup).CommSemigroup](x0: T0, x1: T0) { T0.mul(x0, x1) = T0.mul(x1, x0) }[Real](Real.0, Real.1)","function(x0: Real) { Real.0 * x0 = Real.0 }(Real.1)"]}
 {"goal":"Complex.from_real(a).re = a","proof":[]}
 {"goal":"Complex.from_real(a).im = Real.0","proof":[]}
-{"goal":"Complex.from_real(a).re * Complex.from_real(a).re + Complex.from_real(a).im * Complex.from_real(a).im = Complex.from_real(a).abs_squared","proof":["function(x0: Complex) { x0.re * x0.re + x0.im * x0.im = x0.abs_squared }(Complex.from_real(a))"]}
-{"goal":"a * a + Real.0 * Real.0 = Complex.from_real(a).abs_squared","proof":[]}
-{"goal":"Real.0 * Real.0 = Real.0","proof":["function(x0: Real) { Real.0 * x0 = Real.0 }(Real.0)"]}
-{"goal":"a * a + Real.0 = a * a","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { T0.add(x0, x1) = T0.add(x1, x0) }[Real](a * a, Real.0)","function(x0: Real) { Real.0 + x0 = x0 }(a * a)"]}
-{"goal":"Complex.from_real(a).abs_squared = a * a","proof":[]}
+{"goal":"Complex.from_real(a).abs_squared = a * a","proof":["function(x0: Real) { Complex.from_real(x0).abs_squared = x0 * x0 }(a)"]}
 {"goal":"Complex.from_real(a).conj * Complex.from_real(Complex.from_real(a).abs_squared.inverse) = Complex.from_real(a).inverse","proof":["function(x0: Complex) { x0.conj * Complex.from_real(x0.abs_squared.inverse) = x0.inverse }(Complex.from_real(a))"]}
-{"goal":"Complex.from_real(a).conj = Complex.new(a, -Real.0)","proof":["function(x0: Complex) { Complex.new(x0.re, -x0.im) = x0.conj }(Complex.from_real(a))"]}
-{"goal":"-Real.0 = Real.0","proof":[]}
-{"goal":"Complex.from_real(a).conj = Complex.new(a, Real.0)","proof":[]}
-{"goal":"Complex.from_real(a).conj = Complex.from_real(a)","proof":[]}
+{"goal":"Complex.from_real(a).conj = Complex.from_real(a)","proof":["function(x0: Real) { Complex.from_real(x0).conj = Complex.from_real(x0) }(a)"]}
 {"goal":"Complex.new(Complex.from_real(a).conj.re * Complex.from_real(a).abs_squared.inverse, Complex.from_real(a).conj.im * Complex.from_real(a).abs_squared.inverse) = Complex.from_real(a).conj * Complex.from_real(Complex.from_real(a).abs_squared.inverse)","proof":["function(x0: Complex, x1: Real) { Complex.new(x0.re * x1, x0.im * x1) = x0 * Complex.from_real(x1) }(Complex.from_real(a).conj, Complex.from_real(a).abs_squared.inverse)"]}
 {"goal":"Real.0.inverse = Real.0","proof":[]}
 {"goal":"a.inverse = Real.0","proof":[]}
@@ -262,7 +291,6 @@
 {"goal":"Complex.from_real(a * (a * a).inverse) = Complex.from_real(a.inverse)","proof":[]}
 {"goal":"Complex.from_real(a).inverse = Complex.from_real(a.inverse)","proof":[]}
 {"goal":"inverse_lifts","proof":[]}
-{"goal":"zero_inverse","proof":["function(x0: Real) { Complex.from_real(x0.inverse) = Complex.from_real(x0).inverse }(Real.0)","function(x0: Real) { Complex.new(x0, Real.0) = Complex.from_real(x0) }(Real.0)"]}
 {"goal":"forall(x0: Complex, x1: Complex, x2: Complex) { x0 + (x1 + x2) = x0 + x1 + x2 }","proof":["exists(k0: Complex, k1: Complex, k2: Complex) { Add.add[Complex](k0, Add.add[Complex](k1, k2)) != Add.add[Complex](Add.add[Complex](k0, k1), k2) }","let w0: Complex satisfy { exists(k3: Complex, k4: Complex) { Add.add[Complex](w0, Add.add[Complex](k3, k4)) != Add.add[Complex](Add.add[Complex](w0, k3), k4) } }","exists(k5: Complex, k6: Complex) { Add.add[Complex](w0, Add.add[Complex](k5, k6)) != Add.add[Complex](Add.add[Complex](w0, k5), k6) }","let w1: Complex satisfy { exists(k7: Complex) { Add.add[Complex](w0, Add.add[Complex](w1, k7)) != Add.add[Complex](Add.add[Complex](w0, w1), k7) } }","exists(k8: Complex) { Add.add[Complex](w0, Add.add[Complex](w1, k8)) != Add.add[Complex](Add.add[Complex](w0, w1), k8) }","let w31: Complex satisfy { Add.add[Complex](w0, Add.add[Complex](w1, w31)) != Add.add[Complex](Add.add[Complex](w0, w1), w31) }","function(x0: Complex, x1: Complex, x2: Complex) { Add.add[Complex](Add.add[Complex](x0, x1), x2) = Add.add[Complex](x0, Add.add[Complex](x1, x2)) }(w0, w1, w31)"]}
 {"goal":"forall(x0: Complex, x1: Complex) { x0 + x1 = x1 + x0 }","proof":["exists(k0: Complex, k1: Complex) { Add.add[Complex](k1, k0) != Add.add[Complex](k0, k1) }","let w0: Complex satisfy { exists(k2: Complex) { Add.add[Complex](k2, w0) != Add.add[Complex](w0, k2) } }","exists(k3: Complex) { Add.add[Complex](k3, w0) != Add.add[Complex](w0, k3) }","let w1: Complex satisfy { Add.add[Complex](w1, w0) != Add.add[Complex](w0, w1) }","function(x0: Complex, x1: Complex) { Add.add[Complex](x0, x1) = Add.add[Complex](x1, x0) }(w1, w0)"]}
 {"goal":"forall(x0: Complex) { Complex.0 + x0 = x0 }","proof":["exists(k0: Complex) { Add.add[Complex](Zero.0[Complex], k0) != k0 }","let w0: Complex satisfy { Add.add[Complex](Zero.0[Complex], w0) != w0 }","function(x0: Complex) { Add.add[Complex](Zero.0[Complex], x0) = x0 }(w0)"]}
