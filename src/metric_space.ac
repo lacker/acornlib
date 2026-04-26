@@ -34,6 +34,30 @@ theorem distance_non_negative[M: MetricSpace](x: M, y: M) {
     0 <= x.distance(y) + x.distance(y)
 }
 
+theorem distance_self[M: MetricSpace](x: M) {
+    x.distance(x) = 0
+}
+
+theorem eq_imp_distance_zero[M: MetricSpace](x: M, y: M) {
+    x = y implies x.distance(y) = 0
+} by {
+    if x = y {
+        x.distance(x) = 0
+    }
+}
+
+theorem distance_zero_iff_eq[M: MetricSpace](x: M, y: M) {
+    (x.distance(y) = 0) = (x = y)
+} by {
+    if x.distance(y) = 0 {
+        x = y
+    }
+    if x = y {
+        x.distance(y) = 0
+    }
+    (x.distance(y) = 0) = (x = y)
+}
+
 /// The discrete metric assigns distance 0 to identical elements and distance 1 to distinct elements.
 define discrete[T](x: T, y: T) -> Real {
     if x = y {
@@ -63,6 +87,18 @@ theorem discrete_self_distance_is_zero[T](x: T) {
 
 theorem discrete_dist_zero_imp_eq[T](x: T, y: T) {
     discrete(x, y) = 0 implies x = y
+}
+
+theorem discrete_eq_one_of_ne[T](x: T, y: T) {
+    x != y implies discrete(x, y) = 1
+} by {
+    if x != y {
+        if x = y {
+            false
+        } else {
+            discrete(x, y) = 1
+        }
+    }
 }
 
 theorem discrete_symmetric[T](x: T, y: T) {
