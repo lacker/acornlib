@@ -2,7 +2,7 @@
 
 Goal: support quotient objects as first-class foundational tools instead of one-off encodings.
 
-- [ ] Decide on a canonical quotient representation for Acornlib
+- [ ] Blocked: decide on a canonical quotient representation for Acornlib
 - [ ] Define quotient by an equivalence relation
 - [ ] Add the canonical projection map and its basic lemmas
 - [ ] Add elimination and recursion principles for quotients
