@@ -2,6 +2,10 @@
 
 Goal: over time, give Acornlib a reasonable analogue of each major area of mathematics covered in Lean Mathlib, with work ordered roughly by dependency.
 
+## Blockers
+
+No current blockers.
+
 ## Foundational And Core Infrastructure
 
 - [ ] [Foundations and set-theoretic infrastructure](foundations/todo.md)
