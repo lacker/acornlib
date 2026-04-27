@@ -2847,6 +2847,78 @@ theorem empty_set_cardinality_is_zero[T] {
     List.nil[T].contains_set(Set[T].empty_set)
 }
 
+/// A singleton set is finite.
+theorem singleton_set_is_finite[T](a: T) {
+    (Set[T].singleton(a)).is_finite
+} by {
+    let superset = List.singleton[T](a)
+
+    forall(x: T) {
+        if Set[T].singleton(a).contains(x) {
+            singleton_contains_eq(a, x)
+            a = x
+            superset.contains(x)
+        }
+    }
+
+    finite_constraint((Set[T].singleton(a)).contains)
+    (Set[T].singleton(a)).is_finite
+}
+
+/// Inserting an element into a finite set gives a finite set.
+theorem insert_is_finite_of_finite[T](s: Set[T], item: T) {
+    s.is_finite implies s.insert(item).is_finite
+} by {
+    if s.is_finite {
+        finite_constraint(s.contains)
+        functional_insert_satisfies_finite_constraint(s.contains, item)
+        finite_constraint(functional_insert(s.contains, item))
+
+        let superset: List[T] satisfy {
+            forall(x: T) {
+                functional_insert(s.contains, item, x) implies superset.contains(x)
+            }
+        }
+
+        forall(x: T) {
+            if s.insert(item).contains(x) {
+                functional_insert(s.contains, item, x)
+                superset.contains(x)
+            }
+        }
+
+        finite_constraint(s.insert(item).contains)
+        s.insert(item).is_finite
+    }
+}
+
+/// Removing an element from a finite set gives a finite set.
+theorem remove_is_finite_of_finite[T](s: Set[T], item: T) {
+    s.is_finite implies s.remove(item).is_finite
+} by {
+    if s.is_finite {
+        finite_constraint(s.contains)
+        functional_remove_satisfies_finite_constraint(s.contains, item)
+        finite_constraint(functional_remove(s.contains, item))
+
+        let superset: List[T] satisfy {
+            forall(x: T) {
+                functional_remove(s.contains, item, x) implies superset.contains(x)
+            }
+        }
+
+        forall(x: T) {
+            if s.remove(item).contains(x) {
+                functional_remove(s.contains, item, x)
+                superset.contains(x)
+            }
+        }
+
+        finite_constraint(s.remove(item).contains)
+        s.remove(item).is_finite
+    }
+}
+
 theorem union_is_finite_of_finite[K](a: Set[K], b: Set[K]) {
     a.is_finite and b.is_finite implies (a.union(b)).is_finite
 } by {

@@ -13,4 +13,4 @@ Goal: make core definitions and proof patterns stable enough that later librarie
 
 ## Current Focus
 
-The next branch is [quotients](quotients/todo.md). It should be split into a narrower sub-branch before implementation.
+The quotient branch is blocked on the canonical representation choice. Work from [finite and infinite sets](finite-and-infinite-sets/todo.md) meanwhile.
