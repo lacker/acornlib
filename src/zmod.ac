@@ -1,0 +1,102 @@
+from nat import Nat
+from nat.nat_base import small_mod
+
+/// Natural-number representatives for integers modulo `k`.
+///
+/// This is empty when `k = 0`, so the basic operations below return `Option[Zmod[k]]`
+/// rather than total values.
+structure Zmod[k: Nat] {
+    value: Nat
+} constraint {
+    value < k
+}
+
+/// Identity witness used to exercise top-level dependent `let ... satisfy`.
+let zmod_self[k: Nat](x: Zmod[k]) -> result: Zmod[k] satisfy {
+    result = x
+} by {
+    x = x
+}
+
+attributes Zmod[k: Nat] {
+    /// Expose the modulus in a family-dependent attribute body.
+    define modulus(self) -> Nat {
+        k
+    }
+
+    /// Rewrap through a top-level dependent satisfy function.
+    define again(self) -> Zmod[k] {
+        zmod_self(k, self)
+    }
+
+    /// Canonicalize a natural number into `Zmod[k]` when possible.
+    let reduce: Nat -> Option[Zmod[k]] = function(x: Nat) {
+        Zmod[k].new(x.mod(k))
+    }
+
+    /// Modular addition, returning `none` exactly when `k = 0`.
+    let add: (Zmod[k], Zmod[k]) -> Option[Zmod[k]] = function(a: Zmod[k], b: Zmod[k]) {
+        Zmod[k].reduce(a.value + b.value)
+    }
+}
+
+theorem value_lt_modulus[k: Nat](x: Zmod[k]) {
+    x.value < k
+}
+
+theorem new_round_trip[k: Nat](x: Nat, y: Zmod[k]) {
+    Zmod[k].new(x) = Option.some(y) implies y.value = x
+}
+
+theorem new_self[k: Nat](a: Zmod[k]) {
+    Zmod[k].new(a.value) = Option.some(a)
+}
+
+theorem some_injective[T](a: T, b: T) {
+    Option.some(a) = Option.some(b) implies a = b
+}
+
+theorem ext[k: Nat](a: Zmod[k], b: Zmod[k]) {
+    a.value = b.value implies a = b
+} by {
+    if a.value = b.value {
+        Zmod[k].new(a.value) = Option.some(a)
+        Zmod[k].new(b.value) = Option.some(b)
+        Option.some(a) = Option.some(b)
+        some_injective[Zmod[k]](a, b)
+    }
+}
+
+theorem reduce_round_trip[k: Nat](x: Nat, y: Zmod[k]) {
+    Zmod[k].reduce(x) = Option.some(y) implies y.value = x.mod(k)
+} by {
+    if Zmod[k].reduce(x) = Option.some(y) {
+        Zmod[k].new(x.mod(k)) = Option.some(y)
+        y.value = x.mod(k)
+    }
+}
+
+theorem reduce_self[k: Nat](x: Zmod[k]) {
+    Zmod[k].reduce(x.value) = Option.some(x)
+} by {
+    x.value < k
+    small_mod(x.value, k)
+    x.value.mod(k) = x.value
+    Zmod[k].new(x.value.mod(k)) = Zmod[k].new(x.value)
+    Zmod[k].new(x.value) = Option.some(x)
+    Zmod[k].new(x.value.mod(k)) = Option.some(x)
+    Zmod[k].reduce(x.value) = Option.some(x)
+}
+
+theorem add_round_trip[k: Nat](a: Zmod[k], b: Zmod[k], c: Zmod[k]) {
+    Zmod[k].add(a, b) = Option.some(c) implies c.value = (a.value + b.value).mod(k)
+} by {
+    if Zmod[k].add(a, b) = Option.some(c) {
+        Zmod[k].reduce(a.value + b.value) = Option.some(c)
+        c.value = (a.value + b.value).mod(k)
+    }
+}
+
+theorem attribute_round_trip[k: Nat](x: Zmod[k]) {
+    x.modulus = k and x.again = x
+}

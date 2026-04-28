@@ -1,0 +1,11 @@
+{"goal":"x = x","proof":[]}
+{"goal":"exists(k0: Fin[n]) { k0 = x }","proof":["function(x0: Fin[n]) { x != x0 }(x)"]}
+{"goal":"value_lt_bound","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].value(x1) < x0 }(n, x)"]}
+{"goal":"new_round_trip","proof":["function(x0: Nat, x1: Fin[x0], x2: Nat) { Option.some(x1) != Fin[x0].new(x2) or Fin[x0].value(x1) = x2 }(n, y, x)"]}
+{"goal":"new_self","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].new(Fin[x0].value(x1)) = Option.some(x1) }(n, a)"]}
+{"goal":"some_injective","proof":["function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[T](a, b)"]}
+{"goal":"Fin[Fin[a].value].new = Option.some(a)","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].new(Fin[x0].value(x1)) = Option.some(x1) }(n, a)"]}
+{"goal":"Fin[Fin[b].value].new = Option.some(b)","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].new(Fin[x0].value(x1)) = Option.some(x1) }(n, b)"]}
+{"goal":"Option.some(a) = Option.some(b)","proof":["Fin[n].new(Fin[n].value(a)) = Option.some(b)","Fin[n].new(Fin[n].value(a)) != Option.some(b)"]}
+{"goal":"ext","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].new(Fin[x0].value(x1)) = Option.some(x1) }(n, a)","function(x0: Nat, x1: Fin[x0]) { Fin[x0].new(Fin[x0].value(x1)) = Option.some(x1) }(n, b)","Option.some(b) != Option.some(a) or Fin[n].value(b) != Fin[n].value(a)","Option.some(b) != Option.some(a)"]}
+{"goal":"attribute_round_trip","proof":["function(x0: Nat, x1: Fin[x0]) { Fin[x0].again(x1) = fin_self(x0, x1) }(n, x)","function(x0: Nat, x1: Fin[x0]) { Fin[x0].bound(x1) = x0 }(n, x)","function(x0: Nat, x1: Fin[x0]) { fin_self(x0, x1) = x1 }(n, x)","Fin[n].again(x) != x"]}
