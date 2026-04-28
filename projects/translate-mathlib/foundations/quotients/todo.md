@@ -1,8 +1,8 @@
 # Quotient Constructions
 
-Goal: support quotient objects as first-class foundational tools instead of one-off encodings.
+Goal: support quotient objects as first-class foundational tools using equivalence-class constrained structures instead of one-off encodings.
 
-- [ ] Blocked: decide on a canonical quotient representation for Acornlib
+- [ ] Extract reusable quotient helper lemmas from the `Zmod` equivalence-class pattern
 - [ ] Define quotient by an equivalence relation
 - [ ] Add the canonical projection map and its basic lemmas
 - [ ] Add elimination and recursion principles for quotients

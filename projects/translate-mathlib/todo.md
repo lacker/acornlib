@@ -4,7 +4,7 @@ Goal: over time, give Acornlib a reasonable analogue of each major area of mathe
 
 ## Blockers
 
-- [ ] design-question: foundations/quotients/todo.md - choose the canonical quotient representation for Acornlib before defining quotient objects, elimination, equality, and algebraic transport; get human feedback on the representation strategy.
+No current blockers.
 
 ## Foundational And Core Infrastructure
 

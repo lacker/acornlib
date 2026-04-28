@@ -13,4 +13,4 @@ Goal: make core definitions and proof patterns stable enough that later librarie
 
 ## Current Focus
 
-The quotient branch is blocked on the canonical representation choice. Work from [finite and infinite sets](finite-and-infinite-sets/todo.md) meanwhile.
+Resume [quotient constructions](quotients/todo.md) using equivalence-class constrained structures, with `Zmod` as the model.

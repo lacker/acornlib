@@ -1,7 +1,7 @@
 from nat import Nat
 from int import Int
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
-from set import Set, equivalence_class
+from set import Set, equivalence_class, equivalence_class_eq_of_equiv
 from equivalence import is_equivalence_class, equivalence_class_is_equivalence_class
 
 /// True if two integers are congruent modulo `n`.
@@ -73,6 +73,69 @@ theorem int_mod_rel_is_equivalence(n: Nat) {
     is_equivalence(int_mod_rel(n))
 }
 
+/// Congruence modulo `n` is compatible with addition.
+theorem int_mod_rel_add_compatible(n: Nat, a1: Int, a2: Int, b1: Int, b2: Int) {
+    int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) implies
+    int_mod_rel(n, a1 + b1, a2 + b2)
+} by {
+    if int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) {
+        let m = Int.from_nat(n)
+        let d: Int satisfy { d * m = a1 - a2 }
+        let e: Int satisfy { e * m = b1 - b2 }
+        (d + e) * m = d * m + e * m
+        d * m + e * m = (a1 - a2) + (b1 - b2)
+        (a1 - a2) + (b1 - b2) = (a1 + -a2) + (b1 + -b2)
+        (a1 + -a2) + (b1 + -b2) = a1 + b1 + (-a2 + -b2)
+        -a2 + -b2 = -(a2 + b2)
+        a1 + b1 + (-a2 + -b2) = a1 + b1 + -(a2 + b2)
+        a1 + b1 + -(a2 + b2) = (a1 + b1) - (a2 + b2)
+        (a1 - a2) + (b1 - b2) = (a1 + b1) - (a2 + b2)
+        (d + e) * m = (a1 + b1) - (a2 + b2)
+        m.divides((a1 + b1) - (a2 + b2))
+        int_mod_rel(n, a1 + b1, a2 + b2)
+    }
+}
+
+/// Congruence modulo `n` is compatible with multiplication.
+theorem int_mod_rel_mul_compatible(n: Nat, a1: Int, a2: Int, b1: Int, b2: Int) {
+    int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) implies
+    int_mod_rel(n, a1 * b1, a2 * b2)
+} by {
+    if int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) {
+        let m = Int.from_nat(n)
+        let d: Int satisfy { d * m = a1 - a2 }
+        let e: Int satisfy { e * m = b1 - b2 }
+        (d * b1 + a2 * e) * m = d * b1 * m + a2 * e * m
+        d * b1 * m = d * (b1 * m)
+        b1 * m = m * b1
+        d * (b1 * m) = d * (m * b1)
+        d * (m * b1) = d * m * b1
+        d * b1 * m = d * m * b1
+        d * m * b1 = (a1 - a2) * b1
+        a2 * e * m = a2 * (e * m)
+        a2 * (e * m) = a2 * (b1 - b2)
+        (d * b1 + a2 * e) * m = (a1 - a2) * b1 + a2 * (b1 - b2)
+        (a1 - a2) * b1 = a1 * b1 - a2 * b1
+        a2 * (b1 - b2) = a2 * b1 - a2 * b2
+        let x = a1 * b1
+        let y = a2 * b1
+        let z = a2 * b2
+        x - y + (y - z) = (x + -y) + (y + -z)
+        (x + -y) + (y + -z) = x + (-y + y) + -z
+        -y + y = Int.0
+        x + (-y + y) + -z = x + Int.0 + -z
+        x + Int.0 = x
+        x + Int.0 + -z = x + -z
+        x + -z = x - z
+        x - y + (y - z) = x - z
+        (a1 * b1 - a2 * b1) + (a2 * b1 - a2 * b2) = a1 * b1 - a2 * b2
+        (a1 - a2) * b1 + a2 * (b1 - b2) = a1 * b1 - a2 * b2
+        (d * b1 + a2 * e) * m = a1 * b1 - a2 * b2
+        m.divides(a1 * b1 - a2 * b2)
+        int_mod_rel(n, a1 * b1, a2 * b2)
+    }
+}
+
 /// Integer residue classes modulo `n`.
 ///
 /// When `n = 0`, this is the quotient of the integers by equality, so it is
@@ -136,6 +199,48 @@ theorem ext[n: Nat](a: Zmod[n], b: Zmod[n]) {
 
 theorem mk_new_self[n: Nat](a: Int) {
     Zmod[n].new(equivalence_class(int_mod_rel(n), a)) = Option.some(zmod_mk(n, a))
+}
+
+theorem zmod_mk_eq_of_rel[n: Nat](a: Int, b: Int) {
+    int_mod_rel(n, a, b) implies zmod_mk(n, a) = zmod_mk(n, b)
+} by {
+    if int_mod_rel(n, a, b) {
+        let za = zmod_mk(n, a)
+        let zb = zmod_mk(n, b)
+        int_mod_rel_is_equivalence(n)
+        equivalence_class_eq_of_equiv(int_mod_rel(n), a, b)
+        equivalence_class(int_mod_rel(n), a) = equivalence_class(int_mod_rel(n), b)
+        Zmod[n].new(equivalence_class(int_mod_rel(n), a)) = Option.some(za)
+        Zmod[n].new(equivalence_class(int_mod_rel(n), b)) = Option.some(zb)
+        Zmod[n].new(equivalence_class(int_mod_rel(n), a)) =
+            Zmod[n].new(equivalence_class(int_mod_rel(n), b))
+        Option.some(za) = Option.some(zb)
+        some_injective[Zmod[n]](za, zb)
+        za = zb
+        zmod_mk(n, a) = zmod_mk(n, b)
+    }
+}
+
+theorem zmod_mk_mul_compatible[n: Nat](a1: Int, a2: Int, b1: Int, b2: Int) {
+    int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) implies
+    zmod_mk(n, a1 * b1) = zmod_mk(n, a2 * b2)
+} by {
+    if int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) {
+        int_mod_rel_mul_compatible(n, a1, a2, b1, b2)
+        int_mod_rel(n, a1 * b1, a2 * b2)
+        zmod_mk_eq_of_rel(n, a1 * b1, a2 * b2)
+    }
+}
+
+theorem zmod_mk_add_compatible[n: Nat](a1: Int, a2: Int, b1: Int, b2: Int) {
+    int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) implies
+    zmod_mk(n, a1 + b1) = zmod_mk(n, a2 + b2)
+} by {
+    if int_mod_rel(n, a1, a2) and int_mod_rel(n, b1, b2) {
+        int_mod_rel_add_compatible(n, a1, a2, b1, b2)
+        int_mod_rel(n, a1 + b1, a2 + b2)
+        zmod_mk_eq_of_rel(n, a1 + b1, a2 + b2)
+    }
 }
 
 theorem attribute_round_trip[n: Nat](x: Zmod[n]) {
