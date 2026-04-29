@@ -4,7 +4,7 @@ Goal: over time, give Acornlib a reasonable analogue of each major area of mathe
 
 ## Blockers
 
-No current blockers.
+- [ ] acorn-bug: projects/translate-mathlib/foundations/core-type-constructions/todo.md / src/sum_type.ac - nested sum associativity inverse lemmas can make `acorn check` reject a generated certificate for `Sum.inr` with an unresolved type; next action is to minimize and fix the Acorn certificate bug before adding those lemmas.
 
 ## Foundational And Core Infrastructure
 

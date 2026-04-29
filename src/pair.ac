@@ -175,6 +175,64 @@ theorem pair_assoc_right_second[T, U, V](p: Pair[Pair[T, U], V]) {
     pair_assoc_right(p).second = Pair.new(p.first.second, p.second)
 }
 
+/// Left association followed by right association gives the original nested pair.
+theorem pair_assoc_right_left[T, U, V](p: Pair[T, Pair[U, V]]) {
+    pair_assoc_right(pair_assoc_left(p)) = p
+} by {
+    let l = pair_assoc_left(p)
+    let q = pair_assoc_right(l)
+    pair_assoc_right_first(l)
+    q.first = l.first.first
+    pair_assoc_left_first(p)
+    l.first = Pair.new(p.first, p.second.first)
+    l.first.first = Pair.new(p.first, p.second.first).first
+    pair_new_first(p.first, p.second.first)
+    l.first.first = p.first
+    q.first = p.first
+
+    pair_assoc_right_second(l)
+    q.second = Pair.new(l.first.second, l.second)
+    l.first.second = Pair.new(p.first, p.second.first).second
+    pair_new_second(p.first, p.second.first)
+    l.first.second = p.second.first
+    pair_assoc_left_second(p)
+    l.second = p.second.second
+    q.second = Pair.new(p.second.first, p.second.second)
+    pair_eta(p.second)
+    Pair.new(p.second.first, p.second.second) = p.second
+    q.second = p.second
+    pair_ext(q, p)
+}
+
+/// Right association followed by left association gives the original nested pair.
+theorem pair_assoc_left_right[T, U, V](p: Pair[Pair[T, U], V]) {
+    pair_assoc_left(pair_assoc_right(p)) = p
+} by {
+    let r = pair_assoc_right(p)
+    let q = pair_assoc_left(r)
+    pair_assoc_left_first(r)
+    q.first = Pair.new(r.first, r.second.first)
+    pair_assoc_right_first(p)
+    r.first = p.first.first
+    pair_assoc_right_second(p)
+    r.second = Pair.new(p.first.second, p.second)
+    r.second.first = Pair.new(p.first.second, p.second).first
+    pair_new_first(p.first.second, p.second)
+    r.second.first = p.first.second
+    q.first = Pair.new(p.first.first, p.first.second)
+    pair_eta(p.first)
+    Pair.new(p.first.first, p.first.second) = p.first
+    q.first = p.first
+
+    pair_assoc_left_second(r)
+    q.second = r.second.second
+    r.second.second = Pair.new(p.first.second, p.second).second
+    pair_new_second(p.first.second, p.second)
+    r.second.second = p.second
+    q.second = p.second
+    pair_ext(q, p)
+}
+
 /// Currying after uncurrying recovers the original binary function.
 theorem curry_uncurry[T, U, V](f: (T, U) -> V) {
     curry(uncurry(f)) = f

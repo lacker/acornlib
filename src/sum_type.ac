@@ -171,3 +171,25 @@ theorem sum_swap_inl[T, U](x: T) {
 theorem sum_swap_inr[T, U](y: U) {
     sum_swap(Sum.inr[T, U](y)) = Sum.inl[U, T](y)
 }
+
+/// Swapping twice gives the original sum value.
+theorem sum_swap_swap[T, U](s: Sum[T, U]) {
+    sum_swap(sum_swap(s)) = s
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_swap_inl[T, U](x)
+            sum_swap(s) = Sum.inr[U, T](x)
+            sum_swap_inr[U, T](x)
+            sum_swap(sum_swap(s)) = Sum.inl[T, U](x)
+            sum_swap(sum_swap(s)) = s
+        }
+        Sum.inr(y) {
+            sum_swap_inr[T, U](y)
+            sum_swap(s) = Sum.inl[U, T](y)
+            sum_swap_inl[U, T](y)
+            sum_swap(sum_swap(s)) = Sum.inr[T, U](y)
+            sum_swap(sum_swap(s)) = s
+        }
+    }
+}
