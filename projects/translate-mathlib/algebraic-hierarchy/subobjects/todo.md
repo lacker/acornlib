@@ -2,9 +2,8 @@
 
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
-- [ ] Add a closure-of-multiplication accessor lemma for `Subsemigroup`
-- [ ] Add intersection of subsemigroups
-- [ ] Strengthen the existing subgroup API
+- [ ] Add lattice-style laws for subsemigroup, submonoid, and subgroup intersections
+- [ ] Strengthen the existing subgroup API beyond identity, multiplication, inverse, and intersection
 - [ ] Add subrings
 - [ ] Add additive subgroups and additive submonoids where appropriate
 - [ ] Add membership, coercion, and extensionality lemmas for subobjects

@@ -2,7 +2,6 @@
 
 Goal: make core definitions and proof patterns stable enough that later libraries can build on them without constant local patching.
 
-- [ ] [Better finite and infinite set infrastructure](finite-and-infinite-sets/todo.md)
 - [ ] [Indexed unions, indexed intersections, and family-level set combinators](indexed-set-families/todo.md)
 - [ ] [Choice-style helper lemmas for existential witnesses and unique existence](witness-selection/todo.md)
 - [ ] [Canonical APIs for products, sums, options, and dependent pairs](core-type-constructions/todo.md)
@@ -13,4 +12,4 @@ Goal: make core definitions and proof patterns stable enough that later librarie
 
 ## Current Focus
 
-Resume finite and infinite set infrastructure. Quotient constructions are deferred until the algebraic quotient API decision is made.
+Resume indexed-set-family helpers. Quotient constructions are deferred until the algebraic quotient API decision is made.

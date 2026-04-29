@@ -26,8 +26,78 @@ attributes G: FiniteGroup {
 }
 
 from subgroup import Subgroup, subgroup_constraint, identity_constraint, inverse_constraint, closure_constraint
+from subsemigroup import Subsemigroup
+from submonoid import Submonoid
 from set import Set, finite_constraint, list_set, list_set_contains_eq,
     unique_list_set_cardinality_is_length, set_ext
+
+theorem subsemigroup_of_finite_group_is_finite[G: FiniteGroup](s: Subsemigroup[G]) {
+    finite_constraint(s.contains)
+} by {
+    forall(x: G) {
+        s.contains(x) implies G.elements.contains(x)
+    }
+}
+
+theorem subsemigroup_as_set_is_finite[G: FiniteGroup](s: Subsemigroup[G]) {
+    s.as_set.is_finite
+} by {
+    subsemigroup_of_finite_group_is_finite(s)
+    finite_constraint(s.contains)
+    forall(x: G) {
+        s.as_set.contains(x) = s.contains(x)
+    }
+    s.as_set.contains = s.contains
+    s.as_set.is_finite
+}
+
+theorem subsemigroup_as_set_cardinality_at_most_group_order[G: FiniteGroup](s: Subsemigroup[G]) {
+    s.as_set.cardinality_at_most(G.order)
+} by {
+    forall(x: G) {
+        if s.as_set.contains(x) {
+            s.contains(x)
+            G.elements.contains(x)
+        }
+    }
+    G.elements.contains_set(s.as_set)
+    G.elements.length <= G.order
+    s.as_set.cardinality_at_most(G.order)
+}
+
+theorem submonoid_of_finite_group_is_finite[G: FiniteGroup](s: Submonoid[G]) {
+    finite_constraint(s.contains)
+} by {
+    forall(x: G) {
+        s.contains(x) implies G.elements.contains(x)
+    }
+}
+
+theorem submonoid_as_set_is_finite[G: FiniteGroup](s: Submonoid[G]) {
+    s.as_set.is_finite
+} by {
+    submonoid_of_finite_group_is_finite(s)
+    finite_constraint(s.contains)
+    forall(x: G) {
+        s.as_set.contains(x) = s.contains(x)
+    }
+    s.as_set.contains = s.contains
+    s.as_set.is_finite
+}
+
+theorem submonoid_as_set_cardinality_at_most_group_order[G: FiniteGroup](s: Submonoid[G]) {
+    s.as_set.cardinality_at_most(G.order)
+} by {
+    forall(x: G) {
+        if s.as_set.contains(x) {
+            s.contains(x)
+            G.elements.contains(x)
+        }
+    }
+    G.elements.contains_set(s.as_set)
+    G.elements.length <= G.order
+    s.as_set.cardinality_at_most(G.order)
+}
 
 theorem subgroup_of_finite_group_is_finite[G: FiniteGroup](s: Subgroup[G]) {
     finite_constraint(s.contains)

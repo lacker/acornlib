@@ -28,6 +28,43 @@ theorem subsemigroup_ext[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
     }
 }
 
+/// The common membership predicate of two subsemigroups.
+define subsemigroup_intersection_contains[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S],
+    x: S) -> Bool {
+    a.contains(x) and b.contains(x)
+}
+
+/// The common part of two subsemigroups is closed under multiplication.
+theorem subsemigroup_intersection_constraint[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_closure_constraint(subsemigroup_intersection_contains(a, b))
+} by {
+    forall(x: S, y: S) {
+        if subsemigroup_intersection_contains(a, b, x) and subsemigroup_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            subsemigroup_closure_constraint(a.contains)
+            subsemigroup_closure_constraint(b.contains)
+            subsemigroup_closure_constraint(a.contains) = forall(m: S, n: S) {
+                a.contains(m) and a.contains(n) implies a.contains(m * n)
+            }
+            subsemigroup_closure_constraint(b.contains) = forall(m: S, n: S) {
+                b.contains(m) and b.contains(n) implies b.contains(m * n)
+            }
+            a.contains(x * y)
+            b.contains(x * y)
+            subsemigroup_intersection_contains(a, b, x * y)
+        }
+    }
+}
+
+let subsemigroup_intersection[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) -> result: Subsemigroup[S] satisfy {
+    Subsemigroup.new(subsemigroup_intersection_contains(a, b)) = Option.some(result)
+} by {
+    subsemigroup_intersection_constraint(a, b)
+}
+
 attributes Subsemigroup[S: Semigroup] {
     /// Subsemigroup extensionality from pointwise equality of membership.
     let ext = subsemigroup_ext[S]
@@ -35,6 +72,53 @@ attributes Subsemigroup[S: Semigroup] {
     /// The subset of semigroup elements belonging to this subsemigroup.
     define as_set(self) -> Set[S] {
         Set[S].new(self.contains)
+    }
+
+    /// The common part of two subsemigroups.
+    let intersection: (Subsemigroup[S], Subsemigroup[S]) -> Subsemigroup[S] = subsemigroup_intersection
+}
+
+/// A subsemigroup is closed under multiplication.
+theorem subsemigroup_mul_mem[S: Semigroup](s: Subsemigroup[S], a: S, b: S) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subsemigroup_closure_constraint(s.contains)
+        subsemigroup_closure_constraint(s.contains) = forall(x: S, y: S) {
+            s.contains(x) and s.contains(y) implies s.contains(x * y)
+        }
+        s.contains(a * b)
+    }
+}
+
+/// Membership in the intersection means membership in both subsemigroups.
+theorem subsemigroup_intersection_contains_eq[S: Semigroup](a: Subsemigroup[S],
+    b: Subsemigroup[S], x: S) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    a.intersection(b).contains(x) = subsemigroup_intersection_contains(a, b, x)
+    subsemigroup_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))
+}
+
+/// The intersection is contained in the left subsemigroup.
+theorem subsemigroup_intersection_subset_left[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S],
+    x: S) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subsemigroup_intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// The intersection is contained in the right subsemigroup.
+theorem subsemigroup_intersection_subset_right[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S],
+    x: S) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subsemigroup_intersection_contains_eq(a, b, x)
+        b.contains(x)
     }
 }
 
@@ -79,4 +163,3 @@ let full_subsemigroup[S: Semigroup]: Subsemigroup[S] satisfy {
 theorem full_subsemigroup_contains_everything[S: Semigroup](s: S) {
     full_subsemigroup[S].contains(s)
 }
-

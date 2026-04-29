@@ -38,6 +38,61 @@ theorem submonoid_ext[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
     }
 }
 
+/// The common membership predicate of two submonoids.
+define submonoid_intersection_contains[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) -> Bool {
+    a.contains(x) and b.contains(x)
+}
+
+/// The common part of two submonoids contains the identity element.
+theorem submonoid_intersection_identity_constraint[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_identity_constraint(submonoid_intersection_contains(a, b))
+} by {
+    submonoid_identity_constraint(a.contains)
+    submonoid_identity_constraint(b.contains)
+    a.contains(M.1)
+    b.contains(M.1)
+    submonoid_intersection_contains(a, b, M.1)
+}
+
+/// The common part of two submonoids is closed under multiplication.
+theorem submonoid_intersection_closure_constraint[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_closure_constraint(submonoid_intersection_contains(a, b))
+} by {
+    forall(x: M, y: M) {
+        if submonoid_intersection_contains(a, b, x) and submonoid_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            submonoid_closure_constraint(a.contains)
+            submonoid_closure_constraint(b.contains)
+            submonoid_closure_constraint(a.contains) = forall(m: M, n: M) {
+                a.contains(m) and a.contains(n) implies a.contains(m * n)
+            }
+            submonoid_closure_constraint(b.contains) = forall(m: M, n: M) {
+                b.contains(m) and b.contains(n) implies b.contains(m * n)
+            }
+            a.contains(x * y)
+            b.contains(x * y)
+            submonoid_intersection_contains(a, b, x * y)
+        }
+    }
+}
+
+/// The common part of two submonoids is a submonoid.
+theorem submonoid_intersection_constraint[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_constraint(submonoid_intersection_contains(a, b))
+} by {
+    submonoid_intersection_identity_constraint(a, b)
+    submonoid_intersection_closure_constraint(a, b)
+}
+
+let submonoid_intersection[M: Monoid](a: Submonoid[M], b: Submonoid[M]) -> result: Submonoid[M] satisfy {
+    Submonoid.new(submonoid_intersection_contains(a, b)) = Option.some(result)
+} by {
+    submonoid_intersection_constraint(a, b)
+}
+
 attributes Submonoid[M: Monoid] {
     /// Submonoid extensionality from pointwise equality of membership.
     let ext = submonoid_ext[M]
@@ -45,6 +100,50 @@ attributes Submonoid[M: Monoid] {
     /// The subset of monoid elements belonging to this submonoid.
     define as_set(self) -> Set[M] {
         Set[M].new(self.contains)
+    }
+
+    /// The common part of two submonoids.
+    let intersection: (Submonoid[M], Submonoid[M]) -> Submonoid[M] = submonoid_intersection
+}
+
+/// A submonoid is closed under multiplication.
+theorem submonoid_mul_mem[M: Monoid](s: Submonoid[M], a: M, b: M) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        submonoid_closure_constraint(s.contains)
+        submonoid_closure_constraint(s.contains) = forall(x: M, y: M) {
+            s.contains(x) and s.contains(y) implies s.contains(x * y)
+        }
+        s.contains(a * b)
+    }
+}
+
+/// Membership in the intersection means membership in both submonoids.
+theorem submonoid_intersection_contains_eq[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    a.intersection(b).contains(x) = submonoid_intersection_contains(a, b, x)
+    submonoid_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))
+}
+
+/// The intersection is contained in the left submonoid.
+theorem submonoid_intersection_subset_left[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        submonoid_intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// The intersection is contained in the right submonoid.
+theorem submonoid_intersection_subset_right[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        submonoid_intersection_contains_eq(a, b, x)
+        b.contains(x)
     }
 }
 

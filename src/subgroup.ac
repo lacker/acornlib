@@ -71,6 +71,113 @@ theorem subgroup_ext[G: Group](a: Subgroup[G], b: Subgroup[G]) {
     }
 }
 
+/// A subgroup contains the identity element.
+theorem subgroup_contains_identity[G: Group](s: Subgroup[G]) {
+    s.contains(G.1)
+} by {
+    subgroup_constraint(s.contains)
+    subgroup_constraint(s.contains) =
+        identity_constraint(s.contains) and closure_constraint(s.contains) and inverse_constraint(s.contains)
+    identity_constraint(s.contains)
+}
+
+/// A subgroup is closed under multiplication.
+theorem subgroup_mul_mem[G: Group](s: Subgroup[G], a: G, b: G) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subgroup_constraint(s.contains)
+        subgroup_constraint(s.contains) =
+            identity_constraint(s.contains) and closure_constraint(s.contains) and inverse_constraint(s.contains)
+        closure_constraint(s.contains)
+        closure_constraint(s.contains) = forall(x: G, y: G) {
+            s.contains(x) and s.contains(y) implies s.contains(x * y)
+        }
+        s.contains(a * b)
+    }
+}
+
+/// A subgroup is closed under inverse.
+theorem subgroup_inv_mem[G: Group](s: Subgroup[G], a: G) {
+    s.contains(a) implies s.contains(a.inverse)
+} by {
+    if s.contains(a) {
+        subgroup_constraint(s.contains)
+        subgroup_constraint(s.contains) =
+            identity_constraint(s.contains) and closure_constraint(s.contains) and inverse_constraint(s.contains)
+        inverse_constraint(s.contains)
+        inverse_constraint(s.contains) = forall(x: G) {
+            s.contains(x) implies s.contains(x.inverse)
+        }
+        s.contains(a.inverse)
+    }
+}
+
+/// The common membership predicate of two subgroups.
+define subgroup_intersection_contains[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) -> Bool {
+    a.contains(x) and b.contains(x)
+}
+
+/// The common part of two subgroups contains the identity element.
+theorem subgroup_intersection_identity_constraint[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    identity_constraint(subgroup_intersection_contains(a, b))
+} by {
+    subgroup_contains_identity(a)
+    subgroup_contains_identity(b)
+    subgroup_intersection_contains(a, b, G.1)
+}
+
+/// The common part of two subgroups is closed under multiplication.
+theorem subgroup_intersection_closure_constraint[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    closure_constraint(subgroup_intersection_contains(a, b))
+} by {
+    forall(x: G, y: G) {
+        if subgroup_intersection_contains(a, b, x) and subgroup_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            subgroup_mul_mem(a, x, y)
+            subgroup_mul_mem(b, x, y)
+            a.contains(x * y)
+            b.contains(x * y)
+            subgroup_intersection_contains(a, b, x * y)
+        }
+    }
+}
+
+/// The common part of two subgroups is closed under inverse.
+theorem subgroup_intersection_inverse_constraint[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    inverse_constraint(subgroup_intersection_contains(a, b))
+} by {
+    forall(x: G) {
+        if subgroup_intersection_contains(a, b, x) {
+            a.contains(x)
+            b.contains(x)
+            subgroup_inv_mem(a, x)
+            subgroup_inv_mem(b, x)
+            a.contains(x.inverse)
+            b.contains(x.inverse)
+            subgroup_intersection_contains(a, b, x.inverse)
+        }
+    }
+}
+
+/// The common part of two subgroups is a subgroup.
+theorem subgroup_intersection_constraint[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_constraint(subgroup_intersection_contains(a, b))
+} by {
+    subgroup_intersection_identity_constraint(a, b)
+    subgroup_intersection_closure_constraint(a, b)
+    subgroup_intersection_inverse_constraint(a, b)
+}
+
+let subgroup_intersection[G: Group](a: Subgroup[G], b: Subgroup[G]) -> result: Subgroup[G] satisfy {
+    Subgroup.new(subgroup_intersection_contains(a, b)) = Option.some(result)
+} by {
+    subgroup_intersection_constraint(a, b)
+}
+
 attributes Subgroup[G: Group] {
     /// Subgroup extensionality from pointwise equality of membership.
     let ext = subgroup_ext[G]
@@ -78,6 +185,37 @@ attributes Subgroup[G: Group] {
     /// The subset of group elements belonging to this subgroup.
     define as_set(self) -> Set[G] {
         Set[G].new(self.contains)
+    }
+
+    /// The common part of two subgroups.
+    let intersection: (Subgroup[G], Subgroup[G]) -> Subgroup[G] = subgroup_intersection
+}
+
+/// Membership in the intersection means membership in both subgroups.
+theorem subgroup_intersection_contains_eq[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    a.intersection(b).contains(x) = subgroup_intersection_contains(a, b, x)
+    subgroup_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))
+}
+
+/// The intersection is contained in the left subgroup.
+theorem subgroup_intersection_subset_left[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subgroup_intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// The intersection is contained in the right subgroup.
+theorem subgroup_intersection_subset_right[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subgroup_intersection_contains_eq(a, b, x)
+        b.contains(x)
     }
 }
 
