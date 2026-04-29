@@ -1,0 +1,29 @@
+{"goal":"and_comm","proof":["b and a or (a and b)","b","a"]}
+{"goal":"and_assoc","proof":["function(x0: Bool, x1: Bool) { (x0 and x1) = (x1 and x0) }(a, b and c)","a and (b and c) or (a and b and c)","b and c or c","a and b or a","b and c or (a and b)","b"]}
+{"goal":"and_self","proof":["a and a or a","not (a and a) or not a"]}
+{"goal":"and_true","proof":["a and true or a","not (a and true) or not a"]}
+{"goal":"true_and","proof":["true and a or a","not (true and a) or not a"]}
+{"goal":"and_false","proof":["a and false or false = true","not false"]}
+{"goal":"false_and","proof":["false and a or false = true","not false"]}
+{"goal":"or_comm","proof":["not (not b and not a) or not (not a and not b)","not b and not a or (not a and not b)","not b","not a","not (not b and not a)"]}
+{"goal":"or_assoc","proof":["function(x0: Bool, x1: Bool, x2: Bool) { (x0 or (x1 or x2)) = (x0 or x1 or x2) = or_assoc(x0, x1, x2) }(a, b, c)","not a and not b and not c or (not a and (not b and not c))","not a or (not a and not b)","not c or (not b and not c)","not b or (not a and (not b and not c))","not b","function(x0: Bool, x1: Bool, x2: Bool) { (x0 or x1 or x2) != (x0 or (x1 or x2)) or or_assoc(x0, x1, x2) }(a, b, c)","function(x0: Bool, x1: Bool, x2: Bool) { not (not x0 and not x1 and not x2) or not (not x0 and (not x1 and not x2)) or or_assoc(x0, x1, x2) }(a, b, c)","function(x0: Bool, x1: Bool, x2: Bool) { not (not x0 and (not x1 and not x2)) or not (not x0 and not x1) or or_assoc(x0, x1, x2) or x2 }(a, b, c)","function(x0: Bool, x1: Bool, x2: Bool) { not (not x0 and (not x1 and not x2)) or or_assoc(x0, x1, x2) or x0 or x1 or x2 }(a, b, c)","function(x0: Bool, x1: Bool, x2: Bool) { not (not x0 and not x1) or or_assoc(x2, x0, x1) or x0 or x1 or x2 }(b, c, a)","function(x0: Bool, x1: Bool, x2: Bool) { or_assoc(x0, x1, x2) or x0 or x1 or x2 }(a, b, c)"]}
+{"goal":"or_self","proof":["not (not a and not a) or a","not a and not a"]}
+{"goal":"or_true","proof":[]}
+{"goal":"true_or","proof":[]}
+{"goal":"or_false","proof":["not (not a and not false) or a","not a or (not a and not false)","a"]}
+{"goal":"false_or","proof":["not (not false and not a) or a","not a or (not false and not a)","a"]}
+{"goal":"not_true","proof":[]}
+{"goal":"not_false","proof":[]}
+{"goal":"not_not","proof":[]}
+{"goal":"and_not_self","proof":["a and not a or false = true","not a","a"]}
+{"goal":"or_not_self","proof":["not a","a"]}
+{"goal":"not_and","proof":[]}
+{"goal":"not_or","proof":[]}
+{"goal":"true_implies","proof":["not (true and not a) or a","not a or (true and not a)"]}
+{"goal":"false_implies","proof":["false = true"]}
+{"goal":"implies_true","proof":[]}
+{"goal":"implies_false","proof":["not (a and not false) or not a","a and not false or a","false = true"]}
+{"goal":"implies_self","proof":["a","not a"]}
+{"goal":"implies_eq_not_or","proof":[]}
+{"goal":"not_implies","proof":[]}
+{"goal":"implies_contrapositive","proof":["function(x0: Bool, x1: Bool) { (x0 or x1) = (x1 or x0) }(b, not a)"]}
