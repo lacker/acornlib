@@ -253,28 +253,6 @@ theorem gt_of_ne_of_gte[L: LinearOrder](a: L, b: L) {
     }
 }
 
-theorem lt_of_lte_of_ne[L: LinearOrder](a: L, b: L) {
-    a <= b and a != b implies a < b
-} by {
-    if a <= b and a != b {
-        if a = b {
-            false
-        }
-        a < b
-    }
-}
-
-theorem gt_of_gte_of_ne[L: LinearOrder](a: L, b: L) {
-    a >= b and a != b implies a > b
-} by {
-    if a >= b and a != b {
-        if a = b {
-            false
-        }
-        a > b
-    }
-}
-
 theorem lte_or_eq_or_gt[L: LinearOrder](a: L, b: L) {
     a <= b or a = b or a > b
 } by {
