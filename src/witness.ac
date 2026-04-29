@@ -182,6 +182,34 @@ define list_witness_predicate[T](items: List[T], p: T -> Bool, x: T) -> Bool {
     items.contains(x) and p(x)
 }
 
+/// A list witness belongs to the list.
+theorem list_witness_contains[T](items: List[T], p: T -> Bool, x: T) {
+    list_witness_predicate(items, p, x) implies items.contains(x)
+}
+
+/// A list witness satisfies the predicate.
+theorem list_witness_property[T](items: List[T], p: T -> Bool, x: T) {
+    list_witness_predicate(items, p, x) implies p(x)
+}
+
+/// List membership together with the predicate gives a list witness.
+theorem list_witness_intro[T](items: List[T], p: T -> Bool, x: T) {
+    items.contains(x) and p(x) implies list_witness_predicate(items, p, x)
+}
+
+/// A concrete list witness gives existence of a list witness.
+theorem list_witness_exists_of_witness[T](items: List[T], p: T -> Bool, x: T) {
+    list_witness_predicate(items, p, x) implies exists(y: T) {
+        list_witness_predicate(items, p, y)
+    }
+} by {
+    if list_witness_predicate(items, p, x) {
+        exists(y: T) {
+            y = x and list_witness_predicate(items, p, y)
+        }
+    }
+}
+
 /// A chosen element of a list satisfying a condition, with a specified default otherwise.
 let choose_from_list_or_default[T](items: List[T], p: T -> Bool, default: T) -> result: T satisfy {
     (exists(x: T) {
@@ -216,7 +244,7 @@ theorem choose_from_list_or_default_contains[T](items: List[T], p: T -> Bool, de
     if exists(x: T) { list_witness_predicate(items, p, x) } {
         choose_from_list_or_default_spec(items, p, default)
         list_witness_predicate(items, p, choose_from_list_or_default(items, p, default))
-        items.contains(choose_from_list_or_default(items, p, default))
+        list_witness_contains(items, p, choose_from_list_or_default(items, p, default))
     }
 }
 
@@ -229,7 +257,7 @@ theorem choose_from_list_or_default_property[T](items: List[T], p: T -> Bool, de
     if exists(x: T) { list_witness_predicate(items, p, x) } {
         choose_from_list_or_default_spec(items, p, default)
         list_witness_predicate(items, p, choose_from_list_or_default(items, p, default))
-        p(choose_from_list_or_default(items, p, default))
+        list_witness_property(items, p, choose_from_list_or_default(items, p, default))
     }
 }
 
@@ -257,6 +285,34 @@ theorem choose_from_list_or_default_unique_eq[T](items: List[T], p: T -> Bool, d
 /// The predicate that an element lies in a set and satisfies a condition.
 define set_witness_predicate[T](s: Set[T], p: T -> Bool, x: T) -> Bool {
     s.contains(x) and p(x)
+}
+
+/// A set witness belongs to the set.
+theorem set_witness_contains[T](s: Set[T], p: T -> Bool, x: T) {
+    set_witness_predicate(s, p, x) implies s.contains(x)
+}
+
+/// A set witness satisfies the predicate.
+theorem set_witness_property[T](s: Set[T], p: T -> Bool, x: T) {
+    set_witness_predicate(s, p, x) implies p(x)
+}
+
+/// Set membership together with the predicate gives a set witness.
+theorem set_witness_intro[T](s: Set[T], p: T -> Bool, x: T) {
+    s.contains(x) and p(x) implies set_witness_predicate(s, p, x)
+}
+
+/// A concrete set witness gives existence of a set witness.
+theorem set_witness_exists_of_witness[T](s: Set[T], p: T -> Bool, x: T) {
+    set_witness_predicate(s, p, x) implies exists(y: T) {
+        set_witness_predicate(s, p, y)
+    }
+} by {
+    if set_witness_predicate(s, p, x) {
+        exists(y: T) {
+            y = x and set_witness_predicate(s, p, y)
+        }
+    }
 }
 
 /// A chosen element of a set satisfying a condition, with a specified default otherwise.
@@ -293,7 +349,7 @@ theorem choose_from_set_or_default_contains[T](s: Set[T], p: T -> Bool, default:
     if exists(x: T) { set_witness_predicate(s, p, x) } {
         choose_from_set_or_default_spec(s, p, default)
         set_witness_predicate(s, p, choose_from_set_or_default(s, p, default))
-        s.contains(choose_from_set_or_default(s, p, default))
+        set_witness_contains(s, p, choose_from_set_or_default(s, p, default))
     }
 }
 
@@ -306,7 +362,7 @@ theorem choose_from_set_or_default_property[T](s: Set[T], p: T -> Bool, default:
     if exists(x: T) { set_witness_predicate(s, p, x) } {
         choose_from_set_or_default_spec(s, p, default)
         set_witness_predicate(s, p, choose_from_set_or_default(s, p, default))
-        p(choose_from_set_or_default(s, p, default))
+        set_witness_property(s, p, choose_from_set_or_default(s, p, default))
     }
 }
 
@@ -393,6 +449,37 @@ define pair_witness_predicate[T, U](p: (T, U) -> Bool, pair: Pair[T, U]) -> Bool
     p(pair.first, pair.second)
 }
 
+/// A pair witness gives the original binary predicate on its components.
+theorem pair_witness_property[T, U](p: (T, U) -> Bool, pair: Pair[T, U]) {
+    pair_witness_predicate(p, pair) implies p(pair.first, pair.second)
+}
+
+/// A binary predicate on a pair of elements gives a pair witness.
+theorem pair_witness_intro[T, U](p: (T, U) -> Bool, x: T, y: U) {
+    p(x, y) implies pair_witness_predicate(p, Pair.new(x, y))
+} by {
+    if p(x, y) {
+        let pair = Pair.new(x, y)
+        pair.first = x
+        pair.second = y
+        p(pair.first, pair.second)
+        pair_witness_predicate(p, pair)
+    }
+}
+
+/// A concrete pair witness gives existence of a pair witness.
+theorem pair_witness_exists_of_witness[T, U](p: (T, U) -> Bool, pair: Pair[T, U]) {
+    pair_witness_predicate(p, pair) implies exists(q: Pair[T, U]) {
+        pair_witness_predicate(p, q)
+    }
+} by {
+    if pair_witness_predicate(p, pair) {
+        exists(q: Pair[T, U]) {
+            q = pair and pair_witness_predicate(p, q)
+        }
+    }
+}
+
 /// A nested witness gives a pair witness.
 theorem exists_pair_of_exists_nested[T, U](p: (T, U) -> Bool) {
     exists(x: T) {
@@ -412,6 +499,7 @@ theorem exists_pair_of_exists_nested[T, U](p: (T, U) -> Bool) {
         let y: U satisfy {
             p(x, y)
         }
+        pair_witness_intro(p, x, y)
         exists(pair: Pair[T, U]) {
             pair = Pair.new(x, y) and pair_witness_predicate(p, pair)
         }
@@ -432,6 +520,7 @@ theorem exists_nested_of_exists_pair[T, U](p: (T, U) -> Bool) {
         let pair: Pair[T, U] satisfy {
             pair_witness_predicate(p, pair)
         }
+        pair_witness_property(p, pair)
         exists(x: T) {
             x = pair.first and exists(y: U) {
                 y = pair.second and p(x, y)
@@ -462,8 +551,8 @@ theorem exists_pair_unique_nested_first_eq[T, U](p: (T, U) -> Bool, x1: T, y1: U
     if exists_unique(pair_witness_predicate(p)) and p(x1, y1) and p(x2, y2) {
         let pair1 = Pair.new(x1, y1)
         let pair2 = Pair.new(x2, y2)
-        pair_witness_predicate(p, pair1)
-        pair_witness_predicate(p, pair2)
+        pair_witness_intro(p, x1, y1)
+        pair_witness_intro(p, x2, y2)
         exists_unique_eq(pair_witness_predicate(p), pair1, pair2)
         pair1 = pair2
         pair1.first = pair2.first
@@ -479,8 +568,8 @@ theorem exists_pair_unique_nested_second_eq[T, U](p: (T, U) -> Bool, x1: T, y1: 
     if exists_unique(pair_witness_predicate(p)) and p(x1, y1) and p(x2, y2) {
         let pair1 = Pair.new(x1, y1)
         let pair2 = Pair.new(x2, y2)
-        pair_witness_predicate(p, pair1)
-        pair_witness_predicate(p, pair2)
+        pair_witness_intro(p, x1, y1)
+        pair_witness_intro(p, x2, y2)
         exists_unique_eq(pair_witness_predicate(p), pair1, pair2)
         pair1 = pair2
         pair1.second = pair2.second

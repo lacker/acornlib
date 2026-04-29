@@ -20,7 +20,7 @@ from set import Set, is_decreasing, is_increasing, seq_intersection, decreasing_
     image_of_range_increasing, image_of_range_union_eq_universal_image, image_of_range_union_universal,
     image_of_range_disjoint_from_next, image_of_range_suc_eq_union_singleton,
     at_least, nat_from, set_lower_bound, nat_from_superset_of_bounded,
-    decreasing_empty_intersection_eventually_bounded
+    decreasing_empty_intersection_eventually_bounded, decreasing_seq_eventual_lower_bound
 
 numerals Real
 
@@ -1123,30 +1123,11 @@ theorem decreasing_empty_intersection_mask_vanishes(a: Nat -> Real, s: Nat -> Se
                 let big_n: Nat satisfy {
                     set_lower_bound(s(big_n), tail_n)
                 }
+                decreasing_seq_eventual_lower_bound(s, big_n, tail_n)
 
                 forall(i: Nat) {
                     if i >= big_n {
-                        // s(i) is a subset of s(big_n) by decreasing property
-                        if i = big_n {
-                            s(i) = s(big_n)
-                        } else {
-                            s(big_n).superset(s(i))
-                        }
-
-                        // s(big_n) has lower bound tail_n, so s(i) also has lower bound tail_n
-                        forall(k: Nat) {
-                            if s(i).contains(k) {
-                                if i = big_n {
-                                    s(big_n).contains(k)
-                                    set_lower_bound(s(big_n), tail_n)
-                                    k >= tail_n
-                                } else {
-                                    s(big_n).contains(k)
-                                    set_lower_bound(s(big_n), tail_n)
-                                    k >= tail_n
-                                }
-                            }
-                        }
+                        // Later sets in the decreasing family inherit the tail lower bound.
                         set_lower_bound(s(i), tail_n)
 
                         // Apply mask_bounded_by_tail

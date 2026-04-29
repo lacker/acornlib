@@ -875,6 +875,14 @@ define nat_from(bound: Nat) -> Set[Nat] {
     Set[Nat].new(at_least(bound))
 }
 
+/// Membership in a final segment is the corresponding lower-bound inequality.
+theorem nat_from_contains_eq(bound: Nat, n: Nat) {
+    nat_from(bound).contains(n) = (n >= bound)
+} by {
+    nat_from(bound).contains(n) = at_least(bound, n)
+    at_least(bound, n) = (n >= bound)
+}
+
 /// True if all elements of the set are at least the given bound.
 define set_lower_bound(s: Set[Nat], bound: Nat) -> Bool {
     forall(n: Nat) {
@@ -901,6 +909,90 @@ attributes Set[K] {
 }
 
 // Subset theorems
+/// A set has lower bound `bound` exactly when it is contained in the final segment from `bound`.
+theorem set_lower_bound_iff_subset_nat_from(s: Set[Nat], bound: Nat) {
+    set_lower_bound(s, bound) = s.subset(nat_from(bound))
+} by {
+    if set_lower_bound(s, bound) {
+        forall(n: Nat) {
+            if s.contains(n) {
+                set_lower_bound(s, bound) = forall(k: Nat) {
+                    s.contains(k) implies k >= bound
+                }
+                s.contains(n) implies n >= bound
+                n >= bound
+                nat_from_contains_eq(bound, n)
+                nat_from(bound).contains(n)
+            }
+        }
+        s.subset(nat_from(bound))
+    }
+    if s.subset(nat_from(bound)) {
+        forall(n: Nat) {
+            if s.contains(n) {
+                s.subset(nat_from(bound)) = forall(k: Nat) {
+                    s.contains(k) implies nat_from(bound).contains(k)
+                }
+                s.contains(n) implies nat_from(bound).contains(n)
+                nat_from(bound).contains(n)
+                nat_from_contains_eq(bound, n)
+                n >= bound
+            }
+        }
+        set_lower_bound(s, bound)
+    }
+    set_lower_bound(s, bound) = s.subset(nat_from(bound))
+}
+
+/// A lower bound for a set is also a lower bound for every subset.
+theorem set_lower_bound_of_subset(s: Set[Nat], t: Set[Nat], bound: Nat) {
+    s.subset(t) and set_lower_bound(t, bound) implies set_lower_bound(s, bound)
+} by {
+    if s.subset(t) and set_lower_bound(t, bound) {
+        forall(n: Nat) {
+            if s.contains(n) {
+                s.subset(t) = forall(k: Nat) {
+                    s.contains(k) implies t.contains(k)
+                }
+                s.contains(n) implies t.contains(n)
+                t.contains(n)
+                set_lower_bound(t, bound) = forall(k: Nat) {
+                    t.contains(k) implies k >= bound
+                }
+                t.contains(n) implies n >= bound
+                n >= bound
+            }
+        }
+        set_lower_bound(s, bound)
+    }
+}
+
+/// The final segment from `bound` has lower bound `bound`.
+theorem nat_from_has_lower_bound(bound: Nat) {
+    set_lower_bound(nat_from(bound), bound)
+} by {
+    forall(n: Nat) {
+        if nat_from(bound).contains(n) {
+            nat_from_contains_eq(bound, n)
+            n >= bound
+        }
+    }
+    set_lower_bound(nat_from(bound), bound)
+}
+
+/// A set with a lower bound is contained in the corresponding final segment.
+theorem nat_from_superset_of_bounded(s: Set[Nat], n: Nat) {
+    set_lower_bound(s, n)
+    implies
+    nat_from(n).superset(s)
+} by {
+    if set_lower_bound(s, n) {
+        set_lower_bound_iff_subset_nat_from(s, n)
+        s.subset(nat_from(n))
+        nat_from(n).superset(s)
+    }
+}
+
 theorem empty_set_is_always_subset[K](s: Set[K]) {
     (Set[K].empty_set).subset(s)
 } by {
@@ -3792,26 +3884,34 @@ theorem decreasing_seq_subset_of_le[T](s: Nat -> Set[T], j: Nat, k: Nat) {
     }
 }
 
-/// If a set of natural numbers has a lower bound, it is contained in the corresponding final segment.
-theorem nat_from_superset_of_bounded(s: Set[Nat], n: Nat) {
-    set_lower_bound(s, n)
-    implies
-    nat_from(n).superset(s)
+/// Later terms of a decreasing natural-number set family inherit lower bounds.
+theorem decreasing_seq_lower_bound_of_le(s: Nat -> Set[Nat], j: Nat, k: Nat,
+    bound: Nat) {
+    is_decreasing(s) and j <= k and set_lower_bound(s(j), bound)
+    implies set_lower_bound(s(k), bound)
 } by {
-    if set_lower_bound(s, n) {
-        forall(k: Nat) {
-            if s.contains(k) {
-                set_lower_bound(s, n) = forall(x: Nat) {
-                    s.contains(x) implies x >= n
-                }
-                s.contains(k) implies k >= n
-                k >= n
-                at_least(n, k)
-                nat_from(n).contains(k)
+    if is_decreasing(s) and j <= k and set_lower_bound(s(j), bound) {
+        decreasing_seq_subset_of_le(s, j, k)
+        s(k).subset(s(j))
+        set_lower_bound_of_subset(s(k), s(j), bound)
+        set_lower_bound(s(k), bound)
+    }
+}
+
+/// Every term after an eventually bounded decreasing family remains bounded below.
+theorem decreasing_seq_eventual_lower_bound(s: Nat -> Set[Nat], big_n: Nat,
+    bound: Nat) {
+    is_decreasing(s) and set_lower_bound(s(big_n), bound) implies forall(i: Nat) {
+        big_n <= i implies set_lower_bound(s(i), bound)
+    }
+} by {
+    if is_decreasing(s) and set_lower_bound(s(big_n), bound) {
+        forall(i: Nat) {
+            if big_n <= i {
+                decreasing_seq_lower_bound_of_le(s, big_n, i, bound)
+                set_lower_bound(s(i), bound)
             }
         }
-        s.subset(nat_from(n))
-        nat_from(n).superset(s)
     }
 }
 
