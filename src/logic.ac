@@ -1,0 +1,146 @@
+/// Reusable rewrite lemmas for `and`, `or`, `not`, and implication.
+
+/// Conjunction is commutative.
+theorem and_comm(a: Bool, b: Bool) {
+    (a and b) = (b and a)
+}
+
+/// Conjunction is associative.
+theorem and_assoc(a: Bool, b: Bool, c: Bool) {
+    ((a and b) and c) = (a and (b and c))
+}
+
+/// Conjunction is idempotent.
+theorem and_self(a: Bool) {
+    (a and a) = a
+}
+
+/// `true` is the identity for conjunction.
+theorem and_true(a: Bool) {
+    (a and true) = a
+}
+
+/// Conjunction with `true` on the left is identity.
+theorem true_and(a: Bool) {
+    (true and a) = a
+}
+
+/// `false` is absorbing for conjunction.
+theorem and_false(a: Bool) {
+    (a and false) = false
+}
+
+/// `false` on the left is absorbing for conjunction.
+theorem false_and(a: Bool) {
+    (false and a) = false
+}
+
+/// Disjunction is commutative.
+theorem or_comm(a: Bool, b: Bool) {
+    (a or b) = (b or a)
+}
+
+/// Disjunction is associative.
+theorem or_assoc(a: Bool, b: Bool, c: Bool) {
+    ((a or b) or c) = (a or (b or c))
+}
+
+/// Disjunction is idempotent.
+theorem or_self(a: Bool) {
+    (a or a) = a
+}
+
+/// `true` is absorbing for disjunction.
+theorem or_true(a: Bool) {
+    (a or true) = true
+}
+
+/// `true` on the left is absorbing for disjunction.
+theorem true_or(a: Bool) {
+    (true or a) = true
+}
+
+/// `false` is the identity for disjunction.
+theorem or_false(a: Bool) {
+    (a or false) = a
+}
+
+/// `false` on the left is identity for disjunction.
+theorem false_or(a: Bool) {
+    (false or a) = a
+}
+
+/// Negating `true` gives `false`.
+theorem not_true {
+    (not true) = false
+}
+
+/// Negating `false` gives `true`.
+theorem not_false {
+    (not false) = true
+}
+
+/// Double negation eliminates.
+theorem not_not(a: Bool) {
+    (not not a) = a
+}
+
+/// Conjunction with one's own negation is `false`.
+theorem and_not_self(a: Bool) {
+    (a and not a) = false
+}
+
+/// Disjunction with one's own negation is `true`.
+theorem or_not_self(a: Bool) {
+    (a or not a) = true
+}
+
+/// De Morgan: negation of a conjunction.
+theorem not_and(a: Bool, b: Bool) {
+    (not (a and b)) = (not a or not b)
+}
+
+/// De Morgan: negation of a disjunction.
+theorem not_or(a: Bool, b: Bool) {
+    (not (a or b)) = (not a and not b)
+}
+
+/// `true` antecedent: `(true implies p) = p`.
+theorem true_implies(a: Bool) {
+    (true implies a) = a
+}
+
+/// `false` antecedent: `(false implies p) = true`.
+theorem false_implies(a: Bool) {
+    (false implies a) = true
+}
+
+/// `true` consequent: `(p implies true) = true`.
+theorem implies_true(a: Bool) {
+    (a implies true) = true
+}
+
+/// `false` consequent: `(p implies false) = not p`.
+theorem implies_false(a: Bool) {
+    (a implies false) = not a
+}
+
+/// Self-implication is `true`.
+theorem implies_self(a: Bool) {
+    (a implies a) = true
+}
+
+/// Implication is disjunction with the antecedent negated.
+theorem implies_eq_not_or(a: Bool, b: Bool) {
+    (a implies b) = (not a or b)
+}
+
+/// Negating an implication.
+theorem not_implies(a: Bool, b: Bool) {
+    (not (a implies b)) = (a and not b)
+}
+
+/// Contrapositive form of implication.
+theorem implies_contrapositive(a: Bool, b: Bool) {
+    (a implies b) = (not b implies not a)
+}

@@ -2,8 +2,7 @@
 
 Goal: make common logical rewrites predictable enough that proofs stop needing repetitive boilerplate.
 
-- [ ] Add reusable lemmas for rewriting `and`, `or`, `not`, and implication forms
-- [ ] Add double-negation and contraposition helpers where classically valid
+- [ ] Add double-negation and contraposition helpers where classically valid (basic forms in `logic.ac`; extend with proof-by-contrapositive helpers if useful)
 - [ ] Add simplification lemmas for equality with booleans
 - [ ] Add distributivity lemmas between logical connectives
 - [ ] Add standard rewrites for quantifiers over conjunctions and implications
