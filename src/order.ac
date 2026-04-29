@@ -268,6 +268,104 @@ theorem gt_of_gte_of_gt[P: PartialOrder](a: P, b: P, c: P) {
     }
 }
 
+/// Strict order is asymmetric: `a < b` rules out `b < a`.
+theorem lt_asymm[P: PartialOrder](a: P, b: P) {
+    a < b implies not (b < a)
+} by {
+    if a < b {
+        if b < a {
+            lt_trans(a, b, a)
+            a < a
+            a != a
+            false
+        }
+    }
+}
+
+/// Strict greater-than is asymmetric: `a > b` rules out `b > a`.
+theorem gt_asymm[P: PartialOrder](a: P, b: P) {
+    a > b implies not (b > a)
+} by {
+    if a > b {
+        b < a
+        lt_asymm(b, a)
+        not (a < b)
+        not (b > a)
+    }
+}
+
+/// Replacing the right side of `<=` with an equal element preserves `<=`.
+theorem lte_of_lte_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b = c implies a <= c
+} by {
+    if a <= b and b = c {
+        a <= c
+    }
+}
+
+/// Replacing the left side of `<=` with an equal element preserves `<=`.
+theorem lte_of_eq_of_lte[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b <= c implies a <= c
+} by {
+    if a = b and b <= c {
+        a <= c
+    }
+}
+
+/// Replacing the right side of `<` with an equal element preserves `<`.
+theorem lt_of_lt_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a < b and b = c implies a < c
+} by {
+    if a < b and b = c {
+        a < c
+    }
+}
+
+/// Replacing the left side of `<` with an equal element preserves `<`.
+theorem lt_of_eq_of_lt[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b < c implies a < c
+} by {
+    if a = b and b < c {
+        a < c
+    }
+}
+
+/// Replacing the right side of `>=` with an equal element preserves `>=`.
+theorem gte_of_gte_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a >= b and b = c implies a >= c
+} by {
+    if a >= b and b = c {
+        a >= c
+    }
+}
+
+/// Replacing the left side of `>=` with an equal element preserves `>=`.
+theorem gte_of_eq_of_gte[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b >= c implies a >= c
+} by {
+    if a = b and b >= c {
+        a >= c
+    }
+}
+
+/// Replacing the right side of `>` with an equal element preserves `>`.
+theorem gt_of_gt_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a > b and b = c implies a > c
+} by {
+    if a > b and b = c {
+        a > c
+    }
+}
+
+/// Replacing the left side of `>` with an equal element preserves `>`.
+theorem gt_of_eq_of_gt[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b > c implies a > c
+} by {
+    if a = b and b > c {
+        a > c
+    }
+}
+
 /// A linear order (total order) is a partial order where all elements are comparable.
 typeclass L: LinearOrder extends PartialOrder {
     /// All elements are comparable: for any two elements `a` and `b`, either `a ≤ b` or `b ≤ a`.
