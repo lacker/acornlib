@@ -103,19 +103,20 @@ let is_torsion_free[G: Group] = forall(g: G) {
 }
 
 /// True if a function preserves the group operation (is a homomorphism).
-define is_hom[G: Group, H: Group](f: G -> H) -> Bool {
+define is_group_hom[G: Group, H: Group](f: G -> H) -> Bool {
     forall(a: G, b: G) {
         f(a * b) = f(a) * f(b)
     }
 }
 
-/// The trivial homomorphism maps every element of G to the identity element of H.
-let trivial_hom[G: Group, H: Group]: G -> H = function(a: G) {
+/// The trivial group homomorphism maps every element of G to the identity element of H.
+let trivial_group_hom[G: Group, H: Group]: G -> H = function(a: G) {
     H.1
 }
 
-theorem trivial_hom_is_hom[G: Group, H: Group](a: G, b: G) {
-    is_hom(trivial_hom[G, H])
+/// The trivial group homomorphism preserves the group operation.
+theorem trivial_group_hom_is_hom[G: Group, H: Group] {
+    is_group_hom(trivial_group_hom[G, H])
 }
 
 /// A group homomorphism that preserves the group structure.
@@ -123,7 +124,7 @@ structure GroupHom[G: Group, H: Group] {
     /// The mapping for the homomorphism.
     hom: G -> H
 } constraint {
-    is_hom(hom)
+    is_group_hom(hom)
 }
 
 /// Group homomorphism extensionality: two homomorphisms are equal when they agree on every input.
@@ -140,9 +141,70 @@ attributes GroupHom[G: Group, H: Group] {
     let ext = group_hom_ext[G, H]
 }
 
+/// A group homomorphism preserves the operation.
+theorem group_hom_mul[G: Group, H: Group](f: GroupHom[G, H], a: G, b: G) {
+    f.hom(a * b) = f.hom(a) * f.hom(b)
+} by {
+    is_group_hom(f.hom)
+}
+
+/// A group homomorphism preserves the identity element.
+theorem group_hom_one[G: Group, H: Group](f: GroupHom[G, H]) {
+    f.hom(G.1) = H.1
+} by {
+    G.1 * G.1 = G.1
+    f.hom(G.1 * G.1) = f.hom(G.1)
+    group_hom_mul(f, G.1, G.1)
+    f.hom(G.1) * f.hom(G.1) = f.hom(G.1)
+    f.hom(G.1) * f.hom(G.1) = f.hom(G.1) * H.1
+    left_cancel(f.hom(G.1), f.hom(G.1), H.1)
+}
+
+/// A group homomorphism preserves inverses.
+theorem group_hom_inv[G: Group, H: Group](f: GroupHom[G, H], a: G) {
+    f.hom(a.inverse) = f.hom(a).inverse
+} by {
+    a * a.inverse = G.1
+    f.hom(a * a.inverse) = f.hom(G.1)
+    group_hom_mul(f, a, a.inverse)
+    f.hom(a) * f.hom(a.inverse) = f.hom(G.1)
+    group_hom_one(f)
+    f.hom(a) * f.hom(a.inverse) = H.1
+    f.hom(a) * f.hom(a).inverse = H.1
+    f.hom(a) * f.hom(a.inverse) = f.hom(a) * f.hom(a).inverse
+    left_cancel(f.hom(a), f.hom(a.inverse), f.hom(a).inverse)
+}
+
+/// A group homomorphism preserves powers.
+theorem group_hom_pow[G: Group, H: Group](f: GroupHom[G, H], a: G, n: Nat) {
+    f.hom(a.pow(n)) = f.hom(a).pow(n)
+} by {
+    define p(k: Nat) -> Bool {
+        f.hom(a.pow(k)) = f.hom(a).pow(k)
+    }
+
+    a.pow(Nat.0) = G.1
+    group_hom_one(f)
+    f.hom(G.1) = H.1
+    f.hom(a).pow(Nat.0) = H.1
+    p(Nat.0)
+
+    forall(k: Nat) {
+        if p(k) {
+            f.hom(a.pow(k)) = f.hom(a).pow(k)
+            a.pow(k.suc) = a * a.pow(k)
+            group_hom_mul(f, a, a.pow(k))
+            f.hom(a * a.pow(k)) = f.hom(a) * f.hom(a.pow(k))
+            f.hom(a) * f.hom(a.pow(k)) = f.hom(a) * f.hom(a).pow(k)
+            f.hom(a) * f.hom(a).pow(k) = f.hom(a).pow(k.suc)
+            p(k.suc)
+        }
+    }
+}
+
 /// The identity function on a group preserves the group operation.
-theorem identity_fn_is_hom[G: Group] {
-    is_hom(identity_fn[G])
+theorem identity_fn_is_group_hom[G: Group] {
+    is_group_hom(identity_fn[G])
 } by {
     forall(a: G, b: G) {
         identity_fn[G](a * b) = a * b
@@ -151,10 +213,10 @@ theorem identity_fn_is_hom[G: Group] {
 }
 
 /// The composition of two group homomorphisms preserves the group operation.
-theorem compose_is_hom[G: Group, H: Group, K: Group](f: H -> K, g: G -> H) {
-    is_hom(f) and is_hom(g) implies is_hom(compose(f, g))
+theorem compose_is_group_hom[G: Group, H: Group, K: Group](f: H -> K, g: G -> H) {
+    is_group_hom(f) and is_group_hom(g) implies is_group_hom(compose(f, g))
 } by {
-    if is_hom(f) and is_hom(g) {
+    if is_group_hom(f) and is_group_hom(g) {
         forall(a: G, b: G) {
             compose(f, g)(a * b) = f(g(a * b))
             g(a * b) = g(a) * g(b)
@@ -180,10 +242,10 @@ theorem identity_group_hom_hom[G: Group] {
 let compose_group_hom[G: Group, H: Group, K: Group](f: GroupHom[H, K], g: GroupHom[G, H]) -> result: GroupHom[G, K] satisfy {
     GroupHom.new(compose(f.hom, g.hom)) = Option.some(result)
 } by {
-    is_hom(f.hom)
-    is_hom(g.hom)
-    compose_is_hom(f.hom, g.hom)
-    is_hom(compose(f.hom, g.hom))
+    is_group_hom(f.hom)
+    is_group_hom(g.hom)
+    compose_is_group_hom(f.hom, g.hom)
+    is_group_hom(compose(f.hom, g.hom))
 }
 
 /// The underlying function of a composition of homomorphisms is the composition of underlying functions.
