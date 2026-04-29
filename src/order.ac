@@ -366,6 +366,136 @@ theorem gt_of_eq_of_gt[P: PartialOrder](a: P, b: P, c: P) {
     }
 }
 
+/// `<` decomposes into `<=` together with inequality.
+theorem lt_iff_lte_and_ne[P: PartialOrder](a: P, b: P) {
+    a < b = (a <= b and a != b)
+}
+
+/// `>` decomposes into `>=` together with inequality.
+theorem gt_iff_gte_and_ne[P: PartialOrder](a: P, b: P) {
+    a > b = (a >= b and a != b)
+} by {
+    if a > b {
+        b < a
+        a != b
+    }
+    if a >= b and a != b {
+        b <= a
+        b != a
+        b < a
+        a > b
+    }
+    a > b = (a >= b and a != b)
+}
+
+/// `<=` splits into the disjunction of strict inequality and equality.
+theorem lte_iff_lt_or_eq[P: PartialOrder](a: P, b: P) {
+    a <= b = (a < b or a = b)
+} by {
+    if a <= b {
+        if a = b {
+            a < b or a = b
+        } else {
+            a != b
+            a < b
+            a < b or a = b
+        }
+    }
+    if a < b or a = b {
+        if a < b {
+            lt_imp_lte(a, b)
+            a <= b
+        } else {
+            a = b
+            eq_imp_lte(a, b)
+            a <= b
+        }
+    }
+    a <= b = (a < b or a = b)
+}
+
+/// `>=` splits into the disjunction of strict greater-than and equality.
+theorem gte_iff_gt_or_eq[P: PartialOrder](a: P, b: P) {
+    a >= b = (a > b or a = b)
+} by {
+    if a >= b {
+        b <= a
+        lte_iff_lt_or_eq(b, a)
+        b < a or b = a
+        if b < a {
+            a > b
+            a > b or a = b
+        } else {
+            b = a
+            a = b
+            a > b or a = b
+        }
+    }
+    if a > b or a = b {
+        if a > b {
+            gt_imp_gte(a, b)
+            a >= b
+        } else {
+            a = b
+            eq_imp_gte(a, b)
+            a >= b
+        }
+    }
+    a >= b = (a > b or a = b)
+}
+
+/// `a <= b` together with `a != b` upgrades to `a < b`.
+theorem lt_of_lte_of_ne[P: PartialOrder](a: P, b: P) {
+    a <= b and a != b implies a < b
+} by {
+    if a <= b and a != b {
+        a < b
+    }
+}
+
+/// `a >= b` together with `a != b` upgrades to `a > b`.
+theorem gt_of_gte_of_ne[P: PartialOrder](a: P, b: P) {
+    a >= b and a != b implies a > b
+} by {
+    if a >= b and a != b {
+        b <= a
+        b != a
+        b < a
+        a > b
+    }
+}
+
+/// On a partial order, `a <= b` either coincides with equality or is strict.
+theorem eq_or_lt_of_lte[P: PartialOrder](a: P, b: P) {
+    a <= b implies a = b or a < b
+} by {
+    if a <= b {
+        if a = b {
+            a = b or a < b
+        } else {
+            a < b
+            a = b or a < b
+        }
+    }
+}
+
+/// On a partial order, `a >= b` either coincides with equality or is strict.
+theorem eq_or_gt_of_gte[P: PartialOrder](a: P, b: P) {
+    a >= b implies a = b or a > b
+} by {
+    if a >= b {
+        if a = b {
+            a = b or a > b
+        } else {
+            b <= a
+            b != a
+            b < a
+            a > b
+            a = b or a > b
+        }
+    }
+}
+
 /// A linear order (total order) is a partial order where all elements are comparable.
 typeclass L: LinearOrder extends PartialOrder {
     /// All elements are comparable: for any two elements `a` and `b`, either `a ≤ b` or `b ≤ a`.
@@ -466,32 +596,6 @@ theorem not_gt_imp_lte[L: LinearOrder](a: L, b: L) {
                 a > b
                 false
             }
-        }
-    }
-}
-
-theorem eq_or_lt_of_lte[L: LinearOrder](a: L, b: L) {
-    a <= b implies a = b or a < b
-} by {
-    if a <= b {
-        if a = b {
-            a = b or a < b
-        } else {
-            a < b
-            a = b or a < b
-        }
-    }
-}
-
-theorem eq_or_gt_of_gte[L: LinearOrder](a: L, b: L) {
-    a >= b implies a = b or a > b
-} by {
-    if a >= b {
-        if a = b {
-            a = b or a > b
-        } else {
-            a > b
-            a = b or a > b
         }
     }
 }
