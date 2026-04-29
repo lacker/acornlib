@@ -171,3 +171,117 @@ theorem sum_swap_inl[T, U](x: T) {
 theorem sum_swap_inr[T, U](y: U) {
     sum_swap(Sum.inr[T, U](y)) = Sum.inl[U, T](y)
 }
+
+/// Swapping twice gives the original sum value.
+theorem sum_swap_swap[T, U](s: Sum[T, U]) {
+    sum_swap(sum_swap(s)) = s
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_swap_inl[T, U](x)
+            sum_swap(s) = Sum.inr[U, T](x)
+            sum_swap_inr[U, T](x)
+            sum_swap(sum_swap(s)) = Sum.inl[T, U](x)
+            sum_swap(sum_swap(s)) = s
+        }
+        Sum.inr(y) {
+            sum_swap_inr[T, U](y)
+            sum_swap(s) = Sum.inl[U, T](y)
+            sum_swap_inl[U, T](y)
+            sum_swap(sum_swap(s)) = Sum.inr[T, U](y)
+            sum_swap(sum_swap(s)) = s
+        }
+    }
+}
+
+/// The left-associated form of a triple sum.
+define sum_assoc[T, U, V](s: Sum[Sum[T, U], V]) -> Sum[T, Sum[U, V]] {
+    match s {
+        Sum.inl(tu) {
+            match tu {
+                Sum.inl(t) {
+                    Sum.inl[T, Sum[U, V]](t)
+                }
+                Sum.inr(u) {
+                    Sum.inr[T, Sum[U, V]](Sum.inl[U, V](u))
+                }
+            }
+        }
+        Sum.inr(v) {
+            Sum.inr[T, Sum[U, V]](Sum.inr[U, V](v))
+        }
+    }
+}
+
+/// The right-associated form of a triple sum.
+define sum_unassoc[T, U, V](s: Sum[T, Sum[U, V]]) -> Sum[Sum[T, U], V] {
+    match s {
+        Sum.inl(t) {
+            Sum.inl[Sum[T, U], V](Sum.inl[T, U](t))
+        }
+        Sum.inr(uv) {
+            match uv {
+                Sum.inl(u) {
+                    Sum.inl[Sum[T, U], V](Sum.inr[T, U](u))
+                }
+                Sum.inr(v) {
+                    Sum.inr[Sum[T, U], V](v)
+                }
+            }
+        }
+    }
+}
+
+/// Associating and then unassociating a triple sum gives the original sum value.
+theorem sum_unassoc_assoc[T, U, V](s: Sum[Sum[T, U], V]) {
+    sum_unassoc(sum_assoc(s)) = s
+} by {
+    match s {
+        Sum.inl(tu) {
+            match tu {
+                Sum.inl(t) {
+                    sum_assoc(s) = Sum.inl[T, Sum[U, V]](t)
+                    sum_unassoc(sum_assoc(s)) = Sum.inl[Sum[T, U], V](Sum.inl[T, U](t))
+                    sum_unassoc(sum_assoc(s)) = s
+                }
+                Sum.inr(u) {
+                    sum_assoc(s) = Sum.inr[T, Sum[U, V]](Sum.inl[U, V](u))
+                    sum_unassoc(sum_assoc(s)) = Sum.inl[Sum[T, U], V](Sum.inr[T, U](u))
+                    sum_unassoc(sum_assoc(s)) = s
+                }
+            }
+        }
+        Sum.inr(v) {
+            sum_assoc(s) = Sum.inr[T, Sum[U, V]](Sum.inr[U, V](v))
+            sum_unassoc(sum_assoc(s)) = Sum.inr[Sum[T, U], V](v)
+            sum_unassoc(sum_assoc(s)) = s
+        }
+    }
+}
+
+/// Unassociating and then associating a triple sum gives the original sum value.
+theorem sum_assoc_unassoc[T, U, V](s: Sum[T, Sum[U, V]]) {
+    sum_assoc(sum_unassoc(s)) = s
+} by {
+    match s {
+        Sum.inl(t) {
+            sum_unassoc(s) = Sum.inl[Sum[T, U], V](Sum.inl[T, U](t))
+            sum_assoc(sum_unassoc(s)) = Sum.inl[T, Sum[U, V]](t)
+            sum_assoc(sum_unassoc(s)) = s
+        }
+        Sum.inr(uv) {
+            match uv {
+                Sum.inl(u) {
+                    sum_unassoc(s) = Sum.inl[Sum[T, U], V](Sum.inr[T, U](u))
+                    sum_assoc(sum_unassoc(s)) = Sum.inr[T, Sum[U, V]](Sum.inl[U, V](u))
+                    sum_assoc(sum_unassoc(s)) = s
+                }
+                Sum.inr(v) {
+                    sum_unassoc(s) = Sum.inr[Sum[T, U], V](v)
+                    sum_assoc(sum_unassoc(s)) = Sum.inr[T, Sum[U, V]](Sum.inr[U, V](v))
+                    sum_assoc(sum_unassoc(s)) = s
+                }
+            }
+        }
+    }
+}
