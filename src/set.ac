@@ -1,5 +1,6 @@
 from list import List
-from list.list_base import filter_contains_and, filter_contained_by_and, filter_equivalent_to_and
+from list.list_base import filter_contains_and, filter_contained_by_and, filter_equivalent_to_and,
+    range_contains_all_leq, range_does_not_contain_geq
 from list.list_sum import map_contains, map_contains_of_contains, map_length, injective_map_is_unique
 from nat import Nat
 from nat.nat_base import add_imp_sub
@@ -2341,6 +2342,815 @@ define intersection_family[K, I](f: I -> Set[K]) -> Set[K] {
     Set[K].new(and_family(f))
 }
 
+/// The union of an indexed family of sets.
+define indexed_union[K, I](family: I -> Set[K]) -> Set[K] {
+    union_family(family)
+}
+
+/// The intersection of an indexed family of sets.
+define indexed_intersection[K, I](family: I -> Set[K]) -> Set[K] {
+    intersection_family(family)
+}
+
+/// Membership in an indexed union is membership in some member of the family.
+theorem indexed_union_contains_eq[K, I](family: I -> Set[K], x: K) {
+    indexed_union(family).contains(x) = exists(i: I) {
+        family(i).contains(x)
+    }
+} by {
+    indexed_union(family) = union_family(family)
+    union_family(family).contains(x) = or_family(family, x)
+}
+
+/// Membership in a member of a family gives membership in its indexed union.
+theorem indexed_union_contains_of_contains[K, I](family: I -> Set[K], i: I, x: K) {
+    family(i).contains(x) implies indexed_union(family).contains(x)
+} by {
+    if family(i).contains(x) {
+        exists(j: I) {
+            j = i and family(j).contains(x)
+        }
+        indexed_union_contains_eq(family, x)
+        indexed_union(family).contains(x)
+    }
+}
+
+/// Membership in an indexed union has a witnessing index.
+theorem indexed_union_contains_witness[K, I](family: I -> Set[K], x: K) {
+    indexed_union(family).contains(x) implies exists(i: I) {
+        family(i).contains(x)
+    }
+} by {
+    if indexed_union(family).contains(x) {
+        indexed_union_contains_eq(family, x)
+        exists(i: I) {
+            family(i).contains(x)
+        }
+    }
+}
+
+/// Membership in an indexed intersection is membership in every member of the family.
+theorem indexed_intersection_contains_eq[K, I](family: I -> Set[K], x: K) {
+    indexed_intersection(family).contains(x) = forall(i: I) {
+        family(i).contains(x)
+    }
+} by {
+    indexed_intersection(family) = intersection_family(family)
+    intersection_family(family).contains(x) = and_family(family, x)
+}
+
+/// Membership in an indexed intersection gives membership in each member of the family.
+theorem indexed_intersection_contains_at[K, I](family: I -> Set[K], i: I, x: K) {
+    indexed_intersection(family).contains(x) implies family(i).contains(x)
+} by {
+    if indexed_intersection(family).contains(x) {
+        indexed_intersection_contains_eq(family, x)
+        family(i).contains(x)
+    }
+}
+
+/// Membership in every member of a family gives membership in its indexed intersection.
+theorem indexed_intersection_contains_of_forall[K, I](family: I -> Set[K], x: K) {
+    (forall(i: I) { family(i).contains(x) }) implies indexed_intersection(family).contains(x)
+} by {
+    if forall(i: I) { family(i).contains(x) } {
+        indexed_intersection_contains_eq(family, x)
+        indexed_intersection(family).contains(x)
+    }
+}
+
+/// The indexed union is contained in any common superset of the family.
+theorem indexed_union_subset_of_family_subset[K, I](family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { family(i).subset(s) }) implies indexed_union(family).subset(s)
+} by {
+    if forall(i: I) { family(i).subset(s) } {
+        forall(x: K) {
+            if indexed_union(family).contains(x) {
+                indexed_union_contains_witness(family, x)
+                let i: I satisfy {
+                    family(i).contains(x)
+                }
+                family(i).subset(s)
+                family(i).subset(s) = forall(y: K) {
+                    family(i).contains(y) implies s.contains(y)
+                }
+                family(i).contains(x) implies s.contains(x)
+                s.contains(x)
+            }
+        }
+    }
+}
+
+/// The indexed intersection contains any common subset of the family.
+theorem indexed_intersection_superset_of_subset_family[K, I](family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { s.subset(family(i)) }) implies indexed_intersection(family).superset(s)
+} by {
+    if forall(i: I) { s.subset(family(i)) } {
+        forall(x: K) {
+            if s.contains(x) {
+                forall(i: I) {
+                    s.subset(family(i))
+                    s.subset(family(i)) = forall(y: K) {
+                        s.contains(y) implies family(i).contains(y)
+                    }
+                    s.contains(x) implies family(i).contains(x)
+                    family(i).contains(x)
+                }
+                indexed_intersection_contains_of_forall(family, x)
+                indexed_intersection(family).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion of indexed families preserves indexed unions.
+theorem indexed_union_monotone[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) implies indexed_union(a).subset(indexed_union(b))
+} by {
+    if forall(i: I) { a(i).subset(b(i)) } {
+        forall(x: K) {
+            if indexed_union(a).contains(x) {
+                indexed_union_contains_witness(a, x)
+                let i: I satisfy {
+                    a(i).contains(x)
+                }
+                a(i).subset(b(i))
+                a(i).subset(b(i)) = forall(y: K) {
+                    a(i).contains(y) implies b(i).contains(y)
+                }
+                a(i).contains(x) implies b(i).contains(x)
+                b(i).contains(x)
+                indexed_union_contains_of_contains(b, i, x)
+                indexed_union(b).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion of indexed families preserves indexed intersections.
+theorem indexed_intersection_monotone[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) implies
+    indexed_intersection(a).subset(indexed_intersection(b))
+} by {
+    if forall(i: I) { a(i).subset(b(i)) } {
+        forall(x: K) {
+            if indexed_intersection(a).contains(x) {
+                forall(i: I) {
+                    indexed_intersection_contains_at(a, i, x)
+                    a(i).contains(x)
+                    a(i).subset(b(i))
+                    a(i).subset(b(i)) = forall(y: K) {
+                        a(i).contains(y) implies b(i).contains(y)
+                    }
+                    a(i).contains(x) implies b(i).contains(x)
+                    b(i).contains(x)
+                }
+                indexed_intersection_contains_of_forall(b, x)
+                indexed_intersection(b).contains(x)
+            }
+        }
+    }
+}
+
+/// The complement of an indexed union is the indexed intersection of the complements.
+theorem indexed_union_complement_eq_intersection_complement[K, I](family: I -> Set[K]) {
+    indexed_union(function(i: I) { family(i).c }) = indexed_intersection(family).c
+} by {
+    let u = indexed_union(function(i: I) { family(i).c })
+    let v = indexed_intersection(family).c
+    forall(x: K) {
+        if u.contains(x) {
+            indexed_union_contains_witness(function(i: I) { family(i).c }, x)
+            let i: I satisfy {
+                family(i).c.contains(x)
+            }
+            compl_contains_eq(family(i), x)
+            not family(i).contains(x)
+            not indexed_intersection(family).contains(x)
+            compl_contains_eq(indexed_intersection(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            compl_contains_eq(indexed_intersection(family), x)
+            not indexed_intersection(family).contains(x)
+            indexed_intersection_contains_eq(family, x)
+            let i: I satisfy {
+                not family(i).contains(x)
+            }
+            compl_contains_eq(family(i), x)
+            family(i).c.contains(x)
+            indexed_union_contains_of_contains(function(j: I) { family(j).c }, i, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The complement of an indexed intersection is the indexed union of the complements.
+theorem indexed_intersection_complement_eq_union_complement[K, I](family: I -> Set[K]) {
+    indexed_intersection(function(i: I) { family(i).c }) = indexed_union(family).c
+} by {
+    let u = indexed_intersection(function(i: I) { family(i).c })
+    let v = indexed_union(family).c
+    forall(x: K) {
+        if u.contains(x) {
+            forall(i: I) {
+                indexed_intersection_contains_at(function(j: I) { family(j).c }, i, x)
+                family(i).c.contains(x)
+                compl_contains_eq(family(i), x)
+                not family(i).contains(x)
+            }
+            if indexed_union(family).contains(x) {
+                indexed_union_contains_witness(family, x)
+                let i: I satisfy {
+                    family(i).contains(x)
+                }
+                not family(i).contains(x)
+                false
+            }
+            not indexed_union(family).contains(x)
+            compl_contains_eq(indexed_union(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            compl_contains_eq(indexed_union(family), x)
+            not indexed_union(family).contains(x)
+            forall(i: I) {
+                not family(i).contains(x)
+                compl_contains_eq(family(i), x)
+                family(i).c.contains(x)
+            }
+            indexed_intersection_contains_of_forall(function(i: I) { family(i).c }, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Membership in the union of a list-indexed family.
+define list_indexed_union_contains[K, I](items: List[I], family: I -> Set[K], x: K) -> Bool {
+    exists(i: I) {
+        items.contains(i) and family(i).contains(x)
+    }
+}
+
+/// The union of the members whose indices occur in a list.
+define list_indexed_union[K, I](items: List[I], family: I -> Set[K]) -> Set[K] {
+    Set[K].new(list_indexed_union_contains(items, family))
+}
+
+/// Membership in the intersection of a list-indexed family.
+define list_indexed_intersection_contains[K, I](items: List[I], family: I -> Set[K], x: K) -> Bool {
+    forall(i: I) {
+        items.contains(i) implies family(i).contains(x)
+    }
+}
+
+/// The intersection of the members whose indices occur in a list.
+define list_indexed_intersection[K, I](items: List[I], family: I -> Set[K]) -> Set[K] {
+    Set[K].new(list_indexed_intersection_contains(items, family))
+}
+
+/// Membership in a list-indexed union is witnessed by an index in the list.
+theorem list_indexed_union_contains_eq[K, I](items: List[I], family: I -> Set[K], x: K) {
+    list_indexed_union(items, family).contains(x) = exists(i: I) {
+        items.contains(i) and family(i).contains(x)
+    }
+}
+
+/// A listed index contributes its member set to the list-indexed union.
+theorem list_indexed_union_contains_of_contains[K, I](items: List[I], family: I -> Set[K],
+    i: I, x: K) {
+    items.contains(i) and family(i).contains(x) implies list_indexed_union(items, family).contains(x)
+} by {
+    if items.contains(i) and family(i).contains(x) {
+        exists(j: I) {
+            j = i and items.contains(j) and family(j).contains(x)
+        }
+        list_indexed_union_contains_eq(items, family, x)
+        list_indexed_union(items, family).contains(x)
+    }
+}
+
+/// Membership in a list-indexed union has a listed witnessing index.
+theorem list_indexed_union_contains_witness[K, I](items: List[I], family: I -> Set[K], x: K) {
+    list_indexed_union(items, family).contains(x) implies exists(i: I) {
+        items.contains(i) and family(i).contains(x)
+    }
+} by {
+    if list_indexed_union(items, family).contains(x) {
+        list_indexed_union_contains_eq(items, family, x)
+        exists(i: I) {
+            items.contains(i) and family(i).contains(x)
+        }
+    }
+}
+
+/// Membership in a list-indexed intersection is membership in every listed member.
+theorem list_indexed_intersection_contains_eq[K, I](items: List[I], family: I -> Set[K], x: K) {
+    list_indexed_intersection(items, family).contains(x) = forall(i: I) {
+        items.contains(i) implies family(i).contains(x)
+    }
+}
+
+/// A member of a list-indexed intersection belongs to each listed member.
+theorem list_indexed_intersection_contains_at[K, I](items: List[I], family: I -> Set[K],
+    i: I, x: K) {
+    list_indexed_intersection(items, family).contains(x) and items.contains(i)
+    implies family(i).contains(x)
+} by {
+    if list_indexed_intersection(items, family).contains(x) and items.contains(i) {
+        list_indexed_intersection_contains_eq(items, family, x)
+        items.contains(i) implies family(i).contains(x)
+        family(i).contains(x)
+    }
+}
+
+/// Membership in every listed member gives membership in the list-indexed intersection.
+theorem list_indexed_intersection_contains_of_forall[K, I](items: List[I], family: I -> Set[K],
+    x: K) {
+    (forall(i: I) { items.contains(i) implies family(i).contains(x) }) implies
+    list_indexed_intersection(items, family).contains(x)
+} by {
+    if forall(i: I) { items.contains(i) implies family(i).contains(x) } {
+        list_indexed_intersection_contains_eq(items, family, x)
+        list_indexed_intersection(items, family).contains(x)
+    }
+}
+
+/// A list-indexed union is contained in any common superset of its listed members.
+theorem list_indexed_union_subset_of_family_subset[K, I](items: List[I], family: I -> Set[K],
+    s: Set[K]) {
+    (forall(i: I) { items.contains(i) implies family(i).subset(s) }) implies
+    list_indexed_union(items, family).subset(s)
+} by {
+    if forall(i: I) { items.contains(i) implies family(i).subset(s) } {
+        forall(x: K) {
+            if list_indexed_union(items, family).contains(x) {
+                list_indexed_union_contains_witness(items, family, x)
+                let i: I satisfy {
+                    items.contains(i) and family(i).contains(x)
+                }
+                family(i).subset(s)
+                family(i).subset(s) = forall(y: K) {
+                    family(i).contains(y) implies s.contains(y)
+                }
+                family(i).contains(x) implies s.contains(x)
+                s.contains(x)
+            }
+        }
+    }
+}
+
+/// A common subset of the listed members is contained in their list-indexed intersection.
+theorem subset_list_indexed_intersection_of_subset_family[K, I](items: List[I],
+    family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { items.contains(i) implies s.subset(family(i)) }) implies
+    s.subset(list_indexed_intersection(items, family))
+} by {
+    if forall(i: I) { items.contains(i) implies s.subset(family(i)) } {
+        forall(x: K) {
+            if s.contains(x) {
+                forall(i: I) {
+                    if items.contains(i) {
+                        s.subset(family(i))
+                        s.subset(family(i)) = forall(y: K) {
+                            s.contains(y) implies family(i).contains(y)
+                        }
+                        s.contains(x) implies family(i).contains(x)
+                        family(i).contains(x)
+                    }
+                }
+                list_indexed_intersection_contains_of_forall(items, family, x)
+                list_indexed_intersection(items, family).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion of listed members preserves list-indexed unions.
+theorem list_indexed_union_monotone[K, I](items: List[I], a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { items.contains(i) implies a(i).subset(b(i)) }) implies
+    list_indexed_union(items, a).subset(list_indexed_union(items, b))
+} by {
+    if forall(i: I) { items.contains(i) implies a(i).subset(b(i)) } {
+        forall(x: K) {
+            if list_indexed_union(items, a).contains(x) {
+                list_indexed_union_contains_witness(items, a, x)
+                let i: I satisfy {
+                    items.contains(i) and a(i).contains(x)
+                }
+                a(i).subset(b(i))
+                a(i).subset(b(i)) = forall(y: K) {
+                    a(i).contains(y) implies b(i).contains(y)
+                }
+                a(i).contains(x) implies b(i).contains(x)
+                b(i).contains(x)
+                list_indexed_union_contains_of_contains(items, b, i, x)
+                list_indexed_union(items, b).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion of listed members preserves list-indexed intersections.
+theorem list_indexed_intersection_monotone[K, I](items: List[I], a: I -> Set[K],
+    b: I -> Set[K]) {
+    (forall(i: I) { items.contains(i) implies a(i).subset(b(i)) }) implies
+    list_indexed_intersection(items, a).subset(list_indexed_intersection(items, b))
+} by {
+    if forall(i: I) { items.contains(i) implies a(i).subset(b(i)) } {
+        forall(x: K) {
+            if list_indexed_intersection(items, a).contains(x) {
+                forall(i: I) {
+                    if items.contains(i) {
+                        list_indexed_intersection_contains_at(items, a, i, x)
+                        a(i).contains(x)
+                        a(i).subset(b(i))
+                        a(i).subset(b(i)) = forall(y: K) {
+                            a(i).contains(y) implies b(i).contains(y)
+                        }
+                        a(i).contains(x) implies b(i).contains(x)
+                        b(i).contains(x)
+                    }
+                }
+                list_indexed_intersection_contains_of_forall(items, b, x)
+                list_indexed_intersection(items, b).contains(x)
+            }
+        }
+    }
+}
+
+/// The list-indexed union is contained in the full indexed union.
+theorem list_indexed_union_subset_indexed_union[K, I](items: List[I], family: I -> Set[K]) {
+    list_indexed_union(items, family).subset(indexed_union(family))
+} by {
+    forall(x: K) {
+        if list_indexed_union(items, family).contains(x) {
+            list_indexed_union_contains_witness(items, family, x)
+            let i: I satisfy {
+                items.contains(i) and family(i).contains(x)
+            }
+            indexed_union_contains_of_contains(family, i, x)
+            indexed_union(family).contains(x)
+        }
+    }
+}
+
+/// The full indexed intersection is contained in any list-indexed intersection.
+theorem indexed_intersection_subset_list_indexed_intersection[K, I](items: List[I],
+    family: I -> Set[K]) {
+    indexed_intersection(family).subset(list_indexed_intersection(items, family))
+} by {
+    forall(x: K) {
+        if indexed_intersection(family).contains(x) {
+            forall(i: I) {
+                if items.contains(i) {
+                    indexed_intersection_contains_at(family, i, x)
+                    family(i).contains(x)
+                }
+            }
+            list_indexed_intersection_contains_of_forall(items, family, x)
+            list_indexed_intersection(items, family).contains(x)
+        }
+    }
+}
+
+/// The union of the members whose natural indices are less than `n`.
+define range_indexed_union[K](n: Nat, family: Nat -> Set[K]) -> Set[K] {
+    list_indexed_union(n.range, family)
+}
+
+/// The intersection of the members whose natural indices are less than `n`.
+define range_indexed_intersection[K](n: Nat, family: Nat -> Set[K]) -> Set[K] {
+    list_indexed_intersection(n.range, family)
+}
+
+/// Membership in a range-indexed union is witnessed by an index below the bound.
+theorem range_indexed_union_contains_eq[K](n: Nat, family: Nat -> Set[K], x: K) {
+    range_indexed_union(n, family).contains(x) = exists(i: Nat) {
+        i < n and family(i).contains(x)
+    }
+} by {
+    let u = range_indexed_union(n, family)
+    let v = list_indexed_union(n.range, family)
+    u = v
+    if u.contains(x) {
+        list_indexed_union_contains_witness(n.range, family, x)
+        let i: Nat satisfy {
+            n.range.contains(i) and family(i).contains(x)
+        }
+        if not i < n {
+            i >= n
+            range_does_not_contain_geq(n, i)
+            not n.range.contains(i)
+            false
+        }
+        i < n
+        exists(j: Nat) {
+            j = i and j < n and family(j).contains(x)
+        }
+    }
+    if exists(i: Nat) {
+        i < n and family(i).contains(x)
+    } {
+        let i: Nat satisfy {
+            i < n and family(i).contains(x)
+        }
+        range_contains_all_leq(n)
+        n.range.contains(i)
+        list_indexed_union_contains_of_contains(n.range, family, i, x)
+        v.contains(x)
+        u.contains(x)
+    }
+    u.contains(x) = exists(i: Nat) {
+        i < n and family(i).contains(x)
+    }
+}
+
+/// A member below the bound contributes to the range-indexed union.
+theorem range_indexed_union_contains_of_lt[K](n: Nat, family: Nat -> Set[K], i: Nat, x: K) {
+    i < n and family(i).contains(x) implies range_indexed_union(n, family).contains(x)
+} by {
+    if i < n and family(i).contains(x) {
+        exists(j: Nat) {
+            j = i and j < n and family(j).contains(x)
+        }
+        range_indexed_union_contains_eq(n, family, x)
+        range_indexed_union(n, family).contains(x)
+    }
+}
+
+/// Membership in a range-indexed union has an index below the bound.
+theorem range_indexed_union_contains_witness[K](n: Nat, family: Nat -> Set[K], x: K) {
+    range_indexed_union(n, family).contains(x) implies exists(i: Nat) {
+        i < n and family(i).contains(x)
+    }
+} by {
+    if range_indexed_union(n, family).contains(x) {
+        range_indexed_union_contains_eq(n, family, x)
+        exists(i: Nat) {
+            i < n and family(i).contains(x)
+        }
+    }
+}
+
+/// Membership in a range-indexed intersection is membership in every term below the bound.
+theorem range_indexed_intersection_contains_eq[K](n: Nat, family: Nat -> Set[K], x: K) {
+    range_indexed_intersection(n, family).contains(x) = forall(i: Nat) {
+        i < n implies family(i).contains(x)
+    }
+} by {
+    let u = range_indexed_intersection(n, family)
+    let v = list_indexed_intersection(n.range, family)
+    u = v
+    if u.contains(x) {
+        forall(i: Nat) {
+            if i < n {
+                range_contains_all_leq(n)
+                n.range.contains(i)
+                list_indexed_intersection_contains_at(n.range, family, i, x)
+                family(i).contains(x)
+            }
+        }
+    }
+    if forall(i: Nat) { i < n implies family(i).contains(x) } {
+        forall(i: Nat) {
+            if n.range.contains(i) {
+                if not i < n {
+                    i >= n
+                    range_does_not_contain_geq(n, i)
+                    not n.range.contains(i)
+                    false
+                }
+                i < n
+                family(i).contains(x)
+            }
+        }
+        list_indexed_intersection_contains_of_forall(n.range, family, x)
+        v.contains(x)
+        u.contains(x)
+    }
+    u.contains(x) = forall(i: Nat) {
+        i < n implies family(i).contains(x)
+    }
+}
+
+/// A member of a range-indexed intersection belongs to each term below the bound.
+theorem range_indexed_intersection_contains_at[K](n: Nat, family: Nat -> Set[K],
+    i: Nat, x: K) {
+    range_indexed_intersection(n, family).contains(x) and i < n implies family(i).contains(x)
+} by {
+    if range_indexed_intersection(n, family).contains(x) and i < n {
+        range_indexed_intersection_contains_eq(n, family, x)
+        i < n implies family(i).contains(x)
+        family(i).contains(x)
+    }
+}
+
+/// Membership in every term below the bound gives membership in the range-indexed intersection.
+theorem range_indexed_intersection_contains_of_forall[K](n: Nat, family: Nat -> Set[K],
+    x: K) {
+    (forall(i: Nat) { i < n implies family(i).contains(x) }) implies
+    range_indexed_intersection(n, family).contains(x)
+} by {
+    if forall(i: Nat) { i < n implies family(i).contains(x) } {
+        range_indexed_intersection_contains_eq(n, family, x)
+        range_indexed_intersection(n, family).contains(x)
+    }
+}
+
+/// The union over an empty range is empty.
+theorem range_indexed_union_zero[K](family: Nat -> Set[K]) {
+    range_indexed_union(Nat.0, family) = Set[K].empty_set
+} by {
+    let u = range_indexed_union(Nat.0, family)
+    let e = Set[K].empty_set
+    forall(x: K) {
+        if u.contains(x) {
+            range_indexed_union_contains_witness(Nat.0, family, x)
+            let i: Nat satisfy {
+                i < Nat.0 and family(i).contains(x)
+            }
+            false
+        }
+        empty_set_contains_eq[K](x)
+        u.contains(x) = e.contains(x)
+    }
+    set_ext(u, e)
+}
+
+/// The intersection over an empty range is universal.
+theorem range_indexed_intersection_zero[K](family: Nat -> Set[K]) {
+    range_indexed_intersection(Nat.0, family) = Set[K].universal_set
+} by {
+    let u = range_indexed_intersection(Nat.0, family)
+    let v = Set[K].universal_set
+    forall(x: K) {
+        if u.contains(x) {
+            universal_set_contains_eq[K](x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            forall(i: Nat) {
+                if i < Nat.0 {
+                    false
+                }
+            }
+            range_indexed_intersection_contains_of_forall(Nat.0, family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The range-indexed union is contained in any common superset below the bound.
+theorem range_indexed_union_subset_of_family_subset[K](n: Nat, family: Nat -> Set[K],
+    s: Set[K]) {
+    (forall(i: Nat) { i < n implies family(i).subset(s) }) implies
+    range_indexed_union(n, family).subset(s)
+} by {
+    if forall(i: Nat) { i < n implies family(i).subset(s) } {
+        forall(x: K) {
+            if range_indexed_union(n, family).contains(x) {
+                range_indexed_union_contains_witness(n, family, x)
+                let i: Nat satisfy {
+                    i < n and family(i).contains(x)
+                }
+                family(i).subset(s)
+                family(i).subset(s) = forall(y: K) {
+                    family(i).contains(y) implies s.contains(y)
+                }
+                family(i).contains(x) implies s.contains(x)
+                s.contains(x)
+            }
+        }
+    }
+}
+
+/// A common subset of all members below the bound is contained in their intersection.
+theorem subset_range_indexed_intersection_of_subset_family[K](n: Nat,
+    family: Nat -> Set[K], s: Set[K]) {
+    (forall(i: Nat) { i < n implies s.subset(family(i)) }) implies
+    s.subset(range_indexed_intersection(n, family))
+} by {
+    if forall(i: Nat) { i < n implies s.subset(family(i)) } {
+        forall(x: K) {
+            if s.contains(x) {
+                forall(i: Nat) {
+                    if i < n {
+                        s.subset(family(i))
+                        s.subset(family(i)) = forall(y: K) {
+                            s.contains(y) implies family(i).contains(y)
+                        }
+                        s.contains(x) implies family(i).contains(x)
+                        family(i).contains(x)
+                    }
+                }
+                range_indexed_intersection_contains_of_forall(n, family, x)
+                range_indexed_intersection(n, family).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion below the bound preserves range-indexed unions.
+theorem range_indexed_union_monotone[K](n: Nat, a: Nat -> Set[K], b: Nat -> Set[K]) {
+    (forall(i: Nat) { i < n implies a(i).subset(b(i)) }) implies
+    range_indexed_union(n, a).subset(range_indexed_union(n, b))
+} by {
+    if forall(i: Nat) { i < n implies a(i).subset(b(i)) } {
+        forall(x: K) {
+            if range_indexed_union(n, a).contains(x) {
+                range_indexed_union_contains_witness(n, a, x)
+                let i: Nat satisfy {
+                    i < n and a(i).contains(x)
+                }
+                a(i).subset(b(i))
+                a(i).subset(b(i)) = forall(y: K) {
+                    a(i).contains(y) implies b(i).contains(y)
+                }
+                a(i).contains(x) implies b(i).contains(x)
+                b(i).contains(x)
+                range_indexed_union_contains_of_lt(n, b, i, x)
+                range_indexed_union(n, b).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion below the bound preserves range-indexed intersections.
+theorem range_indexed_intersection_monotone[K](n: Nat, a: Nat -> Set[K],
+    b: Nat -> Set[K]) {
+    (forall(i: Nat) { i < n implies a(i).subset(b(i)) }) implies
+    range_indexed_intersection(n, a).subset(range_indexed_intersection(n, b))
+} by {
+    if forall(i: Nat) { i < n implies a(i).subset(b(i)) } {
+        forall(x: K) {
+            if range_indexed_intersection(n, a).contains(x) {
+                forall(i: Nat) {
+                    if i < n {
+                        range_indexed_intersection_contains_at(n, a, i, x)
+                        a(i).contains(x)
+                        a(i).subset(b(i))
+                        a(i).subset(b(i)) = forall(y: K) {
+                            a(i).contains(y) implies b(i).contains(y)
+                        }
+                        a(i).contains(x) implies b(i).contains(x)
+                        b(i).contains(x)
+                    }
+                }
+                range_indexed_intersection_contains_of_forall(n, b, x)
+                range_indexed_intersection(n, b).contains(x)
+            }
+        }
+    }
+}
+
+/// Increasing the range bound can only enlarge the range-indexed union.
+theorem range_indexed_union_subset_of_bound_le[K](m: Nat, n: Nat, family: Nat -> Set[K]) {
+    m <= n implies range_indexed_union(m, family).subset(range_indexed_union(n, family))
+} by {
+    if m <= n {
+        forall(x: K) {
+            if range_indexed_union(m, family).contains(x) {
+                range_indexed_union_contains_witness(m, family, x)
+                let i: Nat satisfy {
+                    i < m and family(i).contains(x)
+                }
+                i < n
+                range_indexed_union_contains_of_lt(n, family, i, x)
+                range_indexed_union(n, family).contains(x)
+            }
+        }
+    }
+}
+
+/// Increasing the range bound can only shrink the range-indexed intersection.
+theorem range_indexed_intersection_subset_of_bound_le[K](m: Nat, n: Nat,
+    family: Nat -> Set[K]) {
+    m <= n implies range_indexed_intersection(n, family).subset(range_indexed_intersection(m, family))
+} by {
+    if m <= n {
+        forall(x: K) {
+            if range_indexed_intersection(n, family).contains(x) {
+                forall(i: Nat) {
+                    if i < m {
+                        i < n
+                        range_indexed_intersection_contains_at(n, family, i, x)
+                        family(i).contains(x)
+                    }
+                }
+                range_indexed_intersection_contains_of_forall(m, family, x)
+                range_indexed_intersection(m, family).contains(x)
+            }
+        }
+    }
+}
+
 // Sequences of sets
 /// True if a sequence of sets is decreasing, meaning each set contains the next.
 define is_decreasing[T](seq: Nat -> Set[T]) -> Bool {
@@ -2375,6 +3185,106 @@ define set_image_seq[T, U](seq: Nat -> Set[T], f: T -> U, n: Nat) -> Set[U] {
 define seq_complement[T](seq: Nat -> Set[T]) -> (Nat -> Set[T]) {
     function(i: Nat) {
         seq(i).c
+    }
+}
+
+/// Membership in a sequence union is membership in some term.
+theorem seq_union_contains_eq[T](seq: Nat -> Set[T], x: T) {
+    seq_union(seq).contains(x) = exists(i: Nat) {
+        seq(i).contains(x)
+    }
+} by {
+    seq_union(seq) = union_family(seq)
+    indexed_union(seq) = union_family(seq)
+    indexed_union_contains_eq(seq, x)
+}
+
+/// Membership in a term of a sequence gives membership in the sequence union.
+theorem seq_union_contains_of_contains[T](seq: Nat -> Set[T], i: Nat, x: T) {
+    seq(i).contains(x) implies seq_union(seq).contains(x)
+} by {
+    if seq(i).contains(x) {
+        indexed_union_contains_of_contains(seq, i, x)
+        indexed_union(seq).contains(x)
+        indexed_union(seq) = union_family(seq)
+        seq_union(seq) = union_family(seq)
+        seq_union(seq).contains(x)
+    }
+}
+
+/// Membership in a sequence union has an index witness.
+theorem seq_union_contains_witness[T](seq: Nat -> Set[T], x: T) {
+    seq_union(seq).contains(x) implies exists(i: Nat) {
+        seq(i).contains(x)
+    }
+} by {
+    if seq_union(seq).contains(x) {
+        seq_union_contains_eq(seq, x)
+        exists(i: Nat) {
+            seq(i).contains(x)
+        }
+    }
+}
+
+/// Membership in a sequence intersection is membership in every term.
+theorem seq_intersection_contains_eq[T](seq: Nat -> Set[T], x: T) {
+    seq_intersection(seq).contains(x) = forall(i: Nat) {
+        seq(i).contains(x)
+    }
+} by {
+    seq_intersection(seq) = intersection_family(seq)
+    indexed_intersection(seq) = intersection_family(seq)
+    indexed_intersection_contains_eq(seq, x)
+}
+
+/// Membership in a sequence intersection gives membership in each term.
+theorem seq_intersection_contains_at[T](seq: Nat -> Set[T], i: Nat, x: T) {
+    seq_intersection(seq).contains(x) implies seq(i).contains(x)
+} by {
+    if seq_intersection(seq).contains(x) {
+        seq_intersection_contains_eq(seq, x)
+        seq(i).contains(x)
+    }
+}
+
+/// Membership in every term gives membership in the sequence intersection.
+theorem seq_intersection_contains_of_forall[T](seq: Nat -> Set[T], x: T) {
+    (forall(i: Nat) { seq(i).contains(x) }) implies seq_intersection(seq).contains(x)
+} by {
+    if forall(i: Nat) { seq(i).contains(x) } {
+        seq_intersection_contains_eq(seq, x)
+        seq_intersection(seq).contains(x)
+    }
+}
+
+/// Pointwise inclusion of sequences preserves sequence unions.
+theorem seq_union_monotone[T](a: Nat -> Set[T], b: Nat -> Set[T]) {
+    (forall(i: Nat) { a(i).subset(b(i)) }) implies seq_union(a).subset(seq_union(b))
+} by {
+    if forall(i: Nat) { a(i).subset(b(i)) } {
+        indexed_union_monotone(a, b)
+        indexed_union(a).subset(indexed_union(b))
+        indexed_union(a) = union_family(a)
+        indexed_union(b) = union_family(b)
+        seq_union(a) = union_family(a)
+        seq_union(b) = union_family(b)
+        seq_union(a).subset(seq_union(b))
+    }
+}
+
+/// Pointwise inclusion of sequences preserves sequence intersections.
+theorem seq_intersection_monotone[T](a: Nat -> Set[T], b: Nat -> Set[T]) {
+    (forall(i: Nat) { a(i).subset(b(i)) }) implies
+    seq_intersection(a).subset(seq_intersection(b))
+} by {
+    if forall(i: Nat) { a(i).subset(b(i)) } {
+        indexed_intersection_monotone(a, b)
+        indexed_intersection(a).subset(indexed_intersection(b))
+        indexed_intersection(a) = intersection_family(a)
+        indexed_intersection(b) = intersection_family(b)
+        seq_intersection(a) = intersection_family(a)
+        seq_intersection(b) = intersection_family(b)
+        seq_intersection(a).subset(seq_intersection(b))
     }
 }
 
@@ -2422,6 +3332,22 @@ theorem decreasing_seq_transitive[T](s: Nat -> Set[T], j: Nat, k: Nat) {
     }
 
     f(d)
+}
+
+/// A decreasing sequence is antitone with respect to non-strict comparison.
+theorem decreasing_seq_subset_of_le[T](s: Nat -> Set[T], j: Nat, k: Nat) {
+    is_decreasing(s) and j <= k implies s(k).subset(s(j))
+} by {
+    if is_decreasing(s) and j <= k {
+        if j = k {
+            s(k).subset(s(j))
+        } else {
+            j < k
+            decreasing_seq_transitive(s, j, k)
+            s(j).superset(s(k))
+            s(k).subset(s(j))
+        }
+    }
 }
 
 theorem seq_contains_intersection[T](s: Nat -> Set[T], i: Nat) {
@@ -2477,12 +3403,247 @@ theorem increasing_seq_transitive[T](s: Nat -> Set[T], j: Nat, k: Nat) {
     f(d)
 }
 
+/// An increasing sequence is monotone with respect to non-strict comparison.
+theorem increasing_seq_subset_of_le[T](s: Nat -> Set[T], j: Nat, k: Nat) {
+    is_increasing(s) and j <= k implies s(j).subset(s(k))
+} by {
+    if is_increasing(s) and j <= k {
+        if j = k {
+            s(j).subset(s(k))
+        } else {
+            j < k
+            increasing_seq_transitive(s, j, k)
+            s(j).subset(s(k))
+        }
+    }
+}
+
 theorem seq_union_contains[T](s: Nat -> Set[T], i: Nat) {
     seq_union(s).superset(s(i))
 } by {
     forall(x: T) {
         if s(i).contains(x) {
             seq_union(s).contains(x)
+        }
+    }
+}
+
+/// The range-indexed union over `n.suc` decomposes into the preceding range and the final term.
+theorem range_indexed_union_suc_eq_union[K](n: Nat, family: Nat -> Set[K]) {
+    range_indexed_union(n.suc, family) = range_indexed_union(n, family).union(family(n))
+} by {
+    let u = range_indexed_union(n.suc, family)
+    let v = range_indexed_union(n, family).union(family(n))
+    forall(x: K) {
+        if u.contains(x) {
+            range_indexed_union_contains_witness(n.suc, family, x)
+            let i: Nat satisfy {
+                i < n.suc and family(i).contains(x)
+            }
+            if i < n {
+                range_indexed_union_contains_of_lt(n, family, i, x)
+                range_indexed_union(n, family).contains(x)
+                union_contains_eq(range_indexed_union(n, family), family(n), x)
+                v.contains(x)
+            } else {
+                i = n
+                family(n).contains(x)
+                union_contains_eq(range_indexed_union(n, family), family(n), x)
+                v.contains(x)
+            }
+        }
+    }
+    u.subset(v)
+    forall(x: K) {
+        if v.contains(x) {
+            elem_in_union(range_indexed_union(n, family), family(n), x)
+            range_indexed_union(n, family).contains(x) or family(n).contains(x)
+            union_contains_eq(range_indexed_union(n, family), family(n), x)
+            if range_indexed_union(n, family).contains(x) {
+                range_indexed_union_contains_witness(n, family, x)
+                let i: Nat satisfy {
+                    i < n and family(i).contains(x)
+                }
+                i < n.suc
+                range_indexed_union_contains_of_lt(n.suc, family, i, x)
+                u.contains(x)
+            }
+            if family(n).contains(x) {
+                n < n.suc
+                range_indexed_union_contains_of_lt(n.suc, family, n, x)
+                u.contains(x)
+            }
+            if not u.contains(x) {
+                not range_indexed_union(n, family).contains(x)
+                not family(n).contains(x)
+                false
+            }
+            u.contains(x)
+        }
+    }
+    v.subset(u)
+    double_inclusion(u, v)
+}
+
+/// The range-indexed intersection over `n.suc` decomposes into the preceding range and the final term.
+theorem range_indexed_intersection_suc_eq_intersection[K](n: Nat, family: Nat -> Set[K]) {
+    range_indexed_intersection(n.suc, family) =
+    range_indexed_intersection(n, family).intersection(family(n))
+} by {
+    let u = range_indexed_intersection(n.suc, family)
+    let v = range_indexed_intersection(n, family).intersection(family(n))
+    forall(x: K) {
+        if u.contains(x) {
+            forall(i: Nat) {
+                if i < n {
+                    i < n.suc
+                    range_indexed_intersection_contains_at(n.suc, family, i, x)
+                    family(i).contains(x)
+                }
+            }
+            range_indexed_intersection_contains_of_forall(n, family, x)
+            range_indexed_intersection(n, family).contains(x)
+            n < n.suc
+            range_indexed_intersection_contains_at(n.suc, family, n, x)
+            family(n).contains(x)
+            intersection_contains_eq(range_indexed_intersection(n, family), family(n), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            intersection_contains_eq(range_indexed_intersection(n, family), family(n), x)
+            range_indexed_intersection(n, family).contains(x)
+            family(n).contains(x)
+            forall(i: Nat) {
+                if i < n.suc {
+                    if i < n {
+                        range_indexed_intersection_contains_at(n, family, i, x)
+                        family(i).contains(x)
+                    } else {
+                        i = n
+                        family(i).contains(x)
+                    }
+                }
+            }
+            range_indexed_intersection_contains_of_forall(n.suc, family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The finite union of an increasing family through `n` is contained in its final term.
+theorem range_indexed_union_suc_subset_of_increasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_increasing(family) implies range_indexed_union(n.suc, family).subset(family(n))
+} by {
+    if is_increasing(family) {
+        forall(i: Nat) {
+            if i < n.suc {
+                i <= n
+                increasing_seq_subset_of_le(family, i, n)
+                family(i).subset(family(n))
+            }
+        }
+        range_indexed_union_subset_of_family_subset(n.suc, family, family(n))
+        range_indexed_union(n.suc, family).subset(family(n))
+    }
+}
+
+/// The final term belongs to the finite union through it.
+theorem family_subset_range_indexed_union_suc[K](n: Nat, family: Nat -> Set[K]) {
+    family(n).subset(range_indexed_union(n.suc, family))
+} by {
+    forall(x: K) {
+        if family(n).contains(x) {
+            n < n.suc
+            range_indexed_union_contains_of_lt(n.suc, family, n, x)
+            range_indexed_union(n.suc, family).contains(x)
+        }
+    }
+}
+
+/// The finite union of an increasing family through `n` is its final term.
+theorem range_indexed_union_suc_of_increasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_increasing(family) implies range_indexed_union(n.suc, family) = family(n)
+} by {
+    if is_increasing(family) {
+        range_indexed_union_suc_subset_of_increasing(n, family)
+        family_subset_range_indexed_union_suc(n, family)
+        double_inclusion(range_indexed_union(n.suc, family), family(n))
+    }
+}
+
+/// The final term of a finite decreasing family is contained in the finite intersection through it.
+theorem decreasing_subset_range_indexed_intersection_suc[K](n: Nat, family: Nat -> Set[K]) {
+    is_decreasing(family) implies family(n).subset(range_indexed_intersection(n.suc, family))
+} by {
+    if is_decreasing(family) {
+        forall(i: Nat) {
+            if i < n.suc {
+                i <= n
+                decreasing_seq_subset_of_le(family, i, n)
+                family(n).subset(family(i))
+            }
+        }
+        subset_range_indexed_intersection_of_subset_family(n.suc, family, family(n))
+        family(n).subset(range_indexed_intersection(n.suc, family))
+    }
+}
+
+/// The finite intersection through `n` is contained in its final term.
+theorem range_indexed_intersection_suc_subset_family[K](n: Nat, family: Nat -> Set[K]) {
+    range_indexed_intersection(n.suc, family).subset(family(n))
+} by {
+    forall(x: K) {
+        if range_indexed_intersection(n.suc, family).contains(x) {
+            n < n.suc
+            range_indexed_intersection_contains_at(n.suc, family, n, x)
+            family(n).contains(x)
+        }
+    }
+}
+
+/// The finite intersection of a decreasing family through `n` is its final term.
+theorem range_indexed_intersection_suc_of_decreasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_decreasing(family) implies range_indexed_intersection(n.suc, family) = family(n)
+} by {
+    if is_decreasing(family) {
+        decreasing_subset_range_indexed_intersection_suc(n, family)
+        range_indexed_intersection_suc_subset_family(n, family)
+        double_inclusion(range_indexed_intersection(n.suc, family), family(n))
+    }
+}
+
+/// A range-indexed union is contained in the full sequence union.
+theorem range_indexed_union_subset_seq_union[K](n: Nat, family: Nat -> Set[K]) {
+    range_indexed_union(n, family).subset(seq_union(family))
+} by {
+    forall(x: K) {
+        if range_indexed_union(n, family).contains(x) {
+            range_indexed_union_contains_witness(n, family, x)
+            let i: Nat satisfy {
+                i < n and family(i).contains(x)
+            }
+            seq_union_contains_of_contains(family, i, x)
+            seq_union(family).contains(x)
+        }
+    }
+}
+
+/// The full sequence intersection is contained in any range-indexed intersection.
+theorem seq_intersection_subset_range_indexed_intersection[K](n: Nat, family: Nat -> Set[K]) {
+    seq_intersection(family).subset(range_indexed_intersection(n, family))
+} by {
+    forall(x: K) {
+        if seq_intersection(family).contains(x) {
+            forall(i: Nat) {
+                if i < n {
+                    seq_intersection_contains_at(family, i, x)
+                    family(i).contains(x)
+                }
+            }
+            range_indexed_intersection_contains_of_forall(n, family, x)
+            range_indexed_intersection(n, family).contains(x)
         }
     }
 }
@@ -3071,6 +4232,9 @@ theorem singleton_set_cardinality_is_one[T](a: T) {
         if list_set(items).contains(x) {
             items.contains(x)
             if a != x {
+                items.contains(x) = List.nil[T].contains(x)
+                not List.nil[T].contains(x)
+                not items.contains(x)
                 false
             }
             (Set[T].singleton(a)).contains(x)
@@ -3251,6 +4415,24 @@ theorem subset_is_finite_of_finite[K](a: Set[K], b: Set[K]) {
 
         finite_constraint(a.contains)
         a.is_finite
+    }
+}
+
+/// A range-indexed intersection is finite when one indexed member below the bound is finite.
+theorem range_indexed_intersection_is_finite_of_member_finite[K](n: Nat,
+    family: Nat -> Set[K], i: Nat) {
+    i < n and family(i).is_finite implies range_indexed_intersection(n, family).is_finite
+} by {
+    if i < n and family(i).is_finite {
+        forall(x: K) {
+            if range_indexed_intersection(n, family).contains(x) {
+                range_indexed_intersection_contains_at(n, family, i, x)
+                family(i).contains(x)
+            }
+        }
+        range_indexed_intersection(n, family).subset(family(i))
+        subset_is_finite_of_finite(range_indexed_intersection(n, family), family(i))
+        range_indexed_intersection(n, family).is_finite
     }
 }
 
