@@ -420,6 +420,57 @@ theorem gt_iff_gte_and_ne[P: PartialOrder](a: P, b: P) {
     a > b = (a >= b and a != b)
 }
 
+/// `<` is the asymmetric part of `<=`: `a < b` iff not `b <= a` and `a <= b`.
+theorem lt_iff_lte_not_lte_swap[P: PartialOrder](a: P, b: P) {
+    a < b = (not (b <= a) and a <= b)
+} by {
+    if a < b {
+        a <= b
+        if b <= a {
+            lte_antisymm(a, b)
+            a = b
+            a != b
+            false
+        }
+    }
+    if not (b <= a) and a <= b {
+        if a = b {
+            b <= a
+            false
+        }
+        a != b
+        a < b
+    }
+    a < b = (not (b <= a) and a <= b)
+}
+
+/// `>` is the asymmetric part of `>=`: `a > b` iff not `a <= b` and `b <= a`.
+theorem gt_iff_lte_swap_not_lte[P: PartialOrder](a: P, b: P) {
+    a > b = (not (a <= b) and b <= a)
+} by {
+    if a > b {
+        b <= a
+        if a <= b {
+            lte_antisymm(a, b)
+            a = b
+            b < a
+            b != a
+            false
+        }
+    }
+    if not (a <= b) and b <= a {
+        if a = b {
+            a <= b
+            false
+        }
+        a != b
+        b != a
+        b < a
+        a > b
+    }
+    a > b = (not (a <= b) and b <= a)
+}
+
 /// `<=` splits into the disjunction of strict inequality and equality.
 theorem lte_iff_lt_or_eq[P: PartialOrder](a: P, b: P) {
     a <= b = (a < b or a = b)
