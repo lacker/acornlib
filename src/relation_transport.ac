@@ -8,6 +8,493 @@ define relation_pullback[A, B](f: A -> B, r: (B, B) -> Bool, x: A, y: A) -> Bool
     r(f(x), f(y))
 }
 
+/// The image of a homogeneous relation along a function.
+define relation_pushforward[A, B](f: A -> B, r: (A, A) -> Bool, u: B, v: B) -> Bool {
+    exists(x: A, y: A) {
+        f(x) = u and f(y) = v and r(x, y)
+    }
+}
+
+/// Related inputs give a related image pair.
+theorem relation_pushforward_intro[A, B](f: A -> B, r: (A, A) -> Bool, x: A, y: A) {
+    r(x, y) implies relation_pushforward(f, r, f(x), f(y))
+} by {
+    if r(x, y) {
+        exists(a: A, b: A) {
+            a = x and b = y and f(a) = f(x) and f(b) = f(y) and r(a, b)
+        }
+        relation_pushforward(f, r, f(x), f(y))
+    }
+}
+
+/// A pushed-forward relation instance has related preimages.
+theorem relation_pushforward_has_preimages[A, B](f: A -> B, r: (A, A) -> Bool, u: B, v: B) {
+    relation_pushforward(f, r, u, v) implies exists(x: A, y: A) {
+        f(x) = u and f(y) = v and r(x, y)
+    }
+} by {
+    if relation_pushforward(f, r, u, v) {
+        exists(x: A, y: A) {
+            f(x) = u and f(y) = v and r(x, y)
+        }
+    }
+}
+
+/// Pushforward is monotone with respect to relation inclusion.
+theorem relation_pushforward_monotone[A, B](f: A -> B, r: (A, A) -> Bool, s: (A, A) -> Bool) {
+    relation_subset(r, s) implies relation_subset(relation_pushforward(f, r), relation_pushforward(f, s))
+} by {
+    if relation_subset(r, s) {
+        forall(u: B, v: B) {
+            if relation_pushforward(f, r, u, v) {
+                relation_pushforward_has_preimages(f, r, u, v)
+                let x: A satisfy {
+                    exists(y: A) {
+                        f(x) = u and f(y) = v and r(x, y)
+                    }
+                }
+                let y: A satisfy {
+                    f(x) = u and f(y) = v and r(x, y)
+                }
+                relation_subset_step(r, s, x, y)
+                s(x, y)
+                exists(a: A, b: A) {
+                    a = x and b = y and f(a) = u and f(b) = v and s(a, b)
+                }
+                relation_pushforward(f, s, u, v)
+            }
+        }
+    }
+}
+
+/// Pushing forward along the identity function leaves a relation unchanged.
+theorem relation_pushforward_identity[T](r: (T, T) -> Bool) {
+    relation_pushforward(identity_fn[T], r) = r
+} by {
+    let u = relation_pushforward(identity_fn[T], r)
+    let v = r
+    forall(x: T, y: T) {
+        if u(x, y) {
+            relation_pushforward_has_preimages(identity_fn[T], r, x, y)
+            let a: T satisfy {
+                exists(b: T) {
+                    identity_fn[T](a) = x and identity_fn[T](b) = y and r(a, b)
+                }
+            }
+            let b: T satisfy {
+                identity_fn[T](a) = x and identity_fn[T](b) = y and r(a, b)
+            }
+            identity_fn[T](a) = a
+            identity_fn[T](b) = b
+            a = x
+            b = y
+            v(x, y)
+        }
+        if v(x, y) {
+            relation_pushforward_intro(identity_fn[T], r, x, y)
+            identity_fn[T](x) = x
+            identity_fn[T](y) = y
+            u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pushing forward along a composite is the same as pushing forward twice.
+theorem relation_pushforward_compose[A, B, C](g: A -> B, f: B -> C, r: (A, A) -> Bool) {
+    relation_pushforward(compose(f, g), r) = relation_pushforward(f, relation_pushforward(g, r))
+} by {
+    let u = relation_pushforward(compose(f, g), r)
+    let v = relation_pushforward(f, relation_pushforward(g, r))
+    forall(p: C, q: C) {
+        if u(p, q) {
+            relation_pushforward_has_preimages(compose(f, g), r, p, q)
+            let x: A satisfy {
+                exists(y: A) {
+                    compose(f, g)(x) = p and compose(f, g)(y) = q and r(x, y)
+                }
+            }
+            let y: A satisfy {
+                compose(f, g)(x) = p and compose(f, g)(y) = q and r(x, y)
+            }
+            compose(f, g, x) = f(g(x))
+            compose(f, g, y) = f(g(y))
+            f(g(x)) = p
+            f(g(y)) = q
+            relation_pushforward_intro(g, r, x, y)
+            relation_pushforward(g, r, g(x), g(y))
+            exists(a: B, b: B) {
+                a = g(x) and b = g(y) and f(a) = p and f(b) = q and relation_pushforward(g, r, a, b)
+            }
+            relation_pushforward(f, relation_pushforward(g, r), p, q)
+            v(p, q)
+        }
+        if v(p, q) {
+            relation_pushforward_has_preimages(f, relation_pushforward(g, r), p, q)
+            let a: B satisfy {
+                exists(b: B) {
+                    f(a) = p and f(b) = q and relation_pushforward(g, r, a, b)
+                }
+            }
+            let b: B satisfy {
+                f(a) = p and f(b) = q and relation_pushforward(g, r, a, b)
+            }
+            relation_pushforward_has_preimages(g, r, a, b)
+            let x: A satisfy {
+                exists(y: A) {
+                    g(x) = a and g(y) = b and r(x, y)
+                }
+            }
+            let y: A satisfy {
+                g(x) = a and g(y) = b and r(x, y)
+            }
+            compose(f, g, x) = f(g(x))
+            compose(f, g, y) = f(g(y))
+            compose(f, g)(x) = p
+            compose(f, g)(y) = q
+            f(g(x)) = p
+            f(g(y)) = q
+            exists(x0: A, y0: A) {
+                x0 = x and y0 = y and compose(f, g)(x0) = p and compose(f, g)(y0) = q and r(x0, y0)
+            }
+            relation_pushforward(compose(f, g), r, p, q)
+            u(p, q)
+        }
+        u(p, q) = v(p, q)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pushforward preserves reflexive relations along surjective functions.
+theorem relation_pushforward_is_reflexive_of_surjective[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_surjective_fn(f) and is_reflexive(r) implies is_reflexive(relation_pushforward(f, r))
+} by {
+    if is_surjective_fn(f) and is_reflexive(r) {
+        forall(u: B) {
+            surjective_fn_has_preimage(f, u)
+            let x: A satisfy {
+                f(x) = u
+            }
+            reflexive_self(r, x)
+            relation_pushforward_intro(f, r, x, x)
+            relation_pushforward(f, r, u, u)
+        }
+    }
+}
+
+/// Pushforward preserves symmetric relations.
+theorem relation_pushforward_is_symmetric[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_symmetric(r) implies is_symmetric(relation_pushforward(f, r))
+} by {
+    if is_symmetric(r) {
+        forall(u: B, v: B) {
+            if relation_pushforward(f, r, u, v) {
+                relation_pushforward_has_preimages(f, r, u, v)
+                let x: A satisfy {
+                    exists(y: A) {
+                        f(x) = u and f(y) = v and r(x, y)
+                    }
+                }
+                let y: A satisfy {
+                    f(x) = u and f(y) = v and r(x, y)
+                }
+                symmetric_flip(r, x, y)
+                r(y, x)
+                exists(a: A, b: A) {
+                    a = y and b = x and f(a) = v and f(b) = u and r(a, b)
+                }
+                relation_pushforward(f, r, v, u)
+            }
+        }
+    }
+}
+
+/// Pushforward preserves transitive relations along injective functions.
+theorem relation_pushforward_is_transitive_of_injective[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_injective_fn(f) and is_transitive(r) implies is_transitive(relation_pushforward(f, r))
+} by {
+    if is_injective_fn(f) and is_transitive(r) {
+        forall(u: B, v: B, w: B) {
+            if relation_pushforward(f, r, u, v) and relation_pushforward(f, r, v, w) {
+                relation_pushforward_has_preimages(f, r, u, v)
+                let x1: A satisfy {
+                    exists(y1: A) {
+                        f(x1) = u and f(y1) = v and r(x1, y1)
+                    }
+                }
+                let y1: A satisfy {
+                    f(x1) = u and f(y1) = v and r(x1, y1)
+                }
+                relation_pushforward_has_preimages(f, r, v, w)
+                let x2: A satisfy {
+                    exists(y2: A) {
+                        f(x2) = v and f(y2) = w and r(x2, y2)
+                    }
+                }
+                let y2: A satisfy {
+                    f(x2) = v and f(y2) = w and r(x2, y2)
+                }
+                f(y1) = f(x2)
+                injective_fn_eq(f, y1, x2)
+                y1 = x2
+                r(x1, x2)
+                transitive_step(r, x1, x2, y2)
+                r(x1, y2)
+                exists(a: A, b: A) {
+                    a = x1 and b = y2 and f(a) = u and f(b) = w and r(a, b)
+                }
+                relation_pushforward(f, r, u, w)
+            }
+        }
+    }
+}
+
+/// Pushforward preserves total relations along surjective functions.
+theorem relation_pushforward_is_total_of_surjective[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_surjective_fn(f) and is_total(r) implies is_total(relation_pushforward(f, r))
+} by {
+    if is_surjective_fn(f) and is_total(r) {
+        is_total(r) = forall(x0: A, y0: A) {
+            r(x0, y0) or r(y0, x0)
+        }
+        forall(u: B, v: B) {
+            surjective_fn_has_preimage(f, u)
+            let x: A satisfy {
+                f(x) = u
+            }
+            surjective_fn_has_preimage(f, v)
+            let y: A satisfy {
+                f(y) = v
+            }
+            r(x, y) or r(y, x)
+            if r(x, y) {
+                relation_pushforward_intro(f, r, x, y)
+                relation_pushforward(f, r, u, v)
+                relation_pushforward(f, r, u, v) or relation_pushforward(f, r, v, u)
+            } else {
+                relation_pushforward_intro(f, r, y, x)
+                relation_pushforward(f, r, v, u)
+                relation_pushforward(f, r, u, v) or relation_pushforward(f, r, v, u)
+            }
+        }
+    }
+}
+
+/// Pushforward preserves antisymmetric relations along injective functions.
+theorem relation_pushforward_is_antisymmetric_of_injective[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_injective_fn(f) and is_antisymmetric(r) implies is_antisymmetric(relation_pushforward(f, r))
+} by {
+    if is_injective_fn(f) and is_antisymmetric(r) {
+        forall(u: B, v: B) {
+            if relation_pushforward(f, r, u, v) and relation_pushforward(f, r, v, u) {
+                relation_pushforward_has_preimages(f, r, u, v)
+                let x1: A satisfy {
+                    exists(y1: A) {
+                        f(x1) = u and f(y1) = v and r(x1, y1)
+                    }
+                }
+                let y1: A satisfy {
+                    f(x1) = u and f(y1) = v and r(x1, y1)
+                }
+                relation_pushforward_has_preimages(f, r, v, u)
+                let x2: A satisfy {
+                    exists(y2: A) {
+                        f(x2) = v and f(y2) = u and r(x2, y2)
+                    }
+                }
+                let y2: A satisfy {
+                    f(x2) = v and f(y2) = u and r(x2, y2)
+                }
+                f(y1) = f(x2)
+                injective_fn_eq(f, y1, x2)
+                y1 = x2
+                f(x1) = f(y2)
+                injective_fn_eq(f, x1, y2)
+                x1 = y2
+                r(y1, x1)
+                antisymmetric_eq(r, x1, y1)
+                x1 = y1
+                f(x1) = f(y1)
+                u = v
+            }
+        }
+    }
+}
+
+/// Pushforward preserves equivalence relations along bijective functions.
+theorem relation_pushforward_is_equivalence_of_bijection[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and is_equivalence(r) implies is_equivalence(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and is_equivalence(r) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        equivalence_is_reflexive(r)
+        is_reflexive(r)
+        relation_pushforward_is_reflexive_of_surjective(f, r)
+        is_reflexive(relation_pushforward(f, r))
+        equivalence_is_symmetric(r)
+        is_symmetric(r)
+        relation_pushforward_is_symmetric(f, r)
+        is_symmetric(relation_pushforward(f, r))
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        equivalence_is_transitive(r)
+        is_transitive(r)
+        relation_pushforward_is_transitive_of_injective(f, r)
+        is_transitive(relation_pushforward(f, r))
+        is_equivalence(relation_pushforward(f, r))
+    }
+}
+
+/// Pushforward preserves reflexive, transitive, and antisymmetric order data along bijective functions.
+theorem relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) implies
+    is_reflexive(relation_pushforward(f, r)) and
+    is_transitive(relation_pushforward(f, r)) and
+    is_antisymmetric(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        relation_pushforward_is_reflexive_of_surjective(f, r)
+        is_reflexive(relation_pushforward(f, r))
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        relation_pushforward_is_transitive_of_injective(f, r)
+        is_transitive(relation_pushforward(f, r))
+        relation_pushforward_is_antisymmetric_of_injective(f, r)
+        is_antisymmetric(relation_pushforward(f, r))
+        is_reflexive(relation_pushforward(f, r)) and
+        is_transitive(relation_pushforward(f, r)) and
+        is_antisymmetric(relation_pushforward(f, r))
+    }
+}
+
+/// Pullback after pushforward contains the original relation.
+theorem relation_subset_pullback_pushforward[A, B](f: A -> B, r: (A, A) -> Bool) {
+    relation_subset(r, relation_pullback(f, relation_pushforward(f, r)))
+} by {
+    forall(x: A, y: A) {
+        if r(x, y) {
+            relation_pushforward_intro(f, r, x, y)
+            relation_pullback(f, relation_pushforward(f, r), x, y)
+        }
+    }
+}
+
+/// Pullback after pushforward recovers each original relation instance along injective functions.
+theorem relation_pullback_pushforward_of_injective_at[A, B](f: A -> B, r: (A, A) -> Bool, x: A, y: A) {
+    is_injective_fn(f) implies relation_pullback(f, relation_pushforward(f, r), x, y) = r(x, y)
+} by {
+    if is_injective_fn(f) {
+        if relation_pullback(f, relation_pushforward(f, r), x, y) {
+            relation_pullback(f, relation_pushforward(f, r), x, y) =
+                relation_pushforward(f, r, f(x), f(y))
+            relation_pushforward_has_preimages(f, r, f(x), f(y))
+            let a: A satisfy {
+                exists(b: A) {
+                    f(a) = f(x) and f(b) = f(y) and r(a, b)
+                }
+            }
+            let b: A satisfy {
+                f(a) = f(x) and f(b) = f(y) and r(a, b)
+            }
+            injective_fn_eq(f, a, x)
+            a = x
+            injective_fn_eq(f, b, y)
+            b = y
+            r(x, y)
+        }
+        if r(x, y) {
+            relation_subset_pullback_pushforward(f, r)
+            relation_pullback(f, relation_pushforward(f, r), x, y)
+        }
+        relation_pullback(f, relation_pushforward(f, r), x, y) = r(x, y)
+    }
+}
+
+/// Pullback after pushforward recovers the original relation along injective functions.
+theorem relation_pullback_pushforward_of_injective[A, B](f: A -> B, r: (A, A) -> Bool) {
+    is_injective_fn(f) implies relation_pullback(f, relation_pushforward(f, r)) = r
+} by {
+    let u = relation_pullback(f, relation_pushforward(f, r))
+    let v = r
+    if is_injective_fn(f) {
+        forall(x: A, y: A) {
+            relation_pullback_pushforward_of_injective_at(f, r, x, y)
+            u(x, y) = v(x, y)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+/// Pushforward after pullback is contained in the target relation.
+theorem relation_subset_pushforward_pullback[A, B](f: A -> B, r: (B, B) -> Bool) {
+    relation_subset(relation_pushforward(f, relation_pullback(f, r)), r)
+} by {
+    forall(u: B, v: B) {
+        if relation_pushforward(f, relation_pullback(f, r), u, v) {
+            relation_pushforward_has_preimages(f, relation_pullback(f, r), u, v)
+            let x: A satisfy {
+                exists(y: A) {
+                    f(x) = u and f(y) = v and relation_pullback(f, r, x, y)
+                }
+            }
+            let y: A satisfy {
+                f(x) = u and f(y) = v and relation_pullback(f, r, x, y)
+            }
+            relation_pullback(f, r, x, y) = r(f(x), f(y))
+            r(f(x), f(y))
+            r(u, v)
+        }
+    }
+}
+
+/// Pushforward after pullback recovers each target relation instance along surjective functions.
+theorem relation_pushforward_pullback_of_surjective_at[A, B](f: A -> B, r: (B, B) -> Bool, p: B, q: B) {
+    is_surjective_fn(f) implies relation_pushforward(f, relation_pullback(f, r), p, q) = r(p, q)
+} by {
+    if is_surjective_fn(f) {
+        if relation_pushforward(f, relation_pullback(f, r), p, q) {
+            relation_subset_pushforward_pullback(f, r)
+            r(p, q)
+        }
+        if r(p, q) {
+            surjective_fn_has_preimage(f, p)
+            let x: A satisfy {
+                f(x) = p
+            }
+            surjective_fn_has_preimage(f, q)
+            let y: A satisfy {
+                f(y) = q
+            }
+            relation_pullback(f, r, x, y) = r(f(x), f(y))
+            relation_pullback(f, r, x, y)
+            exists(a: A, b: A) {
+                a = x and b = y and f(a) = p and f(b) = q and relation_pullback(f, r, a, b)
+            }
+            relation_pushforward(f, relation_pullback(f, r), p, q)
+        }
+        relation_pushforward(f, relation_pullback(f, r), p, q) = r(p, q)
+    }
+}
+
+/// Pushforward after pullback recovers the target relation along surjective functions.
+theorem relation_pushforward_pullback_of_surjective[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) implies relation_pushforward(f, relation_pullback(f, r)) = r
+} by {
+    let u = relation_pushforward(f, relation_pullback(f, r))
+    let v = r
+    if is_surjective_fn(f) {
+        forall(p: B, q: B) {
+            relation_pushforward_pullback_of_surjective_at(f, r, p, q)
+            u(p, q) = v(p, q)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
 /// Pullback commutes with converse.
 theorem relation_pullback_converse[A, B](f: A -> B, r: (B, B) -> Bool) {
     relation_pullback(f, relation_converse(r)) = relation_converse(relation_pullback(f, r))
