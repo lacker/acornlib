@@ -4,6 +4,9 @@ from functions import Inhabited, compose, identity_fn, inverse_fn, inverse_fn_ap
     inverse_fn_apply_image_of_bijection, predicate_extensionality, binary_function_extensionality,
     function_extensionality, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective,
     bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
+from add import Add
+from mul import Mul
+from lte import LTE
 from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, eq_relation_is_equivalence, relation_intersection_is_equivalence, relation_converse_is_equivalence, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
 
 /// The pullback of a homogeneous relation along a function.
@@ -4322,5 +4325,537 @@ theorem relation_pushforward_is_binary_congruence_iff_of_bijection_eq[A: Inhabit
         relation_pushforward_is_binary_congruence_iff_of_bijection(f, r, op_a)
         is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op_a)) = is_binary_congruence(r, op_a)
         is_binary_congruence(relation_pushforward(f, r), op_b) = is_binary_congruence(r, op_a)
+    }
+}
+
+/// True if a relation is compatible with the addition operation.
+define respects_add[T: Add](r: (T, T) -> Bool) -> Bool {
+    respects_binary_op(r, T.add)
+}
+
+/// True if a relation is an equivalence relation compatible with addition.
+define is_add_congruence[T: Add](r: (T, T) -> Bool) -> Bool {
+    is_binary_congruence(r, T.add)
+}
+
+/// True if a function preserves addition.
+define preserves_add[A: Add, B: Add](f: A -> B) -> Bool {
+    preserves_binary_op(f, A.add, B.add)
+}
+
+/// Additive compatibility is binary-operation compatibility for addition.
+theorem respects_add_eq_respects_binary_op[T: Add](r: (T, T) -> Bool) {
+    respects_add(r) = respects_binary_op(r, T.add)
+}
+
+/// Additive congruence is binary congruence for addition.
+theorem add_congruence_eq_binary_congruence[T: Add](r: (T, T) -> Bool) {
+    is_add_congruence(r) = is_binary_congruence(r, T.add)
+}
+
+/// Additive preservation is binary-operation preservation for addition.
+theorem preserves_add_eq_preserves_binary_op[A: Add, B: Add](f: A -> B) {
+    preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+}
+
+/// An additive-compatible relation may be applied to related summands.
+theorem respects_add_step[T: Add](r: (T, T) -> Bool, x1: T, y1: T, x2: T, y2: T) {
+    respects_add(r) and r(x1, y1) and r(x2, y2) implies r(x1 + x2, y1 + y2)
+} by {
+    if respects_add(r) and r(x1, y1) and r(x2, y2) {
+        respects_add(r) = respects_binary_op(r, T.add)
+        respects_binary_op_step(r, T.add, x1, y1, x2, y2)
+        r(T.add(x1, x2), T.add(y1, y2))
+        r(x1 + x2, y1 + y2)
+    }
+}
+
+/// An additive congruence may be applied to related summands.
+theorem add_congruence_step[T: Add](r: (T, T) -> Bool, x1: T, y1: T, x2: T, y2: T) {
+    is_add_congruence(r) and r(x1, y1) and r(x2, y2) implies r(x1 + x2, y1 + y2)
+} by {
+    if is_add_congruence(r) and r(x1, y1) and r(x2, y2) {
+        is_add_congruence(r) = is_binary_congruence(r, T.add)
+        binary_congruence_step(r, T.add, x1, y1, x2, y2)
+        r(T.add(x1, x2), T.add(y1, y2))
+        r(x1 + x2, y1 + y2)
+    }
+}
+
+/// An additive congruence relation is an equivalence relation.
+theorem add_congruence_is_equivalence[T: Add](r: (T, T) -> Bool) {
+    is_add_congruence(r) implies is_equivalence(r)
+} by {
+    if is_add_congruence(r) {
+        is_add_congruence(r) = is_binary_congruence(r, T.add)
+        binary_congruence_is_equivalence(r, T.add)
+        is_equivalence(r)
+    }
+}
+
+/// An additive congruence relation is compatible with addition.
+theorem add_congruence_respects_add[T: Add](r: (T, T) -> Bool) {
+    is_add_congruence(r) implies respects_add(r)
+} by {
+    if is_add_congruence(r) {
+        is_add_congruence(r) = is_binary_congruence(r, T.add)
+        binary_congruence_respects_binary_op(r, T.add)
+        respects_binary_op(r, T.add)
+        respects_add(r)
+    }
+}
+
+/// Equality is compatible with addition.
+theorem eq_relation_respects_add[T: Add] {
+    respects_add(eq_relation[T])
+} by {
+    eq_relation_respects_binary_op(T.add)
+    respects_binary_op(eq_relation[T], T.add)
+    respects_add(eq_relation[T])
+}
+
+/// Equality is an additive congruence relation.
+theorem eq_relation_is_add_congruence[T: Add] {
+    is_add_congruence(eq_relation[T])
+} by {
+    eq_relation_is_binary_congruence(T.add)
+    is_binary_congruence(eq_relation[T], T.add)
+    is_add_congruence(eq_relation[T])
+}
+
+/// An addition-preserving map may be rewritten at any pair of inputs.
+theorem preserves_add_step[A: Add, B: Add](f: A -> B, x: A, y: A) {
+    preserves_add(f) implies f(x + y) = f(x) + f(y)
+} by {
+    if preserves_add(f) {
+        preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+        preserves_binary_op_step(f, A.add, B.add, x, y)
+        f(A.add(x, y)) = B.add(f(x), f(y))
+        f(x + y) = f(x) + f(y)
+    }
+}
+
+/// Pullback preserves additive compatibility along addition-preserving maps.
+theorem relation_pullback_respects_add_of_preserves_add[A: Add, B: Add](f: A -> B, r: (B, B) -> Bool) {
+    respects_add(r) and preserves_add(f) implies respects_add(relation_pullback(f, r))
+} by {
+    if respects_add(r) and preserves_add(f) {
+        respects_add(r) = respects_binary_op(r, B.add)
+        preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+        relation_pullback_respects_binary_op_of_preserves_binary_op(f, r, A.add, B.add)
+        respects_binary_op(relation_pullback(f, r), A.add)
+        respects_add(relation_pullback(f, r))
+    }
+}
+
+/// Pullback preserves additive congruence along addition-preserving maps.
+theorem relation_pullback_is_add_congruence_of_preserves_add[A: Add, B: Add](f: A -> B, r: (B, B) -> Bool) {
+    is_add_congruence(r) and preserves_add(f) implies is_add_congruence(relation_pullback(f, r))
+} by {
+    if is_add_congruence(r) and preserves_add(f) {
+        is_add_congruence(r) = is_binary_congruence(r, B.add)
+        preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+        relation_pullback_is_binary_congruence_of_preserves_binary_op(f, r, A.add, B.add)
+        is_binary_congruence(relation_pullback(f, r), A.add)
+        is_add_congruence(relation_pullback(f, r))
+    }
+}
+
+/// Surjective pullback exactly detects additive compatibility along addition-preserving maps.
+theorem relation_pullback_respects_add_iff_of_surjective[A: Add, B: Add](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and preserves_add(f) implies
+    respects_add(relation_pullback(f, r)) = respects_add(r)
+} by {
+    if is_surjective_fn(f) and preserves_add(f) {
+        preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+        relation_pullback_respects_binary_op_iff_of_surjective(f, r, A.add, B.add)
+        respects_binary_op(relation_pullback(f, r), A.add) = respects_binary_op(r, B.add)
+        respects_add(relation_pullback(f, r)) = respects_add(r)
+    }
+}
+
+/// Surjective pullback exactly detects additive congruence along addition-preserving maps.
+theorem relation_pullback_is_add_congruence_iff_of_surjective[A: Add, B: Add](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and preserves_add(f) implies
+    is_add_congruence(relation_pullback(f, r)) = is_add_congruence(r)
+} by {
+    if is_surjective_fn(f) and preserves_add(f) {
+        preserves_add(f) = preserves_binary_op(f, A.add, B.add)
+        relation_pullback_is_binary_congruence_iff_of_surjective(f, r, A.add, B.add)
+        is_binary_congruence(relation_pullback(f, r), A.add) = is_binary_congruence(r, B.add)
+        is_add_congruence(relation_pullback(f, r)) = is_add_congruence(r)
+    }
+}
+
+/// Bijective pushforward preserves additive compatibility along addition-preserving maps.
+theorem relation_pushforward_respects_add_of_bijection[A: Add, B: Add](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and preserves_add(f) and respects_add(r) implies
+    respects_add(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and preserves_add(f) and respects_add(r) {
+        forall(u1: B, v1: B, u2: B, v2: B) {
+            if relation_pushforward(f, r, u1, v1) and relation_pushforward(f, r, u2, v2) {
+                relation_pushforward_has_preimages(f, r, u1, v1)
+                let x1: A satisfy {
+                    exists(y1: A) {
+                        f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                    }
+                }
+                let y1: A satisfy {
+                    f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                }
+                relation_pushforward_has_preimages(f, r, u2, v2)
+                let x2: A satisfy {
+                    exists(y2: A) {
+                        f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                    }
+                }
+                let y2: A satisfy {
+                    f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                }
+                respects_add_step(r, x1, y1, x2, y2)
+                r(x1 + x2, y1 + y2)
+                preserves_add_step(f, x1, x2)
+                f(x1 + x2) = f(x1) + f(x2)
+                preserves_add_step(f, y1, y2)
+                f(y1 + y2) = f(y1) + f(y2)
+                f(x1 + x2) = u1 + u2
+                f(y1 + y2) = v1 + v2
+                relation_pushforward_intro(f, r, x1 + x2, y1 + y2)
+                relation_pushforward(f, r, u1 + u2, v1 + v2)
+            }
+        }
+        respects_add(relation_pushforward(f, r)) =
+            respects_binary_op(relation_pushforward(f, r), B.add)
+        respects_binary_op(relation_pushforward(f, r), B.add) = forall(u1: B, v1: B, u2: B, v2: B) {
+            relation_pushforward(f, r, u1, v1) and relation_pushforward(f, r, u2, v2) implies
+            relation_pushforward(f, r, B.add(u1, u2), B.add(v1, v2))
+        }
+        respects_add(relation_pushforward(f, r))
+    }
+}
+
+/// Bijective pushforward preserves additive congruence along addition-preserving maps.
+theorem relation_pushforward_is_add_congruence_of_bijection[A: Add, B: Add](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and preserves_add(f) and is_add_congruence(r) implies
+    is_add_congruence(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and preserves_add(f) and is_add_congruence(r) {
+        is_add_congruence(r) = is_binary_congruence(r, A.add)
+        binary_congruence_is_equivalence(r, A.add)
+        is_equivalence(r)
+        relation_pushforward_is_equivalence_of_bijection(f, r)
+        is_equivalence(relation_pushforward(f, r))
+        add_congruence_respects_add(r)
+        respects_add(r)
+        relation_pushforward_respects_add_of_bijection(f, r)
+        respects_add(relation_pushforward(f, r))
+        respects_add(relation_pushforward(f, r)) = respects_binary_op(relation_pushforward(f, r), B.add)
+        is_add_congruence(relation_pushforward(f, r))
+    }
+}
+
+/// True if a relation is compatible with the multiplication operation.
+define respects_mul[T: Mul](r: (T, T) -> Bool) -> Bool {
+    respects_binary_op(r, T.mul)
+}
+
+/// True if a relation is an equivalence relation compatible with multiplication.
+define is_mul_congruence[T: Mul](r: (T, T) -> Bool) -> Bool {
+    is_binary_congruence(r, T.mul)
+}
+
+/// True if a function preserves multiplication.
+define preserves_mul[A: Mul, B: Mul](f: A -> B) -> Bool {
+    preserves_binary_op(f, A.mul, B.mul)
+}
+
+/// Multiplicative compatibility is binary-operation compatibility for multiplication.
+theorem respects_mul_eq_respects_binary_op[T: Mul](r: (T, T) -> Bool) {
+    respects_mul(r) = respects_binary_op(r, T.mul)
+}
+
+/// Multiplicative congruence is binary congruence for multiplication.
+theorem mul_congruence_eq_binary_congruence[T: Mul](r: (T, T) -> Bool) {
+    is_mul_congruence(r) = is_binary_congruence(r, T.mul)
+}
+
+/// Multiplicative preservation is binary-operation preservation for multiplication.
+theorem preserves_mul_eq_preserves_binary_op[A: Mul, B: Mul](f: A -> B) {
+    preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+}
+
+/// A multiplicative-compatible relation may be applied to related factors.
+theorem respects_mul_step[T: Mul](r: (T, T) -> Bool, x1: T, y1: T, x2: T, y2: T) {
+    respects_mul(r) and r(x1, y1) and r(x2, y2) implies r(x1 * x2, y1 * y2)
+} by {
+    if respects_mul(r) and r(x1, y1) and r(x2, y2) {
+        respects_mul(r) = respects_binary_op(r, T.mul)
+        respects_binary_op_step(r, T.mul, x1, y1, x2, y2)
+        r(T.mul(x1, x2), T.mul(y1, y2))
+        r(x1 * x2, y1 * y2)
+    }
+}
+
+/// A multiplicative congruence may be applied to related factors.
+theorem mul_congruence_step[T: Mul](r: (T, T) -> Bool, x1: T, y1: T, x2: T, y2: T) {
+    is_mul_congruence(r) and r(x1, y1) and r(x2, y2) implies r(x1 * x2, y1 * y2)
+} by {
+    if is_mul_congruence(r) and r(x1, y1) and r(x2, y2) {
+        is_mul_congruence(r) = is_binary_congruence(r, T.mul)
+        binary_congruence_step(r, T.mul, x1, y1, x2, y2)
+        r(T.mul(x1, x2), T.mul(y1, y2))
+        r(x1 * x2, y1 * y2)
+    }
+}
+
+/// A multiplicative congruence relation is an equivalence relation.
+theorem mul_congruence_is_equivalence[T: Mul](r: (T, T) -> Bool) {
+    is_mul_congruence(r) implies is_equivalence(r)
+} by {
+    if is_mul_congruence(r) {
+        is_mul_congruence(r) = is_binary_congruence(r, T.mul)
+        binary_congruence_is_equivalence(r, T.mul)
+        is_equivalence(r)
+    }
+}
+
+/// A multiplicative congruence relation is compatible with multiplication.
+theorem mul_congruence_respects_mul[T: Mul](r: (T, T) -> Bool) {
+    is_mul_congruence(r) implies respects_mul(r)
+} by {
+    if is_mul_congruence(r) {
+        is_mul_congruence(r) = is_binary_congruence(r, T.mul)
+        binary_congruence_respects_binary_op(r, T.mul)
+        respects_binary_op(r, T.mul)
+        respects_mul(r)
+    }
+}
+
+/// Equality is compatible with multiplication.
+theorem eq_relation_respects_mul[T: Mul] {
+    respects_mul(eq_relation[T])
+} by {
+    eq_relation_respects_binary_op(T.mul)
+    respects_binary_op(eq_relation[T], T.mul)
+    respects_mul(eq_relation[T])
+}
+
+/// Equality is a multiplicative congruence relation.
+theorem eq_relation_is_mul_congruence[T: Mul] {
+    is_mul_congruence(eq_relation[T])
+} by {
+    eq_relation_is_binary_congruence(T.mul)
+    is_binary_congruence(eq_relation[T], T.mul)
+    is_mul_congruence(eq_relation[T])
+}
+
+/// A multiplication-preserving map may be rewritten at any pair of inputs.
+theorem preserves_mul_step[A: Mul, B: Mul](f: A -> B, x: A, y: A) {
+    preserves_mul(f) implies f(x * y) = f(x) * f(y)
+} by {
+    if preserves_mul(f) {
+        preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+        preserves_binary_op_step(f, A.mul, B.mul, x, y)
+        f(A.mul(x, y)) = B.mul(f(x), f(y))
+        f(x * y) = f(x) * f(y)
+    }
+}
+
+/// Pullback preserves multiplicative compatibility along multiplication-preserving maps.
+theorem relation_pullback_respects_mul_of_preserves_mul[A: Mul, B: Mul](f: A -> B, r: (B, B) -> Bool) {
+    respects_mul(r) and preserves_mul(f) implies respects_mul(relation_pullback(f, r))
+} by {
+    if respects_mul(r) and preserves_mul(f) {
+        respects_mul(r) = respects_binary_op(r, B.mul)
+        preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+        relation_pullback_respects_binary_op_of_preserves_binary_op(f, r, A.mul, B.mul)
+        respects_binary_op(relation_pullback(f, r), A.mul)
+        respects_mul(relation_pullback(f, r))
+    }
+}
+
+/// Pullback preserves multiplicative congruence along multiplication-preserving maps.
+theorem relation_pullback_is_mul_congruence_of_preserves_mul[A: Mul, B: Mul](f: A -> B, r: (B, B) -> Bool) {
+    is_mul_congruence(r) and preserves_mul(f) implies is_mul_congruence(relation_pullback(f, r))
+} by {
+    if is_mul_congruence(r) and preserves_mul(f) {
+        is_mul_congruence(r) = is_binary_congruence(r, B.mul)
+        preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+        relation_pullback_is_binary_congruence_of_preserves_binary_op(f, r, A.mul, B.mul)
+        is_binary_congruence(relation_pullback(f, r), A.mul)
+        is_mul_congruence(relation_pullback(f, r))
+    }
+}
+
+/// Surjective pullback exactly detects multiplicative compatibility along multiplication-preserving maps.
+theorem relation_pullback_respects_mul_iff_of_surjective[A: Mul, B: Mul](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and preserves_mul(f) implies
+    respects_mul(relation_pullback(f, r)) = respects_mul(r)
+} by {
+    if is_surjective_fn(f) and preserves_mul(f) {
+        preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+        relation_pullback_respects_binary_op_iff_of_surjective(f, r, A.mul, B.mul)
+        respects_binary_op(relation_pullback(f, r), A.mul) = respects_binary_op(r, B.mul)
+        respects_mul(relation_pullback(f, r)) = respects_mul(r)
+    }
+}
+
+/// Surjective pullback exactly detects multiplicative congruence along multiplication-preserving maps.
+theorem relation_pullback_is_mul_congruence_iff_of_surjective[A: Mul, B: Mul](f: A -> B, r: (B, B) -> Bool) {
+    is_surjective_fn(f) and preserves_mul(f) implies
+    is_mul_congruence(relation_pullback(f, r)) = is_mul_congruence(r)
+} by {
+    if is_surjective_fn(f) and preserves_mul(f) {
+        preserves_mul(f) = preserves_binary_op(f, A.mul, B.mul)
+        relation_pullback_is_binary_congruence_iff_of_surjective(f, r, A.mul, B.mul)
+        is_binary_congruence(relation_pullback(f, r), A.mul) = is_binary_congruence(r, B.mul)
+        is_mul_congruence(relation_pullback(f, r)) = is_mul_congruence(r)
+    }
+}
+
+/// Bijective pushforward preserves multiplicative compatibility along multiplication-preserving maps.
+theorem relation_pushforward_respects_mul_of_bijection[A: Mul, B: Mul](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and preserves_mul(f) and respects_mul(r) implies
+    respects_mul(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and preserves_mul(f) and respects_mul(r) {
+        forall(u1: B, v1: B, u2: B, v2: B) {
+            if relation_pushforward(f, r, u1, v1) and relation_pushforward(f, r, u2, v2) {
+                relation_pushforward_has_preimages(f, r, u1, v1)
+                let x1: A satisfy {
+                    exists(y1: A) {
+                        f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                    }
+                }
+                let y1: A satisfy {
+                    f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                }
+                relation_pushforward_has_preimages(f, r, u2, v2)
+                let x2: A satisfy {
+                    exists(y2: A) {
+                        f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                    }
+                }
+                let y2: A satisfy {
+                    f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                }
+                respects_mul_step(r, x1, y1, x2, y2)
+                r(x1 * x2, y1 * y2)
+                preserves_mul_step(f, x1, x2)
+                f(x1 * x2) = f(x1) * f(x2)
+                preserves_mul_step(f, y1, y2)
+                f(y1 * y2) = f(y1) * f(y2)
+                f(x1 * x2) = u1 * u2
+                f(y1 * y2) = v1 * v2
+                relation_pushforward_intro(f, r, x1 * x2, y1 * y2)
+                relation_pushforward(f, r, u1 * u2, v1 * v2)
+            }
+        }
+        respects_mul(relation_pushforward(f, r)) =
+            respects_binary_op(relation_pushforward(f, r), B.mul)
+        respects_binary_op(relation_pushforward(f, r), B.mul) = forall(u1: B, v1: B, u2: B, v2: B) {
+            relation_pushforward(f, r, u1, v1) and relation_pushforward(f, r, u2, v2) implies
+            relation_pushforward(f, r, B.mul(u1, u2), B.mul(v1, v2))
+        }
+        respects_mul(relation_pushforward(f, r))
+    }
+}
+
+/// Bijective pushforward preserves multiplicative congruence along multiplication-preserving maps.
+theorem relation_pushforward_is_mul_congruence_of_bijection[A: Mul, B: Mul](f: A -> B, r: (A, A) -> Bool) {
+    is_bijection_fn(f) and preserves_mul(f) and is_mul_congruence(r) implies
+    is_mul_congruence(relation_pushforward(f, r))
+} by {
+    if is_bijection_fn(f) and preserves_mul(f) and is_mul_congruence(r) {
+        is_mul_congruence(r) = is_binary_congruence(r, A.mul)
+        binary_congruence_is_equivalence(r, A.mul)
+        is_equivalence(r)
+        relation_pushforward_is_equivalence_of_bijection(f, r)
+        is_equivalence(relation_pushforward(f, r))
+        mul_congruence_respects_mul(r)
+        respects_mul(r)
+        relation_pushforward_respects_mul_of_bijection(f, r)
+        respects_mul(relation_pushforward(f, r))
+        respects_mul(relation_pushforward(f, r)) = respects_binary_op(relation_pushforward(f, r), B.mul)
+        is_mul_congruence(relation_pushforward(f, r))
+    }
+}
+
+/// True if a function preserves the less-than-or-equal relation.
+define preserves_lte[A: LTE, B: LTE](f: A -> B) -> Bool {
+    respects_equivalence(f, A.lte, B.lte)
+}
+
+/// Order preservation is relation preservation for the less-than-or-equal relation.
+theorem preserves_lte_eq_respects_equivalence[A: LTE, B: LTE](f: A -> B) {
+    preserves_lte(f) = respects_equivalence(f, A.lte, B.lte)
+}
+
+/// An order-preserving map may be applied to a less-than-or-equal comparison.
+theorem preserves_lte_step[A: LTE, B: LTE](f: A -> B, x: A, y: A) {
+    preserves_lte(f) and x <= y implies f(x) <= f(y)
+} by {
+    if preserves_lte(f) and x <= y {
+        preserves_lte(f) = respects_equivalence(f, A.lte, B.lte)
+        respects_equivalence(f, A.lte, B.lte) = forall(a: A, b: A) {
+            A.lte(a, b) implies B.lte(f(a), f(b))
+        }
+        f(x) <= f(y)
+    }
+}
+
+/// Every function respects the pulled-back less-than-or-equal relation.
+theorem function_respects_lte_pullback[A, B: LTE](f: A -> B) {
+    respects_equivalence(f, relation_pullback(f, B.lte), B.lte)
+} by {
+    function_respects_pullback(f, B.lte)
+    respects_equivalence(f, relation_pullback(f, B.lte), B.lte)
+}
+
+/// Pullback of less-than-or-equal preserves reflexive, transitive, and antisymmetric order data along injective functions.
+theorem relation_pullback_lte_is_reflexive_transitive_antisymmetric_of_injective[A, B: LTE](f: A -> B) {
+    is_injective_fn(f) and is_reflexive(B.lte) and is_transitive(B.lte) and is_antisymmetric(B.lte) implies
+    is_reflexive(relation_pullback(f, B.lte)) and
+    is_transitive(relation_pullback(f, B.lte)) and
+    is_antisymmetric(relation_pullback(f, B.lte))
+} by {
+    if is_injective_fn(f) and is_reflexive(B.lte) and is_transitive(B.lte) and is_antisymmetric(B.lte) {
+        relation_pullback_is_reflexive_transitive_antisymmetric_of_injective(f, B.lte)
+        is_reflexive(relation_pullback(f, B.lte)) and
+        is_transitive(relation_pullback(f, B.lte)) and
+        is_antisymmetric(relation_pullback(f, B.lte))
+    }
+}
+
+/// Pullback of less-than-or-equal preserves and reflects reflexive, transitive, and antisymmetric order data along bijections.
+theorem relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection[A, B: LTE](f: A -> B) {
+    is_bijection_fn(f) implies
+    (is_reflexive(relation_pullback(f, B.lte)) and
+     is_transitive(relation_pullback(f, B.lte)) and
+     is_antisymmetric(relation_pullback(f, B.lte))) =
+    (is_reflexive(B.lte) and is_transitive(B.lte) and is_antisymmetric(B.lte))
+} by {
+    if is_bijection_fn(f) {
+        relation_pullback_is_reflexive_transitive_antisymmetric_iff_of_bijection(f, B.lte)
+        (is_reflexive(relation_pullback(f, B.lte)) and
+         is_transitive(relation_pullback(f, B.lte)) and
+         is_antisymmetric(relation_pullback(f, B.lte))) =
+        (is_reflexive(B.lte) and is_transitive(B.lte) and is_antisymmetric(B.lte))
+    }
+}
+
+/// Pushforward of less-than-or-equal preserves reflexive, transitive, and antisymmetric order data along bijections.
+theorem relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection[A: LTE, B](f: A -> B) {
+    is_bijection_fn(f) and is_reflexive(A.lte) and is_transitive(A.lte) and is_antisymmetric(A.lte) implies
+    is_reflexive(relation_pushforward(f, A.lte)) and
+    is_transitive(relation_pushforward(f, A.lte)) and
+    is_antisymmetric(relation_pushforward(f, A.lte))
+} by {
+    if is_bijection_fn(f) and is_reflexive(A.lte) and is_transitive(A.lte) and is_antisymmetric(A.lte) {
+        relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection(f, A.lte)
+        is_reflexive(relation_pushforward(f, A.lte)) and
+        is_transitive(relation_pushforward(f, A.lte)) and
+        is_antisymmetric(relation_pushforward(f, A.lte))
     }
 }

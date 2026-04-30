@@ -1168,29 +1168,178 @@
 {"goal":"relation_pushforward_is_binary_congruence_of_bijection_eq","proof":[]}
 {"goal":"unary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
 {"goal":"op_b = unary_op_pushforward[A, B](f, op_a)","proof":[]}
-{"goal":"preserves_unary_op[A, B](f, op_a, unary_op_pushforward[A, B](f, op_a))","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"preserves_unary_op[A, B](f, op_a, op_b)","proof":["not preserves_unary_op[A, B](f, op_a, unary_op_pushforward[A, B](f, op_a)) or unary_op_pushforward[A, B](f, op_a) != op_b","preserves_unary_op[A, B](f, op_a, unary_op_pushforward[A, B](f, op_a))","unary_op_pushforward[A, B](f, op_a) = op_b","unary_op_pushforward[A, B](f, op_a) != op_b"]}
-{"goal":"preserves_unary_op[A, B](f, op_a, op_b) = (op_b = unary_op_pushforward[A, B](f, op_a))","proof":["preserves_unary_op[A, B](f, op_a, op_b) or unary_op_pushforward[A, B](f, op_a) = op_b","not preserves_unary_op[A, B](f, op_a, op_b) or unary_op_pushforward[A, B](f, op_a) != op_b","preserves_unary_op[A, B](f, op_a, op_b)","unary_op_pushforward[A, B](f, op_a) != op_b","unary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"preserves_unary_op_iff_unary_op_pushforward_eq_of_bijection","proof":["not is_bijection_fn[A, B](f)"]}
+{"goal":"preserves_unary_op[A, B](f, op_a, unary_op_pushforward[A, B](f, op_a))","proof":[]}
+{"goal":"preserves_unary_op[A, B](f, op_a, op_b)","proof":[]}
+{"goal":"preserves_unary_op[A, B](f, op_a, op_b) = (op_b = unary_op_pushforward[A, B](f, op_a))","proof":[]}
+{"goal":"preserves_unary_op_iff_unary_op_pushforward_eq_of_bijection","proof":[]}
 {"goal":"binary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
 {"goal":"op_b = binary_op_pushforward[A, B](f, op_a)","proof":[]}
-{"goal":"preserves_binary_op[A, B](f, op_a, binary_op_pushforward[A, B](f, op_a))","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"preserves_binary_op[A, B](f, op_a, op_b)","proof":["not preserves_binary_op[A, B](f, op_a, binary_op_pushforward[A, B](f, op_a)) or binary_op_pushforward[A, B](f, op_a) != op_b","preserves_binary_op[A, B](f, op_a, binary_op_pushforward[A, B](f, op_a))","binary_op_pushforward[A, B](f, op_a) != op_b","binary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"preserves_binary_op[A, B](f, op_a, op_b) = (op_b = binary_op_pushforward[A, B](f, op_a))","proof":["preserves_binary_op[A, B](f, op_a, op_b) or binary_op_pushforward[A, B](f, op_a) = op_b","not preserves_binary_op[A, B](f, op_a, op_b) or binary_op_pushforward[A, B](f, op_a) != op_b","preserves_binary_op[A, B](f, op_a, op_b)","binary_op_pushforward[A, B](f, op_a) != op_b","binary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"preserves_binary_op_iff_binary_op_pushforward_eq_of_bijection","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"unary_op_pushforward[A, B](f, op_a) = op_b","proof":["not preserves_unary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_unary_op[A, B](f, op_a, op_b)","not preserves_unary_op[A, B](f, op_a, op_b)"]}
-{"goal":"respects_unary_op[B](relation_pushforward[A, B](f, r), unary_op_pushforward[A, B](f, op_a)) = respects_unary_op[A](r, op_a)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"respects_unary_op[B](relation_pushforward[A, B](f, r), op_b) = respects_unary_op[A](r, op_a)","proof":["unary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"relation_pushforward_respects_unary_op_iff_of_bijection_eq","proof":["not preserves_unary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_unary_op[A, B](f, op_a, op_b)","not preserves_unary_op[A, B](f, op_a, op_b)"]}
-{"goal":"binary_op_pushforward[A, B](f, op_a) = op_b","proof":["not preserves_binary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_binary_op[A, B](f, op_a, op_b)","not preserves_binary_op[A, B](f, op_a, op_b)"]}
-{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), binary_op_pushforward[A, B](f, op_a)) = respects_binary_op[A](r, op_a)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), op_b) = respects_binary_op[A](r, op_a)","proof":["binary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"relation_pushforward_respects_binary_op_iff_of_bijection_eq","proof":["not preserves_binary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_binary_op[A, B](f, op_a, op_b)","not preserves_binary_op[A, B](f, op_a, op_b)"]}
-{"goal":"unary_op_pushforward[A, B](f, op_a) = op_b","proof":["not preserves_unary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_unary_op[A, B](f, op_a, op_b)","not preserves_unary_op[A, B](f, op_a, op_b)"]}
-{"goal":"is_unary_congruence[B](relation_pushforward[A, B](f, r), unary_op_pushforward[A, B](f, op_a)) = is_unary_congruence[A](r, op_a)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"is_unary_congruence[B](relation_pushforward[A, B](f, r), op_b) = is_unary_congruence[A](r, op_a)","proof":["unary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"relation_pushforward_is_unary_congruence_iff_of_bijection_eq","proof":["not preserves_unary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_unary_op[A, B](f, op_a, op_b)","not preserves_unary_op[A, B](f, op_a, op_b)"]}
-{"goal":"binary_op_pushforward[A, B](f, op_a) = op_b","proof":["not preserves_binary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_binary_op[A, B](f, op_a, op_b)","not preserves_binary_op[A, B](f, op_a, op_b)"]}
-{"goal":"is_binary_congruence[B](relation_pushforward[A, B](f, r), binary_op_pushforward[A, B](f, op_a)) = is_binary_congruence[A](r, op_a)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"is_binary_congruence[B](relation_pushforward[A, B](f, r), op_b) = is_binary_congruence[A](r, op_a)","proof":["binary_op_pushforward[A, B](f, op_a) = op_b"]}
-{"goal":"relation_pushforward_is_binary_congruence_iff_of_bijection_eq","proof":["not preserves_binary_op[A, B](f, op_a, op_b) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","preserves_binary_op[A, B](f, op_a, op_b)","not preserves_binary_op[A, B](f, op_a, op_b)"]}
+{"goal":"preserves_binary_op[A, B](f, op_a, binary_op_pushforward[A, B](f, op_a))","proof":[]}
+{"goal":"preserves_binary_op[A, B](f, op_a, op_b)","proof":[]}
+{"goal":"preserves_binary_op[A, B](f, op_a, op_b) = (op_b = binary_op_pushforward[A, B](f, op_a))","proof":[]}
+{"goal":"preserves_binary_op_iff_binary_op_pushforward_eq_of_bijection","proof":[]}
+{"goal":"unary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
+{"goal":"respects_unary_op[B](relation_pushforward[A, B](f, r), unary_op_pushforward[A, B](f, op_a)) = respects_unary_op[A](r, op_a)","proof":[]}
+{"goal":"respects_unary_op[B](relation_pushforward[A, B](f, r), op_b) = respects_unary_op[A](r, op_a)","proof":[]}
+{"goal":"relation_pushforward_respects_unary_op_iff_of_bijection_eq","proof":[]}
+{"goal":"binary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
+{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), binary_op_pushforward[A, B](f, op_a)) = respects_binary_op[A](r, op_a)","proof":[]}
+{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), op_b) = respects_binary_op[A](r, op_a)","proof":[]}
+{"goal":"relation_pushforward_respects_binary_op_iff_of_bijection_eq","proof":[]}
+{"goal":"unary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
+{"goal":"is_unary_congruence[B](relation_pushforward[A, B](f, r), unary_op_pushforward[A, B](f, op_a)) = is_unary_congruence[A](r, op_a)","proof":[]}
+{"goal":"is_unary_congruence[B](relation_pushforward[A, B](f, r), op_b) = is_unary_congruence[A](r, op_a)","proof":[]}
+{"goal":"relation_pushforward_is_unary_congruence_iff_of_bijection_eq","proof":[]}
+{"goal":"binary_op_pushforward[A, B](f, op_a) = op_b","proof":[]}
+{"goal":"is_binary_congruence[B](relation_pushforward[A, B](f, r), binary_op_pushforward[A, B](f, op_a)) = is_binary_congruence[A](r, op_a)","proof":[]}
+{"goal":"is_binary_congruence[B](relation_pushforward[A, B](f, r), op_b) = is_binary_congruence[A](r, op_a)","proof":[]}
+{"goal":"relation_pushforward_is_binary_congruence_iff_of_bijection_eq","proof":[]}
+{"goal":"respects_add_eq_respects_binary_op","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[T](r)"]}
+{"goal":"add_congruence_eq_binary_congruence","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[T](r)"]}
+{"goal":"preserves_add_eq_preserves_binary_op","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_add[T](r) = respects_binary_op[T](r, T.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[T](r)"]}
+{"goal":"r(x1 + x2, y1 + y2)","proof":[]}
+{"goal":"r(x1 + x2, y1 + y2)","proof":[]}
+{"goal":"respects_add_step","proof":[]}
+{"goal":"is_add_congruence[T](r) = is_binary_congruence[T](r, T.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[T](r)"]}
+{"goal":"r(x1 + x2, y1 + y2)","proof":[]}
+{"goal":"r(x1 + x2, y1 + y2)","proof":[]}
+{"goal":"add_congruence_step","proof":[]}
+{"goal":"is_add_congruence[T](r) = is_binary_congruence[T](r, T.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[T](r)"]}
+{"goal":"is_equivalence[T](r)","proof":[]}
+{"goal":"add_congruence_is_equivalence","proof":[]}
+{"goal":"is_add_congruence[T](r) = is_binary_congruence[T](r, T.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[T](r)"]}
+{"goal":"respects_binary_op[T](r, T.add)","proof":[]}
+{"goal":"respects_add[T](r)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[T](r)"]}
+{"goal":"add_congruence_respects_add","proof":[]}
+{"goal":"respects_binary_op[T](eq_relation[T], T.add)","proof":[]}
+{"goal":"respects_add[T](eq_relation[T])","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[T](eq_relation[T])"]}
+{"goal":"eq_relation_respects_add","proof":[]}
+{"goal":"is_binary_congruence[T](eq_relation[T], T.add)","proof":[]}
+{"goal":"is_add_congruence[T](eq_relation[T])","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[T](eq_relation[T])"]}
+{"goal":"eq_relation_is_add_congruence","proof":[]}
+{"goal":"preserves_add[A, B](f) = preserves_binary_op[A, B](f, A.add, B.add)","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(x + y) = f(x) + f(y)","proof":[]}
+{"goal":"f(x + y) = f(x) + f(y)","proof":[]}
+{"goal":"preserves_add_step","proof":[]}
+{"goal":"respects_add[B](r) = respects_binary_op[B](r, B.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[B](r)"]}
+{"goal":"preserves_add[A, B](f) = preserves_binary_op[A, B](f, A.add, B.add)","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_binary_op[A](relation_pullback[A, B](f, r), A.add)","proof":[]}
+{"goal":"respects_add[A](relation_pullback[A, B](f, r))","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_respects_add_of_preserves_add","proof":[]}
+{"goal":"is_add_congruence[B](r) = is_binary_congruence[B](r, B.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[B](r)"]}
+{"goal":"preserves_add[A, B](f) = preserves_binary_op[A, B](f, A.add, B.add)","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_binary_congruence[A](relation_pullback[A, B](f, r), A.add)","proof":[]}
+{"goal":"is_add_congruence[A](relation_pullback[A, B](f, r))","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_is_add_congruence_of_preserves_add","proof":[]}
+{"goal":"preserves_add[A, B](f) = preserves_binary_op[A, B](f, A.add, B.add)","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_binary_op[A](relation_pullback[A, B](f, r), A.add) = respects_binary_op[B](r, B.add)","proof":[]}
+{"goal":"respects_add[A](relation_pullback[A, B](f, r)) = respects_add[B](r)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[B](r)","function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_respects_add_iff_of_surjective","proof":[]}
+{"goal":"preserves_add[A, B](f) = preserves_binary_op[A, B](f, A.add, B.add)","proof":["function[T0: Add, T1: Add](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.add, T1.add) = preserves_add[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_binary_congruence[A](relation_pullback[A, B](f, r), A.add) = is_binary_congruence[B](r, B.add)","proof":[]}
+{"goal":"is_add_congruence[A](relation_pullback[A, B](f, r)) = is_add_congruence[B](r)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[B](r)","function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_is_add_congruence_iff_of_surjective","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u1 and f(k1) = v1 and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x1) = u1 and f(k0) = v1 and r(x1, k0) }","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u2 and f(k1) = v2 and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x2) = u2 and f(k0) = v2 and r(x2, k0) }","proof":[]}
+{"goal":"r(x1 + x2, y1 + y2)","proof":[]}
+{"goal":"f(x1 + x2) = f(x1) + f(x2)","proof":[]}
+{"goal":"f(y1 + y2) = f(y1) + f(y2)","proof":[]}
+{"goal":"f(x1 + x2) = u1 + u2","proof":[]}
+{"goal":"f(y1 + y2) = v1 + v2","proof":[]}
+{"goal":"relation_pushforward[A, B](f, r, u1 + u2, v1 + v2)","proof":[]}
+{"goal":"respects_add[B](relation_pushforward[A, B](f, r)) = respects_binary_op[B](relation_pushforward[A, B](f, r), B.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), B.add) = forall(x0: B, x1: B, x2: B, x3: B) { relation_pushforward[A, B](f, r, x0, x1) and relation_pushforward[A, B](f, r, x2, x3) implies relation_pushforward[A, B](f, r, x0 + x2, x1 + x3) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { forall(x2: T0, x3: T0, x4: T0, x5: T0) { not x0(x2, x3) or not x0(x4, x5) or x0(x1(x2, x4), x1(x3, x5)) } = respects_binary_op[T0](x0, x1) }[B](relation_pushforward[A, B](f, r), B.add)"]}
+{"goal":"respects_add[B](relation_pushforward[A, B](f, r))","proof":["not respects_binary_op[B](relation_pushforward[A, B](f, r), B.add)","let w0: B satisfy { exists(k0: B, k1: B, k2: B) { relation_pushforward[A, B](f, r, w0, k0) and relation_pushforward[A, B](f, r, k1, k2) and not relation_pushforward[A, B](f, r, w0 + k1, k0 + k2) } }","let w1: B satisfy { exists(k3: B, k4: B) { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, k3, k4) and not relation_pushforward[A, B](f, r, w0 + k3, w1 + k4) } }","let w2: B satisfy { exists(k5: B) { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, w2, k5) and not relation_pushforward[A, B](f, r, w0 + w2, w1 + k5) } }","let w3: B satisfy { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, w2, w3) and not relation_pushforward[A, B](f, r, w0 + w2, w1 + w3) }","function(x0: B, x1: B, x2: B, x3: B) { not relation_pushforward[A, B](f, r, x0, x1) or not relation_pushforward[A, B](f, r, x2, x3) or relation_pushforward[A, B](f, r, x0 + x2, x1 + x3) }(w0, w1, w2, w3)"]}
+{"goal":"relation_pushforward_respects_add_of_bijection","proof":[]}
+{"goal":"is_add_congruence[A](r) = is_binary_congruence[A](r, A.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[A](r)"]}
+{"goal":"is_equivalence[A](r)","proof":[]}
+{"goal":"is_equivalence[B](relation_pushforward[A, B](f, r))","proof":[]}
+{"goal":"respects_add[A](r)","proof":[]}
+{"goal":"respects_add[B](relation_pushforward[A, B](f, r))","proof":[]}
+{"goal":"respects_add[B](relation_pushforward[A, B](f, r)) = respects_binary_op[B](relation_pushforward[A, B](f, r), B.add)","proof":["function[T0: Add](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.add) = respects_add[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"is_add_congruence[B](relation_pushforward[A, B](f, r))","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { (is_equivalence[T0](x0) and respects_binary_op[T0](x0, x1)) = is_binary_congruence[T0](x0, x1) }[B](relation_pushforward[A, B](f, r), B.add)","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T1, T1](identity_fn[T1], x0, x1) = x0(x1) }[Bool, Bool -> Bool]((and), is_bijection_fn[A, B](f))","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T1, T1](identity_fn[T1], x0, x1) = x0(x1) }[Bool, Bool -> Bool]((and), is_bijection_fn[A, B](f) and preserves_add[A, B](f))","function[T0: Add](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.add) = is_add_congruence[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"relation_pushforward_is_add_congruence_of_bijection","proof":[]}
+{"goal":"respects_mul_eq_respects_binary_op","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[T](r)"]}
+{"goal":"mul_congruence_eq_binary_congruence","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[T](r)"]}
+{"goal":"preserves_mul_eq_preserves_binary_op","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_mul[T](r) = respects_binary_op[T](r, T.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[T](r)"]}
+{"goal":"r(x1 * x2, y1 * y2)","proof":[]}
+{"goal":"r(x1 * x2, y1 * y2)","proof":[]}
+{"goal":"respects_mul_step","proof":[]}
+{"goal":"is_mul_congruence[T](r) = is_binary_congruence[T](r, T.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[T](r)"]}
+{"goal":"r(x1 * x2, y1 * y2)","proof":[]}
+{"goal":"r(x1 * x2, y1 * y2)","proof":[]}
+{"goal":"mul_congruence_step","proof":[]}
+{"goal":"is_mul_congruence[T](r) = is_binary_congruence[T](r, T.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[T](r)"]}
+{"goal":"is_equivalence[T](r)","proof":[]}
+{"goal":"mul_congruence_is_equivalence","proof":[]}
+{"goal":"is_mul_congruence[T](r) = is_binary_congruence[T](r, T.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[T](r)"]}
+{"goal":"respects_binary_op[T](r, T.mul)","proof":[]}
+{"goal":"respects_mul[T](r)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[T](r)"]}
+{"goal":"mul_congruence_respects_mul","proof":[]}
+{"goal":"respects_binary_op[T](eq_relation[T], T.mul)","proof":[]}
+{"goal":"respects_mul[T](eq_relation[T])","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[T](eq_relation[T])"]}
+{"goal":"eq_relation_respects_mul","proof":[]}
+{"goal":"is_binary_congruence[T](eq_relation[T], T.mul)","proof":[]}
+{"goal":"is_mul_congruence[T](eq_relation[T])","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[T](eq_relation[T])"]}
+{"goal":"eq_relation_is_mul_congruence","proof":[]}
+{"goal":"preserves_mul[A, B](f) = preserves_binary_op[A, B](f, A.mul, B.mul)","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(x * y) = f(x) * f(y)","proof":[]}
+{"goal":"f(x * y) = f(x) * f(y)","proof":[]}
+{"goal":"preserves_mul_step","proof":[]}
+{"goal":"respects_mul[B](r) = respects_binary_op[B](r, B.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[B](r)"]}
+{"goal":"preserves_mul[A, B](f) = preserves_binary_op[A, B](f, A.mul, B.mul)","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_binary_op[A](relation_pullback[A, B](f, r), A.mul)","proof":[]}
+{"goal":"respects_mul[A](relation_pullback[A, B](f, r))","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_respects_mul_of_preserves_mul","proof":[]}
+{"goal":"is_mul_congruence[B](r) = is_binary_congruence[B](r, B.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[B](r)"]}
+{"goal":"preserves_mul[A, B](f) = preserves_binary_op[A, B](f, A.mul, B.mul)","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_binary_congruence[A](relation_pullback[A, B](f, r), A.mul)","proof":[]}
+{"goal":"is_mul_congruence[A](relation_pullback[A, B](f, r))","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_is_mul_congruence_of_preserves_mul","proof":[]}
+{"goal":"preserves_mul[A, B](f) = preserves_binary_op[A, B](f, A.mul, B.mul)","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_binary_op[A](relation_pullback[A, B](f, r), A.mul) = respects_binary_op[B](r, B.mul)","proof":[]}
+{"goal":"respects_mul[A](relation_pullback[A, B](f, r)) = respects_mul[B](r)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[B](r)","function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_respects_mul_iff_of_surjective","proof":[]}
+{"goal":"preserves_mul[A, B](f) = preserves_binary_op[A, B](f, A.mul, B.mul)","proof":["function[T0: Mul, T1: Mul](x0: T0 -> T1) { preserves_binary_op[T0, T1](x0, T0.mul, T1.mul) = preserves_mul[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_binary_congruence[A](relation_pullback[A, B](f, r), A.mul) = is_binary_congruence[B](r, B.mul)","proof":[]}
+{"goal":"is_mul_congruence[A](relation_pullback[A, B](f, r)) = is_mul_congruence[B](r)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[B](r)","function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[A](relation_pullback[A, B](f, r))"]}
+{"goal":"relation_pullback_is_mul_congruence_iff_of_surjective","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u1 and f(k1) = v1 and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x1) = u1 and f(k0) = v1 and r(x1, k0) }","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u2 and f(k1) = v2 and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x2) = u2 and f(k0) = v2 and r(x2, k0) }","proof":[]}
+{"goal":"r(x1 * x2, y1 * y2)","proof":[]}
+{"goal":"f(x1 * x2) = f(x1) * f(x2)","proof":[]}
+{"goal":"f(y1 * y2) = f(y1) * f(y2)","proof":[]}
+{"goal":"f(x1 * x2) = u1 * u2","proof":[]}
+{"goal":"f(y1 * y2) = v1 * v2","proof":[]}
+{"goal":"relation_pushforward[A, B](f, r, u1 * u2, v1 * v2)","proof":[]}
+{"goal":"respects_mul[B](relation_pushforward[A, B](f, r)) = respects_binary_op[B](relation_pushforward[A, B](f, r), B.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"respects_binary_op[B](relation_pushforward[A, B](f, r), B.mul) = forall(x0: B, x1: B, x2: B, x3: B) { relation_pushforward[A, B](f, r, x0, x1) and relation_pushforward[A, B](f, r, x2, x3) implies relation_pushforward[A, B](f, r, x0 * x2, x1 * x3) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { forall(x2: T0, x3: T0, x4: T0, x5: T0) { not x0(x2, x3) or not x0(x4, x5) or x0(x1(x2, x4), x1(x3, x5)) } = respects_binary_op[T0](x0, x1) }[B](relation_pushforward[A, B](f, r), B.mul)"]}
+{"goal":"respects_mul[B](relation_pushforward[A, B](f, r))","proof":["not respects_binary_op[B](relation_pushforward[A, B](f, r), B.mul)","let w0: B satisfy { exists(k0: B, k1: B, k2: B) { relation_pushforward[A, B](f, r, w0, k0) and relation_pushforward[A, B](f, r, k1, k2) and not relation_pushforward[A, B](f, r, w0 * k1, k0 * k2) } }","let w1: B satisfy { exists(k3: B, k4: B) { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, k3, k4) and not relation_pushforward[A, B](f, r, w0 * k3, w1 * k4) } }","let w2: B satisfy { exists(k5: B) { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, w2, k5) and not relation_pushforward[A, B](f, r, w0 * w2, w1 * k5) } }","let w3: B satisfy { relation_pushforward[A, B](f, r, w0, w1) and relation_pushforward[A, B](f, r, w2, w3) and not relation_pushforward[A, B](f, r, w0 * w2, w1 * w3) }","function(x0: B, x1: B, x2: B, x3: B) { not relation_pushforward[A, B](f, r, x0, x1) or not relation_pushforward[A, B](f, r, x2, x3) or relation_pushforward[A, B](f, r, x0 * x2, x1 * x3) }(w0, w1, w2, w3)"]}
+{"goal":"relation_pushforward_respects_mul_of_bijection","proof":[]}
+{"goal":"is_mul_congruence[A](r) = is_binary_congruence[A](r, A.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[A](r)"]}
+{"goal":"is_equivalence[A](r)","proof":[]}
+{"goal":"is_equivalence[B](relation_pushforward[A, B](f, r))","proof":[]}
+{"goal":"respects_mul[A](r)","proof":[]}
+{"goal":"respects_mul[B](relation_pushforward[A, B](f, r))","proof":[]}
+{"goal":"respects_mul[B](relation_pushforward[A, B](f, r)) = respects_binary_op[B](relation_pushforward[A, B](f, r), B.mul)","proof":["function[T0: Mul](x0: (T0, T0) -> Bool) { respects_binary_op[T0](x0, T0.mul) = respects_mul[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"is_mul_congruence[B](relation_pushforward[A, B](f, r))","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { (is_equivalence[T0](x0) and respects_binary_op[T0](x0, x1)) = is_binary_congruence[T0](x0, x1) }[B](relation_pushforward[A, B](f, r), B.mul)","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T1, T1](identity_fn[T1], x0, x1) = x0(x1) }[Bool, Bool -> Bool]((and), is_bijection_fn[A, B](f))","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T1, T1](identity_fn[T1], x0, x1) = x0(x1) }[Bool, Bool -> Bool]((and), is_bijection_fn[A, B](f) and preserves_mul[A, B](f))","function[T0: Mul](x0: (T0, T0) -> Bool) { is_binary_congruence[T0](x0, T0.mul) = is_mul_congruence[T0](x0) }[B](relation_pushforward[A, B](f, r))"]}
+{"goal":"relation_pushforward_is_mul_congruence_of_bijection","proof":[]}
+{"goal":"preserves_lte_eq_respects_equivalence","proof":["function[T0: LTE, T1: LTE](x0: T0 -> T1) { respects_equivalence[T0, T1](x0, T0.lte, T1.lte) = preserves_lte[T0, T1](x0) }[A, B](f)"]}
+{"goal":"preserves_lte[A, B](f) = respects_equivalence[A, B](f, A.lte, B.lte)","proof":["function[T0: LTE, T1: LTE](x0: T0 -> T1) { respects_equivalence[T0, T1](x0, T0.lte, T1.lte) = preserves_lte[T0, T1](x0) }[A, B](f)"]}
+{"goal":"respects_equivalence[A, B](f, A.lte, B.lte) = forall(x0: A, x1: A) { x0 <= x1 implies f(x0) <= f(x1) }","proof":["function[T0, T2](x0: (T0, T0) -> Bool, x1: (T2, T2) -> Bool, x2: T0 -> T2) { forall(x3: T0, x4: T0) { not x0(x3, x4) or x1(x2(x3), x2(x4)) } = respects_equivalence[T0, T2](x2, x0, x1) }[A, B](A.lte, B.lte, f)"]}
+{"goal":"f(x) <= f(y)","proof":["x <= y","preserves_lte[A, B](f)","not respects_equivalence[A, B](f, A.lte, B.lte) or forall(x0: A, x1: A) { not x0 <= x1 or f(x0) <= f(x1) } = true","respects_equivalence[A, B](f, A.lte, B.lte)","function(x0: A) { forall(x1: A) { not x0 <= x1 or f(x0) <= f(x1) } = true }(x)","function(x0: A, x1: A) { not (x0 <= x1 and not f(x0) <= f(x1)) }(x, y)"]}
+{"goal":"preserves_lte_step","proof":[]}
+{"goal":"respects_equivalence[A, B](f, relation_pullback[A, B](f, B.lte), B.lte)","proof":[]}
+{"goal":"function_respects_lte_pullback","proof":[]}
+{"goal":"is_reflexive[A](relation_pullback[A, B](f, B.lte)) and is_transitive[A](relation_pullback[A, B](f, B.lte)) and is_antisymmetric[A](relation_pullback[A, B](f, B.lte))","proof":[]}
+{"goal":"relation_pullback_lte_is_reflexive_transitive_antisymmetric_of_injective","proof":[]}
+{"goal":"(is_reflexive[A](relation_pullback[A, B](f, B.lte)) and is_transitive[A](relation_pullback[A, B](f, B.lte)) and is_antisymmetric[A](relation_pullback[A, B](f, B.lte))) = (is_reflexive[B](B.lte) and is_transitive[B](B.lte) and is_antisymmetric[B](B.lte))","proof":[]}
+{"goal":"relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection","proof":[]}
+{"goal":"is_reflexive[B](relation_pushforward[A, B](f, A.lte)) and is_transitive[B](relation_pushforward[A, B](f, A.lte)) and is_antisymmetric[B](relation_pushforward[A, B](f, A.lte))","proof":[]}
+{"goal":"relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection","proof":[]}
