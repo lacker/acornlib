@@ -3,7 +3,7 @@
 Goal: support moving data and theorems across definitional boundaries in a controlled way.
 
 - [ ] Add basic transport lemmas across equality of types and structures
-- [ ] Extend relation pushforward transport into predicate and function transport across bijections
+- [ ] Add function transport across bijections after choosing the representation for transported functions
 - [ ] Add structure-preservation lemmas for transported algebraic data
 - [ ] Add helper lemmas for rewriting bundled objects by equality of underlying data
 - [ ] Add coercion-friendly equivalence wrappers where they reduce proof friction
