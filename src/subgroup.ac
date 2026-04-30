@@ -71,6 +71,60 @@ theorem subgroup_ext[G: Group](a: Subgroup[G], b: Subgroup[G]) {
     }
 }
 
+/// Equal subgroups have equal membership predicates.
+theorem subgroup_eq_contains[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal subgroups have equal membership at every element.
+theorem subgroup_eq_contains_at[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of subgroups transports predicates on subgroups.
+theorem subgroup_eq_transport_predicate[G: Group](
+    p: Subgroup[G] -> Bool,
+    a: Subgroup[G],
+    b: Subgroup[G]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of subgroups transports predicates on subgroups in the reverse direction.
+theorem subgroup_eq_transport_predicate_rev[G: Group](
+    p: Subgroup[G] -> Bool,
+    a: Subgroup[G],
+    b: Subgroup[G]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of subgroups.
+theorem subgroup_eq_of_contains_eq[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: G) {
+            a.contains(x) = b.contains(x)
+        }
+        subgroup_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of subgroups.
+theorem subgroup_eq_of_contains_at_eq[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    (forall(x: G) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: G) { a.contains(x) = b.contains(x) } {
+        subgroup_ext(a, b)
+    }
+}
+
 /// A subgroup contains the identity element.
 theorem subgroup_contains_identity[G: Group](s: Subgroup[G]) {
     s.contains(G.1)

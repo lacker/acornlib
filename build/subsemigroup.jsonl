@@ -1,5 +1,14 @@
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"subsemigroup_ext","proof":["function[T0: Semigroup](x0: Subsemigroup[T0]) { Subsemigroup.new[T0](x0.contains) = Option.some[Subsemigroup[T0]](x0) }[S](a)","function[T0: Semigroup](x0: Subsemigroup[T0]) { Subsemigroup.new[T0](x0.contains) = Option.some[Subsemigroup[T0]](x0) }[S](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Subsemigroup[S]](b, a)"]}
+{"goal":"subsemigroup_eq_contains","proof":[]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"subsemigroup_eq_contains_at","proof":[]}
+{"goal":"subsemigroup_eq_transport_predicate","proof":[]}
+{"goal":"subsemigroup_eq_transport_predicate_rev","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"subsemigroup_eq_of_contains_eq","proof":["not forall(x0: S) { x0 ∈ a = x0 ∈ b } or b.contains != a.contains","let w0: S satisfy { w0 ∈ a != w0 ∈ b }"]}
+{"goal":"subsemigroup_eq_of_contains_at_eq","proof":["let w0: S satisfy { w0 ∈ a != w0 ∈ b }"]}
 {"goal":"a.contains(x)","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: T0, x2: Subsemigroup[T0]) { (x1 ∈ x0 and x1 ∈ x2) = subsemigroup_intersection_contains[T0](x0, x2, x1) }[S](a, x, b)"]}
 {"goal":"b.contains(x)","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: T0, x2: Subsemigroup[T0]) { (x1 ∈ x0 and x1 ∈ x2) = subsemigroup_intersection_contains[T0](x0, x2, x1) }[S](a, x, b)"]}
 {"goal":"a.contains(y)","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: T0, x2: Subsemigroup[T0]) { (x1 ∈ x0 and x1 ∈ x2) = subsemigroup_intersection_contains[T0](x0, x2, x1) }[S](a, y, b)"]}

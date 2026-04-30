@@ -203,6 +203,52 @@ theorem set_ext[K](a: Set[K], b: Set[K]) {
     }
 }
 
+/// Equal sets have equal membership predicates.
+theorem set_eq_contains[K](a: Set[K], b: Set[K]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal sets have equal membership at every element.
+theorem set_eq_contains_at[K](a: Set[K], b: Set[K], x: K) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of sets transports predicates on sets.
+theorem set_eq_transport_predicate[K](p: Set[K] -> Bool, a: Set[K], b: Set[K]) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of sets transports predicates on sets in the reverse direction.
+theorem set_eq_transport_predicate_rev[K](p: Set[K] -> Bool, a: Set[K], b: Set[K]) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of sets.
+theorem set_eq_of_contains_eq[K](a: Set[K], b: Set[K]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: K) {
+            a.contains(x) = b.contains(x)
+        }
+        set_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of sets.
+theorem set_eq_of_contains_at_eq[K](a: Set[K], b: Set[K]) {
+    (forall(x: K) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: K) { a.contains(x) = b.contains(x) } {
+        set_ext(a, b)
+    }
+}
+
 /// A set with no elements is the empty set.
 theorem set_eq_empty_of_is_empty[K](s: Set[K]) {
     s.is_empty implies s = Set[K].empty_set

@@ -99,6 +99,40 @@ theorem finite_set_ext[T](a: FiniteSet[T], b: FiniteSet[T]) {
     a.underlying_set = b.underlying_set implies a = b
 }
 
+/// Equal finite sets have equal underlying sets.
+theorem finite_set_eq_underlying_set[T](a: FiniteSet[T], b: FiniteSet[T]) {
+    a = b implies a.underlying_set = b.underlying_set
+}
+
+/// Equal finite sets have equal underlying membership at every element.
+theorem finite_set_eq_underlying_contains_at[T](a: FiniteSet[T], b: FiniteSet[T], x: T) {
+    a = b implies a.underlying_set.contains(x) = b.underlying_set.contains(x)
+} by {
+    if a = b {
+        a.underlying_set = b.underlying_set
+        a.underlying_set.contains(x) = b.underlying_set.contains(x)
+    }
+}
+
+/// Equality of finite sets transports predicates on finite sets.
+theorem finite_set_eq_transport_predicate[T](p: FiniteSet[T] -> Bool, a: FiniteSet[T], b: FiniteSet[T]) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of finite sets transports predicates on finite sets in the reverse direction.
+theorem finite_set_eq_transport_predicate_rev[T](p: FiniteSet[T] -> Bool, a: FiniteSet[T], b: FiniteSet[T]) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of underlying sets determines equality of finite sets.
+theorem finite_set_eq_of_underlying_set_eq[T](a: FiniteSet[T], b: FiniteSet[T]) {
+    a.underlying_set = b.underlying_set implies a = b
+} by {
+    if a.underlying_set = b.underlying_set {
+        finite_set_ext(a, b)
+    }
+}
+
 attributes FiniteSet[T] {
     /// Finite set extensionality from equality of the underlying sets.
     let ext = finite_set_ext[T]

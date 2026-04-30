@@ -1,5 +1,14 @@
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"submonoid_ext","proof":["function[T0: Monoid](x0: Submonoid[T0]) { Submonoid.new[T0](x0.contains) = Option.some[Submonoid[T0]](x0) }[M](a)","function[T0: Monoid](x0: Submonoid[T0]) { Submonoid.new[T0](x0.contains) = Option.some[Submonoid[T0]](x0) }[M](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Submonoid[M]](b, a)"]}
+{"goal":"submonoid_eq_contains","proof":[]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"submonoid_eq_contains_at","proof":[]}
+{"goal":"submonoid_eq_transport_predicate","proof":[]}
+{"goal":"submonoid_eq_transport_predicate_rev","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"submonoid_eq_of_contains_eq","proof":["not forall(x0: M) { x0 ∈ a = x0 ∈ b } or b.contains != a.contains","let w0: M satisfy { w0 ∈ a != w0 ∈ b }"]}
+{"goal":"submonoid_eq_of_contains_at_eq","proof":["let w0: M satisfy { w0 ∈ a != w0 ∈ b }"]}
 {"goal":"submonoid_identity_constraint[M](a.contains)","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](lib(functions).identity_fn(a).contains)","function[T0: Monoid](x0: Submonoid[T0]) { submonoid_constraint[T0](x0.contains) }[M](lib(functions).identity_fn(a))","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[Submonoid[M]](a)"]}
 {"goal":"submonoid_identity_constraint[M](b.contains)","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](lib(functions).identity_fn(b).contains)","function[T0: Monoid](x0: Submonoid[T0]) { submonoid_constraint[T0](x0.contains) }[M](lib(functions).identity_fn(b))","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[Submonoid[M]](b)"]}
 {"goal":"a.contains(M.1)","proof":["function[T0: Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[M](a.contains)"]}

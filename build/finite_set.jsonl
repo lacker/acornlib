@@ -17,6 +17,13 @@
 {"goal":"exists(k0: FiniteSet[T]) { FiniteSet.new[T](a.underlying_set.difference(b.underlying_set)) = Option.some(k0) }","proof":["function[T0](x0: Set[T0]) { not FiniteSet.constraint[T0](x0) or exists(k0: FiniteSet[T0]) { FiniteSet.new[T0](x0) = Option.some[FiniteSet[T0]](k0) } }[T](a.underlying_set ∖ b.underlying_set)","function[T0](x0: Set[T0], x1: Set[T0]) { not x0.is_finite or (x0 ∖ x1).is_finite }[T](a.underlying_set, b.underlying_set)","function[T0](x0: Set[T0]) { x0.is_finite = FiniteSet.constraint[T0](x0) }[T](a.underlying_set ∖ b.underlying_set)","function[T0](x0: FiniteSet[T0]) { x0.underlying_set.is_finite }[T](a)"]}
 {"goal":"exists(k0: FiniteSet[U]) { FiniteSet.new[U](set_image[T, U](s.underlying_set, f)) = Option.some(k0) }","proof":["function[T0](x0: Set[T0]) { not FiniteSet.constraint[T0](x0) or exists(k0: FiniteSet[T0]) { FiniteSet.new[T0](x0) = Option.some[FiniteSet[T0]](k0) } }[U](set_image[T, U](s.underlying_set, f))","function[T0](x0: Set[T0]) { x0.is_finite = FiniteSet.constraint[T0](x0) }[U](set_image[T, U](s.underlying_set, f))","function[T0](x0: FiniteSet[T0]) { x0.underlying_set.is_finite }[T](s)"]}
 {"goal":"finite_set_ext","proof":["function[T0](x0: FiniteSet[T0]) { FiniteSet.new[T0](x0.underlying_set) = Option.some[FiniteSet[T0]](x0) }[T](a)","function[T0](x0: FiniteSet[T0]) { FiniteSet.new[T0](x0.underlying_set) = Option.some[FiniteSet[T0]](x0) }[T](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[FiniteSet[T]](b, a)"]}
+{"goal":"finite_set_eq_underlying_set","proof":["b != a"]}
+{"goal":"a.underlying_set = b.underlying_set","proof":["b != a"]}
+{"goal":"a.underlying_set.contains(x) = b.underlying_set.contains(x)","proof":["b.underlying_set != a.underlying_set"]}
+{"goal":"finite_set_eq_underlying_contains_at","proof":["b != a"]}
+{"goal":"finite_set_eq_transport_predicate","proof":["p(a)","b = a"]}
+{"goal":"finite_set_eq_transport_predicate_rev","proof":["p(b)","b = a"]}
+{"goal":"finite_set_eq_of_underlying_set_eq","proof":["b.underlying_set != a.underlying_set"]}
 {"goal":"s.underlying_set.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, x)"]}
 {"goal":"s.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, x)"]}
 {"goal":"finite_set_witness_contains","proof":[]}
