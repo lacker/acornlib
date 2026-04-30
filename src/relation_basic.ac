@@ -1,6 +1,7 @@
 /// Basic algebra of unbundled relations.
 
-from functions import binary_function_extensionality
+from functions import binary_function_extensionality, binary_function_eq_transport_predicate,
+    binary_function_eq_transport_predicate_rev
 
 define is_reflexive[T](f: (T, T) -> Bool) -> Bool {
     forall(t: T) {
@@ -955,6 +956,7 @@ theorem relation_eq_imp_reflexive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_reflexive(f) implies is_reflexive(g)
 } by {
     if f = g and is_reflexive(f) {
+        binary_function_eq_transport_predicate(is_reflexive[T], f, g)
         is_reflexive(g)
     }
 }
@@ -964,6 +966,7 @@ theorem relation_eq_imp_reflexive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_reflexive(g) implies is_reflexive(f)
 } by {
     if f = g and is_reflexive(g) {
+        binary_function_eq_transport_predicate_rev(is_reflexive[T], f, g)
         is_reflexive(f)
     }
 }
@@ -973,6 +976,7 @@ theorem relation_eq_imp_symmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_symmetric(f) implies is_symmetric(g)
 } by {
     if f = g and is_symmetric(f) {
+        binary_function_eq_transport_predicate(is_symmetric[T], f, g)
         is_symmetric(g)
     }
 }
@@ -982,6 +986,7 @@ theorem relation_eq_imp_symmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_symmetric(g) implies is_symmetric(f)
 } by {
     if f = g and is_symmetric(g) {
+        binary_function_eq_transport_predicate_rev(is_symmetric[T], f, g)
         is_symmetric(f)
     }
 }
@@ -991,6 +996,7 @@ theorem relation_eq_imp_transitive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_transitive(f) implies is_transitive(g)
 } by {
     if f = g and is_transitive(f) {
+        binary_function_eq_transport_predicate(is_transitive[T], f, g)
         is_transitive(g)
     }
 }
@@ -1000,6 +1006,7 @@ theorem relation_eq_imp_transitive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) 
     f = g and is_transitive(g) implies is_transitive(f)
 } by {
     if f = g and is_transitive(g) {
+        binary_function_eq_transport_predicate_rev(is_transitive[T], f, g)
         is_transitive(f)
     }
 }
@@ -1009,6 +1016,7 @@ theorem relation_eq_imp_antisymmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_antisymmetric(f) implies is_antisymmetric(g)
 } by {
     if f = g and is_antisymmetric(f) {
+        binary_function_eq_transport_predicate(is_antisymmetric[T], f, g)
         is_antisymmetric(g)
     }
 }
@@ -1018,6 +1026,7 @@ theorem relation_eq_imp_antisymmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Boo
     f = g and is_antisymmetric(g) implies is_antisymmetric(f)
 } by {
     if f = g and is_antisymmetric(g) {
+        binary_function_eq_transport_predicate_rev(is_antisymmetric[T], f, g)
         is_antisymmetric(f)
     }
 }
@@ -1027,6 +1036,7 @@ theorem relation_eq_imp_irreflexive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_irreflexive(f) implies is_irreflexive(g)
 } by {
     if f = g and is_irreflexive(f) {
+        binary_function_eq_transport_predicate(is_irreflexive[T], f, g)
         is_irreflexive(g)
     }
 }
@@ -1036,6 +1046,7 @@ theorem relation_eq_imp_irreflexive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool)
     f = g and is_irreflexive(g) implies is_irreflexive(f)
 } by {
     if f = g and is_irreflexive(g) {
+        binary_function_eq_transport_predicate_rev(is_irreflexive[T], f, g)
         is_irreflexive(f)
     }
 }
@@ -1045,6 +1056,7 @@ theorem relation_eq_imp_asymmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_asymmetric(f) implies is_asymmetric(g)
 } by {
     if f = g and is_asymmetric(f) {
+        binary_function_eq_transport_predicate(is_asymmetric[T], f, g)
         is_asymmetric(g)
     }
 }
@@ -1054,6 +1066,7 @@ theorem relation_eq_imp_asymmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) 
     f = g and is_asymmetric(g) implies is_asymmetric(f)
 } by {
     if f = g and is_asymmetric(g) {
+        binary_function_eq_transport_predicate_rev(is_asymmetric[T], f, g)
         is_asymmetric(f)
     }
 }
@@ -1063,6 +1076,7 @@ theorem relation_eq_imp_total[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_total(f) implies is_total(g)
 } by {
     if f = g and is_total(f) {
+        binary_function_eq_transport_predicate(is_total[T], f, g)
         is_total(g)
     }
 }
@@ -1072,6 +1086,7 @@ theorem relation_eq_imp_total_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_total(g) implies is_total(f)
 } by {
     if f = g and is_total(g) {
+        binary_function_eq_transport_predicate_rev(is_total[T], f, g)
         is_total(f)
     }
 }
@@ -1081,6 +1096,7 @@ theorem relation_eq_imp_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_equivalence(f) implies is_equivalence(g)
 } by {
     if f = g and is_equivalence(f) {
+        binary_function_eq_transport_predicate(is_equivalence[T], f, g)
         is_equivalence(g)
     }
 }
@@ -1090,6 +1106,7 @@ theorem relation_eq_imp_equivalence_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool)
     f = g and is_equivalence(g) implies is_equivalence(f)
 } by {
     if f = g and is_equivalence(g) {
+        binary_function_eq_transport_predicate_rev(is_equivalence[T], f, g)
         is_equivalence(f)
     }
 }
@@ -1099,6 +1116,7 @@ theorem relation_eq_imp_partial_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> B
     f = g and is_partial_equivalence(f) implies is_partial_equivalence(g)
 } by {
     if f = g and is_partial_equivalence(f) {
+        binary_function_eq_transport_predicate(is_partial_equivalence[T], f, g)
         is_partial_equivalence(g)
     }
 }
@@ -1108,6 +1126,7 @@ theorem relation_eq_imp_partial_equivalence_rev[T](f: (T, T) -> Bool, g: (T, T) 
     f = g and is_partial_equivalence(g) implies is_partial_equivalence(f)
 } by {
     if f = g and is_partial_equivalence(g) {
+        binary_function_eq_transport_predicate_rev(is_partial_equivalence[T], f, g)
         is_partial_equivalence(f)
     }
 }

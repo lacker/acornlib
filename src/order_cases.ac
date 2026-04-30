@@ -127,6 +127,38 @@ theorem gt_or_eq_or_lt[L: LinearOrder](a: L, b: L) {
     }
 }
 
+theorem eq_or_lt_or_gt[L: LinearOrder](a: L, b: L) {
+    a = b or a < b or a > b
+} by {
+    if a = b {
+        a = b or a < b or a > b
+    } else {
+        lt_or_gt_of_ne(a, b)
+        if a < b {
+            a = b or a < b or a > b
+        } else {
+            a > b
+            a = b or a < b or a > b
+        }
+    }
+}
+
+theorem eq_or_gt_or_lt[L: LinearOrder](a: L, b: L) {
+    a = b or a > b or a < b
+} by {
+    if a = b {
+        a = b or a > b or a < b
+    } else {
+        gt_or_lt_of_ne(a, b)
+        if a > b {
+            a = b or a > b or a < b
+        } else {
+            a < b
+            a = b or a > b or a < b
+        }
+    }
+}
+
 theorem ne_iff_lt_or_gt[L: LinearOrder](a: L, b: L) {
     a != b = (a < b or a > b)
 } by {
@@ -183,6 +215,48 @@ theorem eq_of_not_gt_of_not_lt[L: LinearOrder](a: L, b: L) {
     }
 }
 
+theorem eq_iff_not_lt_and_not_gt[L: LinearOrder](a: L, b: L) {
+    a = b = (not (a < b) and not (a > b))
+} by {
+    if a = b {
+        if a < b {
+            a != b
+            false
+        }
+        if a > b {
+            a != b
+            false
+        }
+        not (a < b) and not (a > b)
+    }
+    if not (a < b) and not (a > b) {
+        eq_of_not_lt_of_not_gt(a, b)
+        a = b
+    }
+    a = b = (not (a < b) and not (a > b))
+}
+
+theorem eq_iff_not_gt_and_not_lt[L: LinearOrder](a: L, b: L) {
+    a = b = (not (a > b) and not (a < b))
+} by {
+    if a = b {
+        if a > b {
+            a != b
+            false
+        }
+        if a < b {
+            a != b
+            false
+        }
+        not (a > b) and not (a < b)
+    }
+    if not (a > b) and not (a < b) {
+        eq_of_not_gt_of_not_lt(a, b)
+        a = b
+    }
+    a = b = (not (a > b) and not (a < b))
+}
+
 theorem eq_or_lt_of_not_gt[L: LinearOrder](a: L, b: L) {
     not (a > b) implies a = b or a < b
 } by {
@@ -200,6 +274,30 @@ theorem eq_or_gt_of_not_lt[L: LinearOrder](a: L, b: L) {
         not_lt_imp_gte(a, b)
         eq_or_gt_of_gte(a, b)
         a = b or a > b
+    }
+}
+
+theorem lt_or_gte[L: LinearOrder](a: L, b: L) {
+    a < b or a >= b
+} by {
+    gte_or_lt(a, b)
+    if a >= b {
+        a < b or a >= b
+    } else {
+        a < b
+        a < b or a >= b
+    }
+}
+
+theorem gt_or_lte[L: LinearOrder](a: L, b: L) {
+    a > b or a <= b
+} by {
+    lte_or_gt(a, b)
+    if a <= b {
+        a > b or a <= b
+    } else {
+        a > b
+        a > b or a <= b
     }
 }
 

@@ -132,7 +132,7 @@
 {"goal":"false","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[P](a, b)"]}
-{"goal":"a < b = (not b <= a and a <= b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[P](a, b)","not b <= a and a <= b or a < b","not (not b <= a and a <= b) or not a < b","not a < b or not b <= a","not b <= a","(not b <= a and a <= b) != (a <= b and a != b)","not a < b or not a <= b","not b <= a and a <= b or a <= b","a < b","not a < b"]}
+{"goal":"a < b = (not b <= a and a <= b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[P](a, b)"]}
 {"goal":"lt_iff_lte_not_lte_swap","proof":[]}
 {"goal":"b <= a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[P](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](a, b)"]}
 {"goal":"a = b","proof":[]}
