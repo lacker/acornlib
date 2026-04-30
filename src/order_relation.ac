@@ -6,15 +6,312 @@ from relation import relation_refl_trans_closure, relation_trans_closure,
     relation_refl_trans_closure_subset_of_reflexive_transitive,
     relation_trans_closure_subset_of_transitive, relation_refl_trans_closure_is_reflexive,
     relation_refl_trans_closure_pullback_of_bijection, relation_trans_closure_pullback_of_surjective
-from functions import binary_function_extensionality, is_injective_fn, is_bijection_fn, is_surjective_fn,
+from functions import binary_function_extensionality, binary_function_eq_transport_predicate,
+    binary_function_eq_transport_predicate_rev, is_injective_fn, is_bijection_fn, is_surjective_fn,
     Bijection, bijection_map_is_injective, bijection_map_is_bijection
 from relation_basic import is_reflexive, is_transitive, is_antisymmetric, is_irreflexive,
     is_asymmetric, is_total, reflexive_self, relation_converse, relation_subset,
-    relation_subset_refl, relation_subset_step
+    relation_subset_refl, relation_subset_step, relation_converse_is_reflexive,
+    relation_converse_is_transitive, relation_converse_is_total
 from relation_transport import relation_pullback, relation_pullback_is_reflexive,
     relation_pullback_is_irreflexive, relation_pullback_is_asymmetric,
     relation_pullback_is_transitive, relation_pullback_is_total,
     relation_pullback_is_antisymmetric_of_injective
+
+/// True if a relation has the data of a partial order.
+define is_partial_order_relation[T](r: (T, T) -> Bool) -> Bool {
+    is_reflexive(r) and is_transitive(r) and is_antisymmetric(r)
+}
+
+/// True if a relation has the data of a linear order.
+define is_linear_order_relation[T](r: (T, T) -> Bool) -> Bool {
+    is_partial_order_relation(r) and is_total(r)
+}
+
+/// The strict part of a relation.
+define relation_strict_part[T](r: (T, T) -> Bool, a: T, b: T) -> Bool {
+    r(a, b) and a != b
+}
+
+theorem partial_order_relation_is_reflexive[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_reflexive(r)
+} by {
+    if is_partial_order_relation(r) {
+        is_partial_order_relation(r) = (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
+        is_reflexive(r)
+    }
+}
+
+theorem partial_order_relation_is_transitive[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_transitive(r)
+} by {
+    if is_partial_order_relation(r) {
+        is_partial_order_relation(r) = (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
+        is_transitive(r)
+    }
+}
+
+theorem partial_order_relation_is_antisymmetric[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_antisymmetric(r)
+} by {
+    if is_partial_order_relation(r) {
+        is_partial_order_relation(r) = (is_reflexive(r) and is_transitive(r) and is_antisymmetric(r))
+        is_antisymmetric(r)
+    }
+}
+
+theorem linear_order_relation_is_partial_order[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_partial_order_relation(r)
+} by {
+    if is_linear_order_relation(r) {
+        is_linear_order_relation(r) = (is_partial_order_relation(r) and is_total(r))
+        is_partial_order_relation(r)
+    }
+}
+
+theorem linear_order_relation_is_total[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_total(r)
+} by {
+    if is_linear_order_relation(r) {
+        is_linear_order_relation(r) = (is_partial_order_relation(r) and is_total(r))
+        is_total(r)
+    }
+}
+
+theorem linear_order_relation_is_reflexive[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_reflexive(r)
+} by {
+    if is_linear_order_relation(r) {
+        linear_order_relation_is_partial_order(r)
+        partial_order_relation_is_reflexive(r)
+        is_reflexive(r)
+    }
+}
+
+theorem linear_order_relation_is_transitive[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_transitive(r)
+} by {
+    if is_linear_order_relation(r) {
+        linear_order_relation_is_partial_order(r)
+        partial_order_relation_is_transitive(r)
+        is_transitive(r)
+    }
+}
+
+theorem linear_order_relation_is_antisymmetric[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_antisymmetric(r)
+} by {
+    if is_linear_order_relation(r) {
+        linear_order_relation_is_partial_order(r)
+        partial_order_relation_is_antisymmetric(r)
+        is_antisymmetric(r)
+    }
+}
+
+theorem relation_strict_part_at[T](r: (T, T) -> Bool, a: T, b: T) {
+    relation_strict_part(r, a, b) = (r(a, b) and a != b)
+}
+
+theorem relation_strict_part_eq_of_relation_eq[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s implies relation_strict_part(r) = relation_strict_part(s)
+} by {
+    if r = s {
+        let u = relation_strict_part(r)
+        let v = relation_strict_part(s)
+        forall(a: T, b: T) {
+            r(a, b) = s(a, b)
+            u(a, b) = (r(a, b) and a != b)
+            v(a, b) = (s(a, b) and a != b)
+            u(a, b) = v(a, b)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+theorem relation_converse_eq_of_relation_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    r = s implies relation_converse(r) = relation_converse(s)
+} by {
+    if r = s {
+        let u = relation_converse(r)
+        let v = relation_converse(s)
+        forall(b: B, a: A) {
+            r(a, b) = s(a, b)
+            u(b, a) = r(a, b)
+            v(b, a) = s(a, b)
+            u(b, a) = v(b, a)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+theorem relation_strict_part_is_irreflexive[T](r: (T, T) -> Bool) {
+    is_irreflexive(relation_strict_part(r))
+} by {
+    forall(a: T) {
+        if relation_strict_part(r, a, a) {
+            a != a
+            false
+        }
+    }
+}
+
+theorem relation_strict_part_is_asymmetric_of_partial_order_relation[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_asymmetric(relation_strict_part(r))
+} by {
+    if is_partial_order_relation(r) {
+        partial_order_relation_is_antisymmetric(r)
+        forall(a: T, b: T) {
+            if relation_strict_part(r, a, b) {
+                r(a, b)
+                a != b
+                if relation_strict_part(r, b, a) {
+                    r(b, a)
+                    a = b
+                    false
+                }
+            }
+        }
+    }
+}
+
+theorem relation_strict_part_is_transitive_of_partial_order_relation[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_transitive(relation_strict_part(r))
+} by {
+    if is_partial_order_relation(r) {
+        partial_order_relation_is_transitive(r)
+        partial_order_relation_is_antisymmetric(r)
+        forall(a: T, b: T, c: T) {
+            if relation_strict_part(r, a, b) and relation_strict_part(r, b, c) {
+                r(a, b)
+                a != b
+                r(b, c)
+                b != c
+                r(a, c)
+                if a = c {
+                    r(c, b)
+                    r(b, c)
+                    b = c
+                    false
+                }
+                a != c
+                relation_strict_part(r, a, c)
+            }
+        }
+    }
+}
+
+theorem relation_converse_is_antisymmetric_of_antisymmetric[T](r: (T, T) -> Bool) {
+    is_antisymmetric(r) implies is_antisymmetric(relation_converse(r))
+} by {
+    if is_antisymmetric(r) {
+        forall(a: T, b: T) {
+            if relation_converse(r, a, b) and relation_converse(r, b, a) {
+                r(b, a)
+                r(a, b)
+                a = b
+            }
+        }
+    }
+}
+
+theorem relation_converse_is_partial_order_relation[T](r: (T, T) -> Bool) {
+    is_partial_order_relation(r) implies is_partial_order_relation(relation_converse(r))
+} by {
+    if is_partial_order_relation(r) {
+        partial_order_relation_is_reflexive(r)
+        relation_converse_is_reflexive(r)
+        is_reflexive(relation_converse(r))
+        partial_order_relation_is_transitive(r)
+        relation_converse_is_transitive(r)
+        is_transitive(relation_converse(r))
+        partial_order_relation_is_antisymmetric(r)
+        relation_converse_is_antisymmetric_of_antisymmetric(r)
+        is_antisymmetric(relation_converse(r))
+        is_partial_order_relation(relation_converse(r))
+    }
+}
+
+theorem relation_converse_is_linear_order_relation[T](r: (T, T) -> Bool) {
+    is_linear_order_relation(r) implies is_linear_order_relation(relation_converse(r))
+} by {
+    if is_linear_order_relation(r) {
+        linear_order_relation_is_partial_order(r)
+        relation_converse_is_partial_order_relation(r)
+        is_partial_order_relation(relation_converse(r))
+        linear_order_relation_is_total(r)
+        relation_converse_is_total(r)
+        is_total(relation_converse(r))
+        is_linear_order_relation(relation_converse(r))
+    }
+}
+
+theorem partial_order_relation_eq_transport[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s and is_partial_order_relation(r) implies is_partial_order_relation(s)
+} by {
+    if r = s and is_partial_order_relation(r) {
+        binary_function_eq_transport_predicate(is_partial_order_relation[T], r, s)
+        is_partial_order_relation(s)
+    }
+}
+
+theorem partial_order_relation_eq_transport_rev[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s and is_partial_order_relation(s) implies is_partial_order_relation(r)
+} by {
+    if r = s and is_partial_order_relation(s) {
+        binary_function_eq_transport_predicate_rev(is_partial_order_relation[T], r, s)
+        is_partial_order_relation(r)
+    }
+}
+
+theorem partial_order_relation_eq_iff[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s implies is_partial_order_relation(r) = is_partial_order_relation(s)
+} by {
+    if r = s {
+        if is_partial_order_relation(r) {
+            partial_order_relation_eq_transport(r, s)
+            is_partial_order_relation(s)
+        }
+        if is_partial_order_relation(s) {
+            partial_order_relation_eq_transport_rev(r, s)
+            is_partial_order_relation(r)
+        }
+        is_partial_order_relation(r) = is_partial_order_relation(s)
+    }
+}
+
+theorem linear_order_relation_eq_transport[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s and is_linear_order_relation(r) implies is_linear_order_relation(s)
+} by {
+    if r = s and is_linear_order_relation(r) {
+        binary_function_eq_transport_predicate(is_linear_order_relation[T], r, s)
+        is_linear_order_relation(s)
+    }
+}
+
+theorem linear_order_relation_eq_transport_rev[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s and is_linear_order_relation(s) implies is_linear_order_relation(r)
+} by {
+    if r = s and is_linear_order_relation(s) {
+        binary_function_eq_transport_predicate_rev(is_linear_order_relation[T], r, s)
+        is_linear_order_relation(r)
+    }
+}
+
+theorem linear_order_relation_eq_iff[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    r = s implies is_linear_order_relation(r) = is_linear_order_relation(s)
+} by {
+    if r = s {
+        if is_linear_order_relation(r) {
+            linear_order_relation_eq_transport(r, s)
+            is_linear_order_relation(s)
+        }
+        if is_linear_order_relation(s) {
+            linear_order_relation_eq_transport_rev(r, s)
+            is_linear_order_relation(r)
+        }
+        is_linear_order_relation(r) = is_linear_order_relation(s)
+    }
+}
 
 theorem lte_relation_is_reflexive[P: PartialOrder] {
     is_reflexive(P.lte)
@@ -78,6 +375,15 @@ theorem lte_relation_is_antisymmetric[P: PartialOrder] {
     }
 }
 
+theorem lte_relation_is_partial_order_relation[P: PartialOrder] {
+    is_partial_order_relation(P.lte)
+} by {
+    lte_relation_is_reflexive[P]
+    lte_relation_is_transitive[P]
+    lte_relation_is_antisymmetric[P]
+    is_partial_order_relation(P.lte)
+}
+
 theorem gte_relation_is_antisymmetric[P: PartialOrder] {
     is_antisymmetric(P.gte)
 } by {
@@ -93,12 +399,49 @@ theorem gte_relation_is_antisymmetric[P: PartialOrder] {
     }
 }
 
+theorem gte_relation_is_partial_order_relation[P: PartialOrder] {
+    is_partial_order_relation(P.gte)
+} by {
+    gte_relation_is_reflexive[P]
+    gte_relation_is_transitive[P]
+    gte_relation_is_antisymmetric[P]
+    is_partial_order_relation(P.gte)
+}
+
 theorem lt_relation_is_irreflexive[P: PartialOrder] {
     is_irreflexive(P.lt)
 } by {
     forall(a: P) {
         not_lt_ref(a)
     }
+}
+
+theorem lt_relation_strict_part_lte[P: PartialOrder] {
+    P.lt = relation_strict_part(P.lte)
+} by {
+    let u = P.lt
+    let v = relation_strict_part(P.lte)
+    forall(a: P, b: P) {
+        u(a, b) = P.lt(a, b)
+        P.lt(a, b) = (a <= b and a != b)
+        v(a, b) = (P.lte(a, b) and a != b)
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
+}
+
+theorem gt_relation_strict_part_gte[P: PartialOrder] {
+    P.gt = relation_strict_part(P.gte)
+} by {
+    let u = P.gt
+    let v = relation_strict_part(P.gte)
+    forall(a: P, b: P) {
+        u(a, b) = P.gt(a, b)
+        P.gt(a, b) = (a >= b and a != b)
+        v(a, b) = (P.gte(a, b) and a != b)
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
 }
 
 theorem gt_relation_is_transitive[P: PartialOrder] {
@@ -179,6 +522,14 @@ theorem lte_relation_is_total[L: LinearOrder] {
     }
 }
 
+theorem lte_relation_is_linear_order_relation[L: LinearOrder] {
+    is_linear_order_relation(L.lte)
+} by {
+    lte_relation_is_partial_order_relation[L]
+    lte_relation_is_total[L]
+    is_linear_order_relation(L.lte)
+}
+
 theorem gte_relation_is_total[L: LinearOrder] {
     is_total(L.gte)
 } by {
@@ -193,6 +544,14 @@ theorem gte_relation_is_total[L: LinearOrder] {
             a >= b or b >= a
         }
     }
+}
+
+theorem gte_relation_is_linear_order_relation[L: LinearOrder] {
+    is_linear_order_relation(L.gte)
+} by {
+    gte_relation_is_partial_order_relation[L]
+    gte_relation_is_total[L]
+    is_linear_order_relation(L.gte)
 }
 
 theorem lte_relation_converse[P: PartialOrder] {
