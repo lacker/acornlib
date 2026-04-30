@@ -529,6 +529,145 @@ theorem compose_bijection_fn[T, U, V](f: U -> V, g: T -> U) {
     }
 }
 
+/// A bijection between two types.
+structure Bijection[T, U] {
+    /// The underlying map.
+    map: T -> U
+} constraint {
+    is_bijection_fn(map)
+}
+
+/// Construction of a bijection remembers the underlying map.
+theorem bijection_new_map[T, U](f: T -> U, e: Bijection[T, U]) {
+    Bijection[T, U].new(f) = Option.some(e) implies e.map = f
+}
+
+/// Every bijection is reconstructed from its underlying map.
+theorem bijection_new_self[T, U](e: Bijection[T, U]) {
+    Bijection[T, U].new(e.map) = Option.some(e)
+}
+
+/// Equality of options containing bijections is equality of bijections.
+theorem bijection_some_injective[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    Option.some(e) = Option.some(h) implies e = h
+}
+
+/// Bijections are equal when their underlying maps are equal.
+theorem bijection_ext[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    e.map = h.map implies e = h
+} by {
+    if e.map = h.map {
+        Bijection[T, U].new(e.map) = Option.some(e)
+        Bijection[T, U].new(h.map) = Option.some(h)
+        Option.some(e) = Option.some(h)
+        bijection_some_injective(e, h)
+    }
+}
+
+/// Equal bijections have equal underlying maps.
+theorem bijection_eq_map[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    e = h implies e.map = h.map
+}
+
+/// The underlying map of a bijection is bijective.
+theorem bijection_map_is_bijection[T, U](e: Bijection[T, U]) {
+    is_bijection_fn(e.map)
+}
+
+/// The underlying map of a bijection is injective.
+theorem bijection_map_is_injective[T, U](e: Bijection[T, U]) {
+    is_injective_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_fn_is_injective(e.map)
+}
+
+/// The underlying map of a bijection is surjective.
+theorem bijection_map_is_surjective[T, U](e: Bijection[T, U]) {
+    is_surjective_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_fn_is_surjective(e.map)
+}
+
+/// The identity map as a bijection.
+let identity_bijection[T](anchor: T) -> result: Bijection[T, T] satisfy {
+    result.map = identity_fn[T]
+} by {
+    is_injective_fn(identity_fn[T])
+    is_surjective_fn(identity_fn[T])
+    is_bijection_fn(identity_fn[T])
+    let e: Bijection[T, T] satisfy {
+        Bijection[T, T].new(identity_fn[T]) = Option.some(e)
+    }
+    bijection_new_map(identity_fn[T], e)
+    e.map = identity_fn[T]
+}
+
+/// The identity bijection has the identity map.
+theorem identity_bijection_map[T](anchor: T) {
+    identity_bijection(anchor).map = identity_fn[T]
+}
+
+/// The inverse map of a bijection as a bijection.
+let inverse_bijection[T: Inhabited, U](e: Bijection[T, U]) -> result: Bijection[U, T] satisfy {
+    result.map = inverse_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    inverse_fn_is_bijection_of_bijection(e.map)
+    is_bijection_fn(inverse_fn(e.map))
+    let h: Bijection[U, T] satisfy {
+        Bijection[U, T].new(inverse_fn(e.map)) = Option.some(h)
+    }
+    bijection_new_map(inverse_fn(e.map), h)
+    h.map = inverse_fn(e.map)
+}
+
+/// The inverse bijection has the chosen inverse map.
+theorem inverse_bijection_map[T: Inhabited, U](e: Bijection[T, U]) {
+    inverse_bijection(e).map = inverse_fn(e.map)
+}
+
+/// A bijection followed by its inverse is the identity on the source.
+theorem inverse_bijection_apply_image[T: Inhabited, U](e: Bijection[T, U], x: T) {
+    inverse_bijection(e).map(e.map(x)) = x
+} by {
+    inverse_bijection_map(e)
+    inverse_bijection(e).map = inverse_fn(e.map)
+    bijection_map_is_bijection(e)
+    inverse_fn_apply_image_of_bijection(e.map, x)
+}
+
+/// The inverse of a bijection followed by the bijection is the identity on the target.
+theorem bijection_apply_inverse[T: Inhabited, U](e: Bijection[T, U], y: U) {
+    e.map(inverse_bijection(e).map(y)) = y
+} by {
+    inverse_bijection_map(e)
+    inverse_bijection(e).map = inverse_fn(e.map)
+    bijection_map_is_surjective(e)
+    inverse_fn_apply_of_surjective(e.map, y)
+}
+
+/// The composite of two bijections.
+let compose_bijection[T, U, V](e: Bijection[U, V], h: Bijection[T, U]) -> result: Bijection[T, V] satisfy {
+    result.map = compose(e.map, h.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_map_is_bijection(h)
+    compose_bijection_fn(e.map, h.map)
+    is_bijection_fn(compose(e.map, h.map))
+    let k: Bijection[T, V] satisfy {
+        Bijection[T, V].new(compose(e.map, h.map)) = Option.some(k)
+    }
+    bijection_new_map(compose(e.map, h.map), k)
+    k.map = compose(e.map, h.map)
+}
+
+/// The composite bijection has the composite map.
+theorem compose_bijection_map[T, U, V](e: Bijection[U, V], h: Bijection[T, U]) {
+    compose_bijection(e, h).map = compose(e.map, h.map)
+}
+
 /// True if `f` is injective.
 define is_injective[T](f: T -> T) -> Bool {
     forall(x: T, y: T) {

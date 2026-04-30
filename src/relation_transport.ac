@@ -3,7 +3,9 @@
 from functions import Inhabited, compose, identity_fn, inverse_fn, inverse_fn_apply_of_surjective,
     inverse_fn_apply_image_of_bijection, predicate_extensionality, binary_function_extensionality,
     function_extensionality, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective,
-    bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
+    bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage, Bijection,
+    bijection_map_is_bijection, bijection_map_is_injective, bijection_map_is_surjective,
+    inverse_bijection, inverse_bijection_map, compose_bijection, compose_bijection_map
 from add import Add
 from mul import Mul
 from lte import LTE
@@ -595,6 +597,54 @@ theorem predicate_pushforward_eq_iff_of_bijection[A, B](f: A -> B, p: A -> Bool,
     }
 }
 
+/// Pullback after pushforward recovers a predicate along a bundled bijection.
+theorem predicate_pullback_pushforward_of_bijection_map[A, B](e: Bijection[A, B], p: A -> Bool) {
+    predicate_pullback(e.map, predicate_pushforward(e.map, p)) = p
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pullback_pushforward_of_bijection(e.map, p)
+}
+
+/// Pushforward after pullback recovers a predicate along a bundled bijection.
+theorem predicate_pushforward_pullback_of_bijection_map[A, B](e: Bijection[A, B], p: B -> Bool) {
+    predicate_pushforward(e.map, predicate_pullback(e.map, p)) = p
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pushforward_pullback_of_bijection(e.map, p)
+}
+
+/// Bundled bijective pullback detects predicate inclusion.
+theorem predicate_pullback_subset_iff_of_bijection_map[A, B](e: Bijection[A, B], p: B -> Bool, q: B -> Bool) {
+    predicate_subset(predicate_pullback(e.map, p), predicate_pullback(e.map, q)) = predicate_subset(p, q)
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pullback_subset_iff_of_bijection(e.map, p, q)
+}
+
+/// Bundled bijective pushforward detects predicate inclusion.
+theorem predicate_pushforward_subset_iff_of_bijection_map[A, B](e: Bijection[A, B], p: A -> Bool, q: A -> Bool) {
+    predicate_subset(predicate_pushforward(e.map, p), predicate_pushforward(e.map, q)) = predicate_subset(p, q)
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pushforward_subset_iff_of_bijection(e.map, p, q)
+}
+
+/// Bundled bijective pullback detects predicate equality.
+theorem predicate_pullback_eq_iff_of_bijection_map[A, B](e: Bijection[A, B], p: B -> Bool, q: B -> Bool) {
+    (predicate_pullback(e.map, p) = predicate_pullback(e.map, q)) = (p = q)
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pullback_eq_iff_of_bijection(e.map, p, q)
+}
+
+/// Bundled bijective pushforward detects predicate equality.
+theorem predicate_pushforward_eq_iff_of_bijection_map[A, B](e: Bijection[A, B], p: A -> Bool, q: A -> Bool) {
+    (predicate_pushforward(e.map, p) = predicate_pushforward(e.map, q)) = (p = q)
+} by {
+    bijection_map_is_bijection(e)
+    predicate_pushforward_eq_iff_of_bijection(e.map, p, q)
+}
+
 /// Related inputs give a related image pair.
 theorem relation_pushforward_intro[A, B](f: A -> B, r: (A, A) -> Bool, x: A, y: A) {
     r(x, y) implies relation_pushforward(f, r, f(x), f(y))
@@ -951,6 +1001,36 @@ theorem relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection[
     }
 }
 
+/// Pushforward preserves equivalence relations along a bundled bijection.
+theorem relation_pushforward_is_equivalence_of_bijection_map[A, B](e: Bijection[A, B], r: (A, A) -> Bool) {
+    is_equivalence(r) implies is_equivalence(relation_pushforward(e.map, r))
+} by {
+    if is_equivalence(r) {
+        bijection_map_is_bijection(e)
+        relation_pushforward_is_equivalence_of_bijection(e.map, r)
+        is_equivalence(relation_pushforward(e.map, r))
+    }
+}
+
+/// Pushforward preserves order data along a bundled bijection.
+theorem relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection_map[A, B](
+    e: Bijection[A, B],
+    r: (A, A) -> Bool
+) {
+    is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) implies
+    is_reflexive(relation_pushforward(e.map, r)) and
+    is_transitive(relation_pushforward(e.map, r)) and
+    is_antisymmetric(relation_pushforward(e.map, r))
+} by {
+    if is_reflexive(r) and is_transitive(r) and is_antisymmetric(r) {
+        bijection_map_is_bijection(e)
+        relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection(e.map, r)
+        is_reflexive(relation_pushforward(e.map, r)) and
+        is_transitive(relation_pushforward(e.map, r)) and
+        is_antisymmetric(relation_pushforward(e.map, r))
+    }
+}
+
 /// Pullback after pushforward contains the original relation.
 theorem relation_subset_pullback_pushforward[A, B](f: A -> B, r: (A, A) -> Bool) {
     relation_subset(r, relation_pullback(f, relation_pushforward(f, r)))
@@ -1073,6 +1153,22 @@ theorem relation_pushforward_pullback_of_surjective[A, B](f: A -> B, r: (B, B) -
         }
         binary_function_extensionality(u, v)
     }
+}
+
+/// Pullback after pushforward recovers a relation along a bundled bijection.
+theorem relation_pullback_pushforward_of_bijection_map[A, B](e: Bijection[A, B], r: (A, A) -> Bool) {
+    relation_pullback(e.map, relation_pushforward(e.map, r)) = r
+} by {
+    bijection_map_is_injective(e)
+    relation_pullback_pushforward_of_injective(e.map, r)
+}
+
+/// Pushforward after pullback recovers a relation along a bundled bijection.
+theorem relation_pushforward_pullback_of_bijection_map[A, B](e: Bijection[A, B], r: (B, B) -> Bool) {
+    relation_pushforward(e.map, relation_pullback(e.map, r)) = r
+} by {
+    bijection_map_is_surjective(e)
+    relation_pushforward_pullback_of_surjective(e.map, r)
 }
 
 /// Pullback commutes with converse.
@@ -4857,5 +4953,32 @@ theorem relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_biject
         is_reflexive(relation_pushforward(f, A.lte)) and
         is_transitive(relation_pushforward(f, A.lte)) and
         is_antisymmetric(relation_pushforward(f, A.lte))
+    }
+}
+
+/// Pullback of less-than-or-equal preserves order data along a bundled bijection.
+theorem relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection_map[A, B: LTE](e: Bijection[A, B]) {
+    (is_reflexive(relation_pullback(e.map, B.lte)) and
+     is_transitive(relation_pullback(e.map, B.lte)) and
+     is_antisymmetric(relation_pullback(e.map, B.lte))) =
+    (is_reflexive(B.lte) and is_transitive(B.lte) and is_antisymmetric(B.lte))
+} by {
+    bijection_map_is_bijection(e)
+    relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection(e.map)
+}
+
+/// Pushforward of less-than-or-equal preserves order data along a bundled bijection.
+theorem relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection_map[A: LTE, B](e: Bijection[A, B]) {
+    is_reflexive(A.lte) and is_transitive(A.lte) and is_antisymmetric(A.lte) implies
+    is_reflexive(relation_pushforward(e.map, A.lte)) and
+    is_transitive(relation_pushforward(e.map, A.lte)) and
+    is_antisymmetric(relation_pushforward(e.map, A.lte))
+} by {
+    if is_reflexive(A.lte) and is_transitive(A.lte) and is_antisymmetric(A.lte) {
+        bijection_map_is_bijection(e)
+        relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection(e.map)
+        is_reflexive(relation_pushforward(e.map, A.lte)) and
+        is_transitive(relation_pushforward(e.map, A.lte)) and
+        is_antisymmetric(relation_pushforward(e.map, A.lte))
     }
 }

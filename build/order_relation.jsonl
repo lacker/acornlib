@@ -112,6 +112,10 @@
 {"goal":"lte_pullback_is_antisymmetric_of_injective","proof":[]}
 {"goal":"is_antisymmetric[A](relation_pullback[A, B](f, B.gte))","proof":[]}
 {"goal":"gte_pullback_is_antisymmetric_of_injective","proof":[]}
+{"goal":"is_reflexive[A](relation_pullback[A, B](e.map, B.lte)) and is_transitive[A](relation_pullback[A, B](e.map, B.lte)) and is_antisymmetric[A](relation_pullback[A, B](e.map, B.lte))","proof":["is_antisymmetric[A](relation_pullback[A, B](e.map, B.lte))","not is_reflexive[A](relation_pullback[A, B](e.map, B.lte))"]}
+{"goal":"lte_pullback_is_order_data_of_bijection_map","proof":["is_antisymmetric[A](relation_pullback[A, B](e.map, B.lte))","not is_reflexive[A](relation_pullback[A, B](e.map, B.lte))"]}
+{"goal":"is_reflexive[A](relation_pullback[A, B](e.map, B.gte)) and is_transitive[A](relation_pullback[A, B](e.map, B.gte)) and is_antisymmetric[A](relation_pullback[A, B](e.map, B.gte))","proof":["is_antisymmetric[A](relation_pullback[A, B](e.map, B.gte))","not is_reflexive[A](relation_pullback[A, B](e.map, B.gte))"]}
+{"goal":"gte_pullback_is_order_data_of_bijection_map","proof":["is_antisymmetric[A](relation_pullback[A, B](e.map, B.gte))","not is_reflexive[A](relation_pullback[A, B](e.map, B.gte))"]}
 {"goal":"is_irreflexive[A](relation_pullback[A, B](f, B.lt))","proof":[]}
 {"goal":"lt_pullback_is_irreflexive","proof":[]}
 {"goal":"is_irreflexive[A](relation_pullback[A, B](f, B.gt))","proof":[]}
@@ -120,10 +124,18 @@
 {"goal":"lt_pullback_is_asymmetric","proof":[]}
 {"goal":"is_asymmetric[A](relation_pullback[A, B](f, B.gt))","proof":[]}
 {"goal":"gt_pullback_is_asymmetric","proof":[]}
+{"goal":"is_transitive[A](relation_pullback[A, B](e.map, B.lt))","proof":["not is_transitive[B](B.lt)"]}
+{"goal":"is_irreflexive[A](relation_pullback[A, B](e.map, B.lt)) and is_asymmetric[A](relation_pullback[A, B](e.map, B.lt)) and is_transitive[A](relation_pullback[A, B](e.map, B.lt))","proof":["not is_irreflexive[A](relation_pullback[A, B](e.map, B.lt))"]}
+{"goal":"lt_pullback_is_strict_order_data_of_bijection_map","proof":["not is_irreflexive[A](relation_pullback[A, B](e.map, B.lt))"]}
+{"goal":"is_transitive[A](relation_pullback[A, B](e.map, B.gt))","proof":["not is_transitive[B](B.gt)"]}
+{"goal":"is_irreflexive[A](relation_pullback[A, B](e.map, B.gt)) and is_asymmetric[A](relation_pullback[A, B](e.map, B.gt)) and is_transitive[A](relation_pullback[A, B](e.map, B.gt))","proof":["not is_irreflexive[A](relation_pullback[A, B](e.map, B.gt))"]}
+{"goal":"gt_pullback_is_strict_order_data_of_bijection_map","proof":["not is_irreflexive[A](relation_pullback[A, B](e.map, B.gt))"]}
 {"goal":"is_total[A](relation_pullback[A, B](f, B.lte))","proof":[]}
 {"goal":"lte_pullback_is_total","proof":[]}
 {"goal":"is_total[A](relation_pullback[A, B](f, B.gte))","proof":[]}
 {"goal":"gte_pullback_is_total","proof":[]}
+{"goal":"lte_pullback_is_total_of_bijection_map","proof":[]}
+{"goal":"gte_pullback_is_total_of_bijection_map","proof":[]}
 {"goal":"a <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](a, b)"]}
 {"goal":"a < b","proof":["function[T0](x0: T0, x1: T0) { lib(util).eq_relation[T0](x0, x1) = (x0 = x1) }[L](a, b)"]}
 {"goal":"a <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, b)"]}

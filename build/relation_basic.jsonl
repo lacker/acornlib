@@ -234,62 +234,62 @@
 {"goal":"is_reflexive[T](g)","proof":[]}
 {"goal":"relation_eq_imp_reflexive","proof":[]}
 {"goal":"is_reflexive[T](f)","proof":[]}
-{"goal":"relation_eq_imp_reflexive_rev","proof":["g = f","is_reflexive[T](g)","not is_reflexive[T](g)"]}
+{"goal":"relation_eq_imp_reflexive_rev","proof":[]}
 {"goal":"is_symmetric[T](g)","proof":[]}
 {"goal":"relation_eq_imp_symmetric","proof":[]}
 {"goal":"is_symmetric[T](f)","proof":[]}
-{"goal":"relation_eq_imp_symmetric_rev","proof":["g = f","is_symmetric[T](g)","not is_symmetric[T](g)"]}
+{"goal":"relation_eq_imp_symmetric_rev","proof":[]}
 {"goal":"is_transitive[T](g)","proof":[]}
 {"goal":"relation_eq_imp_transitive","proof":[]}
 {"goal":"is_transitive[T](f)","proof":[]}
-{"goal":"relation_eq_imp_transitive_rev","proof":["g = f","is_transitive[T](g)","not is_transitive[T](g)"]}
+{"goal":"relation_eq_imp_transitive_rev","proof":[]}
 {"goal":"is_antisymmetric[T](g)","proof":[]}
 {"goal":"relation_eq_imp_antisymmetric","proof":[]}
-{"goal":"is_antisymmetric[T](f)","proof":["g = f","is_antisymmetric[T](g)","not is_antisymmetric[T](g)"]}
-{"goal":"relation_eq_imp_antisymmetric_rev","proof":["g = f","is_antisymmetric[T](g)","not is_antisymmetric[T](g)"]}
-{"goal":"is_irreflexive[T](g)","proof":["g = f","is_irreflexive[T](f)","not is_irreflexive[T](f)"]}
-{"goal":"relation_eq_imp_irreflexive","proof":["g = f","is_irreflexive[T](f)","not is_irreflexive[T](f)"]}
-{"goal":"is_irreflexive[T](f)","proof":["g = f","is_irreflexive[T](g)","not is_irreflexive[T](g)"]}
-{"goal":"relation_eq_imp_irreflexive_rev","proof":["g = f","is_irreflexive[T](g)","not is_irreflexive[T](g)"]}
-{"goal":"is_asymmetric[T](g)","proof":["g = f","is_asymmetric[T](f)","not is_asymmetric[T](f)"]}
-{"goal":"relation_eq_imp_asymmetric","proof":["g = f","is_asymmetric[T](f)","not is_asymmetric[T](f)"]}
-{"goal":"is_asymmetric[T](f)","proof":["g = f","is_asymmetric[T](g)","not is_asymmetric[T](g)"]}
-{"goal":"relation_eq_imp_asymmetric_rev","proof":["g = f","is_asymmetric[T](g)","not is_asymmetric[T](g)"]}
-{"goal":"is_total[T](g)","proof":["g = f","is_total[T](f)","not is_total[T](f)"]}
-{"goal":"relation_eq_imp_total","proof":["g = f","is_total[T](f)","not is_total[T](f)"]}
-{"goal":"is_total[T](f)","proof":["g = f","is_total[T](g)","not is_total[T](g)"]}
-{"goal":"relation_eq_imp_total_rev","proof":["g = f","is_total[T](g)","not is_total[T](g)"]}
+{"goal":"is_antisymmetric[T](f)","proof":[]}
+{"goal":"relation_eq_imp_antisymmetric_rev","proof":[]}
+{"goal":"is_irreflexive[T](g)","proof":[]}
+{"goal":"relation_eq_imp_irreflexive","proof":[]}
+{"goal":"is_irreflexive[T](f)","proof":[]}
+{"goal":"relation_eq_imp_irreflexive_rev","proof":[]}
+{"goal":"is_asymmetric[T](g)","proof":[]}
+{"goal":"relation_eq_imp_asymmetric","proof":[]}
+{"goal":"is_asymmetric[T](f)","proof":[]}
+{"goal":"relation_eq_imp_asymmetric_rev","proof":[]}
+{"goal":"is_total[T](g)","proof":[]}
+{"goal":"relation_eq_imp_total","proof":[]}
+{"goal":"is_total[T](f)","proof":[]}
+{"goal":"relation_eq_imp_total_rev","proof":[]}
 {"goal":"is_equivalence[T](g)","proof":[]}
 {"goal":"relation_eq_imp_equivalence","proof":[]}
 {"goal":"is_equivalence[T](f)","proof":[]}
-{"goal":"relation_eq_imp_equivalence_rev","proof":["g = f","is_equivalence[T](g)","not is_equivalence[T](g)"]}
+{"goal":"relation_eq_imp_equivalence_rev","proof":[]}
 {"goal":"is_partial_equivalence[T](g)","proof":[]}
 {"goal":"relation_eq_imp_partial_equivalence","proof":[]}
 {"goal":"is_partial_equivalence[T](f)","proof":[]}
-{"goal":"relation_eq_imp_partial_equivalence_rev","proof":["g = f","is_partial_equivalence[T](g)","not is_partial_equivalence[T](g)"]}
-{"goal":"relation_subset[A, B](s, t)","proof":["s = r","relation_subset[A, B](r, t)","not relation_subset[A, B](r, t)"]}
-{"goal":"relation_subset_eq_left","proof":["s = r","relation_subset[A, B](r, t)","not relation_subset[A, B](r, t)"]}
-{"goal":"relation_subset[A, B](r, t)","proof":["t = s","relation_subset[A, B](r, s)","not relation_subset[A, B](r, s)"]}
-{"goal":"relation_subset_eq_right","proof":["t = s","relation_subset[A, B](r, s)","not relation_subset[A, B](r, s)"]}
-{"goal":"relation_subset[A, B](s, u)","proof":["relation_subset[A, B](r, t)","r = s and t = u","not relation_subset[A, B](s, t)","relation_subset[A, B](s, t)"]}
-{"goal":"relation_subset_eq","proof":["not relation_subset[A, B](r, t) or u != t or s != r","relation_subset[A, B](r, t)","u != t or s != r","r = s and t = u","s != r"]}
+{"goal":"relation_eq_imp_partial_equivalence_rev","proof":[]}
+{"goal":"relation_subset[A, B](s, t)","proof":[]}
+{"goal":"relation_subset_eq_left","proof":[]}
+{"goal":"relation_subset[A, B](r, t)","proof":[]}
+{"goal":"relation_subset_eq_right","proof":[]}
+{"goal":"relation_subset[A, B](s, u)","proof":[]}
+{"goal":"relation_subset_eq","proof":[]}
 {"goal":"is_equivalence[T](f) = is_reflexive[T](f) and is_symmetric[T](f) and is_transitive[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
-{"goal":"is_equivalence[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_reflexive[T0](x0) and is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_equivalence[T0](x0) }[T](f)"]}
+{"goal":"is_equivalence[T](f)","proof":[]}
 {"goal":"reflexive_symmetric_transitive_imp_equivalence","proof":[]}
 {"goal":"is_partial_equivalence[T](f) = is_symmetric[T](f) and is_transitive[T](f)","proof":["function[T0](x0: (T0, T0) -> Bool) { (is_symmetric[T0](x0) and is_transitive[T0](x0)) = is_partial_equivalence[T0](x0) }[T](f)"]}
 {"goal":"is_partial_equivalence[T](f)","proof":[]}
 {"goal":"symmetric_transitive_imp_partial_equivalence","proof":[]}
 {"goal":"is_symmetric[T](f)","proof":[]}
 {"goal":"is_transitive[T](f)","proof":[]}
-{"goal":"is_partial_equivalence[T](f)","proof":["not is_transitive[T](f) or not is_symmetric[T](f)","not is_symmetric[T](f)"]}
+{"goal":"is_partial_equivalence[T](f)","proof":[]}
 {"goal":"equivalence_imp_partial_equivalence","proof":[]}
-{"goal":"is_reflexive[T](f)","proof":["not is_equivalence[T](f)"]}
+{"goal":"is_reflexive[T](f)","proof":[]}
 {"goal":"f(x, x)","proof":[]}
 {"goal":"equivalence_self","proof":[]}
-{"goal":"is_symmetric[T](f)","proof":["not is_equivalence[T](f)"]}
+{"goal":"is_symmetric[T](f)","proof":[]}
 {"goal":"f(y, x)","proof":[]}
 {"goal":"equivalence_flip","proof":[]}
-{"goal":"is_transitive[T](f)","proof":["not is_equivalence[T](f)","is_equivalence[T](f) and f(x, y)"]}
+{"goal":"is_transitive[T](f)","proof":[]}
 {"goal":"f(x, z)","proof":[]}
 {"goal":"equivalence_step","proof":[]}
 {"goal":"r(x, x) and s(x, x)","proof":[]}

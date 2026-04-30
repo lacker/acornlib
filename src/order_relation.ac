@@ -6,7 +6,8 @@ from relation import relation_refl_trans_closure, relation_trans_closure,
     relation_refl_trans_closure_subset_of_reflexive_transitive,
     relation_trans_closure_subset_of_transitive, relation_refl_trans_closure_is_reflexive,
     relation_refl_trans_closure_pullback_of_bijection, relation_trans_closure_pullback_of_surjective
-from functions import binary_function_extensionality, is_injective_fn, is_bijection_fn, is_surjective_fn
+from functions import binary_function_extensionality, is_injective_fn, is_bijection_fn, is_surjective_fn,
+    Bijection, bijection_map_is_injective, bijection_map_is_bijection
 from relation_basic import is_reflexive, is_transitive, is_antisymmetric, is_irreflexive,
     is_asymmetric, is_total, reflexive_self, relation_converse, relation_subset,
     relation_subset_refl, relation_subset_step
@@ -490,6 +491,34 @@ theorem gte_pullback_is_antisymmetric_of_injective[A, B: PartialOrder](f: A -> B
     }
 }
 
+theorem lte_pullback_is_order_data_of_bijection_map[A, B: PartialOrder](e: Bijection[A, B]) {
+    is_reflexive(relation_pullback(e.map, B.lte)) and
+    is_transitive(relation_pullback(e.map, B.lte)) and
+    is_antisymmetric(relation_pullback(e.map, B.lte))
+} by {
+    lte_pullback_is_reflexive(e.map)
+    lte_pullback_is_transitive(e.map)
+    bijection_map_is_injective(e)
+    lte_pullback_is_antisymmetric_of_injective(e.map)
+    is_reflexive(relation_pullback(e.map, B.lte)) and
+    is_transitive(relation_pullback(e.map, B.lte)) and
+    is_antisymmetric(relation_pullback(e.map, B.lte))
+}
+
+theorem gte_pullback_is_order_data_of_bijection_map[A, B: PartialOrder](e: Bijection[A, B]) {
+    is_reflexive(relation_pullback(e.map, B.gte)) and
+    is_transitive(relation_pullback(e.map, B.gte)) and
+    is_antisymmetric(relation_pullback(e.map, B.gte))
+} by {
+    gte_pullback_is_reflexive(e.map)
+    gte_pullback_is_transitive(e.map)
+    bijection_map_is_injective(e)
+    gte_pullback_is_antisymmetric_of_injective(e.map)
+    is_reflexive(relation_pullback(e.map, B.gte)) and
+    is_transitive(relation_pullback(e.map, B.gte)) and
+    is_antisymmetric(relation_pullback(e.map, B.gte))
+}
+
 theorem lt_pullback_is_irreflexive[A, B: PartialOrder](f: A -> B) {
     is_irreflexive(relation_pullback(f, B.lt))
 } by {
@@ -522,6 +551,36 @@ theorem gt_pullback_is_asymmetric[A, B: PartialOrder](f: A -> B) {
     is_asymmetric(relation_pullback(f, B.gt))
 }
 
+theorem lt_pullback_is_strict_order_data_of_bijection_map[A, B: PartialOrder](e: Bijection[A, B]) {
+    is_irreflexive(relation_pullback(e.map, B.lt)) and
+    is_asymmetric(relation_pullback(e.map, B.lt)) and
+    is_transitive(relation_pullback(e.map, B.lt))
+} by {
+    lt_pullback_is_irreflexive(e.map)
+    lt_pullback_is_asymmetric(e.map)
+    lt_relation_is_transitive[B]
+    relation_pullback_is_transitive(e.map, B.lt)
+    is_transitive(relation_pullback(e.map, B.lt))
+    is_irreflexive(relation_pullback(e.map, B.lt)) and
+    is_asymmetric(relation_pullback(e.map, B.lt)) and
+    is_transitive(relation_pullback(e.map, B.lt))
+}
+
+theorem gt_pullback_is_strict_order_data_of_bijection_map[A, B: PartialOrder](e: Bijection[A, B]) {
+    is_irreflexive(relation_pullback(e.map, B.gt)) and
+    is_asymmetric(relation_pullback(e.map, B.gt)) and
+    is_transitive(relation_pullback(e.map, B.gt))
+} by {
+    gt_pullback_is_irreflexive(e.map)
+    gt_pullback_is_asymmetric(e.map)
+    gt_relation_is_transitive[B]
+    relation_pullback_is_transitive(e.map, B.gt)
+    is_transitive(relation_pullback(e.map, B.gt))
+    is_irreflexive(relation_pullback(e.map, B.gt)) and
+    is_asymmetric(relation_pullback(e.map, B.gt)) and
+    is_transitive(relation_pullback(e.map, B.gt))
+}
+
 theorem lte_pullback_is_total[A, B: LinearOrder](f: A -> B) {
     is_total(relation_pullback(f, B.lte))
 } by {
@@ -536,6 +595,18 @@ theorem gte_pullback_is_total[A, B: LinearOrder](f: A -> B) {
     gte_relation_is_total[B]
     relation_pullback_is_total(f, B.gte)
     is_total(relation_pullback(f, B.gte))
+}
+
+theorem lte_pullback_is_total_of_bijection_map[A, B: LinearOrder](e: Bijection[A, B]) {
+    is_total(relation_pullback(e.map, B.lte))
+} by {
+    lte_pullback_is_total(e.map)
+}
+
+theorem gte_pullback_is_total_of_bijection_map[A, B: LinearOrder](e: Bijection[A, B]) {
+    is_total(relation_pullback(e.map, B.gte))
+} by {
+    gte_pullback_is_total(e.map)
 }
 
 theorem lt_refl_trans_closure_at[L: LinearOrder](a: L, b: L) {

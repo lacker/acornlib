@@ -143,6 +143,12 @@
 {"goal":"predicate_pullback_eq_iff_of_bijection","proof":[]}
 {"goal":"predicate_pushforward[A, B](f, p) = predicate_pushforward[A, B](f, q) = (p = q)","proof":[]}
 {"goal":"predicate_pushforward_eq_iff_of_bijection","proof":[]}
+{"goal":"predicate_pullback_pushforward_of_bijection_map","proof":[]}
+{"goal":"predicate_pushforward_pullback_of_bijection_map","proof":[]}
+{"goal":"predicate_pullback_subset_iff_of_bijection_map","proof":[]}
+{"goal":"predicate_pushforward_subset_iff_of_bijection_map","proof":[]}
+{"goal":"predicate_pullback_eq_iff_of_bijection_map","proof":[]}
+{"goal":"predicate_pushforward_eq_iff_of_bijection_map","proof":[]}
 {"goal":"exists(k0: A, k1: A) { k0 = x and k1 = y and f(k0) = f(x) and f(k1) = f(y) and r(k0, k1) }","proof":[]}
 {"goal":"relation_pushforward[A, B](f, r, f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: T1, x2: T1, x3: (T0, T0) -> Bool) { exists(k0: T0, k1: T0) { x0(k0) = x1 and x0(k1) = x2 and x3(k0, k1) } = relation_pushforward[T0, T1](x0, x3, x1, x2) }[A, B](f, f(x), f(y), r)"]}
 {"goal":"relation_pushforward_intro","proof":[]}
@@ -250,6 +256,10 @@
 {"goal":"is_antisymmetric[B](relation_pushforward[A, B](f, r))","proof":[]}
 {"goal":"is_reflexive[B](relation_pushforward[A, B](f, r)) and is_transitive[B](relation_pushforward[A, B](f, r)) and is_antisymmetric[B](relation_pushforward[A, B](f, r))","proof":[]}
 {"goal":"relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection","proof":[]}
+{"goal":"is_equivalence[B](relation_pushforward[A, B](e.map, r))","proof":[]}
+{"goal":"relation_pushforward_is_equivalence_of_bijection_map","proof":[]}
+{"goal":"is_reflexive[B](relation_pushforward[A, B](e.map, r)) and is_transitive[B](relation_pushforward[A, B](e.map, r)) and is_antisymmetric[B](relation_pushforward[A, B](e.map, r))","proof":[]}
+{"goal":"relation_pushforward_is_reflexive_transitive_antisymmetric_of_bijection_map","proof":[]}
 {"goal":"relation_pullback[A, B](f, relation_pushforward[A, B](f, r), x, y)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_pushforward[A, B](f, r), x, y)"]}
 {"goal":"relation_subset_pullback_pushforward","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, A](r, relation_pullback[A, B](f, relation_pushforward[A, B](f, r)))","let w0: A satisfy { exists(k0: A) { r(w0, k0) and not relation_pullback[A, B](f, relation_pushforward[A, B](f, r), w0, k0) } }","let w1: A satisfy { r(w0, w1) and not relation_pullback[A, B](f, relation_pushforward[A, B](f, r), w0, w1) }","function(x0: A, x1: A) { not r(x0, x1) or relation_pullback[A, B](f, relation_pushforward[A, B](f, r), x0, x1) }(w0, w1)"]}
 {"goal":"relation_pullback[A, B](f, relation_pushforward[A, B](f, r), x, y) = relation_pushforward[A, B](f, r, f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_pushforward[A, B](f, r), x, y)"]}
@@ -280,6 +290,8 @@
 {"goal":"relation_pushforward_pullback_of_surjective_at","proof":[]}
 {"goal":"u(p, q) = r(p, q)","proof":[]}
 {"goal":"relation_pushforward_pullback_of_surjective","proof":["let w0: B satisfy { r(w0) != relation_pushforward[A, B](f, relation_pullback[A, B](f, r), w0) }","let w1: B satisfy { r(w0, w1) != relation_pushforward[A, B](f, relation_pullback[A, B](f, r), w0, w1) }","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T1, x3: T1) { not is_surjective_fn[T0, T1](x0) or relation_pushforward[T0, T1](x0, relation_pullback[T0, T1](x0, x1), x2, x3) = x1(x2, x3) }[A, B](f, r, w0, w1)"]}
+{"goal":"relation_pullback_pushforward_of_bijection_map","proof":[]}
+{"goal":"relation_pushforward_pullback_of_bijection_map","proof":[]}
 {"goal":"u(x, y) = relation_converse(r, f(x), f(y))","proof":["function(x0: A, x1: A) { relation_pullback[A, B](f, relation_converse[B, B](r), x0, x1) = u(x0, x1) }(x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_converse[B, B](r), x, y)"]}
 {"goal":"relation_converse(r, f(x), f(y)) = r(f(y), f(x))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[B, B](r, f(x), f(y))"]}
 {"goal":"v(x, y) = relation_pullback[A, B](f, r, y, x)","proof":["function(x0: A, x1: A) { relation_converse(relation_pullback[A, B](f, r), x0, x1) = v(x0, x1) }(x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, A](relation_pullback[A, B](f, r), x, y)"]}
@@ -1343,3 +1355,6 @@
 {"goal":"relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection","proof":[]}
 {"goal":"is_reflexive[B](relation_pushforward[A, B](f, A.lte)) and is_transitive[B](relation_pushforward[A, B](f, A.lte)) and is_antisymmetric[B](relation_pushforward[A, B](f, A.lte))","proof":[]}
 {"goal":"relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection","proof":[]}
+{"goal":"relation_pullback_lte_is_reflexive_transitive_antisymmetric_iff_of_bijection_map","proof":["not is_bijection_fn[A, B](e.map)"]}
+{"goal":"is_reflexive[B](relation_pushforward[A, B](e.map, A.lte)) and is_transitive[B](relation_pushforward[A, B](e.map, A.lte)) and is_antisymmetric[B](relation_pushforward[A, B](e.map, A.lte))","proof":["function[T0: LTE, T1](x0: T0 -> T1) { not is_antisymmetric[T0](T0.lte) or not is_transitive[T0](T0.lte) or not is_reflexive[T0](T0.lte) or not is_bijection_fn[T0, T1](x0) or (is_reflexive[T1](relation_pushforward[T0, T1](x0, T0.lte)) and is_transitive[T1](relation_pushforward[T0, T1](x0, T0.lte)) and is_antisymmetric[T1](relation_pushforward[T0, T1](x0, T0.lte))) }[A, B](e.map)","is_antisymmetric[A](A.lte)","is_reflexive[A](A.lte) and is_transitive[A](A.lte)","function[T0: LTE, T1](x0: T0 -> T1) { not is_antisymmetric[T0](T0.lte) or not is_transitive[T0](T0.lte) or not is_reflexive[T0](T0.lte) or not is_bijection_fn[T0, T1](x0) or (is_reflexive[T1](relation_pushforward[T0, T1](x0, T0.lte)) and is_transitive[T1](relation_pushforward[T0, T1](x0, T0.lte))) }[A, B](e.map)","function[T0: LTE, T1](x0: T0 -> T1) { not is_antisymmetric[T0](T0.lte) or not is_transitive[T0](T0.lte) or not is_reflexive[T0](T0.lte) or not is_bijection_fn[T0, T1](x0) or is_reflexive[T1](relation_pushforward[T0, T1](x0, T0.lte)) }[A, B](e.map)","is_reflexive[B](relation_pushforward[A, B](e.map, A.lte)) and is_transitive[B](relation_pushforward[A, B](e.map, A.lte)) and is_antisymmetric[B](relation_pushforward[A, B](e.map, A.lte))","not is_transitive[B](relation_pushforward[A, B](e.map, A.lte)) or not is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))","is_transitive[B](relation_pushforward[A, B](e.map, A.lte))","is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))","not is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))"]}
+{"goal":"relation_pushforward_lte_is_reflexive_transitive_antisymmetric_of_bijection_map","proof":["is_antisymmetric[A](A.lte)","is_reflexive[A](A.lte) and is_transitive[A](A.lte)","is_reflexive[B](relation_pushforward[A, B](e.map, A.lte)) and is_transitive[B](relation_pushforward[A, B](e.map, A.lte)) and is_antisymmetric[B](relation_pushforward[A, B](e.map, A.lte))","not is_transitive[B](relation_pushforward[A, B](e.map, A.lte)) or not is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))","is_transitive[B](relation_pushforward[A, B](e.map, A.lte))","is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))","not is_reflexive[B](relation_pushforward[A, B](e.map, A.lte))"]}
