@@ -141,7 +141,7 @@
 {"goal":"a = b","proof":[]}
 {"goal":"a > b or a = b","proof":[]}
 {"goal":"a >= b","proof":[]}
-{"goal":"a = b","proof":["a > b"]}
+{"goal":"a = b","proof":[]}
 {"goal":"a >= b","proof":[]}
 {"goal":"a >= b = (a > b or a = b)","proof":[]}
 {"goal":"gte_iff_gt_or_eq","proof":[]}
