@@ -2,7 +2,7 @@
 
 from functions import Inhabited, compose, identity_fn, inverse_fn, inverse_fn_apply_of_surjective,
     inverse_fn_apply_image_of_bijection, predicate_extensionality, binary_function_extensionality,
-    is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective,
+    function_extensionality, is_injective_fn, is_surjective_fn, is_bijection_fn, bijection_fn_is_injective,
     bijection_fn_is_surjective, injective_fn_eq, surjective_fn_has_preimage
 from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, eq_relation_is_equivalence, relation_intersection_is_equivalence, relation_converse_is_equivalence, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
 
@@ -3517,5 +3517,810 @@ theorem relation_pullback_eq_relation_is_binary_congruence[A, B](f: A -> B, op_a
         is_binary_congruence(eq_relation[B], op_b)
         relation_pullback_is_binary_congruence_of_preserves_binary_op(f, eq_relation[B], op_a, op_b)
         is_binary_congruence(relation_pullback(f, eq_relation[B]), op_a)
+    }
+}
+
+/// The unary operation on a target domain induced by a bijection from a source domain.
+define unary_op_pushforward[A: Inhabited, B](f: A -> B, op: A -> A, y: B) -> B {
+    f(op(inverse_fn(f, y)))
+}
+
+/// The binary operation on a target domain induced by a bijection from a source domain.
+define binary_op_pushforward[A: Inhabited, B](f: A -> B, op: (A, A) -> A, y: B, z: B) -> B {
+    f(op(inverse_fn(f, y), inverse_fn(f, z)))
+}
+
+/// Transporting a unary operation across a bijection agrees with the source operation on images.
+theorem unary_op_pushforward_apply_image_of_bijection[A: Inhabited, B](f: A -> B, op: A -> A, x: A) {
+    is_bijection_fn(f) implies unary_op_pushforward(f, op, f(x)) = f(op(x))
+} by {
+    if is_bijection_fn(f) {
+        unary_op_pushforward(f, op, f(x)) = f(op(inverse_fn(f, f(x))))
+        inverse_fn_apply_image_of_bijection(f, x)
+        inverse_fn(f, f(x)) = x
+        unary_op_pushforward(f, op, f(x)) = f(op(x))
+    }
+}
+
+/// Transporting a binary operation across a bijection agrees with the source operation on images.
+theorem binary_op_pushforward_apply_image_of_bijection[A: Inhabited, B](f: A -> B, op: (A, A) -> A, x: A, y: A) {
+    is_bijection_fn(f) implies binary_op_pushforward(f, op, f(x), f(y)) = f(op(x, y))
+} by {
+    if is_bijection_fn(f) {
+        binary_op_pushforward(f, op, f(x), f(y)) = f(op(inverse_fn(f, f(x)), inverse_fn(f, f(y))))
+        inverse_fn_apply_image_of_bijection(f, x)
+        inverse_fn_apply_image_of_bijection(f, y)
+        inverse_fn(f, f(x)) = x
+        inverse_fn(f, f(y)) = y
+        binary_op_pushforward(f, op, f(x), f(y)) = f(op(x, y))
+    }
+}
+
+/// A bijection preserves every unary operation after pushing that operation forward.
+theorem bijection_preserves_unary_op_pushforward[A: Inhabited, B](f: A -> B, op: A -> A) {
+    is_bijection_fn(f) implies preserves_unary_op(f, op, unary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) {
+        forall(x: A) {
+            unary_op_pushforward_apply_image_of_bijection(f, op, x)
+            unary_op_pushforward(f, op, f(x)) = f(op(x))
+            f(op(x)) = unary_op_pushforward(f, op, f(x))
+        }
+        preserves_unary_op(f, op, unary_op_pushforward(f, op))
+    }
+}
+
+/// A bijection preserves every binary operation after pushing that operation forward.
+theorem bijection_preserves_binary_op_pushforward[A: Inhabited, B](f: A -> B, op: (A, A) -> A) {
+    is_bijection_fn(f) implies preserves_binary_op(f, op, binary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) {
+        forall(x: A, y: A) {
+            binary_op_pushforward_apply_image_of_bijection(f, op, x, y)
+            binary_op_pushforward(f, op, f(x), f(y)) = f(op(x, y))
+            f(op(x, y)) = binary_op_pushforward(f, op, f(x), f(y))
+        }
+        preserves_binary_op(f, op, binary_op_pushforward(f, op))
+    }
+}
+
+/// Pushforward preserves unary compatibility along bijective transport of the operation.
+theorem relation_pushforward_respects_unary_op_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) and respects_unary_op(r, op) implies
+    respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) and respects_unary_op(r, op) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(u: B, v: B) {
+            if relation_pushforward(f, r, u, v) {
+                relation_pushforward_has_preimages(f, r, u, v)
+                let x: A satisfy {
+                    exists(y: A) {
+                        f(x) = u and f(y) = v and r(x, y)
+                    }
+                }
+                let y: A satisfy {
+                    f(x) = u and f(y) = v and r(x, y)
+                }
+                inverse_fn_apply_of_surjective(f, u)
+                f(inverse_fn(f, u)) = u
+                f(x) = u
+                f(inverse_fn(f, u)) = f(x)
+                injective_fn_eq(f, inverse_fn(f, u), x)
+                inverse_fn(f, u) = x
+                inverse_fn_apply_of_surjective(f, v)
+                f(inverse_fn(f, v)) = v
+                f(y) = v
+                f(inverse_fn(f, v)) = f(y)
+                injective_fn_eq(f, inverse_fn(f, v), y)
+                inverse_fn(f, v) = y
+                respects_unary_op_step(r, op, x, y)
+                r(op(x), op(y))
+                unary_op_pushforward(f, op, u) = f(op(inverse_fn(f, u)))
+                unary_op_pushforward(f, op, u) = f(op(x))
+                unary_op_pushforward(f, op, v) = f(op(inverse_fn(f, v)))
+                unary_op_pushforward(f, op, v) = f(op(y))
+                relation_pushforward_intro(f, r, op(x), op(y))
+                relation_pushforward(f, r, f(op(x)), f(op(y)))
+                relation_pushforward(f, r, unary_op_pushforward(f, op, u), unary_op_pushforward(f, op, v))
+            }
+        }
+    }
+}
+
+/// Pushforward preserves binary compatibility along bijective transport of the operation.
+theorem relation_pushforward_respects_binary_op_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) and respects_binary_op(r, op) implies
+    respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) and respects_binary_op(r, op) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(u1: B, v1: B, u2: B, v2: B) {
+            if relation_pushforward(f, r, u1, v1) and relation_pushforward(f, r, u2, v2) {
+                relation_pushforward_has_preimages(f, r, u1, v1)
+                let x1: A satisfy {
+                    exists(y1: A) {
+                        f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                    }
+                }
+                let y1: A satisfy {
+                    f(x1) = u1 and f(y1) = v1 and r(x1, y1)
+                }
+                relation_pushforward_has_preimages(f, r, u2, v2)
+                let x2: A satisfy {
+                    exists(y2: A) {
+                        f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                    }
+                }
+                let y2: A satisfy {
+                    f(x2) = u2 and f(y2) = v2 and r(x2, y2)
+                }
+                inverse_fn_apply_of_surjective(f, u1)
+                f(inverse_fn(f, u1)) = u1
+                f(inverse_fn(f, u1)) = f(x1)
+                injective_fn_eq(f, inverse_fn(f, u1), x1)
+                inverse_fn(f, u1) = x1
+                inverse_fn_apply_of_surjective(f, v1)
+                f(inverse_fn(f, v1)) = v1
+                f(inverse_fn(f, v1)) = f(y1)
+                injective_fn_eq(f, inverse_fn(f, v1), y1)
+                inverse_fn(f, v1) = y1
+                inverse_fn_apply_of_surjective(f, u2)
+                f(inverse_fn(f, u2)) = u2
+                f(inverse_fn(f, u2)) = f(x2)
+                injective_fn_eq(f, inverse_fn(f, u2), x2)
+                inverse_fn(f, u2) = x2
+                inverse_fn_apply_of_surjective(f, v2)
+                f(inverse_fn(f, v2)) = v2
+                f(inverse_fn(f, v2)) = f(y2)
+                injective_fn_eq(f, inverse_fn(f, v2), y2)
+                inverse_fn(f, v2) = y2
+                respects_binary_op_step(r, op, x1, y1, x2, y2)
+                r(op(x1, x2), op(y1, y2))
+                binary_op_pushforward(f, op, u1, u2) = f(op(inverse_fn(f, u1), inverse_fn(f, u2)))
+                binary_op_pushforward(f, op, u1, u2) = f(op(x1, x2))
+                binary_op_pushforward(f, op, v1, v2) = f(op(inverse_fn(f, v1), inverse_fn(f, v2)))
+                binary_op_pushforward(f, op, v1, v2) = f(op(y1, y2))
+                relation_pushforward_intro(f, r, op(x1, x2), op(y1, y2))
+                relation_pushforward(f, r, f(op(x1, x2)), f(op(y1, y2)))
+                relation_pushforward(f, r, binary_op_pushforward(f, op, u1, u2), binary_op_pushforward(f, op, v1, v2))
+            }
+        }
+    }
+}
+
+/// Pushforward preserves unary congruence relations along bijective transport of the operation.
+theorem relation_pushforward_is_unary_congruence_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) and is_unary_congruence(r, op) implies
+    is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) and is_unary_congruence(r, op) {
+        unary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        relation_pushforward_is_equivalence_of_bijection(f, r)
+        is_equivalence(relation_pushforward(f, r))
+        unary_congruence_respects_unary_op(r, op)
+        respects_unary_op(r, op)
+        relation_pushforward_respects_unary_op_of_bijection(f, r, op)
+        respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op))
+    }
+}
+
+/// Pushforward preserves binary congruence relations along bijective transport of the operation.
+theorem relation_pushforward_is_binary_congruence_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) and is_binary_congruence(r, op) implies
+    is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op))
+} by {
+    if is_bijection_fn(f) and is_binary_congruence(r, op) {
+        binary_congruence_is_equivalence(r, op)
+        is_equivalence(r)
+        relation_pushforward_is_equivalence_of_bijection(f, r)
+        is_equivalence(relation_pushforward(f, r))
+        binary_congruence_respects_binary_op(r, op)
+        respects_binary_op(r, op)
+        relation_pushforward_respects_binary_op_of_bijection(f, r, op)
+        respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op))
+    }
+}
+
+/// Bijective pushforward reflects unary compatibility for the transported operation.
+theorem relation_pushforward_reflects_respects_unary_op_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) and respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op)) implies
+    respects_unary_op(r, op)
+} by {
+    if is_bijection_fn(f) and respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op)) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        forall(x: A, y: A) {
+            if r(x, y) {
+                relation_pushforward_intro(f, r, x, y)
+                relation_pushforward(f, r, f(x), f(y))
+                respects_unary_op_step(relation_pushforward(f, r), unary_op_pushforward(f, op), f(x), f(y))
+                relation_pushforward(f, r, unary_op_pushforward(f, op, f(x)), unary_op_pushforward(f, op, f(y)))
+                unary_op_pushforward_apply_image_of_bijection(f, op, x)
+                unary_op_pushforward_apply_image_of_bijection(f, op, y)
+                unary_op_pushforward(f, op, f(x)) = f(op(x))
+                unary_op_pushforward(f, op, f(y)) = f(op(y))
+                relation_pushforward(f, r, f(op(x)), f(op(y)))
+                relation_pushforward_has_preimages(f, r, f(op(x)), f(op(y)))
+                let a: A satisfy {
+                    exists(b: A) {
+                        f(a) = f(op(x)) and f(b) = f(op(y)) and r(a, b)
+                    }
+                }
+                let b: A satisfy {
+                    f(a) = f(op(x)) and f(b) = f(op(y)) and r(a, b)
+                }
+                injective_fn_eq(f, a, op(x))
+                a = op(x)
+                injective_fn_eq(f, b, op(y))
+                b = op(y)
+                r(op(x), op(y))
+            }
+        }
+    }
+}
+
+/// Bijective pushforward reflects binary compatibility for the transported operation.
+theorem relation_pushforward_reflects_respects_binary_op_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) and respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op)) implies
+    respects_binary_op(r, op)
+} by {
+    if is_bijection_fn(f) and respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op)) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        forall(x1: A, y1: A, x2: A, y2: A) {
+            if r(x1, y1) and r(x2, y2) {
+                relation_pushforward_intro(f, r, x1, y1)
+                relation_pushforward(f, r, f(x1), f(y1))
+                relation_pushforward_intro(f, r, x2, y2)
+                relation_pushforward(f, r, f(x2), f(y2))
+                respects_binary_op_step(
+                    relation_pushforward(f, r),
+                    binary_op_pushforward(f, op),
+                    f(x1),
+                    f(y1),
+                    f(x2),
+                    f(y2)
+                )
+                relation_pushforward(
+                    f,
+                    r,
+                    binary_op_pushforward(f, op, f(x1), f(x2)),
+                    binary_op_pushforward(f, op, f(y1), f(y2))
+                )
+                binary_op_pushforward_apply_image_of_bijection(f, op, x1, x2)
+                binary_op_pushforward_apply_image_of_bijection(f, op, y1, y2)
+                binary_op_pushforward(f, op, f(x1), f(x2)) = f(op(x1, x2))
+                binary_op_pushforward(f, op, f(y1), f(y2)) = f(op(y1, y2))
+                relation_pushforward(f, r, f(op(x1, x2)), f(op(y1, y2)))
+                relation_pushforward_has_preimages(f, r, f(op(x1, x2)), f(op(y1, y2)))
+                let a: A satisfy {
+                    exists(b: A) {
+                        f(a) = f(op(x1, x2)) and f(b) = f(op(y1, y2)) and r(a, b)
+                    }
+                }
+                let b: A satisfy {
+                    f(a) = f(op(x1, x2)) and f(b) = f(op(y1, y2)) and r(a, b)
+                }
+                injective_fn_eq(f, a, op(x1, x2))
+                a = op(x1, x2)
+                injective_fn_eq(f, b, op(y1, y2))
+                b = op(y1, y2)
+                r(op(x1, x2), op(y1, y2))
+            }
+        }
+    }
+}
+
+/// Bijective pushforward exactly transports unary compatibility.
+theorem relation_pushforward_respects_unary_op_iff_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) implies
+    respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op)) = respects_unary_op(r, op)
+} by {
+    if is_bijection_fn(f) {
+        if respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op)) {
+            relation_pushforward_reflects_respects_unary_op_of_bijection(f, r, op)
+            respects_unary_op(r, op)
+        }
+        if respects_unary_op(r, op) {
+            relation_pushforward_respects_unary_op_of_bijection(f, r, op)
+            respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        }
+        respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op)) = respects_unary_op(r, op)
+    }
+}
+
+/// Bijective pushforward exactly transports binary compatibility.
+theorem relation_pushforward_respects_binary_op_iff_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) implies
+    respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op)) = respects_binary_op(r, op)
+} by {
+    if is_bijection_fn(f) {
+        if respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op)) {
+            relation_pushforward_reflects_respects_binary_op_of_bijection(f, r, op)
+            respects_binary_op(r, op)
+        }
+        if respects_binary_op(r, op) {
+            relation_pushforward_respects_binary_op_of_bijection(f, r, op)
+            respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        }
+        respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op)) = respects_binary_op(r, op)
+    }
+}
+
+/// Bijective pushforward reflects unary congruence relations for the transported operation.
+theorem relation_pushforward_reflects_unary_congruence_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) and is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op)) implies
+    is_unary_congruence(r, op)
+} by {
+    if is_bijection_fn(f) and is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op)) {
+        relation_pullback_pushforward_of_injective(f, r)
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        relation_pullback_pushforward_of_injective(f, r)
+        relation_pullback(f, relation_pushforward(f, r)) = r
+        unary_congruence_is_equivalence(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        is_equivalence(relation_pushforward(f, r))
+        relation_pullback_is_equivalence(f, relation_pushforward(f, r))
+        is_equivalence(relation_pullback(f, relation_pushforward(f, r)))
+        is_equivalence(r)
+        unary_congruence_respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        relation_pushforward_reflects_respects_unary_op_of_bijection(f, r, op)
+        respects_unary_op(r, op)
+        is_unary_congruence(r, op)
+    }
+}
+
+/// Bijective pushforward reflects binary congruence relations for the transported operation.
+theorem relation_pushforward_reflects_binary_congruence_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) and is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op)) implies
+    is_binary_congruence(r, op)
+} by {
+    if is_bijection_fn(f) and is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op)) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        relation_pullback_pushforward_of_injective(f, r)
+        relation_pullback(f, relation_pushforward(f, r)) = r
+        binary_congruence_is_equivalence(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        is_equivalence(relation_pushforward(f, r))
+        relation_pullback_is_equivalence(f, relation_pushforward(f, r))
+        is_equivalence(relation_pullback(f, relation_pushforward(f, r)))
+        is_equivalence(r)
+        binary_congruence_respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        relation_pushforward_reflects_respects_binary_op_of_bijection(f, r, op)
+        respects_binary_op(r, op)
+        is_binary_congruence(r, op)
+    }
+}
+
+/// Bijective pushforward exactly transports unary congruence relations.
+theorem relation_pushforward_is_unary_congruence_iff_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: A -> A
+) {
+    is_bijection_fn(f) implies
+    is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op)) = is_unary_congruence(r, op)
+} by {
+    if is_bijection_fn(f) {
+        if is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op)) {
+            relation_pushforward_reflects_unary_congruence_of_bijection(f, r, op)
+            is_unary_congruence(r, op)
+        }
+        if is_unary_congruence(r, op) {
+            relation_pushforward_is_unary_congruence_of_bijection(f, r, op)
+            is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op))
+        }
+        is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op)) = is_unary_congruence(r, op)
+    }
+}
+
+/// Bijective pushforward exactly transports binary congruence relations.
+theorem relation_pushforward_is_binary_congruence_iff_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op: (A, A) -> A
+) {
+    is_bijection_fn(f) implies
+    is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op)) = is_binary_congruence(r, op)
+} by {
+    if is_bijection_fn(f) {
+        if is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op)) {
+            relation_pushforward_reflects_binary_congruence_of_bijection(f, r, op)
+            is_binary_congruence(r, op)
+        }
+        if is_binary_congruence(r, op) {
+            relation_pushforward_is_binary_congruence_of_bijection(f, r, op)
+            is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op))
+        }
+        is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op)) = is_binary_congruence(r, op)
+    }
+}
+
+/// Pushing a function forward and then pulling it back along a bijection recovers the function.
+theorem function_pushforward_compose_of_bijection[A: Inhabited, B, C](f: A -> B, g: A -> C) {
+    is_bijection_fn(f) implies compose(function_pushforward(f, g), f) = g
+} by {
+    if is_bijection_fn(f) {
+        forall(x: A) {
+            compose(function_pushforward(f, g), f, x) = function_pushforward(f, g, f(x))
+            function_pushforward_apply_image_of_bijection(f, g, x)
+            function_pushforward(f, g, f(x)) = g(x)
+            compose(function_pushforward(f, g), f, x) = g(x)
+        }
+        function_extensionality(compose(function_pushforward(f, g), f), g)
+    }
+}
+
+/// Pulling a target function back and then pushing it forward agrees at each target point.
+theorem function_pushforward_compose_target_of_surjective_at[A: Inhabited, B, C](f: A -> B, h: B -> C, y: B) {
+    is_surjective_fn(f) implies function_pushforward(f, compose(h, f), y) = h(y)
+} by {
+    if is_surjective_fn(f) {
+        function_pushforward(f, compose(h, f), y) = compose(h, f, inverse_fn(f, y))
+        compose(h, f, inverse_fn(f, y)) = h(f(inverse_fn(f, y)))
+        inverse_fn_apply_of_surjective(f, y)
+        f(inverse_fn(f, y)) = y
+        function_pushforward(f, compose(h, f), y) = h(y)
+    }
+}
+
+/// Pulling a target function back and then pushing it forward along a surjection recovers the target function.
+theorem function_pushforward_compose_target_of_surjective[A: Inhabited, B, C](f: A -> B, h: B -> C) {
+    is_surjective_fn(f) implies function_pushforward(f, compose(h, f)) = h
+} by {
+    if is_surjective_fn(f) {
+        forall(y: B) {
+            function_pushforward_compose_target_of_surjective_at(f, h, y)
+            function_pushforward(f, compose(h, f), y) = h(y)
+        }
+        function_extensionality(function_pushforward(f, compose(h, f)), h)
+    }
+}
+
+/// A pushed-forward function is the unique target function whose pullback is the source function.
+theorem function_pushforward_eq_of_bijection[A: Inhabited, B, C](f: A -> B, g: A -> C, h: B -> C) {
+    is_bijection_fn(f) and compose(h, f) = g implies function_pushforward(f, g) = h
+} by {
+    if is_bijection_fn(f) and compose(h, f) = g {
+        function_pushforward_compose_target_of_surjective(f, h)
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        function_pushforward(f, compose(h, f)) = h
+        function_pushforward(f, g) = h
+    }
+}
+
+/// A pointwise commuting square determines the pushed-forward target function.
+theorem function_pushforward_eq_of_bijection_pointwise[A: Inhabited, B, C](f: A -> B, g: A -> C, h: B -> C) {
+    is_bijection_fn(f) and forall(x: A) { h(f(x)) = g(x) } implies function_pushforward(f, g) = h
+} by {
+    if is_bijection_fn(f) and forall(x: A) { h(f(x)) = g(x) } {
+        forall(x: A) {
+            compose(h, f, x) = h(f(x))
+            h(f(x)) = g(x)
+            compose(h, f, x) = g(x)
+        }
+        function_extensionality(compose(h, f), g)
+        compose(h, f) = g
+        function_pushforward_eq_of_bijection(f, g, h)
+        function_pushforward(f, g) = h
+    }
+}
+
+/// A transported unary operation agrees with any operation preserved by the bijection at each point.
+theorem unary_op_pushforward_eq_of_bijection_at[A: Inhabited, B](f: A -> B, op_a: A -> A, op_b: B -> B, y: B) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) implies unary_op_pushforward(f, op_a, y) = op_b(y)
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        unary_op_pushforward(f, op_a, y) = f(op_a(inverse_fn(f, y)))
+        preserves_unary_op_step(f, op_a, op_b, inverse_fn(f, y))
+        f(op_a(inverse_fn(f, y))) = op_b(f(inverse_fn(f, y)))
+        inverse_fn_apply_of_surjective(f, y)
+        f(inverse_fn(f, y)) = y
+        op_b(f(inverse_fn(f, y))) = op_b(y)
+        unary_op_pushforward(f, op_a, y) = op_b(y)
+    }
+}
+
+/// A transported unary operation is the unique operation making the bijection preserve it.
+theorem unary_op_pushforward_eq_of_bijection[A: Inhabited, B](f: A -> B, op_a: A -> A, op_b: B -> B) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) implies unary_op_pushforward(f, op_a) = op_b
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        forall(y: B) {
+            unary_op_pushforward_eq_of_bijection_at(f, op_a, op_b, y)
+            unary_op_pushforward(f, op_a, y) = op_b(y)
+        }
+        function_extensionality(unary_op_pushforward(f, op_a), op_b)
+    }
+}
+
+/// A transported binary operation agrees with any operation preserved by the bijection at each pair.
+theorem binary_op_pushforward_eq_of_bijection_at[A: Inhabited, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B, y: B, z: B) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) implies binary_op_pushforward(f, op_a, y, z) = op_b(y, z)
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        binary_op_pushforward(f, op_a, y, z) = f(op_a(inverse_fn(f, y), inverse_fn(f, z)))
+        preserves_binary_op_step(f, op_a, op_b, inverse_fn(f, y), inverse_fn(f, z))
+        f(op_a(inverse_fn(f, y), inverse_fn(f, z))) = op_b(f(inverse_fn(f, y)), f(inverse_fn(f, z)))
+        inverse_fn_apply_of_surjective(f, y)
+        inverse_fn_apply_of_surjective(f, z)
+        f(inverse_fn(f, y)) = y
+        f(inverse_fn(f, z)) = z
+        op_b(f(inverse_fn(f, y)), f(inverse_fn(f, z))) = op_b(y, z)
+        binary_op_pushforward(f, op_a, y, z) = op_b(y, z)
+    }
+}
+
+/// A transported binary operation is the unique operation making the bijection preserve it.
+theorem binary_op_pushforward_eq_of_bijection[A: Inhabited, B](f: A -> B, op_a: (A, A) -> A, op_b: (B, B) -> B) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) implies binary_op_pushforward(f, op_a) = op_b
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        forall(y: B, z: B) {
+            binary_op_pushforward_eq_of_bijection_at(f, op_a, op_b, y, z)
+            binary_op_pushforward(f, op_a, y, z) = op_b(y, z)
+        }
+        binary_function_extensionality(binary_op_pushforward(f, op_a), op_b)
+    }
+}
+
+/// Equality transport of the pushed-forward unary operation preserves unary compatibility.
+theorem relation_pushforward_respects_unary_op_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) and respects_unary_op(r, op_a) implies
+    respects_unary_op(relation_pushforward(f, r), op_b)
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) and respects_unary_op(r, op_a) {
+        relation_pushforward_respects_unary_op_of_bijection(f, r, op_a)
+        respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op_a))
+        unary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        unary_op_pushforward(f, op_a) = op_b
+        respects_unary_op_eq_op(relation_pushforward(f, r), unary_op_pushforward(f, op_a), op_b)
+        respects_unary_op(relation_pushforward(f, r), op_b)
+    }
+}
+
+/// Equality transport of the pushed-forward binary operation preserves binary compatibility.
+theorem relation_pushforward_respects_binary_op_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) and respects_binary_op(r, op_a) implies
+    respects_binary_op(relation_pushforward(f, r), op_b)
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) and respects_binary_op(r, op_a) {
+        relation_pushforward_respects_binary_op_of_bijection(f, r, op_a)
+        respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op_a))
+        binary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        binary_op_pushforward(f, op_a) = op_b
+        respects_binary_op_eq_op(relation_pushforward(f, r), binary_op_pushforward(f, op_a), op_b)
+        respects_binary_op(relation_pushforward(f, r), op_b)
+    }
+}
+
+/// Equality transport of the pushed-forward unary operation preserves unary congruence.
+theorem relation_pushforward_is_unary_congruence_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) and is_unary_congruence(r, op_a) implies
+    is_unary_congruence(relation_pushforward(f, r), op_b)
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) and is_unary_congruence(r, op_a) {
+        relation_pushforward_is_unary_congruence_of_bijection(f, r, op_a)
+        is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op_a))
+        unary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        unary_op_pushforward(f, op_a) = op_b
+        unary_congruence_eq_op(relation_pushforward(f, r), unary_op_pushforward(f, op_a), op_b)
+        is_unary_congruence(relation_pushforward(f, r), op_b)
+    }
+}
+
+/// Equality transport of the pushed-forward binary operation preserves binary congruence.
+theorem relation_pushforward_is_binary_congruence_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) and is_binary_congruence(r, op_a) implies
+    is_binary_congruence(relation_pushforward(f, r), op_b)
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) and is_binary_congruence(r, op_a) {
+        relation_pushforward_is_binary_congruence_of_bijection(f, r, op_a)
+        is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op_a))
+        binary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        binary_op_pushforward(f, op_a) = op_b
+        binary_congruence_eq_op(relation_pushforward(f, r), binary_op_pushforward(f, op_a), op_b)
+        is_binary_congruence(relation_pushforward(f, r), op_b)
+    }
+}
+
+/// Preserving a unary operation across a bijection is equivalent to being the pushed-forward operation.
+theorem preserves_unary_op_iff_unary_op_pushforward_eq_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_bijection_fn(f) implies preserves_unary_op(f, op_a, op_b) = (op_b = unary_op_pushforward(f, op_a))
+} by {
+    if is_bijection_fn(f) {
+        if preserves_unary_op(f, op_a, op_b) {
+            unary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+            unary_op_pushforward(f, op_a) = op_b
+            op_b = unary_op_pushforward(f, op_a)
+        }
+        if op_b = unary_op_pushforward(f, op_a) {
+            bijection_preserves_unary_op_pushforward(f, op_a)
+            preserves_unary_op(f, op_a, unary_op_pushforward(f, op_a))
+            preserves_unary_op_eq_codomain_op(f, op_a, unary_op_pushforward(f, op_a), op_b)
+            preserves_unary_op(f, op_a, op_b)
+        }
+        preserves_unary_op(f, op_a, op_b) = (op_b = unary_op_pushforward(f, op_a))
+    }
+}
+
+/// Preserving a binary operation across a bijection is equivalent to being the pushed-forward operation.
+theorem preserves_binary_op_iff_binary_op_pushforward_eq_of_bijection[A: Inhabited, B](
+    f: A -> B,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_bijection_fn(f) implies preserves_binary_op(f, op_a, op_b) = (op_b = binary_op_pushforward(f, op_a))
+} by {
+    if is_bijection_fn(f) {
+        if preserves_binary_op(f, op_a, op_b) {
+            binary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+            binary_op_pushforward(f, op_a) = op_b
+            op_b = binary_op_pushforward(f, op_a)
+        }
+        if op_b = binary_op_pushforward(f, op_a) {
+            bijection_preserves_binary_op_pushforward(f, op_a)
+            preserves_binary_op(f, op_a, binary_op_pushforward(f, op_a))
+            preserves_binary_op_eq_codomain_op(f, op_a, binary_op_pushforward(f, op_a), op_b)
+            preserves_binary_op(f, op_a, op_b)
+        }
+        preserves_binary_op(f, op_a, op_b) = (op_b = binary_op_pushforward(f, op_a))
+    }
+}
+
+/// Bijective pushforward exactly transports unary compatibility for any preserved target operation.
+theorem relation_pushforward_respects_unary_op_iff_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) implies
+    respects_unary_op(relation_pushforward(f, r), op_b) = respects_unary_op(r, op_a)
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        unary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        unary_op_pushforward(f, op_a) = op_b
+        relation_pushforward_respects_unary_op_iff_of_bijection(f, r, op_a)
+        respects_unary_op(relation_pushforward(f, r), unary_op_pushforward(f, op_a)) = respects_unary_op(r, op_a)
+        respects_unary_op(relation_pushforward(f, r), op_b) = respects_unary_op(r, op_a)
+    }
+}
+
+/// Bijective pushforward exactly transports binary compatibility for any preserved target operation.
+theorem relation_pushforward_respects_binary_op_iff_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) implies
+    respects_binary_op(relation_pushforward(f, r), op_b) = respects_binary_op(r, op_a)
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        binary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        binary_op_pushforward(f, op_a) = op_b
+        relation_pushforward_respects_binary_op_iff_of_bijection(f, r, op_a)
+        respects_binary_op(relation_pushforward(f, r), binary_op_pushforward(f, op_a)) = respects_binary_op(r, op_a)
+        respects_binary_op(relation_pushforward(f, r), op_b) = respects_binary_op(r, op_a)
+    }
+}
+
+/// Bijective pushforward exactly transports unary congruence for any preserved target operation.
+theorem relation_pushforward_is_unary_congruence_iff_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: A -> A,
+    op_b: B -> B
+) {
+    is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) implies
+    is_unary_congruence(relation_pushforward(f, r), op_b) = is_unary_congruence(r, op_a)
+} by {
+    if is_bijection_fn(f) and preserves_unary_op(f, op_a, op_b) {
+        unary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        unary_op_pushforward(f, op_a) = op_b
+        relation_pushforward_is_unary_congruence_iff_of_bijection(f, r, op_a)
+        is_unary_congruence(relation_pushforward(f, r), unary_op_pushforward(f, op_a)) = is_unary_congruence(r, op_a)
+        is_unary_congruence(relation_pushforward(f, r), op_b) = is_unary_congruence(r, op_a)
+    }
+}
+
+/// Bijective pushforward exactly transports binary congruence for any preserved target operation.
+theorem relation_pushforward_is_binary_congruence_iff_of_bijection_eq[A: Inhabited, B](
+    f: A -> B,
+    r: (A, A) -> Bool,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) implies
+    is_binary_congruence(relation_pushforward(f, r), op_b) = is_binary_congruence(r, op_a)
+} by {
+    if is_bijection_fn(f) and preserves_binary_op(f, op_a, op_b) {
+        binary_op_pushforward_eq_of_bijection(f, op_a, op_b)
+        binary_op_pushforward(f, op_a) = op_b
+        relation_pushforward_is_binary_congruence_iff_of_bijection(f, r, op_a)
+        is_binary_congruence(relation_pushforward(f, r), binary_op_pushforward(f, op_a)) = is_binary_congruence(r, op_a)
+        is_binary_congruence(relation_pushforward(f, r), op_b) = is_binary_congruence(r, op_a)
     }
 }
