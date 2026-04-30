@@ -1,5 +1,6 @@
 from functions import Inhabited
 from list import List
+from logic import exists_intro
 from pair import Pair
 from set import Set
 
@@ -227,9 +228,7 @@ theorem list_witness_exists_of_witness[T](items: List[T], p: T -> Bool, x: T) {
     }
 } by {
     if list_witness_predicate(items, p, x) {
-        exists(y: T) {
-            y = x and list_witness_predicate(items, p, y)
-        }
+        exists_intro(list_witness_predicate(items, p), x)
     }
 }
 
@@ -332,9 +331,7 @@ theorem set_witness_exists_of_witness[T](s: Set[T], p: T -> Bool, x: T) {
     }
 } by {
     if set_witness_predicate(s, p, x) {
-        exists(y: T) {
-            y = x and set_witness_predicate(s, p, y)
-        }
+        exists_intro(set_witness_predicate(s, p), x)
     }
 }
 
@@ -497,9 +494,7 @@ theorem pair_witness_exists_of_witness[T, U](p: (T, U) -> Bool, pair: Pair[T, U]
     }
 } by {
     if pair_witness_predicate(p, pair) {
-        exists(q: Pair[T, U]) {
-            q = pair and pair_witness_predicate(p, q)
-        }
+        exists_intro(pair_witness_predicate(p), pair)
     }
 }
 

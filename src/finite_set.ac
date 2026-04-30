@@ -2,6 +2,7 @@ from nat import Nat
 from list import List
 from list.list_sum import pigeonhole_map_into_list
 from functions import is_injective_fn
+from logic import exists_intro
 from set import Set, set_ext, finite_constraint, functional_insert, functional_remove,
     list_set, list_set_is_finite, list_set_cardinality_at_most_length,
     unique_list_set_cardinality_is_length, list_set_filter_extracts_subset,
@@ -209,10 +210,7 @@ theorem finite_set_witness_exists_of_witness[T](s: FiniteSet[T], p: T -> Bool, x
     }
 } by {
     if finite_set_witness_predicate(s, p, x) {
-        set_witness_exists_of_witness(s.underlying_set, p, x)
-        exists(y: T) {
-            finite_set_witness_predicate(s, p, y)
-        }
+        exists_intro(finite_set_witness_predicate(s, p), x)
     }
 }
 

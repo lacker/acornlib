@@ -62,6 +62,41 @@ theorem binary_function_extensionality[T, U, V](f: (T, U) -> V, g: (T, U) -> V) 
     }
 }
 
+/// Equal functions have equal values at each input.
+theorem function_eq_apply[T, U](f: T -> U, g: T -> U, x: T) {
+    f = g implies f(x) = g(x)
+}
+
+/// Equal binary functions have equal values at each pair of inputs.
+theorem binary_function_eq_apply[T, U, V](f: (T, U) -> V, g: (T, U) -> V, x: T, y: U) {
+    f = g implies f(x, y) = g(x, y)
+}
+
+/// Equal predicates have equal truth values at each input.
+theorem predicate_eq_apply[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q implies p(x) = q(x)
+}
+
+/// Predicate equality transports truth forward.
+theorem predicate_eq_forward[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q and p(x) implies q(x)
+}
+
+/// Predicate equality transports truth backward.
+theorem predicate_eq_backward[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q and q(x) implies p(x)
+}
+
+/// Equality of elements transports predicates.
+theorem eq_transport_predicate[T](p: T -> Bool, x: T, y: T) {
+    x = y and p(x) implies p(y)
+}
+
+/// Equality of elements transports predicates in the reverse direction.
+theorem eq_transport_predicate_rev[T](p: T -> Bool, x: T, y: T) {
+    x = y and p(y) implies p(x)
+}
+
 /// Left identity for composition.
 theorem compose_identity_left[T, U](f: T -> U) {
     compose(identity_fn[U], f) = f

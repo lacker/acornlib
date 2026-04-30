@@ -50,6 +50,18 @@ define respects_equivalence[T, U](f: T -> U, r: (T, T) -> Bool, s: (U, U) -> Boo
     }
 }
 
+/// True if a function has equal values on related inputs.
+define respects_function[T, U](r: (T, T) -> Bool, f: T -> U) -> Bool {
+    forall(x: T, y: T) {
+        r(x, y) implies f(x) = f(y)
+    }
+}
+
+/// True if a predicate has the same truth value on related inputs.
+define respects_predicate[T](r: (T, T) -> Bool, p: T -> Bool) -> Bool {
+    respects_function(r, p)
+}
+
 /// Respecting a relation is the same as landing inside the pullback relation.
 theorem respects_equivalence_eq_relation_subset_pullback[T, U](f: T -> U, r: (T, T) -> Bool, s: (U, U) -> Bool) {
     respects_equivalence(f, r, s) = relation_subset(r, relation_pullback(f, s))
@@ -80,6 +92,85 @@ theorem respects_equivalence_eq_relation_subset_pullback[T, U](f: T -> U, r: (T,
         respects_equivalence(f, r, s)
     }
     respects_equivalence(f, r, s) = relation_subset(r, relation_pullback(f, s))
+}
+
+/// Function invariance is relation preservation into equality.
+theorem respects_function_eq_respects_equivalence_eq_relation[T, U](r: (T, T) -> Bool, f: T -> U) {
+    respects_function(r, f) = respects_equivalence(f, r, eq_relation[U])
+} by {
+    if respects_function(r, f) {
+        respects_function(r, f) = forall(x0: T, y0: T) {
+            r(x0, y0) implies f(x0) = f(y0)
+        }
+        forall(x: T, y: T) {
+            if r(x, y) {
+                f(x) = f(y)
+                eq_relation[U](f(x), f(y))
+            }
+        }
+        respects_equivalence(f, r, eq_relation[U])
+    }
+    if respects_equivalence(f, r, eq_relation[U]) {
+        respects_equivalence(f, r, eq_relation[U]) = forall(x0: T, y0: T) {
+            r(x0, y0) implies eq_relation[U](f(x0), f(y0))
+        }
+        forall(x: T, y: T) {
+            if r(x, y) {
+                eq_relation[U](f(x), f(y))
+                f(x) = f(y)
+            }
+        }
+        respects_function(r, f)
+    }
+    respects_function(r, f) = respects_equivalence(f, r, eq_relation[U])
+}
+
+/// A relation-invariant function has equal values at any related pair.
+theorem respects_function_step[T, U](r: (T, T) -> Bool, f: T -> U, x: T, y: T) {
+    respects_function(r, f) and r(x, y) implies f(x) = f(y)
+} by {
+    if respects_function(r, f) and r(x, y) {
+        respects_function(r, f) = forall(x0: T, y0: T) {
+            r(x0, y0) implies f(x0) = f(y0)
+        }
+        f(x) = f(y)
+    }
+}
+
+/// Predicate invariance is function invariance for Boolean-valued functions.
+theorem respects_predicate_eq_respects_function[T](r: (T, T) -> Bool, p: T -> Bool) {
+    respects_predicate(r, p) = respects_function(r, p)
+}
+
+/// A relation-invariant predicate has equal truth values at any related pair.
+theorem respects_predicate_step_eq[T](r: (T, T) -> Bool, p: T -> Bool, x: T, y: T) {
+    respects_predicate(r, p) and r(x, y) implies p(x) = p(y)
+} by {
+    if respects_predicate(r, p) and r(x, y) {
+        respects_function_step(r, p, x, y)
+    }
+}
+
+/// A relation-invariant predicate transports truth forward.
+theorem respects_predicate_forward[T](r: (T, T) -> Bool, p: T -> Bool, x: T, y: T) {
+    respects_predicate(r, p) and r(x, y) and p(x) implies p(y)
+} by {
+    if respects_predicate(r, p) and r(x, y) and p(x) {
+        respects_predicate_step_eq(r, p, x, y)
+        p(x) = p(y)
+        p(y)
+    }
+}
+
+/// A relation-invariant predicate transports truth backward.
+theorem respects_predicate_backward[T](r: (T, T) -> Bool, p: T -> Bool, x: T, y: T) {
+    respects_predicate(r, p) and r(x, y) and p(y) implies p(x)
+} by {
+    if respects_predicate(r, p) and r(x, y) and p(y) {
+        respects_predicate_step_eq(r, p, x, y)
+        p(x) = p(y)
+        p(x)
+    }
 }
 
 /// Pulling back along the identity function leaves a relation unchanged.
