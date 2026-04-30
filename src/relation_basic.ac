@@ -74,6 +74,11 @@ define relation_intersection[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, x: A, y
     r(x, y) and s(x, y)
 }
 
+/// The pointwise union of two relations.
+define relation_union[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, x: A, y: B) -> Bool {
+    r(x, y) or s(x, y)
+}
+
 /// True if every pair related by `r` is also related by `s`.
 define relation_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) -> Bool {
     forall(x: A, y: B) {
@@ -117,6 +122,34 @@ theorem relation_subset_trans[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A,
     }
 }
 
+/// Equality of relations is equivalent to mutual inclusion.
+theorem relation_eq_iff_subset_both[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    r = s = (relation_subset(r, s) and relation_subset(s, r))
+} by {
+    if r = s {
+        relation_subset_refl(r)
+        relation_subset(r, s)
+        relation_subset(s, r)
+        relation_subset(r, s) and relation_subset(s, r)
+    }
+    if relation_subset(r, s) and relation_subset(s, r) {
+        forall(x: A, y: B) {
+            if r(x, y) {
+                relation_subset_step(r, s, x, y)
+                s(x, y)
+            }
+            if s(x, y) {
+                relation_subset_step(s, r, x, y)
+                r(x, y)
+            }
+            r(x, y) = s(x, y)
+        }
+        binary_function_extensionality(r, s)
+        r = s
+    }
+    r = s = (relation_subset(r, s) and relation_subset(s, r))
+}
+
 /// The intersection relation is contained in its left factor.
 theorem relation_intersection_left_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
     relation_subset(relation_intersection(r, s), r)
@@ -154,6 +187,447 @@ theorem relation_subset_intersection[A, B](t: (A, B) -> Bool, r: (A, B) -> Bool,
             }
         }
     }
+}
+
+/// Relation intersection is commutative.
+theorem relation_intersection_comm[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_intersection(r, s) = relation_intersection(s, r)
+} by {
+    let u = relation_intersection(r, s)
+    let v = relation_intersection(s, r)
+    forall(x: A, y: B) {
+        if u(x, y) {
+            r(x, y)
+            s(x, y)
+            v(x, y)
+        }
+        if v(x, y) {
+            s(x, y)
+            r(x, y)
+            u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Relation intersection is associative.
+theorem relation_intersection_assoc[A, B](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (A, B) -> Bool
+) {
+    relation_intersection(r, relation_intersection(s, t)) =
+    relation_intersection(relation_intersection(r, s), t)
+} by {
+    let u = relation_intersection(r, relation_intersection(s, t))
+    let v = relation_intersection(relation_intersection(r, s), t)
+    forall(x: A, y: B) {
+        if u(x, y) {
+            r(x, y)
+            relation_intersection(s, t, x, y)
+            s(x, y)
+            t(x, y)
+            relation_intersection(r, s, x, y)
+            v(x, y)
+        }
+        if v(x, y) {
+            relation_intersection(r, s, x, y)
+            r(x, y)
+            s(x, y)
+            t(x, y)
+            relation_intersection(s, t, x, y)
+            u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// The intersection of a relation with itself is itself.
+theorem relation_intersection_idempotent[A, B](r: (A, B) -> Bool) {
+    relation_intersection(r, r) = r
+} by {
+    let u = relation_intersection(r, r)
+    let v = r
+    forall(x: A, y: B) {
+        if u(x, y) {
+            u(x, y) = (r(x, y) and r(x, y))
+            v(x, y)
+        }
+        if v(x, y) {
+            u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Relation intersection is monotone in both arguments.
+theorem relation_intersection_monotone[A, B](
+    r1: (A, B) -> Bool,
+    r2: (A, B) -> Bool,
+    s1: (A, B) -> Bool,
+    s2: (A, B) -> Bool
+) {
+    relation_subset(r1, r2) and relation_subset(s1, s2) implies
+    relation_subset(relation_intersection(r1, s1), relation_intersection(r2, s2))
+} by {
+    if relation_subset(r1, r2) and relation_subset(s1, s2) {
+        forall(x: A, y: B) {
+            if relation_intersection(r1, s1, x, y) {
+                r1(x, y)
+                relation_subset_step(r1, r2, x, y)
+                r2(x, y)
+                s1(x, y)
+                relation_subset_step(s1, s2, x, y)
+                s2(x, y)
+                relation_intersection(r2, s2, x, y)
+            }
+        }
+    }
+}
+
+/// Intersecting with a larger relation on the right leaves the smaller relation unchanged.
+theorem relation_intersection_subset_right_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(r, s) implies relation_intersection(r, s) = r
+} by {
+    if relation_subset(r, s) {
+        let u = relation_intersection(r, s)
+        let v = r
+        forall(x: A, y: B) {
+            if u(x, y) {
+                r(x, y)
+                v(x, y)
+            }
+            if v(x, y) {
+                relation_subset_step(r, s, x, y)
+                s(x, y)
+                u(x, y)
+            }
+            u(x, y) = v(x, y)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+/// Intersecting with a larger relation on the left leaves the smaller relation unchanged.
+theorem relation_intersection_subset_left_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(r, s) implies relation_intersection(s, r) = r
+} by {
+    if relation_subset(r, s) {
+        relation_intersection_comm(s, r)
+        relation_intersection_subset_right_eq(r, s)
+    }
+}
+
+/// The left factor is contained in the union relation.
+theorem relation_union_left_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(r, relation_union(r, s))
+} by {
+    forall(x: A, y: B) {
+        if r(x, y) {
+            relation_union(r, s, x, y)
+        }
+    }
+}
+
+/// The right factor is contained in the union relation.
+theorem relation_union_right_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(s, relation_union(r, s))
+} by {
+    forall(x: A, y: B) {
+        if s(x, y) {
+            relation_union(r, s, x, y)
+        }
+    }
+}
+
+/// A relation containing both factors contains their union.
+theorem relation_union_subset[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A, B) -> Bool) {
+    relation_subset(r, t) and relation_subset(s, t) implies relation_subset(relation_union(r, s), t)
+} by {
+    if relation_subset(r, t) and relation_subset(s, t) {
+        forall(x: A, y: B) {
+            if relation_union(r, s, x, y) {
+                relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+                if r(x, y) {
+                    relation_subset_step(r, t, x, y)
+                    t(x, y)
+                } else {
+                    relation_subset_step(s, t, x, y)
+                    t(x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Relation union is monotone in both arguments.
+theorem relation_union_monotone[A, B](
+    r1: (A, B) -> Bool,
+    r2: (A, B) -> Bool,
+    s1: (A, B) -> Bool,
+    s2: (A, B) -> Bool
+) {
+    relation_subset(r1, r2) and relation_subset(s1, s2) implies
+    relation_subset(relation_union(r1, s1), relation_union(r2, s2))
+} by {
+    if relation_subset(r1, r2) and relation_subset(s1, s2) {
+        forall(x: A, y: B) {
+            if relation_union(r1, s1, x, y) {
+                relation_union(r1, s1, x, y) = (r1(x, y) or s1(x, y))
+                if r1(x, y) {
+                    relation_subset_step(r1, r2, x, y)
+                    r2(x, y)
+                    relation_union(r2, s2, x, y)
+                } else {
+                    relation_subset_step(s1, s2, x, y)
+                    s2(x, y)
+                    relation_union(r2, s2, x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Relation union is commutative.
+theorem relation_union_comm[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_union(r, s) = relation_union(s, r)
+} by {
+    let u = relation_union(r, s)
+    let v = relation_union(s, r)
+    forall(x: A, y: B) {
+        if u(x, y) {
+            u(x, y) = (r(x, y) or s(x, y))
+            if r(x, y) {
+                v(x, y)
+            } else {
+                v(x, y)
+            }
+        }
+        if v(x, y) {
+            v(x, y) = (s(x, y) or r(x, y))
+            if s(x, y) {
+                u(x, y)
+            } else {
+                u(x, y)
+            }
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Relation union is associative.
+theorem relation_union_assoc[A, B](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (A, B) -> Bool
+) {
+    relation_union(r, relation_union(s, t)) = relation_union(relation_union(r, s), t)
+} by {
+    let u = relation_union(r, relation_union(s, t))
+    let v = relation_union(relation_union(r, s), t)
+    forall(x: A, y: B) {
+        if u(x, y) {
+            u(x, y) = (r(x, y) or relation_union(s, t, x, y))
+            if r(x, y) {
+                relation_union(r, s, x, y)
+                v(x, y)
+            } else {
+                relation_union(s, t, x, y) = (s(x, y) or t(x, y))
+                if s(x, y) {
+                    relation_union(r, s, x, y)
+                    v(x, y)
+                } else {
+                    v(x, y)
+                }
+            }
+        }
+        if v(x, y) {
+            v(x, y) = (relation_union(r, s, x, y) or t(x, y))
+            if relation_union(r, s, x, y) {
+                relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+                if r(x, y) {
+                    u(x, y)
+                } else {
+                    relation_union(s, t, x, y)
+                    u(x, y)
+                }
+            } else {
+                relation_union(s, t, x, y)
+                u(x, y)
+            }
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// The union of a relation with itself is itself.
+theorem relation_union_idempotent[A, B](r: (A, B) -> Bool) {
+    relation_union(r, r) = r
+} by {
+    let u = relation_union(r, r)
+    let v = r
+    forall(x: A, y: B) {
+        if u(x, y) {
+            u(x, y) = (r(x, y) or r(x, y))
+            v(x, y)
+        }
+        if v(x, y) {
+            u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Union with a smaller relation on the right leaves the larger relation unchanged.
+theorem relation_union_subset_right_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(s, r) implies relation_union(r, s) = r
+} by {
+    if relation_subset(s, r) {
+        let u = relation_union(r, s)
+        let v = r
+        forall(x: A, y: B) {
+            if u(x, y) {
+                u(x, y) = (r(x, y) or s(x, y))
+                if r(x, y) {
+                    v(x, y)
+                } else {
+                    relation_subset_step(s, r, x, y)
+                    v(x, y)
+                }
+            }
+            if v(x, y) {
+                u(x, y)
+            }
+            u(x, y) = v(x, y)
+        }
+        binary_function_extensionality(u, v)
+    }
+}
+
+/// Union with a smaller relation on the left leaves the larger relation unchanged.
+theorem relation_union_subset_left_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_subset(s, r) implies relation_union(s, r) = r
+} by {
+    if relation_subset(s, r) {
+        relation_union_comm(s, r)
+        relation_union_subset_right_eq(r, s)
+    }
+}
+
+/// Intersecting a relation with its union by another relation leaves the relation unchanged.
+theorem relation_intersection_union_absorb[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_intersection(r, relation_union(r, s)) = r
+} by {
+    relation_union_left_subset(r, s)
+    relation_intersection_subset_right_eq(r, relation_union(r, s))
+}
+
+/// Unioning a relation with its intersection by another relation leaves the relation unchanged.
+theorem relation_union_intersection_absorb[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_union(r, relation_intersection(r, s)) = r
+} by {
+    relation_intersection_left_subset(r, s)
+    relation_union_subset_right_eq(r, relation_intersection(r, s))
+}
+
+/// Intersection distributes over relation union on the right.
+theorem relation_intersection_union_distrib[A, B](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (A, B) -> Bool
+) {
+    relation_intersection(r, relation_union(s, t)) =
+    relation_union(relation_intersection(r, s), relation_intersection(r, t))
+} by {
+    let u = relation_intersection(r, relation_union(s, t))
+    let v = relation_union(relation_intersection(r, s), relation_intersection(r, t))
+    forall(x: A, y: B) {
+        if u(x, y) {
+            r(x, y)
+            relation_union(s, t, x, y)
+            relation_union(s, t, x, y) = (s(x, y) or t(x, y))
+            if s(x, y) {
+                relation_intersection(r, s, x, y)
+                v(x, y)
+            } else {
+                relation_intersection(r, t, x, y)
+                v(x, y)
+            }
+        }
+        if v(x, y) {
+            v(x, y) = (relation_intersection(r, s, x, y) or relation_intersection(r, t, x, y))
+            if relation_intersection(r, s, x, y) {
+                r(x, y)
+                s(x, y)
+                relation_union(s, t, x, y)
+                u(x, y)
+            } else {
+                relation_intersection(r, t, x, y)
+                r(x, y)
+                t(x, y)
+                relation_union(s, t, x, y)
+                u(x, y)
+            }
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Union distributes over relation intersection on the right.
+theorem relation_union_intersection_distrib[A, B](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (A, B) -> Bool
+) {
+    relation_union(r, relation_intersection(s, t)) =
+    relation_intersection(relation_union(r, s), relation_union(r, t))
+} by {
+    let u = relation_union(r, relation_intersection(s, t))
+    let v = relation_intersection(relation_union(r, s), relation_union(r, t))
+    forall(x: A, y: B) {
+        if u(x, y) {
+            u(x, y) = (r(x, y) or relation_intersection(s, t, x, y))
+            if r(x, y) {
+                relation_union(r, s, x, y)
+                relation_union(r, t, x, y)
+                v(x, y)
+            } else {
+                relation_intersection(s, t, x, y)
+                s(x, y)
+                t(x, y)
+                relation_union(r, s, x, y)
+                relation_union(r, t, x, y)
+                v(x, y)
+            }
+        }
+        if v(x, y) {
+            relation_union(r, s, x, y)
+            relation_union(r, t, x, y)
+            relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+            if r(x, y) {
+                u(x, y)
+            } else {
+                s(x, y)
+                relation_union(r, t, x, y) = (r(x, y) or t(x, y))
+                if r(x, y) {
+                    u(x, y)
+                } else {
+                    t(x, y)
+                    relation_intersection(s, t, x, y)
+                    u(x, y)
+                }
+            }
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
 }
 
 /// An equivalence relation is reflexive.
@@ -577,6 +1051,43 @@ theorem relation_converse_intersection[A, B](r: (A, B) -> Bool, s: (A, B) -> Boo
             s(y, x)
             relation_intersection(r, s, y, x)
             u(x, y)
+        }
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Converse commutes with relation union.
+theorem relation_converse_union[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
+    relation_converse(relation_union(r, s)) =
+    relation_union(relation_converse(r), relation_converse(s))
+} by {
+    let u = relation_converse(relation_union(r, s))
+    let v = relation_union(relation_converse(r), relation_converse(s))
+    forall(x: B, y: A) {
+        if u(x, y) {
+            relation_converse(relation_union(r, s), x, y)
+            relation_union(r, s, y, x)
+            relation_union(r, s, y, x) = (r(y, x) or s(y, x))
+            if r(y, x) {
+                relation_converse(r, x, y)
+                v(x, y)
+            } else {
+                relation_converse(s, x, y)
+                v(x, y)
+            }
+        }
+        if v(x, y) {
+            v(x, y) = (relation_converse(r, x, y) or relation_converse(s, x, y))
+            if relation_converse(r, x, y) {
+                r(y, x)
+                relation_union(r, s, y, x)
+                u(x, y)
+            } else {
+                s(y, x)
+                relation_union(r, s, y, x)
+                u(x, y)
+            }
         }
         u(x, y) = v(x, y)
     }
@@ -1330,6 +1841,81 @@ theorem relation_intersection_is_partial_equivalence[T](r: (T, T) -> Bool, s: (T
         is_partial_equivalence(relation_intersection(r, s)) =
             is_symmetric(relation_intersection(r, s)) and is_transitive(relation_intersection(r, s))
         is_partial_equivalence(relation_intersection(r, s))
+    }
+}
+
+/// Relation union preserves reflexivity.
+theorem relation_union_is_reflexive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_reflexive(r) and is_reflexive(s) implies is_reflexive(relation_union(r, s))
+} by {
+    if is_reflexive(r) and is_reflexive(s) {
+        forall(x: T) {
+            reflexive_self(r, x)
+            r(x, x)
+            relation_union(r, s, x, x)
+        }
+    }
+}
+
+/// Relation union preserves irreflexivity.
+theorem relation_union_is_irreflexive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_irreflexive(r) and is_irreflexive(s) implies is_irreflexive(relation_union(r, s))
+} by {
+    if is_irreflexive(r) and is_irreflexive(s) {
+        forall(x: T) {
+            if relation_union(r, s, x, x) {
+                relation_union(r, s, x, x) = (r(x, x) or s(x, x))
+                if r(x, x) {
+                    false
+                } else {
+                    s(x, x)
+                    false
+                }
+            }
+        }
+    }
+}
+
+/// Relation union preserves symmetry.
+theorem relation_union_is_symmetric[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_symmetric(r) and is_symmetric(s) implies is_symmetric(relation_union(r, s))
+} by {
+    if is_symmetric(r) and is_symmetric(s) {
+        forall(x: T, y: T) {
+            if relation_union(r, s, x, y) {
+                relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+                if r(x, y) {
+                    symmetric_flip(r, x, y)
+                    r(y, x)
+                    relation_union(r, s, y, x)
+                } else {
+                    symmetric_flip(s, x, y)
+                    s(y, x)
+                    relation_union(r, s, y, x)
+                }
+            }
+        }
+    }
+}
+
+/// Relation union preserves totality.
+theorem relation_union_is_total[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_total(r) and is_total(s) implies is_total(relation_union(r, s))
+} by {
+    if is_total(r) and is_total(s) {
+        forall(x: T, y: T) {
+            is_total(r) = forall(x0: T, y0: T) {
+                r(x0, y0) or r(y0, x0)
+            }
+            r(x, y) or r(y, x)
+            if r(x, y) {
+                relation_union(r, s, x, y)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            } else {
+                relation_union(r, s, y, x)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            }
+        }
     }
 }
 

@@ -2,7 +2,7 @@
 
 Goal: support moving data and theorems across definitional boundaries in a controlled way.
 
-- [ ] Extend subobject transport from set and finite-set images to quotient-related data after the quotient API choice is settled
+- [ ] Extend subobject transport from set and finite-set images to quotient-related data after the quotient API choice is settled; blocked locally on choosing the foundational quotient API, not on Acorn
 
 Status:
 

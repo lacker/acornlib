@@ -64,21 +64,21 @@
 {"goal":"eq_of_not_lt_of_not_gt","proof":[]}
 {"goal":"a = b","proof":[]}
 {"goal":"eq_of_not_gt_of_not_lt","proof":[]}
-{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[L](b, a)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](b, a)","b > a","not b > a"]}
+{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[L](b, a)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](b, a)"]}
 {"goal":"false","proof":[]}
-{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[L](b, a)","not a < b"]}
+{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)"]}
 {"goal":"false","proof":[]}
-{"goal":"not a < b and not a > b","proof":["not a < b","not a > b","a > b"]}
-{"goal":"a = b","proof":["a > b or a < b","not a > b","not a < b","a < b"]}
-{"goal":"a = b = (not a < b and not a > b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 < x1 or x0 = x1 }[L](a, b)","not a < b and not a > b or b = a","not (not a < b and not a > b) or b != a","not a > b or b != a","not a > b","not a < b or b != a","not a < b","b != a","b = a"]}
+{"goal":"not a < b and not a > b","proof":[]}
+{"goal":"a = b","proof":[]}
+{"goal":"a = b = (not a < b and not a > b)","proof":[]}
 {"goal":"eq_iff_not_lt_and_not_gt","proof":[]}
 {"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](a, b)"]}
 {"goal":"false","proof":[]}
-{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[L](b, a)","not a > b"]}
+{"goal":"a != b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[L](b, a)"]}
 {"goal":"false","proof":[]}
-{"goal":"not a > b and not a < b","proof":["not a > b","not a < b","a < b"]}
-{"goal":"a = b","proof":["a > b or a < b","not a < b","not a > b","a > b"]}
-{"goal":"a = b = (not a > b and not a < b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 < x1 or x0 = x1 }[L](a, b)","not a > b and not a < b or b = a","not (not a > b and not a < b) or b != a","not a < b or b != a","not a < b","not a > b or b != a","not a > b","b != a","b = a"]}
+{"goal":"not a > b and not a < b","proof":[]}
+{"goal":"a = b","proof":[]}
+{"goal":"a = b = (not a > b and not a < b)","proof":[]}
 {"goal":"eq_iff_not_gt_and_not_lt","proof":[]}
 {"goal":"a = b or a < b","proof":[]}
 {"goal":"eq_or_lt_of_not_gt","proof":[]}
