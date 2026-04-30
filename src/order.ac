@@ -175,6 +175,38 @@ theorem gte_imp_not_lt[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// `a > b` rules out `a <= b`.
+theorem gt_imp_not_lte[P: PartialOrder](a: P, b: P) {
+    a > b implies not (a <= b)
+} by {
+    if a > b {
+        if a <= b {
+            b < a
+            b <= a
+            lte_antisymm(a, b)
+            a = b
+            b != a
+            false
+        }
+    }
+}
+
+/// `a < b` rules out `a >= b`.
+theorem lt_imp_not_gte[P: PartialOrder](a: P, b: P) {
+    a < b implies not (a >= b)
+} by {
+    if a < b {
+        if a >= b {
+            b <= a
+            a <= b
+            lte_antisymm(a, b)
+            a = b
+            a != b
+            false
+        }
+    }
+}
+
 theorem lt_trans[P: PartialOrder](a: P, b: P, c: P) {
     a < b and b < c implies a < c
 } by {
@@ -597,6 +629,54 @@ theorem not_gt_imp_lte[L: LinearOrder](a: L, b: L) {
                 false
             }
         }
+    }
+}
+
+/// Negation of `<=` is exactly `>` on a linear order.
+theorem not_lte_iff_gt[L: LinearOrder](a: L, b: L) {
+    (not a <= b) = (a > b)
+} by {
+    if not a <= b {
+        not_lte_imp_gt(a, b)
+    }
+    if a > b {
+        gt_imp_not_lte(a, b)
+    }
+}
+
+/// Negation of `>=` is exactly `<` on a linear order.
+theorem not_gte_iff_lt[L: LinearOrder](a: L, b: L) {
+    (not a >= b) = (a < b)
+} by {
+    if not a >= b {
+        not_gte_imp_lt(a, b)
+    }
+    if a < b {
+        lt_imp_not_gte(a, b)
+    }
+}
+
+/// Negation of `<` is exactly `>=` on a linear order.
+theorem not_lt_iff_gte[L: LinearOrder](a: L, b: L) {
+    (not a < b) = (a >= b)
+} by {
+    if not a < b {
+        not_lt_imp_gte(a, b)
+    }
+    if a >= b {
+        gte_imp_not_lt(a, b)
+    }
+}
+
+/// Negation of `>` is exactly `<=` on a linear order.
+theorem not_gt_iff_lte[L: LinearOrder](a: L, b: L) {
+    (not a > b) = (a <= b)
+} by {
+    if not a > b {
+        not_gt_imp_lte(a, b)
+    }
+    if a <= b {
+        lte_imp_not_gt(a, b)
     }
 }
 
