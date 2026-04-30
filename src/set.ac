@@ -993,6 +993,68 @@ theorem nat_from_superset_of_bounded(s: Set[Nat], n: Nat) {
     }
 }
 
+/// Subset membership is universal implication of membership.
+theorem subset_contains_eq[K](a: Set[K], b: Set[K]) {
+    a.subset(b) = forall(x: K) {
+        a.contains(x) implies b.contains(x)
+    }
+}
+
+/// Superset membership is universal implication of membership in the other direction.
+theorem superset_contains_eq[K](a: Set[K], b: Set[K]) {
+    a.superset(b) = forall(x: K) {
+        b.contains(x) implies a.contains(x)
+    }
+}
+
+/// A subset carries membership into its superset.
+theorem subset_contains[K](a: Set[K], b: Set[K], x: K) {
+    a.subset(b) and a.contains(x) implies b.contains(x)
+} by {
+    if a.subset(b) and a.contains(x) {
+        subset_contains_eq(a, b)
+        a.contains(x) implies b.contains(x)
+        b.contains(x)
+    }
+}
+
+/// A superset contains every element of the smaller set.
+theorem superset_contains[K](a: Set[K], b: Set[K], x: K) {
+    a.superset(b) and b.contains(x) implies a.contains(x)
+} by {
+    if a.superset(b) and b.contains(x) {
+        superset_contains_eq(a, b)
+        b.contains(x) implies a.contains(x)
+        a.contains(x)
+    }
+}
+
+/// Missing membership in a superset gives missing membership in any subset.
+theorem not_contains_of_subset_not_contains[K](a: Set[K], b: Set[K], x: K) {
+    a.subset(b) and not b.contains(x) implies not a.contains(x)
+} by {
+    if a.subset(b) and not b.contains(x) {
+        if a.contains(x) {
+            subset_contains(a, b, x)
+            b.contains(x)
+            false
+        }
+    }
+}
+
+/// Missing membership in a superset gives missing membership in any smaller set.
+theorem not_contains_of_superset_not_contains[K](a: Set[K], b: Set[K], x: K) {
+    a.superset(b) and not a.contains(x) implies not b.contains(x)
+} by {
+    if a.superset(b) and not a.contains(x) {
+        if b.contains(x) {
+            superset_contains(a, b, x)
+            a.contains(x)
+            false
+        }
+    }
+}
+
 theorem empty_set_is_always_subset[K](s: Set[K]) {
     (Set[K].empty_set).subset(s)
 } by {
@@ -1551,6 +1613,36 @@ theorem difference_contains_eq[K](a: Set[K], b: Set[K], x: K) {
     a.difference(b).contains(x) = (a.contains(x) and not b.contains(x))
 }
 
+/// Membership in a difference gives membership in the left set.
+theorem difference_contains_left[K](a: Set[K], b: Set[K], x: K) {
+    a.difference(b).contains(x) implies a.contains(x)
+} by {
+    if a.difference(b).contains(x) {
+        difference_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// Membership in a difference gives non-membership in the right set.
+theorem difference_contains_not_right[K](a: Set[K], b: Set[K], x: K) {
+    a.difference(b).contains(x) implies not b.contains(x)
+} by {
+    if a.difference(b).contains(x) {
+        difference_contains_eq(a, b, x)
+        not b.contains(x)
+    }
+}
+
+/// Membership in the left set and non-membership in the right set gives membership in the difference.
+theorem difference_contains_intro[K](a: Set[K], b: Set[K], x: K) {
+    a.contains(x) and not b.contains(x) implies a.difference(b).contains(x)
+} by {
+    if a.contains(x) and not b.contains(x) {
+        difference_contains_eq(a, b, x)
+        a.difference(b).contains(x)
+    }
+}
+
 theorem difference_subset[K](a: Set[K], b: Set[K]) {
     a.difference(b).subset(a)
 } by {
@@ -1825,6 +1917,65 @@ theorem union_contains_eq[K](a: Set[K], b: Set[K], x: K) {
     a.union(b).contains(x) = (a.contains(x) or b.contains(x))
 }
 
+/// Membership in the left set gives membership in the union.
+theorem union_contains_left[K](a: Set[K], b: Set[K], x: K) {
+    a.contains(x) implies a.union(b).contains(x)
+} by {
+    if a.contains(x) {
+        union_contains_eq(a, b, x)
+        a.union(b).contains(x)
+    }
+}
+
+/// Membership in the right set gives membership in the union.
+theorem union_contains_right[K](a: Set[K], b: Set[K], x: K) {
+    b.contains(x) implies a.union(b).contains(x)
+} by {
+    if b.contains(x) {
+        union_contains_eq(a, b, x)
+        a.union(b).contains(x)
+    }
+}
+
+/// Membership in a union gives membership in one of its two sets.
+theorem union_contains_cases[K](a: Set[K], b: Set[K], x: K) {
+    a.union(b).contains(x) implies a.contains(x) or b.contains(x)
+} by {
+    if a.union(b).contains(x) {
+        union_contains_eq(a, b, x)
+        a.contains(x) or b.contains(x)
+    }
+}
+
+/// Non-membership in a union is non-membership in both sets.
+theorem not_union_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    not a.union(b).contains(x) = (not a.contains(x) and not b.contains(x))
+} by {
+    if not a.union(b).contains(x) {
+        if a.contains(x) {
+            union_contains_left(a, b, x)
+            false
+        }
+        if b.contains(x) {
+            union_contains_right(a, b, x)
+            false
+        }
+        not a.contains(x) and not b.contains(x)
+    }
+    if not a.contains(x) and not b.contains(x) {
+        if a.union(b).contains(x) {
+            union_contains_cases(a, b, x)
+            if a.contains(x) {
+                false
+            } else {
+                b.contains(x)
+                false
+            }
+        }
+        not a.union(b).contains(x)
+    }
+}
+
 /// The successor initial segment is the previous one together with its endpoint.
 theorem nat_lt_set_suc_eq_union(bound: Nat) {
     nat_lt_set(bound.suc) = nat_lt_set(bound).union(Set[Nat].singleton(bound))
@@ -1866,6 +2017,68 @@ theorem nat_lt_set_suc_eq_union(bound: Nat) {
 /// Membership in an intersection is Boolean conjunction of membership.
 theorem intersection_contains_eq[K](a: Set[K], b: Set[K], x: K) {
     a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+}
+
+/// Membership in an intersection gives membership in the left set.
+theorem intersection_contains_left[K](a: Set[K], b: Set[K], x: K) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// Membership in an intersection gives membership in the right set.
+theorem intersection_contains_right[K](a: Set[K], b: Set[K], x: K) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        intersection_contains_eq(a, b, x)
+        b.contains(x)
+    }
+}
+
+/// Membership in both sets gives membership in their intersection.
+theorem intersection_contains_intro[K](a: Set[K], b: Set[K], x: K) {
+    a.contains(x) and b.contains(x) implies a.intersection(b).contains(x)
+} by {
+    if a.contains(x) and b.contains(x) {
+        intersection_contains_eq(a, b, x)
+        a.intersection(b).contains(x)
+    }
+}
+
+/// Non-membership in an intersection is failure of membership in at least one set.
+theorem not_intersection_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    not a.intersection(b).contains(x) = (not a.contains(x) or not b.contains(x))
+} by {
+    if not a.intersection(b).contains(x) {
+        if a.contains(x) {
+            if b.contains(x) {
+                intersection_contains_intro(a, b, x)
+                false
+            }
+            not b.contains(x)
+            not a.contains(x) or not b.contains(x)
+        } else {
+            not a.contains(x)
+            not a.contains(x) or not b.contains(x)
+        }
+    }
+    if not a.contains(x) or not b.contains(x) {
+        if a.intersection(b).contains(x) {
+            intersection_contains_left(a, b, x)
+            intersection_contains_right(a, b, x)
+            if not a.contains(x) {
+                false
+            } else {
+                not b.contains(x)
+                false
+            }
+        }
+        not a.intersection(b).contains(x)
+    }
 }
 
 /// Image distributes over union.

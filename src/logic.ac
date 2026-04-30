@@ -264,6 +264,372 @@ theorem eq_false_intro(a: Bool) {
     not a implies a = false
 }
 
+/// True if two propositions imply each other.
+define iff_bool(a: Bool, b: Bool) -> Bool {
+    (a implies b) and (b implies a)
+}
+
+/// Logical equivalence is reflexive.
+theorem iff_bool_refl(a: Bool) {
+    iff_bool(a, a)
+}
+
+/// Logical equivalence is symmetric.
+theorem iff_bool_symm(a: Bool, b: Bool) {
+    iff_bool(a, b) implies iff_bool(b, a)
+}
+
+/// Logical equivalence is transitive.
+theorem iff_bool_trans(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) and iff_bool(b, c) implies iff_bool(a, c)
+} by {
+    if iff_bool(a, b) and iff_bool(b, c) {
+        if a {
+            b
+            c
+        }
+        if c {
+            b
+            a
+        }
+        iff_bool(a, c)
+    }
+}
+
+/// Logical equivalence gives the forward implication.
+theorem iff_bool_forward(a: Bool, b: Bool) {
+    iff_bool(a, b) implies (a implies b)
+}
+
+/// Logical equivalence gives the backward implication.
+theorem iff_bool_backward(a: Bool, b: Bool) {
+    iff_bool(a, b) implies (b implies a)
+}
+
+/// Equal propositions are logically equivalent.
+theorem eq_imp_iff_bool(a: Bool, b: Bool) {
+    a = b implies iff_bool(a, b)
+} by {
+    if a = b {
+        if a {
+            b
+        }
+        if b {
+            a
+        }
+        iff_bool(a, b)
+    }
+}
+
+/// Logically equivalent propositions are equal.
+theorem iff_bool_imp_eq(a: Bool, b: Bool) {
+    iff_bool(a, b) implies a = b
+} by {
+    if iff_bool(a, b) {
+        if a {
+            b
+        }
+        if b {
+            a
+        }
+    }
+}
+
+/// Logical equivalence is the same as equality of propositions.
+theorem iff_bool_eq_eq(a: Bool, b: Bool) {
+    iff_bool(a, b) = (a = b)
+} by {
+    iff_bool_imp_eq(a, b)
+    eq_imp_iff_bool(a, b)
+}
+
+/// Equality of propositions is the same as logical equivalence.
+theorem eq_eq_iff_bool(a: Bool, b: Bool) {
+    (a = b) = iff_bool(a, b)
+} by {
+    iff_bool_eq_eq(a, b)
+}
+
+/// Logically equivalent propositions have equivalent negations.
+theorem iff_bool_not(a: Bool, b: Bool) {
+    iff_bool(a, b) implies iff_bool(not a, not b)
+} by {
+    if iff_bool(a, b) {
+        if not a {
+            if b {
+                a
+                false
+            }
+            not b
+        }
+        if not b {
+            if a {
+                b
+                false
+            }
+            not a
+        }
+        iff_bool(not a, not b)
+    }
+}
+
+/// Logical equivalence may rewrite the left side of a conjunction.
+theorem iff_bool_and_left(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(a and c, b and c)
+} by {
+    if iff_bool(a, b) {
+        if a and c {
+            b and c
+        }
+        if b and c {
+            a and c
+        }
+        iff_bool(a and c, b and c)
+    }
+}
+
+/// Logical equivalence may rewrite the right side of a conjunction.
+theorem iff_bool_and_right(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(c and a, c and b)
+} by {
+    if iff_bool(a, b) {
+        if c and a {
+            c and b
+        }
+        if c and b {
+            c and a
+        }
+        iff_bool(c and a, c and b)
+    }
+}
+
+/// Logical equivalence may rewrite both sides of a conjunction.
+theorem iff_bool_and(a: Bool, b: Bool, c: Bool, d: Bool) {
+    iff_bool(a, b) and iff_bool(c, d) implies iff_bool(a and c, b and d)
+} by {
+    if iff_bool(a, b) and iff_bool(c, d) {
+        if a and c {
+            b and d
+        }
+        if b and d {
+            a and c
+        }
+        (a and c implies b and d) and (b and d implies a and c)
+        iff_bool(a and c, b and d)
+    }
+}
+
+/// Logical equivalence may rewrite the left side of a disjunction.
+theorem iff_bool_or_left(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(a or c, b or c)
+} by {
+    if iff_bool(a, b) {
+        if a or c {
+            if a {
+                b or c
+            } else {
+                c
+                b or c
+            }
+        }
+        if b or c {
+            if b {
+                a or c
+            } else {
+                c
+                a or c
+            }
+        }
+        iff_bool(a or c, b or c)
+    }
+}
+
+/// Logical equivalence may rewrite the right side of a disjunction.
+theorem iff_bool_or_right(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(c or a, c or b)
+} by {
+    if iff_bool(a, b) {
+        if c or a {
+            if c {
+                c or b
+            } else {
+                a
+                c or b
+            }
+        }
+        if c or b {
+            if c {
+                c or a
+            } else {
+                b
+                c or a
+            }
+        }
+        iff_bool(c or a, c or b)
+    }
+}
+
+/// Logical equivalence may rewrite both sides of a disjunction.
+theorem iff_bool_or(a: Bool, b: Bool, c: Bool, d: Bool) {
+    iff_bool(a, b) and iff_bool(c, d) implies iff_bool(a or c, b or d)
+} by {
+    if iff_bool(a, b) and iff_bool(c, d) {
+        if a or c {
+            if a {
+                b or d
+            } else {
+                c
+                b or d
+            }
+        }
+        if b or d {
+            if b {
+                a or c
+            } else {
+                d
+                a or c
+            }
+        }
+        (a or c implies b or d) and (b or d implies a or c)
+        iff_bool(a or c, b or d)
+    }
+}
+
+/// Logical equivalence may rewrite the antecedent of an implication.
+theorem iff_bool_implies_left(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(a implies c, b implies c)
+} by {
+    if iff_bool(a, b) {
+        if a implies c {
+            if b {
+                a
+                c
+            }
+        }
+        if b implies c {
+            if a {
+                b
+                c
+            }
+        }
+        iff_bool(a implies c, b implies c)
+    }
+}
+
+/// Logical equivalence may rewrite the consequent of an implication.
+theorem iff_bool_implies_right(a: Bool, b: Bool, c: Bool) {
+    iff_bool(a, b) implies iff_bool(c implies a, c implies b)
+} by {
+    if iff_bool(a, b) {
+        if c implies a {
+            if c {
+                a
+                b
+            }
+        }
+        if c implies b {
+            if c {
+                b
+                a
+            }
+        }
+        iff_bool(c implies a, c implies b)
+    }
+}
+
+/// Logical equivalence may rewrite both sides of an implication.
+theorem iff_bool_implies(a: Bool, b: Bool, c: Bool, d: Bool) {
+    iff_bool(a, b) and iff_bool(c, d) implies iff_bool(a implies c, b implies d)
+} by {
+    if iff_bool(a, b) and iff_bool(c, d) {
+        if a implies c {
+            if b {
+                a
+                c
+                d
+            }
+        }
+        if b implies d {
+            if a {
+                b
+                d
+                c
+            }
+        }
+        iff_bool(a implies c, b implies d)
+    }
+}
+
+/// Pointwise logical equivalence rewrites universal quantification.
+theorem iff_bool_forall[T](p: T -> Bool, q: T -> Bool) {
+    (forall(x: T) { iff_bool(p(x), q(x)) }) implies
+    iff_bool(forall(x: T) { p(x) }, forall(x: T) { q(x) })
+} by {
+    if forall(x: T) { iff_bool(p(x), q(x)) } {
+        if forall(x: T) { p(x) } {
+            forall(x: T) {
+                q(x)
+            }
+        }
+        if forall(x: T) { q(x) } {
+            forall(x: T) {
+                p(x)
+            }
+        }
+        iff_bool(forall(x: T) { p(x) }, forall(x: T) { q(x) })
+    }
+}
+
+/// Pointwise logical equivalence gives the forward existential implication.
+theorem iff_bool_exists_forward[T](p: T -> Bool, q: T -> Bool) {
+    (forall(x: T) { iff_bool(p(x), q(x)) }) implies
+    (exists(x: T) { p(x) } implies exists(x: T) { q(x) })
+} by {
+    if forall(x: T) { iff_bool(p(x), q(x)) } {
+        if exists(x: T) { p(x) } {
+            let x: T satisfy {
+                p(x)
+            }
+            exists(witness: T) {
+                witness = x and q(witness)
+            }
+        }
+    }
+}
+
+/// Pointwise logical equivalence gives the backward existential implication.
+theorem iff_bool_exists_backward[T](p: T -> Bool, q: T -> Bool) {
+    (forall(x: T) { iff_bool(p(x), q(x)) }) implies
+    (exists(x: T) { q(x) } implies exists(x: T) { p(x) })
+} by {
+    if forall(x: T) { iff_bool(p(x), q(x)) } {
+        if exists(x: T) { q(x) } {
+            let x: T satisfy {
+                q(x)
+            }
+            exists(witness: T) {
+                witness = x and p(witness)
+            }
+        }
+    }
+}
+
+/// Pointwise logical equivalence rewrites existential quantification.
+theorem iff_bool_exists[T](p: T -> Bool, q: T -> Bool) {
+    (forall(x: T) { iff_bool(p(x), q(x)) }) implies
+    iff_bool(exists(x: T) { p(x) }, exists(x: T) { q(x) })
+} by {
+    if forall(x: T) { iff_bool(p(x), q(x)) } {
+        iff_bool_exists_forward(p, q)
+        iff_bool_exists_backward(p, q)
+        exists(x: T) { p(x) } implies exists(x: T) { q(x) }
+        exists(x: T) { q(x) } implies exists(x: T) { p(x) }
+        (exists(x: T) { p(x) } implies exists(x: T) { q(x) }) and
+            (exists(x: T) { q(x) } implies exists(x: T) { p(x) })
+        iff_bool(exists(x: T) { p(x) }, exists(x: T) { q(x) })
+    }
+}
+
 /// Conjunction distributes over disjunction on the left.
 theorem and_or_distrib_left(a: Bool, b: Bool, c: Bool) {
     (a and (b or c)) = ((a and b) or (a and c))
@@ -534,6 +900,177 @@ theorem exists_or_distrib[T](p: T -> Bool, q: T -> Bool) {
 } by {
     exists_or_forward(p, q)
     exists_or_backward(p, q)
+}
+
+/// Nonexistence gives universal negation.
+theorem not_exists_forward[T](p: T -> Bool) {
+    not exists(x: T) { p(x) } implies forall(x: T) {
+        not p(x)
+    }
+} by {
+    if not exists(x: T) { p(x) } {
+        forall(x: T) {
+            if p(x) {
+                exists(witness: T) {
+                    witness = x and p(witness)
+                }
+                false
+            }
+            not p(x)
+        }
+    }
+}
+
+/// Universal negation gives nonexistence.
+theorem not_exists_backward[T](p: T -> Bool) {
+    (forall(x: T) { not p(x) }) implies not exists(x: T) {
+        p(x)
+    }
+} by {
+    if forall(x: T) { not p(x) } {
+        if exists(x: T) { p(x) } {
+            let x: T satisfy {
+                p(x)
+            }
+            not p(x)
+            false
+        }
+        not exists(x: T) {
+            p(x)
+        }
+    }
+}
+
+/// Negating existence is universal negation.
+theorem not_exists[T](p: T -> Bool) {
+    (not exists(x: T) { p(x) }) = forall(x: T) {
+        not p(x)
+    }
+} by {
+    not_exists_forward(p)
+    not_exists_backward(p)
+}
+
+/// A counterexample to a universal statement negates it.
+theorem exists_not_imp_not_forall[T](p: T -> Bool) {
+    exists(x: T) {
+        not p(x)
+    } implies not forall(x: T) {
+        p(x)
+    }
+} by {
+    if exists(x: T) { not p(x) } {
+        let x: T satisfy {
+            not p(x)
+        }
+        if forall(y: T) { p(y) } {
+            p(x)
+            false
+        }
+        not forall(y: T) {
+            p(y)
+        }
+    }
+}
+
+/// Negating a universal statement gives a counterexample.
+theorem not_forall_imp_exists_not[T](p: T -> Bool) {
+    not forall(x: T) {
+        p(x)
+    } implies exists(x: T) {
+        not p(x)
+    }
+} by {
+    if not forall(x: T) { p(x) } {
+        if not exists(x: T) { not p(x) } {
+            not_exists_forward(function(x: T) { not p(x) })
+            forall(x: T) {
+                if not p(x) {
+                    false
+                }
+                p(x)
+            }
+            false
+        }
+        exists(x: T) {
+            not p(x)
+        }
+    }
+}
+
+/// Negating universal quantification is existential negation.
+theorem not_forall[T](p: T -> Bool) {
+    (not forall(x: T) { p(x) }) = exists(x: T) {
+        not p(x)
+    }
+} by {
+    exists_not_imp_not_forall(p)
+    not_forall_imp_exists_not(p)
+}
+
+/// Universal truth is the same as no counterexample.
+theorem forall_eq_not_exists_not[T](p: T -> Bool) {
+    (forall(x: T) { p(x) }) = not exists(x: T) {
+        not p(x)
+    }
+} by {
+    if forall(x: T) { p(x) } {
+        if exists(x: T) { not p(x) } {
+            let x: T satisfy {
+                not p(x)
+            }
+            p(x)
+            false
+        }
+        not exists(x: T) {
+            not p(x)
+        }
+    }
+    if not exists(x: T) { not p(x) } {
+        not_exists_forward(function(x: T) { not p(x) })
+        forall(x: T) {
+            if not p(x) {
+                false
+            }
+            p(x)
+        }
+    }
+}
+
+/// Existence is the same as not all witnesses failing.
+theorem exists_eq_not_forall_not[T](p: T -> Bool) {
+    (exists(x: T) { p(x) }) = not forall(x: T) {
+        not p(x)
+    }
+} by {
+    if exists(x: T) { p(x) } {
+        let x: T satisfy {
+            p(x)
+        }
+        if forall(y: T) { not p(y) } {
+            not p(x)
+            false
+        }
+        not forall(y: T) {
+            not p(y)
+        }
+    }
+    if not forall(x: T) { not p(x) } {
+        not_forall_imp_exists_not(function(x: T) { not p(x) })
+        exists(x: T) {
+            not not p(x)
+        }
+        let x: T satisfy {
+            not not p(x)
+        }
+        if not p(x) {
+            false
+        }
+        p(x)
+        exists(witness: T) {
+            witness = x and p(witness)
+        }
+    }
 }
 
 /// A fixed implication may be moved through universal quantification.
