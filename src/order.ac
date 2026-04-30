@@ -79,6 +79,48 @@ theorem lte_antisymm[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Mutual `<=` forces equality on a partial order.
+theorem lte_and_gte_imp_eq[P: PartialOrder](a: P, b: P) {
+    a <= b and a >= b implies a = b
+} by {
+    if a <= b and a >= b {
+        b <= a
+        lte_antisymm(a, b)
+    }
+}
+
+/// Two partial-order elements are equal when their `<=`-profile agrees on every test point.
+theorem eq_of_forall_lte_iff[P: PartialOrder](a: P, b: P) {
+    (forall(c: P) { a <= c = b <= c }) implies a = b
+} by {
+    if forall(c: P) { a <= c = b <= c } {
+        a <= a = b <= a
+        lte_refl(a)
+        b <= a
+        a <= b = b <= b
+        lte_refl(b)
+        a <= b
+        lte_antisymm(a, b)
+        a = b
+    }
+}
+
+/// Two partial-order elements are equal when their reverse `<=`-profile agrees on every test point.
+theorem eq_of_forall_lte_iff_swap[P: PartialOrder](a: P, b: P) {
+    (forall(c: P) { c <= a = c <= b }) implies a = b
+} by {
+    if forall(c: P) { c <= a = c <= b } {
+        a <= a = a <= b
+        lte_refl(a)
+        a <= b
+        b <= a = b <= b
+        lte_refl(b)
+        b <= a
+        lte_antisymm(a, b)
+        a = b
+    }
+}
+
 theorem eq_imp_lte[P: PartialOrder](a: P, b: P) {
     a = b implies a <= b
 } by {
