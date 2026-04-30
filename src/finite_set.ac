@@ -18,6 +18,12 @@ from set import Set, set_ext, finite_constraint, functional_insert, functional_r
     intersection_cardinality_is_sub_difference, inclusion_exclusion,
     cardinality_is_well_defined, cardinality_is_smallest_cardinality,
     cardinality_is_implies_is_finite
+from witness import exists_unique, exists_unique_exists, exists_unique_eq,
+    set_witness_predicate, set_witness_contains, set_witness_property,
+    set_witness_intro, set_witness_exists_of_witness,
+    choose_from_set_or_default, choose_from_set_or_default_spec,
+    choose_from_set_or_default_contains, choose_from_set_or_default_property,
+    choose_from_set_or_default_eq_default, choose_from_set_or_default_unique_eq
 
 numerals Nat
 
@@ -158,6 +164,121 @@ attributes FiniteSet[T] {
     /// True if the cardinality equals n.
     define cardinality_is(self, n: Nat) -> Bool {
         self.underlying_set.cardinality_is(n)
+    }
+}
+
+/// The predicate that an element lies in a finite set and satisfies a condition.
+define finite_set_witness_predicate[T](s: FiniteSet[T], p: T -> Bool, x: T) -> Bool {
+    set_witness_predicate(s.underlying_set, p, x)
+}
+
+/// A finite-set witness belongs to the finite set.
+theorem finite_set_witness_contains[T](s: FiniteSet[T], p: T -> Bool, x: T) {
+    finite_set_witness_predicate(s, p, x) implies s.contains(x)
+} by {
+    if finite_set_witness_predicate(s, p, x) {
+        set_witness_contains(s.underlying_set, p, x)
+        s.underlying_set.contains(x)
+        s.contains(x)
+    }
+}
+
+/// A finite-set witness satisfies the predicate.
+theorem finite_set_witness_property[T](s: FiniteSet[T], p: T -> Bool, x: T) {
+    finite_set_witness_predicate(s, p, x) implies p(x)
+} by {
+    if finite_set_witness_predicate(s, p, x) {
+        set_witness_property(s.underlying_set, p, x)
+    }
+}
+
+/// Finite-set membership together with the predicate gives a finite-set witness.
+theorem finite_set_witness_intro[T](s: FiniteSet[T], p: T -> Bool, x: T) {
+    s.contains(x) and p(x) implies finite_set_witness_predicate(s, p, x)
+} by {
+    if s.contains(x) and p(x) {
+        s.underlying_set.contains(x)
+        set_witness_intro(s.underlying_set, p, x)
+    }
+}
+
+/// A concrete finite-set witness gives existence of a finite-set witness.
+theorem finite_set_witness_exists_of_witness[T](s: FiniteSet[T], p: T -> Bool, x: T) {
+    finite_set_witness_predicate(s, p, x) implies exists(y: T) {
+        finite_set_witness_predicate(s, p, y)
+    }
+} by {
+    if finite_set_witness_predicate(s, p, x) {
+        set_witness_exists_of_witness(s.underlying_set, p, x)
+        exists(y: T) {
+            finite_set_witness_predicate(s, p, y)
+        }
+    }
+}
+
+/// A chosen element of a finite set satisfying a condition, with a specified default otherwise.
+define choose_from_finite_set_or_default[T](s: FiniteSet[T], p: T -> Bool, default: T) -> T {
+    choose_from_set_or_default(s.underlying_set, p, default)
+}
+
+/// The chosen finite-set element satisfies the witness predicate when such an element exists.
+theorem choose_from_finite_set_or_default_spec[T](s: FiniteSet[T], p: T -> Bool, default: T) {
+    exists(x: T) {
+        finite_set_witness_predicate(s, p, x)
+    } implies finite_set_witness_predicate(s, p, choose_from_finite_set_or_default(s, p, default))
+} by {
+    if exists(x: T) { finite_set_witness_predicate(s, p, x) } {
+        choose_from_set_or_default_spec(s.underlying_set, p, default)
+        set_witness_predicate(s.underlying_set, p, choose_from_set_or_default(s.underlying_set, p, default))
+    }
+}
+
+/// The chosen finite-set element belongs to the finite set when such an element exists.
+theorem choose_from_finite_set_or_default_contains[T](s: FiniteSet[T], p: T -> Bool, default: T) {
+    exists(x: T) {
+        finite_set_witness_predicate(s, p, x)
+    } implies s.contains(choose_from_finite_set_or_default(s, p, default))
+} by {
+    if exists(x: T) { finite_set_witness_predicate(s, p, x) } {
+        choose_from_set_or_default_contains(s.underlying_set, p, default)
+        s.underlying_set.contains(choose_from_set_or_default(s.underlying_set, p, default))
+        s.contains(choose_from_finite_set_or_default(s, p, default))
+    }
+}
+
+/// The chosen finite-set element satisfies the condition when such an element exists.
+theorem choose_from_finite_set_or_default_property[T](s: FiniteSet[T], p: T -> Bool, default: T) {
+    exists(x: T) {
+        finite_set_witness_predicate(s, p, x)
+    } implies p(choose_from_finite_set_or_default(s, p, default))
+} by {
+    if exists(x: T) { finite_set_witness_predicate(s, p, x) } {
+        choose_from_set_or_default_property(s.underlying_set, p, default)
+    }
+}
+
+/// The default is chosen when no finite-set element satisfies the condition.
+theorem choose_from_finite_set_or_default_eq_default[T](s: FiniteSet[T], p: T -> Bool, default: T) {
+    not exists(x: T) {
+        finite_set_witness_predicate(s, p, x)
+    } implies choose_from_finite_set_or_default(s, p, default) = default
+} by {
+    if not exists(x: T) { finite_set_witness_predicate(s, p, x) } {
+        choose_from_set_or_default_eq_default(s.underlying_set, p, default)
+    }
+}
+
+/// A unique finite-set witness determines the chosen element.
+theorem choose_from_finite_set_or_default_unique_eq[T](s: FiniteSet[T], p: T -> Bool, default: T, x: T) {
+    exists_unique(finite_set_witness_predicate(s, p)) and finite_set_witness_predicate(s, p, x)
+    implies choose_from_finite_set_or_default(s, p, default) = x
+} by {
+    if exists_unique(finite_set_witness_predicate(s, p)) and finite_set_witness_predicate(s, p, x) {
+        exists_unique_exists(finite_set_witness_predicate(s, p))
+        choose_from_finite_set_or_default_spec(s, p, default)
+        finite_set_witness_predicate(s, p, choose_from_finite_set_or_default(s, p, default))
+        exists_unique_eq(finite_set_witness_predicate(s, p),
+            choose_from_finite_set_or_default(s, p, default), x)
     }
 }
 

@@ -1001,11 +1001,11 @@
 {"goal":"s(j).superset(s(k))","proof":[]}
 {"goal":"s(k).subset(s(j))","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { x0 ⊃ x1 = x1 ⊂ x0 }[T](s(j), s(k))"]}
 {"goal":"decreasing_seq_subset_of_le","proof":[]}
-{"goal":"s(k).subset(s(j))","proof":["not is_decreasing[Nat](s) or not j <= k","is_decreasing[Nat](s) and j <= k","not is_decreasing[Nat](s)"]}
-{"goal":"set_lower_bound(s(k), bound)","proof":["not s(k) ⊂ s(j) or not set_lower_bound(s(j), bound)","not set_lower_bound(s(j), bound)"]}
-{"goal":"decreasing_seq_lower_bound_of_le","proof":["not set_lower_bound(s(j), bound) or not is_decreasing[Nat](s) or not j <= k","set_lower_bound(s(j), bound)","not is_decreasing[Nat](s) or not j <= k","is_decreasing[Nat](s) and j <= k","not is_decreasing[Nat](s)"]}
-{"goal":"set_lower_bound(s(i), bound)","proof":["not set_lower_bound(s(big_n), bound) or not is_decreasing[Nat](s) or not big_n <= i","not set_lower_bound(s(big_n), bound) or not is_decreasing[Nat](s)","is_decreasing[Nat](s)","set_lower_bound(s(big_n), bound)","not set_lower_bound(s(big_n), bound)"]}
-{"goal":"decreasing_seq_eventual_lower_bound","proof":["not set_lower_bound(s(big_n), bound) or not is_decreasing[Nat](s)","is_decreasing[Nat](s)","set_lower_bound(s(big_n), bound)","not set_lower_bound(s(big_n), bound)"]}
+{"goal":"s(k).subset(s(j))","proof":[]}
+{"goal":"set_lower_bound(s(k), bound)","proof":[]}
+{"goal":"decreasing_seq_lower_bound_of_le","proof":[]}
+{"goal":"set_lower_bound(s(i), bound)","proof":[]}
+{"goal":"decreasing_seq_eventual_lower_bound","proof":[]}
 {"goal":"s(big_n).contains(k) implies k >= Nat.0","proof":["function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[Nat](k, Nat.0)","function(x0: Nat) { not x0 < Nat.0 }(k)"]}
 {"goal":"set_lower_bound(s(big_n), Nat.0)","proof":["function(x0: Set[Nat], x1: Nat) { forall(x2: Nat) { not x2 ∈ x0 or x2 >= x1 } = set_lower_bound(x0, x1) }(s(big_n), Nat.0)","let w0: Nat satisfy { w0 ∈ s(big_n) and not w0 >= Nat.0 }","function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[Nat](w0, Nat.0)","function(x0: Nat) { not x0 < Nat.0 }(w0)"]}
 {"goal":"p(Nat.0)","proof":["function(x0: Nat) { set_lower_bound(s(x0), Nat.0) }(Nat.zero)","function(x0: Nat) { (not is_decreasing[Nat](s) or not seq_intersection[Nat](s).is_empty or exists(k0: Nat) { set_lower_bound(s(k0), x0) }) = p(x0) }(Nat.0)","function(x0: Nat) { is_decreasing[Nat](s) and seq_intersection[Nat](s).is_empty and forall(x1: Nat) { not set_lower_bound(s(x1), x0) } or p(x0) }(Nat.0)","function(x0: Nat) { forall(x1: Nat) { not set_lower_bound(s(x1), x0) } = true or p(x0) }(Nat.0)","function(x0: Nat, x1: Nat) { not set_lower_bound(s(x0), x1) or p(x1) }(Nat.zero, Nat.0)"]}

@@ -1,4 +1,4 @@
-from functions import identity_fn
+from functions import compose, identity_fn
 
 /// A value belonging to one of two types.
 inductive Sum[T, U] {
@@ -160,6 +160,125 @@ theorem sum_map_right_inl[T, U, W](x: T, right: U -> W) {
 /// Mapping the right side of a right injection applies the map.
 theorem sum_map_right_inr[T, U, W](y: U, right: U -> W) {
     sum_map_right(Sum.inr[T, U](y), right) = Sum.inr[T, W](right(y))
+}
+
+/// Mapping both sides by identity gives the original sum value.
+theorem sum_map_identity[T, U](s: Sum[T, U]) {
+    sum_map(s, identity_fn[T], identity_fn[U]) = s
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_map_inl(x, identity_fn[T], identity_fn[U])
+            identity_fn[T](x) = x
+            sum_map(s, identity_fn[T], identity_fn[U]) = Sum.inl[T, U](x)
+            sum_map(s, identity_fn[T], identity_fn[U]) = s
+        }
+        Sum.inr(y) {
+            sum_map_inr(y, identity_fn[T], identity_fn[U])
+            identity_fn[U](y) = y
+            sum_map(s, identity_fn[T], identity_fn[U]) = Sum.inr[T, U](y)
+            sum_map(s, identity_fn[T], identity_fn[U]) = s
+        }
+    }
+}
+
+/// Sum maps compose on each side.
+theorem sum_map_comp[A, B, C, D, E, F](f: C -> E, g: A -> C, h: D -> F, i: B -> D,
+    s: Sum[A, B]) {
+    sum_map(s, compose(f, g), compose(h, i)) = sum_map(sum_map(s, g, i), f, h)
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_map_inl(x, compose(f, g), compose(h, i))
+            compose(f, g, x) = f(g(x))
+            sum_map(s, compose(f, g), compose(h, i)) = Sum.inl[E, F](f(g(x)))
+            sum_map_inl(x, g, i)
+            sum_map(s, g, i) = Sum.inl[C, D](g(x))
+            sum_map_inl(g(x), f, h)
+            sum_map(sum_map(s, g, i), f, h) = Sum.inl[E, F](f(g(x)))
+            sum_map(s, compose(f, g), compose(h, i)) = sum_map(sum_map(s, g, i), f, h)
+        }
+        Sum.inr(y) {
+            sum_map_inr(y, compose(f, g), compose(h, i))
+            compose(h, i, y) = h(i(y))
+            sum_map(s, compose(f, g), compose(h, i)) = Sum.inr[E, F](h(i(y)))
+            sum_map_inr(y, g, i)
+            sum_map(s, g, i) = Sum.inr[C, D](i(y))
+            sum_map_inr(i(y), f, h)
+            sum_map(sum_map(s, g, i), f, h) = Sum.inr[E, F](h(i(y)))
+            sum_map(s, compose(f, g), compose(h, i)) = sum_map(sum_map(s, g, i), f, h)
+        }
+    }
+}
+
+/// Mapping the left side by identity gives the original sum value.
+theorem sum_map_left_identity[T, U](s: Sum[T, U]) {
+    sum_map_left(s, identity_fn[T]) = s
+} by {
+    sum_map_left(s, identity_fn[T]) = sum_map(s, identity_fn[T], identity_fn[U])
+    sum_map_identity(s)
+}
+
+/// Mapping the right side by identity gives the original sum value.
+theorem sum_map_right_identity[T, U](s: Sum[T, U]) {
+    sum_map_right(s, identity_fn[U]) = s
+} by {
+    sum_map_right(s, identity_fn[U]) = sum_map(s, identity_fn[T], identity_fn[U])
+    sum_map_identity(s)
+}
+
+/// Maps on the left side compose as functions do.
+theorem sum_map_left_comp[A, B, C, D](f: C -> D, g: A -> C, s: Sum[A, B]) {
+    sum_map_left(s, compose(f, g)) = sum_map_left(sum_map_left(s, g), f)
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_map_left_inl[A, B, D](x, compose(f, g))
+            compose(f, g, x) = f(g(x))
+            sum_map_left(s, compose(f, g)) = Sum.inl[D, B](f(g(x)))
+            sum_map_left_inl[A, B, C](x, g)
+            sum_map_left(s, g) = Sum.inl[C, B](g(x))
+            sum_map_left_inl[C, B, D](g(x), f)
+            sum_map_left(sum_map_left(s, g), f) = Sum.inl[D, B](f(g(x)))
+            sum_map_left(s, compose(f, g)) = sum_map_left(sum_map_left(s, g), f)
+        }
+        Sum.inr(y) {
+            sum_map_left_inr[A, B, D](y, compose(f, g))
+            sum_map_left(s, compose(f, g)) = Sum.inr[D, B](y)
+            sum_map_left_inr[A, B, C](y, g)
+            sum_map_left(s, g) = Sum.inr[C, B](y)
+            sum_map_left_inr[C, B, D](y, f)
+            sum_map_left(sum_map_left(s, g), f) = Sum.inr[D, B](y)
+            sum_map_left(s, compose(f, g)) = sum_map_left(sum_map_left(s, g), f)
+        }
+    }
+}
+
+/// Maps on the right side compose as functions do.
+theorem sum_map_right_comp[A, B, C, D](f: C -> D, g: B -> C, s: Sum[A, B]) {
+    sum_map_right(s, compose(f, g)) = sum_map_right(sum_map_right(s, g), f)
+} by {
+    match s {
+        Sum.inl(x) {
+            sum_map_right_inl[A, B, D](x, compose(f, g))
+            sum_map_right(s, compose(f, g)) = Sum.inl[A, D](x)
+            sum_map_right_inl[A, B, C](x, g)
+            sum_map_right(s, g) = Sum.inl[A, C](x)
+            sum_map_right_inl[A, C, D](x, f)
+            sum_map_right(sum_map_right(s, g), f) = Sum.inl[A, D](x)
+            sum_map_right(s, compose(f, g)) = sum_map_right(sum_map_right(s, g), f)
+        }
+        Sum.inr(y) {
+            sum_map_right_inr[A, B, D](y, compose(f, g))
+            compose(f, g, y) = f(g(y))
+            sum_map_right(s, compose(f, g)) = Sum.inr[A, D](f(g(y)))
+            sum_map_right_inr[A, B, C](y, g)
+            sum_map_right(s, g) = Sum.inr[A, C](g(y))
+            sum_map_right_inr[A, C, D](g(y), f)
+            sum_map_right(sum_map_right(s, g), f) = Sum.inr[A, D](f(g(y)))
+            sum_map_right(s, compose(f, g)) = sum_map_right(sum_map_right(s, g), f)
+        }
+    }
 }
 
 /// Swapping a left injection gives a right injection.

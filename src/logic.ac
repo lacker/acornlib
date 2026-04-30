@@ -1,5 +1,20 @@
 /// Reusable rewrite lemmas for `and`, `or`, `not`, and implication.
 
+/// Conjunction gives its left conjunct.
+theorem and_left(a: Bool, b: Bool) {
+    a and b implies a
+}
+
+/// Conjunction gives its right conjunct.
+theorem and_right(a: Bool, b: Bool) {
+    a and b implies b
+}
+
+/// Two propositions give their conjunction.
+theorem and_intro(a: Bool, b: Bool) {
+    a and b implies a and b
+}
+
 /// Conjunction is commutative.
 theorem and_comm(a: Bool, b: Bool) {
     (a and b) = (b and a)
@@ -45,6 +60,16 @@ theorem or_assoc(a: Bool, b: Bool, c: Bool) {
     ((a or b) or c) = (a or (b or c))
 }
 
+/// The left disjunct gives the disjunction.
+theorem or_intro_left(a: Bool, b: Bool) {
+    a implies a or b
+}
+
+/// The right disjunct gives the disjunction.
+theorem or_intro_right(a: Bool, b: Bool) {
+    b implies a or b
+}
+
 /// Disjunction is idempotent.
 theorem or_self(a: Bool) {
     (a or a) = a
@@ -83,6 +108,16 @@ theorem not_false {
 /// Double negation eliminates.
 theorem not_not(a: Bool) {
     (not not a) = a
+}
+
+/// Double negation eliminates classically.
+theorem not_not_elim(a: Bool) {
+    not not a implies a
+}
+
+/// A proposition implies its double negation.
+theorem not_not_intro(a: Bool) {
+    a implies not not a
 }
 
 /// Conjunction with one's own negation is `false`.
@@ -140,7 +175,47 @@ theorem not_implies(a: Bool, b: Bool) {
     (not (a implies b)) = (a and not b)
 }
 
+/// Contraposition.
+theorem contrapose(a: Bool, b: Bool) {
+    (a implies b) and not b implies not a
+}
+
+/// Contrapositive implication is equivalent to the original implication.
+theorem contrapose_iff(a: Bool, b: Bool) {
+    (a implies b) = (not b implies not a)
+}
+
 /// Contrapositive form of implication.
 theorem implies_contrapositive(a: Bool, b: Bool) {
     (a implies b) = (not b implies not a)
+}
+
+/// A proposition equal to true holds.
+theorem eq_true_elim(a: Bool) {
+    a = true implies a
+}
+
+/// A true proposition is equal to true.
+theorem eq_true_intro(a: Bool) {
+    a implies a = true
+}
+
+/// A proposition equal to false does not hold.
+theorem eq_false_elim(a: Bool) {
+    a = false implies not a
+}
+
+/// A false proposition is equal to false.
+theorem eq_false_intro(a: Bool) {
+    not a implies a = false
+}
+
+/// Conjunction distributes over disjunction on the left.
+theorem and_or_distrib_left(a: Bool, b: Bool, c: Bool) {
+    (a and (b or c)) = ((a and b) or (a and c))
+}
+
+/// Disjunction distributes over conjunction on the left.
+theorem or_and_distrib_left(a: Bool, b: Bool, c: Bool) {
+    (a or (b and c)) = ((a or b) and (a or c))
 }

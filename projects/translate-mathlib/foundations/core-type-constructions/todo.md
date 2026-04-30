@@ -2,7 +2,5 @@
 
 Goal: provide stable APIs for the small family of basic type constructors that appear everywhere.
 
-- [ ] Support dependent pair constructions where Acorn syntax allows them
-- [ ] Add function-level APIs that interact well with pair and sum constructors
-- [ ] Extend set-level APIs for option and future core constructors
-- [ ] Refactor current pair and option code toward a general construction toolkit
+- [ ] Decide whether dependent pair support should use constrained structures or a dedicated subtype-style API
+- [ ] Decide whether pair, sum, and option APIs should be factored into a shared construction toolkit

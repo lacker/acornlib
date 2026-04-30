@@ -1,4 +1,4 @@
-from functions import binary_function_extensionality, function_extensionality
+from functions import binary_function_extensionality, compose, function_extensionality, identity_fn
 
 /// An ordered pair of two values, possibly of different types.
 structure Pair[T, U] {
@@ -152,6 +152,105 @@ theorem pair_map_eq_map_second_map_first[T, U, V, W](f: T -> V, g: U -> W, p: Pa
     pair_map_first(f, p).second = p.second
     rhs.second = g(pair_map_first(f, p).second)
     rhs.second = g(p.second)
+    pair_ext(lhs, rhs)
+}
+
+/// Mapping both components by identity gives the original pair.
+theorem pair_map_identity[T, U](p: Pair[T, U]) {
+    pair_map(identity_fn[T], identity_fn[U], p) = p
+} by {
+    let q = pair_map(identity_fn[T], identity_fn[U], p)
+    q.first = identity_fn[T](p.first)
+    q.first = p.first
+    q.second = identity_fn[U](p.second)
+    q.second = p.second
+    pair_ext(q, p)
+}
+
+/// Componentwise pair maps compose componentwise.
+theorem pair_map_comp[A, B, C, D, E, F](f: C -> E, g: A -> C, h: D -> F, i: B -> D,
+    p: Pair[A, B]) {
+    pair_map(compose(f, g), compose(h, i), p) = pair_map(f, h, pair_map(g, i, p))
+} by {
+    let lhs = pair_map(compose(f, g), compose(h, i), p)
+    let mid = pair_map(g, i, p)
+    let rhs = pair_map(f, h, mid)
+    lhs.first = compose(f, g, p.first)
+    compose(f, g, p.first) = f(g(p.first))
+    mid.first = g(p.first)
+    rhs.first = f(mid.first)
+    rhs.first = f(g(p.first))
+    lhs.first = rhs.first
+    lhs.second = compose(h, i, p.second)
+    compose(h, i, p.second) = h(i(p.second))
+    mid.second = i(p.second)
+    rhs.second = h(mid.second)
+    rhs.second = h(i(p.second))
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Mapping the first component by identity gives the original pair.
+theorem pair_map_first_identity[T, U](p: Pair[T, U]) {
+    pair_map_first(identity_fn[T], p) = p
+} by {
+    let q = pair_map_first(identity_fn[T], p)
+    q.first = identity_fn[T](p.first)
+    q.first = p.first
+    q.second = p.second
+    pair_ext(q, p)
+}
+
+/// Mapping the second component by identity gives the original pair.
+theorem pair_map_second_identity[T, U](p: Pair[T, U]) {
+    pair_map_second(identity_fn[U], p) = p
+} by {
+    let q = pair_map_second(identity_fn[U], p)
+    q.first = p.first
+    q.second = identity_fn[U](p.second)
+    q.second = p.second
+    pair_ext(q, p)
+}
+
+/// Maps on the first component compose as functions do.
+theorem pair_map_first_comp[A, B, C, D](f: C -> D, g: A -> C, p: Pair[A, B]) {
+    pair_map_first(compose(f, g), p) = pair_map_first(f, pair_map_first(g, p))
+} by {
+    let lhs = pair_map_first(compose(f, g), p)
+    let mid = pair_map_first(g, p)
+    let rhs = pair_map_first(f, mid)
+    lhs.first = compose(f, g, p.first)
+    compose(f, g, p.first) = f(g(p.first))
+    mid.first = g(p.first)
+    rhs.first = f(mid.first)
+    rhs.first = f(g(p.first))
+    lhs.first = rhs.first
+    lhs.second = p.second
+    mid.second = p.second
+    rhs.second = mid.second
+    rhs.second = p.second
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Maps on the second component compose as functions do.
+theorem pair_map_second_comp[A, B, C, D](f: C -> D, g: B -> C, p: Pair[A, B]) {
+    pair_map_second(compose(f, g), p) = pair_map_second(f, pair_map_second(g, p))
+} by {
+    let lhs = pair_map_second(compose(f, g), p)
+    let mid = pair_map_second(g, p)
+    let rhs = pair_map_second(f, mid)
+    lhs.first = p.first
+    mid.first = p.first
+    rhs.first = mid.first
+    rhs.first = p.first
+    lhs.first = rhs.first
+    lhs.second = compose(f, g, p.second)
+    compose(f, g, p.second) = f(g(p.second))
+    mid.second = g(p.second)
+    rhs.second = f(mid.second)
+    rhs.second = f(g(p.second))
+    lhs.second = rhs.second
     pair_ext(lhs, rhs)
 }
 

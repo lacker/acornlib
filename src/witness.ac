@@ -122,6 +122,8 @@ theorem exists_unique_congr[T](p: T -> Bool, q: T -> Bool) {
 }
 
 /// A chosen witness for a satisfiable predicate on an inhabited type.
+/// Use this when the witness will be reused by later statements; use `satisfy`
+/// directly inside a proof when the witness is only needed locally.
 let choose_of_exists[T: Inhabited](p: T -> Bool) -> result: T satisfy {
     exists(x: T) {
         p(x)
@@ -139,6 +141,7 @@ let choose_of_exists[T: Inhabited](p: T -> Bool) -> result: T satisfy {
 }
 
 /// A chosen witness when one exists, and otherwise a specified default element.
+/// Use this when a total construction needs a specified value in the empty case.
 let choose_or_default[T](p: T -> Bool, default: T) -> result: T satisfy {
     (exists(x: T) {
         p(x)
@@ -161,6 +164,26 @@ theorem choose_of_exists_spec[T: Inhabited](p: T -> Bool) {
     exists(x: T) {
         p(x)
     } implies p(choose_of_exists(p))
+}
+
+/// A chosen witness for a satisfiable predicate on an inhabited type.
+/// This is the preferred name for new developments.
+let choose_witness[T: Inhabited](p: T -> Bool) -> result: T satisfy {
+    exists(x: T) {
+        p(x)
+    } implies p(result)
+} by {
+    let x: T = choose_of_exists(p)
+    if exists(y: T) { p(y) } {
+        choose_of_exists_spec(p)
+    }
+}
+
+/// The chosen witness satisfies the predicate when a witness exists.
+theorem choose_witness_spec[T: Inhabited](p: T -> Bool) {
+    exists(x: T) {
+        p(x)
+    } implies p(choose_witness(p))
 }
 
 /// The default-valued chosen witness satisfies the predicate when a witness exists.
