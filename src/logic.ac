@@ -1,3 +1,5 @@
+/// Reusable rewrite lemmas for `and`, `or`, `not`, and implication.
+
 /// Conjunction gives its left conjunct.
 theorem and_left(a: Bool, b: Bool) {
     a and b implies a
@@ -16,49 +18,46 @@ theorem and_intro(a: Bool, b: Bool) {
 /// Conjunction is commutative.
 theorem and_comm(a: Bool, b: Bool) {
     (a and b) = (b and a)
-} by {
-    if a and b {
-        b and a
-    }
-    if b and a {
-        a and b
-    }
 }
 
 /// Conjunction is associative.
 theorem and_assoc(a: Bool, b: Bool, c: Bool) {
-    (a and b and c) = (a and (b and c))
-} by {
-    if a and b and c {
-        a and (b and c)
-    }
-    if a and (b and c) {
-        a and b and c
-    }
+    ((a and b) and c) = (a and (b and c))
+}
+
+/// Conjunction is idempotent.
+theorem and_self(a: Bool) {
+    (a and a) = a
+}
+
+/// `true` is the identity for conjunction.
+theorem and_true(a: Bool) {
+    (a and true) = a
+}
+
+/// Conjunction with `true` on the left is identity.
+theorem true_and(a: Bool) {
+    (true and a) = a
+}
+
+/// `false` is absorbing for conjunction.
+theorem and_false(a: Bool) {
+    (a and false) = false
+}
+
+/// `false` on the left is absorbing for conjunction.
+theorem false_and(a: Bool) {
+    (false and a) = false
 }
 
 /// Disjunction is commutative.
 theorem or_comm(a: Bool, b: Bool) {
     (a or b) = (b or a)
-} by {
-    if a or b {
-        b or a
-    }
-    if b or a {
-        a or b
-    }
 }
 
 /// Disjunction is associative.
 theorem or_assoc(a: Bool, b: Bool, c: Bool) {
-    (a or b or c) = (a or (b or c))
-} by {
-    if a or b or c {
-        a or (b or c)
-    }
-    if a or (b or c) {
-        a or b or c
-    }
+    ((a or b) or c) = (a or (b or c))
 }
 
 /// The left disjunct gives the disjunction.
@@ -71,59 +70,124 @@ theorem or_intro_right(a: Bool, b: Bool) {
     b implies a or b
 }
 
+/// Disjunction is idempotent.
+theorem or_self(a: Bool) {
+    (a or a) = a
+}
+
+/// `true` is absorbing for disjunction.
+theorem or_true(a: Bool) {
+    (a or true) = true
+}
+
+/// `true` on the left is absorbing for disjunction.
+theorem true_or(a: Bool) {
+    (true or a) = true
+}
+
+/// `false` is the identity for disjunction.
+theorem or_false(a: Bool) {
+    (a or false) = a
+}
+
+/// `false` on the left is identity for disjunction.
+theorem false_or(a: Bool) {
+    (false or a) = a
+}
+
+/// Negating `true` gives `false`.
+theorem not_true {
+    (not true) = false
+}
+
+/// Negating `false` gives `true`.
+theorem not_false {
+    (not false) = true
+}
+
+/// Double negation eliminates.
+theorem not_not(a: Bool) {
+    (not not a) = a
+}
+
 /// Double negation eliminates classically.
 theorem not_not_elim(a: Bool) {
     not not a implies a
-} by {
-    if not not a {
-        if not a {
-            false
-        }
-        a
-    }
 }
 
 /// A proposition implies its double negation.
 theorem not_not_intro(a: Bool) {
     a implies not not a
-} by {
-    if a {
-        if not a {
-            false
-        }
-    }
+}
+
+/// Conjunction with one's own negation is `false`.
+theorem and_not_self(a: Bool) {
+    (a and not a) = false
+}
+
+/// Disjunction with one's own negation is `true`.
+theorem or_not_self(a: Bool) {
+    (a or not a) = true
+}
+
+/// De Morgan: negation of a conjunction.
+theorem not_and(a: Bool, b: Bool) {
+    (not (a and b)) = (not a or not b)
+}
+
+/// De Morgan: negation of a disjunction.
+theorem not_or(a: Bool, b: Bool) {
+    (not (a or b)) = (not a and not b)
+}
+
+/// `true` antecedent: `(true implies p) = p`.
+theorem true_implies(a: Bool) {
+    (true implies a) = a
+}
+
+/// `false` antecedent: `(false implies p) = true`.
+theorem false_implies(a: Bool) {
+    (false implies a) = true
+}
+
+/// `true` consequent: `(p implies true) = true`.
+theorem implies_true(a: Bool) {
+    (a implies true) = true
+}
+
+/// `false` consequent: `(p implies false) = not p`.
+theorem implies_false(a: Bool) {
+    (a implies false) = not a
+}
+
+/// Self-implication is `true`.
+theorem implies_self(a: Bool) {
+    (a implies a) = true
+}
+
+/// Implication is disjunction with the antecedent negated.
+theorem implies_eq_not_or(a: Bool, b: Bool) {
+    (a implies b) = (not a or b)
+}
+
+/// Negating an implication.
+theorem not_implies(a: Bool, b: Bool) {
+    (not (a implies b)) = (a and not b)
 }
 
 /// Contraposition.
 theorem contrapose(a: Bool, b: Bool) {
     (a implies b) and not b implies not a
-} by {
-    if (a implies b) and not b {
-        if a {
-            b
-            false
-        }
-    }
 }
 
 /// Contrapositive implication is equivalent to the original implication.
 theorem contrapose_iff(a: Bool, b: Bool) {
     (a implies b) = (not b implies not a)
-} by {
-    if a implies b {
-        forall {
-            not b implies not a
-        }
-    }
-    if not b implies not a {
-        if a {
-            if not b {
-                not a
-                false
-            }
-            b
-        }
-    }
+}
+
+/// Contrapositive form of implication.
+theorem implies_contrapositive(a: Bool, b: Bool) {
+    (a implies b) = (not b implies not a)
 }
 
 /// A proposition equal to true holds.
@@ -139,56 +203,19 @@ theorem eq_true_intro(a: Bool) {
 /// A proposition equal to false does not hold.
 theorem eq_false_elim(a: Bool) {
     a = false implies not a
-} by {
-    if a = false {
-        if a {
-            false
-        }
-    }
 }
 
 /// A false proposition is equal to false.
 theorem eq_false_intro(a: Bool) {
     not a implies a = false
-} by {
-    if not a {
-        if a {
-            false
-        }
-    }
 }
 
 /// Conjunction distributes over disjunction on the left.
 theorem and_or_distrib_left(a: Bool, b: Bool, c: Bool) {
     (a and (b or c)) = ((a and b) or (a and c))
-} by {
-    if a and (b or c) {
-        if b {
-            (a and b) or (a and c)
-        } else {
-            c
-            (a and b) or (a and c)
-        }
-    }
-    if (a and b) or (a and c) {
-        a and (b or c)
-    }
 }
 
 /// Disjunction distributes over conjunction on the left.
 theorem or_and_distrib_left(a: Bool, b: Bool, c: Bool) {
     (a or (b and c)) = ((a or b) and (a or c))
-} by {
-    if a or (b and c) {
-        (a or b) and (a or c)
-    }
-    if (a or b) and (a or c) {
-        if a {
-            a or (b and c)
-        } else {
-            b
-            c
-            a or (b and c)
-        }
-    }
 }

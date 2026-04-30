@@ -1,47 +1,44 @@
 {"goal":"and_left","proof":[]}
 {"goal":"and_right","proof":[]}
 {"goal":"and_intro","proof":[]}
-{"goal":"b and a","proof":[]}
-{"goal":"a and b","proof":[]}
 {"goal":"and_comm","proof":[]}
-{"goal":"a and (b and c)","proof":[]}
-{"goal":"a and b and c","proof":[]}
 {"goal":"and_assoc","proof":[]}
-{"goal":"b or a","proof":[]}
-{"goal":"a or b","proof":[]}
+{"goal":"and_self","proof":["a and a or a","not (a and a) or not a"]}
+{"goal":"and_true","proof":["a and true or a","not (a and true) or not a"]}
+{"goal":"true_and","proof":["true and a or a","not (true and a) or not a"]}
+{"goal":"and_false","proof":["a and false or false = true","not false"]}
+{"goal":"false_and","proof":["false and a or false = true","not false"]}
 {"goal":"or_comm","proof":[]}
-{"goal":"a or (b or c)","proof":[]}
-{"goal":"a or b or c","proof":[]}
 {"goal":"or_assoc","proof":[]}
 {"goal":"or_intro_left","proof":[]}
 {"goal":"or_intro_right","proof":[]}
-{"goal":"false","proof":[]}
-{"goal":"a","proof":[]}
+{"goal":"or_self","proof":["not (not a and not a) or a","not a and not a"]}
+{"goal":"or_true","proof":[]}
+{"goal":"true_or","proof":[]}
+{"goal":"or_false","proof":["not (not a and not false) or a","not a or (not a and not false)","a"]}
+{"goal":"false_or","proof":["not (not false and not a) or a","not a or (not false and not a)","a"]}
+{"goal":"not_true","proof":[]}
+{"goal":"not_false","proof":[]}
+{"goal":"not_not","proof":[]}
 {"goal":"not_not_elim","proof":[]}
-{"goal":"false","proof":[]}
 {"goal":"not_not_intro","proof":[]}
-{"goal":"b","proof":[]}
-{"goal":"false","proof":[]}
+{"goal":"and_not_self","proof":["a and not a or false = true","not a","a"]}
+{"goal":"or_not_self","proof":["not a","a"]}
+{"goal":"not_and","proof":[]}
+{"goal":"not_or","proof":[]}
+{"goal":"true_implies","proof":["not (true and not a) or a","not a or (true and not a)"]}
+{"goal":"false_implies","proof":["false = true"]}
+{"goal":"implies_true","proof":[]}
+{"goal":"implies_false","proof":["not (a and not false) or not a","a and not false or a","false = true"]}
+{"goal":"implies_self","proof":["a","not a"]}
+{"goal":"implies_eq_not_or","proof":[]}
+{"goal":"not_implies","proof":[]}
 {"goal":"contrapose","proof":[]}
-{"goal":"not b implies not a","proof":[]}
-{"goal":"not a","proof":[]}
-{"goal":"false","proof":[]}
-{"goal":"b","proof":[]}
 {"goal":"contrapose_iff","proof":[]}
+{"goal":"implies_contrapositive","proof":["function(x0: Bool, x1: Bool) { (not x0 or x1) = (x1 or not x0) }(a, b)"]}
 {"goal":"eq_true_elim","proof":[]}
 {"goal":"eq_true_intro","proof":[]}
-{"goal":"false","proof":[]}
 {"goal":"eq_false_elim","proof":[]}
-{"goal":"false","proof":[]}
 {"goal":"eq_false_intro","proof":[]}
-{"goal":"a and b or (a and c)","proof":[]}
-{"goal":"c","proof":[]}
-{"goal":"a and b or (a and c)","proof":[]}
-{"goal":"a and (b or c)","proof":[]}
 {"goal":"and_or_distrib_left","proof":[]}
-{"goal":"a or b and (a or c)","proof":[]}
-{"goal":"a or (b and c)","proof":[]}
-{"goal":"b","proof":[]}
-{"goal":"c","proof":[]}
-{"goal":"a or (b and c)","proof":[]}
 {"goal":"or_and_distrib_left","proof":[]}
