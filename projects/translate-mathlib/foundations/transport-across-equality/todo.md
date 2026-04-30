@@ -2,7 +2,8 @@
 
 Goal: support moving data and theorems across definitional boundaries in a controlled way.
 
-- [ ] Add basic transport lemmas across equality of types and structures
+- [ ] Add type-level transport lemmas if Acorn exposes equality of types
+- [ ] Add bundled structure equality transport lemmas beyond unbundled functions and relations
 - [ ] Add structure-preservation lemmas for transported algebraic data
 - [ ] Add helper lemmas for rewriting bundled objects by equality of underlying data
 - [ ] Add coercion-friendly equivalence wrappers where they reduce proof friction

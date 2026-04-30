@@ -959,12 +959,30 @@ theorem relation_eq_imp_reflexive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     }
 }
 
+/// Equality of relations transports reflexivity in the reverse direction.
+theorem relation_eq_imp_reflexive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_reflexive(g) implies is_reflexive(f)
+} by {
+    if f = g and is_reflexive(g) {
+        is_reflexive(f)
+    }
+}
+
 /// Equality of relations transports symmetry.
 theorem relation_eq_imp_symmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_symmetric(f) implies is_symmetric(g)
 } by {
     if f = g and is_symmetric(f) {
         is_symmetric(g)
+    }
+}
+
+/// Equality of relations transports symmetry in the reverse direction.
+theorem relation_eq_imp_symmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_symmetric(g) implies is_symmetric(f)
+} by {
+    if f = g and is_symmetric(g) {
+        is_symmetric(f)
     }
 }
 
@@ -977,12 +995,84 @@ theorem relation_eq_imp_transitive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     }
 }
 
+/// Equality of relations transports transitivity in the reverse direction.
+theorem relation_eq_imp_transitive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_transitive(g) implies is_transitive(f)
+} by {
+    if f = g and is_transitive(g) {
+        is_transitive(f)
+    }
+}
+
 /// Equality of relations transports antisymmetry.
 theorem relation_eq_imp_antisymmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_antisymmetric(f) implies is_antisymmetric(g)
 } by {
     if f = g and is_antisymmetric(f) {
         is_antisymmetric(g)
+    }
+}
+
+/// Equality of relations transports antisymmetry in the reverse direction.
+theorem relation_eq_imp_antisymmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_antisymmetric(g) implies is_antisymmetric(f)
+} by {
+    if f = g and is_antisymmetric(g) {
+        is_antisymmetric(f)
+    }
+}
+
+/// Equality of relations transports irreflexivity.
+theorem relation_eq_imp_irreflexive[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_irreflexive(f) implies is_irreflexive(g)
+} by {
+    if f = g and is_irreflexive(f) {
+        is_irreflexive(g)
+    }
+}
+
+/// Equality of relations transports irreflexivity in the reverse direction.
+theorem relation_eq_imp_irreflexive_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_irreflexive(g) implies is_irreflexive(f)
+} by {
+    if f = g and is_irreflexive(g) {
+        is_irreflexive(f)
+    }
+}
+
+/// Equality of relations transports asymmetry.
+theorem relation_eq_imp_asymmetric[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_asymmetric(f) implies is_asymmetric(g)
+} by {
+    if f = g and is_asymmetric(f) {
+        is_asymmetric(g)
+    }
+}
+
+/// Equality of relations transports asymmetry in the reverse direction.
+theorem relation_eq_imp_asymmetric_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_asymmetric(g) implies is_asymmetric(f)
+} by {
+    if f = g and is_asymmetric(g) {
+        is_asymmetric(f)
+    }
+}
+
+/// Equality of relations transports totality.
+theorem relation_eq_imp_total[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_total(f) implies is_total(g)
+} by {
+    if f = g and is_total(f) {
+        is_total(g)
+    }
+}
+
+/// Equality of relations transports totality in the reverse direction.
+theorem relation_eq_imp_total_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_total(g) implies is_total(f)
+} by {
+    if f = g and is_total(g) {
+        is_total(f)
     }
 }
 
@@ -995,12 +1085,57 @@ theorem relation_eq_imp_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     }
 }
 
+/// Equality of relations transports equivalence-relation structure in the reverse direction.
+theorem relation_eq_imp_equivalence_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_equivalence(g) implies is_equivalence(f)
+} by {
+    if f = g and is_equivalence(g) {
+        is_equivalence(f)
+    }
+}
+
 /// Equality of relations transports partial-equivalence structure.
 theorem relation_eq_imp_partial_equivalence[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
     f = g and is_partial_equivalence(f) implies is_partial_equivalence(g)
 } by {
     if f = g and is_partial_equivalence(f) {
         is_partial_equivalence(g)
+    }
+}
+
+/// Equality of relations transports partial-equivalence structure in the reverse direction.
+theorem relation_eq_imp_partial_equivalence_rev[T](f: (T, T) -> Bool, g: (T, T) -> Bool) {
+    f = g and is_partial_equivalence(g) implies is_partial_equivalence(f)
+} by {
+    if f = g and is_partial_equivalence(g) {
+        is_partial_equivalence(f)
+    }
+}
+
+/// Equality of a relation source transports relation inclusion.
+theorem relation_subset_eq_left[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A, B) -> Bool) {
+    r = s and relation_subset(r, t) implies relation_subset(s, t)
+} by {
+    if r = s and relation_subset(r, t) {
+        relation_subset(s, t)
+    }
+}
+
+/// Equality of a relation target transports relation inclusion.
+theorem relation_subset_eq_right[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A, B) -> Bool) {
+    s = t and relation_subset(r, s) implies relation_subset(r, t)
+} by {
+    if s = t and relation_subset(r, s) {
+        relation_subset(r, t)
+    }
+}
+
+/// Equality of both relation arguments transports relation inclusion.
+theorem relation_subset_eq[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool, t: (A, B) -> Bool, u: (A, B) -> Bool) {
+    r = s and t = u and relation_subset(r, t) implies relation_subset(s, u)
+} by {
+    if r = s and t = u and relation_subset(r, t) {
+        relation_subset(s, u)
     }
 }
 

@@ -295,34 +295,34 @@
 {"goal":"u(x, y) = v(x, y)","proof":[]}
 {"goal":"relation_pullback_symmetric_closure","proof":[]}
 {"goal":"function_pushforward[A, B, C](f, g, f(x)) = g(inverse_fn[A, B](f, f(x)))","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, f(x))"]}
-{"goal":"inverse_fn[A, B](f, f(x)) = x","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"function_pushforward[A, B, C](f, g, f(x)) = g(x)","proof":["inverse_fn[A, B](f, f(x)) = x","function_pushforward[A, B, C](f, g, f(x)) != g(inverse_fn[A, B](f, f(x)))"]}
-{"goal":"function_pushforward_apply_image_of_bijection","proof":["not is_bijection_fn[A, B](f)"]}
+{"goal":"inverse_fn[A, B](f, f(x)) = x","proof":[]}
+{"goal":"function_pushforward[A, B, C](f, g, f(x)) = g(x)","proof":[]}
+{"goal":"function_pushforward_apply_image_of_bijection","proof":[]}
 {"goal":"f(x) = y","proof":[]}
 {"goal":"function_pushforward[A, B, C](f, g, y) = g(x)","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, y)"]}
-{"goal":"exists(k0: A) { k0 = x and f(k0) = y and function_pushforward[A, B, C](f, g, y) = g(k0) }","proof":["function(x0: A) { not (x0 = x and f(x0) = y and g(x0) = function_pushforward[A, B, C](f, g, y)) }(x)","function(x0: A) { not (x0 = x and f(x0) = y) or function_pushforward[A, B, C](f, g, y) != g(x0) }(x)","function(x0: A) { function_pushforward[A, B, C](f, g, y) != g(x0) or y != f(x0) or x != x0 }(x)"]}
-{"goal":"function_pushforward_apply_of_surjective","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, y)","function[T0: Inhabited, T1](x0: T0 -> T1, x1: T1) { not is_surjective_fn[T0, T1](x0) or x0(inverse_fn[T0, T1](x0, x1)) = x1 }[A, B](f, y)","function(x0: A) { not (f(x0) = y and g(x0) = function_pushforward[A, B, C](f, g, y)) }(inverse_fn[A, B](f, y))","function(x0: A) { function_pushforward[A, B, C](f, g, y) != g(x0) or y != f(x0) }(inverse_fn[A, B](f, y))","f(inverse_fn[A, B](f, y)) != y"]}
-{"goal":"is_injective_fn[A, B](f)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u and f(k1) = v and r(k0, k1) } }","proof":["not relation_pushforward[A, B](f, r, u, v)"]}
-{"goal":"exists(k0: A) { f(x) = u and f(k0) = v and r(x, k0) }","proof":["exists(k0: A) { f(x) = u and f(k0) = v and r(x, k0) }"]}
-{"goal":"is_surjective_fn[A, B](f)","proof":["not is_bijection_fn[A, B](f)"]}
-{"goal":"f(inverse_fn[A, B](f, u)) = u","proof":["not is_surjective_fn[A, B](f)"]}
-{"goal":"f(x) = u","proof":["f(x) = u and f(y) = v"]}
-{"goal":"f(inverse_fn[A, B](f, u)) = f(x)","proof":["f(inverse_fn[A, B](f, u)) != u"]}
-{"goal":"inverse_fn[A, B](f, u) = x","proof":["f(inverse_fn[A, B](f, u)) != f(x) or not is_injective_fn[A, B](f)","f(inverse_fn[A, B](f, u)) != f(x)"]}
-{"goal":"f(inverse_fn[A, B](f, v)) = v","proof":["not is_surjective_fn[A, B](f)"]}
-{"goal":"f(y) = v","proof":["f(x) = u and f(y) = v"]}
-{"goal":"f(inverse_fn[A, B](f, v)) = f(y)","proof":["f(inverse_fn[A, B](f, v)) != v"]}
-{"goal":"inverse_fn[A, B](f, v) = y","proof":["f(inverse_fn[A, B](f, v)) != f(y) or not is_injective_fn[A, B](f)","f(inverse_fn[A, B](f, v)) != f(y)"]}
+{"goal":"exists(k0: A) { k0 = x and f(k0) = y and function_pushforward[A, B, C](f, g, y) = g(k0) }","proof":[]}
+{"goal":"function_pushforward_apply_of_surjective","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, y)","function[T0: Inhabited, T1](x0: T0 -> T1, x1: T1) { not is_surjective_fn[T0, T1](x0) or x0(inverse_fn[T0, T1](x0, x1)) = x1 }[A, B](f, y)","function(x0: A) { not (f(x0) = y and g(x0) = function_pushforward[A, B, C](f, g, y)) }(inverse_fn[A, B](f, y))"]}
+{"goal":"is_injective_fn[A, B](f)","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = u and f(k1) = v and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = u and f(k0) = v and r(x, k0) }","proof":[]}
+{"goal":"is_surjective_fn[A, B](f)","proof":[]}
+{"goal":"f(inverse_fn[A, B](f, u)) = u","proof":[]}
+{"goal":"f(x) = u","proof":[]}
+{"goal":"f(inverse_fn[A, B](f, u)) = f(x)","proof":[]}
+{"goal":"inverse_fn[A, B](f, u) = x","proof":[]}
+{"goal":"f(inverse_fn[A, B](f, v)) = v","proof":[]}
+{"goal":"f(y) = v","proof":[]}
+{"goal":"f(inverse_fn[A, B](f, v)) = f(y)","proof":[]}
+{"goal":"inverse_fn[A, B](f, v) = y","proof":[]}
 {"goal":"function_pushforward[A, B, C](f, g, u) = g(inverse_fn[A, B](f, u))","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, u)"]}
 {"goal":"function_pushforward[A, B, C](f, g, v) = g(inverse_fn[A, B](f, v))","proof":["function[T0: Inhabited, T1, T2](x0: T0 -> T1, x1: T0 -> T2, x2: T1) { function_pushforward[T0, T1, T2](x0, x1, x2) = x1(inverse_fn[T0, T1](x0, x2)) }[A, B, C](f, g, v)"]}
-{"goal":"function_pushforward[A, B, C](f, g, u) = g(x)","proof":["function_pushforward[A, B, C](f, g, u) != g(inverse_fn[A, B](f, u))"]}
-{"goal":"function_pushforward[A, B, C](f, g, v) = g(y)","proof":["function_pushforward[A, B, C](f, g, v) != g(inverse_fn[A, B](f, v))"]}
+{"goal":"function_pushforward[A, B, C](f, g, u) = g(x)","proof":[]}
+{"goal":"function_pushforward[A, B, C](f, g, v) = g(y)","proof":[]}
 {"goal":"respects_equivalence[A, C](g, r, s) = forall(x0: A, x1: A) { r(x0, x1) implies s(g(x0), g(x1)) }","proof":["function[T0, T2](x0: (T0, T0) -> Bool, x1: (T2, T2) -> Bool, x2: T0 -> T2) { forall(x3: T0, x4: T0) { not x0(x3, x4) or x1(x2(x3), x2(x4)) } = respects_equivalence[T0, T2](x2, x0, x1) }[A, C](r, s, g)"]}
-{"goal":"s(g(x), g(y))","proof":["r(x, y)","respects_equivalence[A, C](g, r, s)","(forall(x0: A, x1: A) { not r(x0, x1) or s(g(x0), g(x1)) } = true)","function(x0: A) { forall(x1: A) { not r(x0, x1) or s(g(x0), g(x1)) } = true }(x)","function(x0: A, x1: A) { not (r(x0, x1) and not s(g(x0), g(x1))) }(x, y)","function(x0: A, x1: A) { not r(x0, x1) or s(g(x0), g(x1)) }(x, y)"]}
-{"goal":"s(function_pushforward[A, B, C](f, g, u), function_pushforward[A, B, C](f, g, v))","proof":["not s(function_pushforward[A, B, C](f, g, u), g(y))","s(function_pushforward[A, B, C](f, g, u), g(y))"]}
-{"goal":"respects_equivalence[B, C](function_pushforward[A, B, C](f, g), relation_pushforward[A, B](f, r), s)","proof":["function[T0, T2](x0: (T0, T0) -> Bool, x1: (T2, T2) -> Bool, x2: T0 -> T2) { forall(x3: T0, x4: T0) { not x0(x3, x4) or x1(x2(x3), x2(x4)) } = respects_equivalence[T0, T2](x2, x0, x1) }[B, C](relation_pushforward[A, B](f, r), s, function_pushforward[A, B, C](f, g))","let w0: B satisfy { exists(k0: B) { relation_pushforward[A, B](f, r, w0, k0) and not s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, k0)) } }","let w1: B satisfy { relation_pushforward[A, B](f, r, w0, w1) and not s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, w1)) }","function(x0: B, x1: B) { not relation_pushforward[A, B](f, r, x0, x1) or s(function_pushforward[A, B, C](f, g, x0), function_pushforward[A, B, C](f, g, x1)) }(w0, w1)","relation_pushforward[A, B](f, r, w0, w1)","not s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, w1))","s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, w1))"]}
-{"goal":"function_pushforward_respects_equivalence_of_bijection","proof":["not respects_equivalence[A, C](g, r, s) or not is_bijection_fn[A, B](f)","is_bijection_fn[A, B](f)","respects_equivalence[A, C](g, r, s)","not respects_equivalence[A, C](g, r, s)"]}
+{"goal":"s(g(x), g(y))","proof":["r(x, y)","respects_equivalence[A, C](g, r, s)","(forall(x0: A, x1: A) { not r(x0, x1) or s(g(x0), g(x1)) } = true)","function(x0: A) { forall(x1: A) { not r(x0, x1) or s(g(x0), g(x1)) } = true }(x)","function(x0: A, x1: A) { not (r(x0, x1) and not s(g(x0), g(x1))) }(x, y)"]}
+{"goal":"s(function_pushforward[A, B, C](f, g, u), function_pushforward[A, B, C](f, g, v))","proof":[]}
+{"goal":"respects_equivalence[B, C](function_pushforward[A, B, C](f, g), relation_pushforward[A, B](f, r), s)","proof":["function[T0, T2](x0: (T0, T0) -> Bool, x1: (T2, T2) -> Bool, x2: T0 -> T2) { forall(x3: T0, x4: T0) { not x0(x3, x4) or x1(x2(x3), x2(x4)) } = respects_equivalence[T0, T2](x2, x0, x1) }[B, C](relation_pushforward[A, B](f, r), s, function_pushforward[A, B, C](f, g))","let w0: B satisfy { exists(k0: B) { relation_pushforward[A, B](f, r, w0, k0) and not s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, k0)) } }","let w1: B satisfy { relation_pushforward[A, B](f, r, w0, w1) and not s(function_pushforward[A, B, C](f, g, w0), function_pushforward[A, B, C](f, g, w1)) }","function(x0: B, x1: B) { not relation_pushforward[A, B](f, r, x0, x1) or s(function_pushforward[A, B, C](f, g, x0), function_pushforward[A, B, C](f, g, x1)) }(w0, w1)"]}
+{"goal":"function_pushforward_respects_equivalence_of_bijection","proof":[]}
 {"goal":"respects_equivalence[T, U](f, r, s) = forall(x0: T, x1: T) { r(x0, x1) implies s(f(x0), f(x1)) }","proof":["function[T0, T2](x0: (T0, T0) -> Bool, x1: (T2, T2) -> Bool, x2: T0 -> T2) { forall(x3: T0, x4: T0) { not x0(x3, x4) or x1(x2(x3), x2(x4)) } = respects_equivalence[T0, T2](x2, x0, x1) }[T, U](r, s, f)"]}
 {"goal":"s(f(x1), f(x2))","proof":["(forall(x0: T, x3: T) { not r(x0, x3) or s(f(x0), f(x3)) } = true)","function(x0: T) { forall(x3: T) { not r(x0, x3) or s(f(x0), f(x3)) } = true }(x1)","function(x0: T, x3: T) { not (r(x0, x3) and not s(f(x0), f(x3))) }(x1, x2)"]}
 {"goal":"relation_pullback[T, U](f, s, x1, x2)","proof":["function[T0, T1](x0: T0 -> T1, x3: (T1, T1) -> Bool, x4: T0, x5: T0) { relation_pullback[T0, T1](x0, x3, x4, x5) = x3(x0(x4), x0(x5)) }[T, U](f, s, x1, x2)"]}
@@ -636,6 +636,58 @@
 {"goal":"is_antisymmetric[A](relation_pullback[A, B](f, r)) = is_antisymmetric[B](r)","proof":[]}
 {"goal":"(is_reflexive[A](relation_pullback[A, B](f, r)) and is_transitive[A](relation_pullback[A, B](f, r)) and is_antisymmetric[A](relation_pullback[A, B](f, r))) = (is_reflexive[B](r) and is_transitive[B](r) and is_antisymmetric[B](r))","proof":[]}
 {"goal":"relation_pullback_is_reflexive_transitive_antisymmetric_iff_of_bijection","proof":[]}
+{"goal":"respects_equivalence[T, U](g, r, s)","proof":[]}
+{"goal":"respects_equivalence_eq_function","proof":[]}
+{"goal":"respects_equivalence[T, U](f, q, s)","proof":[]}
+{"goal":"respects_equivalence_eq_source","proof":[]}
+{"goal":"respects_equivalence[T, U](f, r, q)","proof":[]}
+{"goal":"respects_equivalence_eq_target","proof":[]}
+{"goal":"respects_equivalence[T, U](g, q, t)","proof":[]}
+{"goal":"respects_equivalence_eq","proof":[]}
+{"goal":"respects_function[T, U](q, f)","proof":[]}
+{"goal":"respects_function_eq_relation","proof":[]}
+{"goal":"respects_function[T, U](r, g)","proof":[]}
+{"goal":"respects_function_eq_function","proof":[]}
+{"goal":"respects_predicate[T](q, p)","proof":[]}
+{"goal":"respects_predicate_eq_relation","proof":[]}
+{"goal":"respects_predicate[T](r, q)","proof":[]}
+{"goal":"respects_predicate_eq_predicate","proof":[]}
+{"goal":"preserves_unary_op[A, B](g, op_a, op_b)","proof":[]}
+{"goal":"preserves_unary_op_eq_function","proof":[]}
+{"goal":"preserves_unary_op[A, B](f, op_c, op_b)","proof":[]}
+{"goal":"preserves_unary_op_eq_domain_op","proof":[]}
+{"goal":"preserves_unary_op[A, B](f, op_a, op_c)","proof":[]}
+{"goal":"preserves_unary_op_eq_codomain_op","proof":[]}
+{"goal":"preserves_binary_op[A, B](g, op_a, op_b)","proof":[]}
+{"goal":"preserves_binary_op_eq_function","proof":[]}
+{"goal":"preserves_binary_op[A, B](f, op_c, op_b)","proof":[]}
+{"goal":"preserves_binary_op_eq_domain_op","proof":[]}
+{"goal":"preserves_binary_op[A, B](f, op_a, op_c)","proof":[]}
+{"goal":"preserves_binary_op_eq_codomain_op","proof":[]}
+{"goal":"respects_unary_op[T](q, op)","proof":["q = r","respects_unary_op[T](r, op)","not respects_unary_op[T](r, op)"]}
+{"goal":"respects_unary_op_eq_relation","proof":["q = r","respects_unary_op[T](r, op)","not respects_unary_op[T](r, op)"]}
+{"goal":"respects_unary_op[T](r, op2)","proof":["op2 = op","respects_unary_op[T](r, op)","not respects_unary_op[T](r, op)"]}
+{"goal":"respects_unary_op_eq_op","proof":["op2 = op","respects_unary_op[T](r, op)","not respects_unary_op[T](r, op)"]}
+{"goal":"respects_unary_op[T](q, op2)","proof":["respects_unary_op[T](r, op)","r = q and op = op2","not respects_unary_op[T](q, op)","respects_unary_op[T](q, op)"]}
+{"goal":"respects_unary_op_eq","proof":["not respects_unary_op[T](r, op) or op2 != op or q != r","respects_unary_op[T](r, op)","op2 != op or q != r","r = q and op = op2","q != r"]}
+{"goal":"respects_binary_op[T](q, op)","proof":["q = r","respects_binary_op[T](r, op)","not respects_binary_op[T](r, op)"]}
+{"goal":"respects_binary_op_eq_relation","proof":["q = r","respects_binary_op[T](r, op)","not respects_binary_op[T](r, op)"]}
+{"goal":"respects_binary_op[T](r, op2)","proof":["op2 = op","respects_binary_op[T](r, op)","not respects_binary_op[T](r, op)"]}
+{"goal":"respects_binary_op_eq_op","proof":["op2 = op","respects_binary_op[T](r, op)","not respects_binary_op[T](r, op)"]}
+{"goal":"respects_binary_op[T](q, op2)","proof":["respects_binary_op[T](r, op)","r = q and op = op2","not respects_binary_op[T](q, op)","respects_binary_op[T](q, op)"]}
+{"goal":"respects_binary_op_eq","proof":["not respects_binary_op[T](r, op) or op2 != op or q != r","respects_binary_op[T](r, op)","op2 != op or q != r","r = q and op = op2","q != r"]}
+{"goal":"is_unary_congruence[T](q, op)","proof":["q = r","is_unary_congruence[T](r, op)","not is_unary_congruence[T](r, op)"]}
+{"goal":"unary_congruence_eq_relation","proof":["q = r","is_unary_congruence[T](r, op)","not is_unary_congruence[T](r, op)"]}
+{"goal":"is_unary_congruence[T](r, op2)","proof":["op2 = op","is_unary_congruence[T](r, op)","not is_unary_congruence[T](r, op)"]}
+{"goal":"unary_congruence_eq_op","proof":["op2 = op","is_unary_congruence[T](r, op)","not is_unary_congruence[T](r, op)"]}
+{"goal":"is_unary_congruence[T](q, op2)","proof":["is_unary_congruence[T](r, op)","r = q and op = op2","not is_unary_congruence[T](q, op)","is_unary_congruence[T](q, op)"]}
+{"goal":"unary_congruence_eq","proof":["not is_unary_congruence[T](r, op) or op2 != op or q != r","is_unary_congruence[T](r, op)","op2 != op or q != r","r = q and op = op2","q != r"]}
+{"goal":"is_binary_congruence[T](q, op)","proof":["q = r","is_binary_congruence[T](r, op)","not is_binary_congruence[T](r, op)"]}
+{"goal":"binary_congruence_eq_relation","proof":["q = r","is_binary_congruence[T](r, op)","not is_binary_congruence[T](r, op)"]}
+{"goal":"is_binary_congruence[T](r, op2)","proof":["op2 = op","is_binary_congruence[T](r, op)","not is_binary_congruence[T](r, op)"]}
+{"goal":"binary_congruence_eq_op","proof":["op2 = op","is_binary_congruence[T](r, op)","not is_binary_congruence[T](r, op)"]}
+{"goal":"is_binary_congruence[T](q, op2)","proof":["is_binary_congruence[T](r, op)","r = q and op = op2","not is_binary_congruence[T](q, op)","is_binary_congruence[T](q, op)"]}
+{"goal":"binary_congruence_eq","proof":["not is_binary_congruence[T](r, op) or op2 != op or q != r","is_binary_congruence[T](r, op)","op2 != op or q != r","r = q and op = op2","q != r"]}
 {"goal":"respects_unary_op[T](r, op) = forall(x0: T, x1: T) { r(x0, x1) implies r(op(x0), op(x1)) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0 -> T0) { forall(x2: T0, x3: T0) { not x0(x2, x3) or x0(x1(x2), x1(x3)) } = respects_unary_op[T0](x0, x1) }[T](r, op)"]}
 {"goal":"r(op(x), op(y))","proof":["r(x, y)","respects_unary_op[T](r, op)","(forall(x0: T, x1: T) { not r(x0, x1) or r(op(x0), op(x1)) } = true)","function(x0: T) { forall(x1: T) { not r(x0, x1) or r(op(x0), op(x1)) } = true }(x)","function(x0: T, x1: T) { not (r(x0, x1) and not r(op(x0), op(x1))) }(x, y)"]}
 {"goal":"respects_unary_op_step","proof":[]}

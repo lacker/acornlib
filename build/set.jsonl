@@ -272,22 +272,22 @@
 {"goal":"set_image_contains_witness","proof":["function[T0, T2](x0: Set[T0], x1: T0 -> T2, x2: T2) { exists(k0: T0) { k0 ∈ x0 and x1(k0) = x2 } = image_contains[T0, T2](x1, x0, x2) }[T, U](s, f, y)"]}
 {"goal":"exists(k0: T) { s.contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"is_surjective_fn[T, U](f)","proof":[]}
-{"goal":"f(inverse_fn[T, U](f, y)) = y","proof":["not is_surjective_fn[T, U](f)"]}
+{"goal":"f(inverse_fn[T, U](f, y)) = y","proof":[]}
 {"goal":"y = f(x)","proof":[]}
-{"goal":"f(inverse_fn[T, U](f, y)) = f(x)","proof":["f(inverse_fn[T, U](f, y)) != y"]}
+{"goal":"f(inverse_fn[T, U](f, y)) = f(x)","proof":[]}
 {"goal":"is_injective_fn[T, U](f)","proof":[]}
-{"goal":"inverse_fn[T, U](f, y) = x","proof":["f(inverse_fn[T, U](f, y)) != f(x) or not is_injective_fn[T, U](f)","f(inverse_fn[T, U](f, y)) != f(x)"]}
-{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":["not x ∈ s","x ∈ s"]}
-{"goal":"set_image_contains_inverse_of_bijection","proof":["not y ∈ set_image[T, U](s, f) or not is_bijection_fn[T, U](f)","is_bijection_fn[T, U](f)","y ∈ set_image[T, U](s, f)","not y ∈ set_image[T, U](s, f)"]}
-{"goal":"f(inverse_fn[T, U](f, y)) = y","proof":["not is_surjective_fn[T, U](f)"]}
-{"goal":"set_image[T, U](s, f).contains(f(inverse_fn[T, U](f, y)))","proof":["not inverse_fn[T, U](f, y) ∈ s"]}
+{"goal":"inverse_fn[T, U](f, y) = x","proof":[]}
+{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"set_image_contains_inverse_of_bijection","proof":[]}
+{"goal":"f(inverse_fn[T, U](f, y)) = y","proof":[]}
+{"goal":"set_image[T, U](s, f).contains(f(inverse_fn[T, U](f, y)))","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(y)","proof":[]}
-{"goal":"set_inverse_contains_imp_image_contains","proof":["not inverse_fn[T, U](f, y) ∈ s or not is_surjective_fn[T, U](f)","is_surjective_fn[T, U](f)","inverse_fn[T, U](f, y) ∈ s","not inverse_fn[T, U](f, y) ∈ s"]}
-{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":["not y ∈ set_image[T, U](s, f) or not is_bijection_fn[T, U](f)","not y ∈ set_image[T, U](s, f)"]}
-{"goal":"is_surjective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
+{"goal":"set_inverse_contains_imp_image_contains","proof":[]}
+{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"is_surjective_fn[T, U](f)","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(y)","proof":[]}
-{"goal":"set_image[T, U](s, f).contains(y) = s.contains(inverse_fn[T, U](f, y))","proof":["y ∈ set_image[T, U](s, f) or inverse_fn[T, U](f, y) ∈ s","not y ∈ set_image[T, U](s, f) or not inverse_fn[T, U](f, y) ∈ s","y ∈ set_image[T, U](s, f)","not y ∈ set_image[T, U](s, f)"]}
-{"goal":"set_image_contains_iff_inverse_of_bijection","proof":["not is_bijection_fn[T, U](f)"]}
+{"goal":"set_image[T, U](s, f).contains(y) = s.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"set_image_contains_iff_inverse_of_bijection","proof":[]}
 {"goal":"exists(k0: T) { Set.empty_set[T].contains(k0) and y = f(k0) }","proof":["function[T0, T1](x0: Set[T1], x1: T1 -> T0, x2: T0) { not x2 ∈ set_image[T1, T0](x0, x1) or exists(k0: T1) { k0 ∈ x0 and x1(k0) = x2 } }[U, T](Set.empty_set[T], f, y)"]}
 {"goal":"false","proof":[]}
 {"goal":"s.contains(y) = e.contains(y)","proof":[]}
@@ -586,7 +586,7 @@
 {"goal":"set_image[T, U](set_preimage[T, U](f, Set.universal_set[U]), f) = Set.universal_set[U]","proof":[]}
 {"goal":"set_image[T, U](Set.universal_set[T], f) = Set.universal_set[U]","proof":[]}
 {"goal":"set_image_universal_of_surjective","proof":[]}
-{"goal":"is_injective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
+{"goal":"is_injective_fn[T, U](f)","proof":[]}
 {"goal":"exists(k0: T) { s.c.contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"not s.contains(x1)","proof":[]}
 {"goal":"exists(k0: T) { s.contains(k0) and y = f(k0) }","proof":[]}
@@ -598,11 +598,11 @@
 {"goal":"false","proof":[]}
 {"goal":"set_image[T, U](s, f).c.contains(y)","proof":[]}
 {"goal":"set_image_compl_subset_of_bijection","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[U](set_image[T, U](s.c, f), set_image[T, U](s, f).c)"]}
-{"goal":"is_surjective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
+{"goal":"is_surjective_fn[T, U](f)","proof":[]}
 {"goal":"not set_image[T, U](s, f).contains(y)","proof":[]}
 {"goal":"exists(k0: T) { f(k0) = y }","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(f(x))","proof":[]}
-{"goal":"set_image[T, U](s, f).contains(y)","proof":["not f(x) ∈ set_image[T, U](s, f)"]}
+{"goal":"set_image[T, U](s, f).contains(y)","proof":[]}
 {"goal":"false","proof":[]}
 {"goal":"s.c.contains(x)","proof":[]}
 {"goal":"set_image[T, U](s.c, f).contains(f(x))","proof":[]}
@@ -1821,7 +1821,7 @@
 {"goal":"exists(k0: List[K]) { list_set[K](k0) = s and k0.is_unique and k0.length = n }","proof":["function(x0: List[K]) { not (list_set[K](x0) = s and x0.is_unique and x0.length = n) }(items)"]}
 {"goal":"set_cardinality_has_exact_unique_list","proof":[]}
 {"goal":"exists(k0: List[T]) { list_set[T](k0) = s and k0.is_unique and k0.length = n }","proof":[]}
-{"goal":"exists(k0: T) { s.contains(k0) and y = f(k0) }","proof":["not y ∈ set_image[T, U](s, f)"]}
+{"goal":"exists(k0: T) { s.contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"list_set[T](items).contains(x)","proof":[]}
 {"goal":"items.contains(x)","proof":[]}
 {"goal":"image_items.contains(f(x))","proof":[]}
@@ -1830,7 +1830,7 @@
 {"goal":"list_set[T](items).contains(x)","proof":[]}
 {"goal":"s.contains(x)","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(f(x))","proof":[]}
-{"goal":"set_image[T, U](s, f).contains(y)","proof":["f(x) ∈ set_image[T, U](s, f)","f(x) = y"]}
+{"goal":"set_image[T, U](s, f).contains(y)","proof":[]}
 {"goal":"list_set[U](image_items).contains(y) = image_items.contains(y)","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(y) = image_items.contains(y)","proof":[]}
 {"goal":"set_image[T, U](s, f).contains(y) = list_set[U](image_items).contains(y)","proof":[]}

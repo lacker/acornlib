@@ -2281,6 +2281,277 @@ define is_binary_congruence[T](r: (T, T) -> Bool, op: (T, T) -> T) -> Bool {
     is_equivalence(r) and respects_binary_op(r, op)
 }
 
+/// Equality of functions transports equivalence-respect.
+theorem respects_equivalence_eq_function[T, U](
+    f: T -> U,
+    g: T -> U,
+    r: (T, T) -> Bool,
+    s: (U, U) -> Bool
+) {
+    f = g and respects_equivalence(f, r, s) implies respects_equivalence(g, r, s)
+} by {
+    if f = g and respects_equivalence(f, r, s) {
+        respects_equivalence(g, r, s)
+    }
+}
+
+/// Equality of source relations transports equivalence-respect.
+theorem respects_equivalence_eq_source[T, U](
+    f: T -> U,
+    r: (T, T) -> Bool,
+    q: (T, T) -> Bool,
+    s: (U, U) -> Bool
+) {
+    r = q and respects_equivalence(f, r, s) implies respects_equivalence(f, q, s)
+} by {
+    if r = q and respects_equivalence(f, r, s) {
+        respects_equivalence(f, q, s)
+    }
+}
+
+/// Equality of target relations transports equivalence-respect.
+theorem respects_equivalence_eq_target[T, U](
+    f: T -> U,
+    r: (T, T) -> Bool,
+    s: (U, U) -> Bool,
+    q: (U, U) -> Bool
+) {
+    s = q and respects_equivalence(f, r, s) implies respects_equivalence(f, r, q)
+} by {
+    if s = q and respects_equivalence(f, r, s) {
+        respects_equivalence(f, r, q)
+    }
+}
+
+/// Equality of all data transports equivalence-respect.
+theorem respects_equivalence_eq[T, U](
+    f: T -> U,
+    g: T -> U,
+    r: (T, T) -> Bool,
+    q: (T, T) -> Bool,
+    s: (U, U) -> Bool,
+    t: (U, U) -> Bool
+) {
+    f = g and r = q and s = t and respects_equivalence(f, r, s) implies respects_equivalence(g, q, t)
+} by {
+    if f = g and r = q and s = t and respects_equivalence(f, r, s) {
+        respects_equivalence(g, q, t)
+    }
+}
+
+/// Equality of relations transports function-respect.
+theorem respects_function_eq_relation[T, U](r: (T, T) -> Bool, q: (T, T) -> Bool, f: T -> U) {
+    r = q and respects_function(r, f) implies respects_function(q, f)
+} by {
+    if r = q and respects_function(r, f) {
+        respects_function(q, f)
+    }
+}
+
+/// Equality of functions transports function-respect.
+theorem respects_function_eq_function[T, U](r: (T, T) -> Bool, f: T -> U, g: T -> U) {
+    f = g and respects_function(r, f) implies respects_function(r, g)
+} by {
+    if f = g and respects_function(r, f) {
+        respects_function(r, g)
+    }
+}
+
+/// Equality of relations transports predicate-respect.
+theorem respects_predicate_eq_relation[T](r: (T, T) -> Bool, q: (T, T) -> Bool, p: T -> Bool) {
+    r = q and respects_predicate(r, p) implies respects_predicate(q, p)
+} by {
+    if r = q and respects_predicate(r, p) {
+        respects_predicate(q, p)
+    }
+}
+
+/// Equality of predicates transports predicate-respect.
+theorem respects_predicate_eq_predicate[T](r: (T, T) -> Bool, p: T -> Bool, q: T -> Bool) {
+    p = q and respects_predicate(r, p) implies respects_predicate(r, q)
+} by {
+    if p = q and respects_predicate(r, p) {
+        respects_predicate(r, q)
+    }
+}
+
+/// Equality of functions transports unary-operation preservation.
+theorem preserves_unary_op_eq_function[A, B](f: A -> B, g: A -> B, op_a: A -> A, op_b: B -> B) {
+    f = g and preserves_unary_op(f, op_a, op_b) implies preserves_unary_op(g, op_a, op_b)
+} by {
+    if f = g and preserves_unary_op(f, op_a, op_b) {
+        preserves_unary_op(g, op_a, op_b)
+    }
+}
+
+/// Equality of domain operations transports unary-operation preservation.
+theorem preserves_unary_op_eq_domain_op[A, B](f: A -> B, op_a: A -> A, op_c: A -> A, op_b: B -> B) {
+    op_a = op_c and preserves_unary_op(f, op_a, op_b) implies preserves_unary_op(f, op_c, op_b)
+} by {
+    if op_a = op_c and preserves_unary_op(f, op_a, op_b) {
+        preserves_unary_op(f, op_c, op_b)
+    }
+}
+
+/// Equality of codomain operations transports unary-operation preservation.
+theorem preserves_unary_op_eq_codomain_op[A, B](f: A -> B, op_a: A -> A, op_b: B -> B, op_c: B -> B) {
+    op_b = op_c and preserves_unary_op(f, op_a, op_b) implies preserves_unary_op(f, op_a, op_c)
+} by {
+    if op_b = op_c and preserves_unary_op(f, op_a, op_b) {
+        preserves_unary_op(f, op_a, op_c)
+    }
+}
+
+/// Equality of functions transports binary-operation preservation.
+theorem preserves_binary_op_eq_function[A, B](
+    f: A -> B,
+    g: A -> B,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    f = g and preserves_binary_op(f, op_a, op_b) implies preserves_binary_op(g, op_a, op_b)
+} by {
+    if f = g and preserves_binary_op(f, op_a, op_b) {
+        preserves_binary_op(g, op_a, op_b)
+    }
+}
+
+/// Equality of domain operations transports binary-operation preservation.
+theorem preserves_binary_op_eq_domain_op[A, B](
+    f: A -> B,
+    op_a: (A, A) -> A,
+    op_c: (A, A) -> A,
+    op_b: (B, B) -> B
+) {
+    op_a = op_c and preserves_binary_op(f, op_a, op_b) implies preserves_binary_op(f, op_c, op_b)
+} by {
+    if op_a = op_c and preserves_binary_op(f, op_a, op_b) {
+        preserves_binary_op(f, op_c, op_b)
+    }
+}
+
+/// Equality of codomain operations transports binary-operation preservation.
+theorem preserves_binary_op_eq_codomain_op[A, B](
+    f: A -> B,
+    op_a: (A, A) -> A,
+    op_b: (B, B) -> B,
+    op_c: (B, B) -> B
+) {
+    op_b = op_c and preserves_binary_op(f, op_a, op_b) implies preserves_binary_op(f, op_a, op_c)
+} by {
+    if op_b = op_c and preserves_binary_op(f, op_a, op_b) {
+        preserves_binary_op(f, op_a, op_c)
+    }
+}
+
+/// Equality of relations transports unary-operation compatibility.
+theorem respects_unary_op_eq_relation[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: T -> T) {
+    r = q and respects_unary_op(r, op) implies respects_unary_op(q, op)
+} by {
+    if r = q and respects_unary_op(r, op) {
+        respects_unary_op(q, op)
+    }
+}
+
+/// Equality of unary operations transports unary-operation compatibility.
+theorem respects_unary_op_eq_op[T](r: (T, T) -> Bool, op: T -> T, op2: T -> T) {
+    op = op2 and respects_unary_op(r, op) implies respects_unary_op(r, op2)
+} by {
+    if op = op2 and respects_unary_op(r, op) {
+        respects_unary_op(r, op2)
+    }
+}
+
+/// Equality of relations and operations transports unary-operation compatibility.
+theorem respects_unary_op_eq[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: T -> T, op2: T -> T) {
+    r = q and op = op2 and respects_unary_op(r, op) implies respects_unary_op(q, op2)
+} by {
+    if r = q and op = op2 and respects_unary_op(r, op) {
+        respects_unary_op(q, op2)
+    }
+}
+
+/// Equality of relations transports binary-operation compatibility.
+theorem respects_binary_op_eq_relation[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: (T, T) -> T) {
+    r = q and respects_binary_op(r, op) implies respects_binary_op(q, op)
+} by {
+    if r = q and respects_binary_op(r, op) {
+        respects_binary_op(q, op)
+    }
+}
+
+/// Equality of binary operations transports binary-operation compatibility.
+theorem respects_binary_op_eq_op[T](r: (T, T) -> Bool, op: (T, T) -> T, op2: (T, T) -> T) {
+    op = op2 and respects_binary_op(r, op) implies respects_binary_op(r, op2)
+} by {
+    if op = op2 and respects_binary_op(r, op) {
+        respects_binary_op(r, op2)
+    }
+}
+
+/// Equality of relations and operations transports binary-operation compatibility.
+theorem respects_binary_op_eq[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: (T, T) -> T, op2: (T, T) -> T) {
+    r = q and op = op2 and respects_binary_op(r, op) implies respects_binary_op(q, op2)
+} by {
+    if r = q and op = op2 and respects_binary_op(r, op) {
+        respects_binary_op(q, op2)
+    }
+}
+
+/// Equality of relations transports unary congruence.
+theorem unary_congruence_eq_relation[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: T -> T) {
+    r = q and is_unary_congruence(r, op) implies is_unary_congruence(q, op)
+} by {
+    if r = q and is_unary_congruence(r, op) {
+        is_unary_congruence(q, op)
+    }
+}
+
+/// Equality of unary operations transports unary congruence.
+theorem unary_congruence_eq_op[T](r: (T, T) -> Bool, op: T -> T, op2: T -> T) {
+    op = op2 and is_unary_congruence(r, op) implies is_unary_congruence(r, op2)
+} by {
+    if op = op2 and is_unary_congruence(r, op) {
+        is_unary_congruence(r, op2)
+    }
+}
+
+/// Equality of relations and operations transports unary congruence.
+theorem unary_congruence_eq[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: T -> T, op2: T -> T) {
+    r = q and op = op2 and is_unary_congruence(r, op) implies is_unary_congruence(q, op2)
+} by {
+    if r = q and op = op2 and is_unary_congruence(r, op) {
+        is_unary_congruence(q, op2)
+    }
+}
+
+/// Equality of relations transports binary congruence.
+theorem binary_congruence_eq_relation[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: (T, T) -> T) {
+    r = q and is_binary_congruence(r, op) implies is_binary_congruence(q, op)
+} by {
+    if r = q and is_binary_congruence(r, op) {
+        is_binary_congruence(q, op)
+    }
+}
+
+/// Equality of binary operations transports binary congruence.
+theorem binary_congruence_eq_op[T](r: (T, T) -> Bool, op: (T, T) -> T, op2: (T, T) -> T) {
+    op = op2 and is_binary_congruence(r, op) implies is_binary_congruence(r, op2)
+} by {
+    if op = op2 and is_binary_congruence(r, op) {
+        is_binary_congruence(r, op2)
+    }
+}
+
+/// Equality of relations and operations transports binary congruence.
+theorem binary_congruence_eq[T](r: (T, T) -> Bool, q: (T, T) -> Bool, op: (T, T) -> T, op2: (T, T) -> T) {
+    r = q and op = op2 and is_binary_congruence(r, op) implies is_binary_congruence(q, op2)
+} by {
+    if r = q and op = op2 and is_binary_congruence(r, op) {
+        is_binary_congruence(q, op2)
+    }
+}
+
 /// A unary-compatible relation may be applied at any related pair.
 theorem respects_unary_op_step[T](r: (T, T) -> Bool, op: T -> T, x: T, y: T) {
     respects_unary_op(r, op) and r(x, y) implies r(op(x), op(y))
