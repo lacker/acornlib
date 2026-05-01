@@ -1,6 +1,8 @@
 from add_comm_group import AddCommGroup
 from add_group import AddGroup
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
+from relation_transport import respects_add, is_add_congruence, respects_binary_op,
+    is_binary_congruence, respects_add_eq_respects_binary_op, add_congruence_eq_binary_congruence
 from equivalence import QuotientRelation, quotient_relation_new_round_trip
 
 /// True if a subset contains the additive identity.
@@ -206,4 +208,60 @@ theorem add_subgroup_quotient_relation_rel[G: AddGroup](h: AddSubgroup[G]) {
 } by {
     QuotientRelation[G].new(add_subgroup_rel(h)) = Option.some(add_subgroup_quotient_relation(h))
     quotient_relation_new_round_trip(add_subgroup_rel(h), add_subgroup_quotient_relation(h))
+}
+
+/// In a commutative additive group, the difference of sums regroups along the operation.
+theorem add_sub_distrib[G: AddCommGroup](a: G, b: G, ap: G, bp: G) {
+    (a + b) - (ap + bp) = (a - ap) + (b - bp)
+} by {
+    (a + b) - (ap + bp) = (a + b) + -(ap + bp)
+    -(ap + bp) = -ap + -bp
+    (a + b) + (-ap + -bp) = a + b + -ap + -bp
+    a + b + -ap = a + -ap + b
+    a + b + -ap + -bp = a + -ap + b + -bp
+    a + -ap = a - ap
+    b + -bp = b - bp
+    a + -ap + b + -bp = (a - ap) + (b - bp)
+}
+
+/// The additive-subgroup quotient relation is preserved by pairwise addition (commutative case).
+theorem add_subgroup_rel_add_step[G: AddCommGroup](h: AddSubgroup[G], a: G, ap: G, b: G, bp: G) {
+    add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp)
+    implies add_subgroup_rel(h, a + b, ap + bp)
+} by {
+    if add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp) {
+        h.contains(a - ap)
+        h.contains(b - bp)
+        add_subgroup_contains_add(h, a - ap, b - bp)
+        h.contains((a - ap) + (b - bp))
+        add_sub_distrib(a, b, ap, bp)
+        h.contains((a + b) - (ap + bp))
+    }
+}
+
+/// The additive-subgroup quotient relation is compatible with addition (commutative case).
+theorem add_subgroup_rel_respects_add[G: AddCommGroup](h: AddSubgroup[G]) {
+    respects_add(add_subgroup_rel(h))
+} by {
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    respects_add(add_subgroup_rel(h)) = respects_binary_op(add_subgroup_rel(h), G.add)
+    forall(a: G, ap: G, b: G, bp: G) {
+        if add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp) {
+            add_subgroup_rel_add_step(h, a, ap, b, bp)
+            add_subgroup_rel(h, a + b, ap + bp)
+            add_subgroup_rel(h, G.add(a, b), G.add(ap, bp))
+        }
+    }
+    respects_binary_op(add_subgroup_rel(h), G.add)
+}
+
+/// The additive-subgroup quotient relation is an additive congruence (commutative case).
+theorem add_subgroup_rel_is_add_congruence[G: AddCommGroup](h: AddSubgroup[G]) {
+    is_add_congruence(add_subgroup_rel(h))
+} by {
+    add_subgroup_rel_is_equivalence(h)
+    add_subgroup_rel_respects_add(h)
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    is_binary_congruence(add_subgroup_rel(h), G.add)
+    add_congruence_eq_binary_congruence(add_subgroup_rel(h))
 }
