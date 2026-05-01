@@ -1154,9 +1154,9 @@ from add_ordered_group import AddLeftOrderedGroup, AddOrderedGroup
 instance Int: AddLeftOrderedGroup
 instance Int: AddOrderedGroup
 
-from lattice import Meet, Join, MeetSemilattice, JoinSemilattice, Lattice
+from lattice import Meet, Join, MeetSemilattice, JoinSemilattice, Lattice, DistribLattice
 from order import min_lte_left, min_lte_right, lte_min_of_bounds, lte_max_left, lte_max_right,
-    max_lte_of_upper_bounds
+    max_lte_of_upper_bounds, min_max_distrib_left, max_min_distrib_left
 
 instance Int: Meet {
     define meet(self, other: Int) -> Int {
@@ -1217,3 +1217,17 @@ theorem int_join_lte_of_bounds(a: Int, b: Int, c: Int) {
 instance Int: JoinSemilattice
 
 instance Int: Lattice
+
+theorem int_meet_join_distrib_left(a: Int, b: Int, c: Int) {
+    a.meet(b.join(c)) = a.meet(b).join(a.meet(c))
+} by {
+    min_max_distrib_left(a, b, c)
+}
+
+theorem int_join_meet_distrib_left(a: Int, b: Int, c: Int) {
+    a.join(b.meet(c)) = a.join(b).meet(a.join(c))
+} by {
+    max_min_distrib_left(a, b, c)
+}
+
+instance Int: DistribLattice
