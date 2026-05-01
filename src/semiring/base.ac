@@ -1,7 +1,7 @@
 from add_comm_monoid import AddCommMonoid
 from monoid import Monoid
-from add_monoid import is_add_monoid_hom
-from monoid import is_monoid_hom
+from add_monoid import AddMonoidHom, is_add_monoid_hom
+from monoid import MonoidHom, is_monoid_hom
 from functions import identity_fn, compose, compose_assoc, compose_identity_left, compose_identity_right,
     function_eq_transport_predicate, function_eq_transport_predicate_rev
 
@@ -163,6 +163,46 @@ theorem semiring_hom_one[S: Semiring, T: Semiring](f: SemiringHom[S, T]) {
     is_monoid_hom(f.hom) = (f.hom(S.1) = T.1 and forall(x: S, y: S) {
         f.hom(x * y) = f.hom(x) * f.hom(y)
     })
+}
+
+/// A semiring homomorphism preserves the additive monoid structure.
+theorem semiring_hom_is_add_monoid_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) {
+    is_add_monoid_hom(f.hom)
+} by {
+    is_semiring_hom(f.hom)
+    is_semiring_hom(f.hom) = (is_add_monoid_hom(f.hom) and is_monoid_hom(f.hom))
+}
+
+/// A semiring homomorphism preserves the multiplicative monoid structure.
+theorem semiring_hom_is_monoid_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) {
+    is_monoid_hom(f.hom)
+} by {
+    is_semiring_hom(f.hom)
+    is_semiring_hom(f.hom) = (is_add_monoid_hom(f.hom) and is_monoid_hom(f.hom))
+}
+
+/// The additive monoid homomorphism underlying a semiring homomorphism.
+let semiring_hom_to_add_monoid_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) -> result: AddMonoidHom[S, T] satisfy {
+    AddMonoidHom.new(f.hom) = Option.some(result)
+} by {
+    semiring_hom_is_add_monoid_hom(f)
+}
+
+/// The underlying function of the additive monoid homomorphism associated to a semiring homomorphism.
+theorem semiring_hom_to_add_monoid_hom_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) {
+    semiring_hom_to_add_monoid_hom(f).hom = f.hom
+}
+
+/// The multiplicative monoid homomorphism underlying a semiring homomorphism.
+let semiring_hom_to_monoid_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) -> result: MonoidHom[S, T] satisfy {
+    MonoidHom.new(f.hom) = Option.some(result)
+} by {
+    semiring_hom_is_monoid_hom(f)
+}
+
+/// The underlying function of the monoid homomorphism associated to a semiring homomorphism.
+theorem semiring_hom_to_monoid_hom_hom[S: Semiring, T: Semiring](f: SemiringHom[S, T]) {
+    semiring_hom_to_monoid_hom(f).hom = f.hom
 }
 
 /// Equality of functions transports the property of being a semiring homomorphism.

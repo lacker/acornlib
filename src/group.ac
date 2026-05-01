@@ -1,4 +1,5 @@
-from monoid import Monoid
+from monoid import Monoid, MonoidHom, is_monoid_hom, identity_fn_is_monoid_hom,
+    compose_is_monoid_hom
 from nat import Nat
 from functions import identity_fn, compose, compose_assoc, compose_identity_left, compose_identity_right,
     function_eq_transport_predicate, function_eq_transport_predicate_rev
@@ -257,6 +258,80 @@ theorem group_hom_pow[G: Group, H: Group](f: GroupHom[G, H], a: G, n: Nat) {
     }
 }
 
+/// A monoid homomorphism between groups is a group homomorphism.
+theorem monoid_hom_imp_group_hom[G: Group, H: Group](f: G -> H) {
+    is_monoid_hom(f) implies is_group_hom(f)
+} by {
+    if is_monoid_hom(f) {
+        is_monoid_hom(f) = (f(G.1) = H.1 and forall(a: G, b: G) {
+            f(a * b) = f(a) * f(b)
+        })
+        forall(a: G, b: G) {
+            f(a * b) = f(a) * f(b)
+        }
+        is_group_hom(f)
+    }
+}
+
+/// A group homomorphism preserves the full monoid structure.
+theorem group_hom_imp_monoid_hom[G: Group, H: Group](f: G -> H) {
+    is_group_hom(f) implies is_monoid_hom(f)
+} by {
+    if is_group_hom(f) {
+        G.1 * G.1 = G.1
+        f(G.1 * G.1) = f(G.1)
+        f(G.1 * G.1) = f(G.1) * f(G.1)
+        f(G.1) * f(G.1) = f(G.1)
+        f(G.1) * f(G.1) = f(G.1) * H.1
+        left_cancel(f(G.1), f(G.1), H.1)
+        f(G.1) = H.1
+        forall(a: G, b: G) {
+            f(a * b) = f(a) * f(b)
+        }
+        is_monoid_hom(f)
+    }
+}
+
+/// A bundled group homomorphism is a monoid homomorphism.
+theorem group_hom_is_monoid_hom[G: Group, H: Group](f: GroupHom[G, H]) {
+    is_monoid_hom(f.hom)
+} by {
+    is_group_hom(f.hom)
+    group_hom_imp_monoid_hom(f.hom)
+}
+
+/// A bundled monoid homomorphism between groups is a group homomorphism.
+theorem monoid_hom_is_group_hom[G: Group, H: Group](f: MonoidHom[G, H]) {
+    is_group_hom(f.hom)
+} by {
+    is_monoid_hom(f.hom)
+    monoid_hom_imp_group_hom(f.hom)
+}
+
+/// The monoid homomorphism underlying a group homomorphism.
+let group_hom_to_monoid_hom[G: Group, H: Group](f: GroupHom[G, H]) -> result: MonoidHom[G, H] satisfy {
+    MonoidHom.new(f.hom) = Option.some(result)
+} by {
+    group_hom_is_monoid_hom(f)
+}
+
+/// The underlying function of the monoid homomorphism associated to a group homomorphism.
+theorem group_hom_to_monoid_hom_hom[G: Group, H: Group](f: GroupHom[G, H]) {
+    group_hom_to_monoid_hom(f).hom = f.hom
+}
+
+/// The group homomorphism associated to a monoid homomorphism between groups.
+let group_hom_of_monoid_hom[G: Group, H: Group](f: MonoidHom[G, H]) -> result: GroupHom[G, H] satisfy {
+    GroupHom.new(f.hom) = Option.some(result)
+} by {
+    monoid_hom_is_group_hom(f)
+}
+
+/// The underlying function of the group homomorphism associated to a monoid homomorphism.
+theorem group_hom_of_monoid_hom_hom[G: Group, H: Group](f: MonoidHom[G, H]) {
+    group_hom_of_monoid_hom(f).hom = f.hom
+}
+
 /// Equality of functions transports the property of being a group homomorphism.
 theorem function_eq_transport_group_hom[G: Group, H: Group](f: G -> H, g: G -> H) {
     f = g and is_group_hom(f) implies is_group_hom(g)
@@ -279,10 +354,8 @@ theorem function_eq_transport_group_hom_rev[G: Group, H: Group](f: G -> H, g: G 
 theorem identity_fn_is_group_hom[G: Group] {
     is_group_hom(identity_fn[G])
 } by {
-    forall(a: G, b: G) {
-        identity_fn[G](a * b) = a * b
-        identity_fn[G](a) * identity_fn[G](b) = a * b
-    }
+    identity_fn_is_monoid_hom[G]
+    monoid_hom_imp_group_hom(identity_fn[G])
 }
 
 /// The composition of two group homomorphisms preserves the group operation.
@@ -290,14 +363,14 @@ theorem compose_is_group_hom[G: Group, H: Group, K: Group](f: H -> K, g: G -> H)
     is_group_hom(f) and is_group_hom(g) implies is_group_hom(compose(f, g))
 } by {
     if is_group_hom(f) and is_group_hom(g) {
-        forall(a: G, b: G) {
-            compose(f, g)(a * b) = f(g(a * b))
-            g(a * b) = g(a) * g(b)
-            f(g(a) * g(b)) = f(g(a)) * f(g(b))
-            compose(f, g)(a) = f(g(a))
-            compose(f, g)(b) = f(g(b))
-            compose(f, g)(a * b) = compose(f, g)(a) * compose(f, g)(b)
-        }
+        group_hom_imp_monoid_hom(f)
+        group_hom_imp_monoid_hom(g)
+        is_monoid_hom(f)
+        is_monoid_hom(g)
+        compose_is_monoid_hom(f, g)
+        is_monoid_hom(compose(f, g))
+        monoid_hom_imp_group_hom(compose(f, g))
+        is_group_hom(compose(f, g))
     }
 }
 

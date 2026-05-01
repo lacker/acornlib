@@ -107,6 +107,25 @@ theorem add_comm_group_hom_eq_of_apply_eq[A: AddCommGroup, B: AddCommGroup](
     }
 }
 
+/// An additive commutative group homomorphism is an additive group homomorphism.
+theorem add_comm_group_hom_is_add_group_hom[A: AddCommGroup, B: AddCommGroup](f: AddCommGroupHom[A, B]) {
+    is_add_group_hom(f.hom)
+} by {
+    is_add_comm_group_hom(f.hom)
+}
+
+/// The additive group homomorphism underlying an additive commutative group homomorphism.
+let add_comm_group_hom_to_add_group_hom[A: AddCommGroup, B: AddCommGroup](f: AddCommGroupHom[A, B]) -> result: AddGroupHom[A, B] satisfy {
+    AddGroupHom.new(f.hom) = Option.some(result)
+} by {
+    add_comm_group_hom_is_add_group_hom(f)
+}
+
+/// The underlying function of the additive group homomorphism associated to an additive commutative group homomorphism.
+theorem add_comm_group_hom_to_add_group_hom_hom[A: AddCommGroup, B: AddCommGroup](f: AddCommGroupHom[A, B]) {
+    add_comm_group_hom_to_add_group_hom(f).hom = f.hom
+}
+
 /// An additive commutative group homomorphism preserves addition.
 theorem add_comm_group_hom_add[A: AddCommGroup, B: AddCommGroup](
     f: AddCommGroupHom[A, B],
@@ -115,11 +134,7 @@ theorem add_comm_group_hom_add[A: AddCommGroup, B: AddCommGroup](
 ) {
     f.hom(a + b) = f.hom(a) + f.hom(b)
 } by {
-    is_add_comm_group_hom(f.hom)
-    is_add_group_hom(f.hom)
-    let base: AddGroupHom[A, B] satisfy {
-        AddGroupHom.new(f.hom) = Option.some(base)
-    }
+    let base = add_comm_group_hom_to_add_group_hom(f)
     add_group_hom_add(base, a, b)
     base.hom = f.hom
 }
@@ -128,11 +143,7 @@ theorem add_comm_group_hom_add[A: AddCommGroup, B: AddCommGroup](
 theorem add_comm_group_hom_zero[A: AddCommGroup, B: AddCommGroup](f: AddCommGroupHom[A, B]) {
     f.hom(A.0) = B.0
 } by {
-    is_add_comm_group_hom(f.hom)
-    is_add_group_hom(f.hom)
-    let base: AddGroupHom[A, B] satisfy {
-        AddGroupHom.new(f.hom) = Option.some(base)
-    }
+    let base = add_comm_group_hom_to_add_group_hom(f)
     add_group_hom_zero(base)
     base.hom = f.hom
 }
@@ -141,11 +152,7 @@ theorem add_comm_group_hom_zero[A: AddCommGroup, B: AddCommGroup](f: AddCommGrou
 theorem add_comm_group_hom_neg[A: AddCommGroup, B: AddCommGroup](f: AddCommGroupHom[A, B], a: A) {
     f.hom(-a) = -f.hom(a)
 } by {
-    is_add_comm_group_hom(f.hom)
-    is_add_group_hom(f.hom)
-    let base: AddGroupHom[A, B] satisfy {
-        AddGroupHom.new(f.hom) = Option.some(base)
-    }
+    let base = add_comm_group_hom_to_add_group_hom(f)
     add_group_hom_neg(base, a)
     base.hom = f.hom
 }
