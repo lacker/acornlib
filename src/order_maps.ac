@@ -5,7 +5,7 @@ from order import PartialOrder, LinearOrder, lte_refl, lte_trans, lte_antisymm, 
     lt_of_lte_of_lt, lt_of_lt_of_lte, lte_min_of_bounds, max_lte_of_upper_bounds,
     min_lte_left, min_lte_right, lte_max_left, lte_max_right, min_eq_left_of_lte,
     min_eq_right_of_gte, max_eq_left_of_gte, max_eq_right_of_lte
-from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
+from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval, clamp
 
 /// True if a map preserves the non-strict order.
 define is_monotone[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
@@ -944,5 +944,89 @@ theorem order_embedding_right_open_interval_preimage[A: LinearOrder, B: LinearOr
         }
         x < b
         right_open_interval(a, b, x)
+    }
+}
+
+/// An order embedding identifies closed-interval membership with image closed-interval membership.
+theorem order_embedding_closed_interval_iff[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) implies closed_interval(f(a), f(b), f(x)) = closed_interval(a, b, x)
+} by {
+    if is_order_embedding(f) {
+        if closed_interval(f(a), f(b), f(x)) {
+            order_embedding_closed_interval_preimage(f, a, b, x)
+            closed_interval(a, b, x)
+        }
+        if closed_interval(a, b, x) {
+            order_embedding_closed_interval_image(f, a, b, x)
+            closed_interval(f(a), f(b), f(x))
+        }
+        closed_interval(f(a), f(b), f(x)) = closed_interval(a, b, x)
+    }
+}
+
+/// An order embedding identifies open-interval membership with image open-interval membership.
+theorem order_embedding_open_interval_iff[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) implies open_interval(f(a), f(b), f(x)) = open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) {
+        if open_interval(f(a), f(b), f(x)) {
+            order_embedding_open_interval_preimage(f, a, b, x)
+            open_interval(a, b, x)
+        }
+        if open_interval(a, b, x) {
+            order_embedding_open_interval_image(f, a, b, x)
+            open_interval(f(a), f(b), f(x))
+        }
+        open_interval(f(a), f(b), f(x)) = open_interval(a, b, x)
+    }
+}
+
+/// An order embedding identifies left-open interval membership with image left-open interval membership.
+theorem order_embedding_left_open_interval_iff[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) implies left_open_interval(f(a), f(b), f(x)) = left_open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) {
+        if left_open_interval(f(a), f(b), f(x)) {
+            order_embedding_left_open_interval_preimage(f, a, b, x)
+            left_open_interval(a, b, x)
+        }
+        if left_open_interval(a, b, x) {
+            order_embedding_left_open_interval_image(f, a, b, x)
+            left_open_interval(f(a), f(b), f(x))
+        }
+        left_open_interval(f(a), f(b), f(x)) = left_open_interval(a, b, x)
+    }
+}
+
+/// An order embedding identifies right-open interval membership with image right-open interval membership.
+theorem order_embedding_right_open_interval_iff[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) implies right_open_interval(f(a), f(b), f(x)) = right_open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) {
+        if right_open_interval(f(a), f(b), f(x)) {
+            order_embedding_right_open_interval_preimage(f, a, b, x)
+            right_open_interval(a, b, x)
+        }
+        if right_open_interval(a, b, x) {
+            order_embedding_right_open_interval_image(f, a, b, x)
+            right_open_interval(f(a), f(b), f(x))
+        }
+        right_open_interval(f(a), f(b), f(x)) = right_open_interval(a, b, x)
+    }
+}
+
+/// An order embedding preserves clamping to closed intervals.
+theorem order_embedding_clamp_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) implies f(clamp(a, b, x)) = clamp(f(a), f(b), f(x))
+} by {
+    if is_order_embedding(f) {
+        order_embedding_max_image(f, a, x)
+        f(a.max(x)) = f(a).max(f(x))
+        order_embedding_min_image(f, a.max(x), b)
+        f(a.max(x).min(b)) = f(a.max(x)).min(f(b))
+        f(a.max(x).min(b)) = f(a).max(f(x)).min(f(b))
+        clamp(a, b, x) = a.max(x).min(b)
+        clamp(f(a), f(b), f(x)) = f(a).max(f(x)).min(f(b))
+        f(clamp(a, b, x)) = clamp(f(a), f(b), f(x))
     }
 }

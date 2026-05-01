@@ -2,7 +2,9 @@
 
 from order import LinearOrder, lte_trans, lte_antisymm, lt_trans, lt_imp_lte, not_lt_ref,
     gt_imp_not_lte, lt_of_lte_of_lt, lt_of_lt_of_lte, lte_min_of_bounds, lte_max_left,
-    max_eq_left_of_gte, max_eq_right_of_lte, min_eq_left_of_lte, min_eq_right_of_gte
+    max_eq_left_of_gte, max_eq_right_of_lte, min_eq_left_of_lte, min_eq_right_of_gte,
+    min_lte_min, min_lte_min_left, min_lte_min_right, max_lte_max, max_lte_max_left,
+    max_lte_max_right
 
 /// True if an element lies in the closed interval with endpoints `a` and `b`.
 define closed_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
@@ -167,6 +169,118 @@ theorem clamp_eq_right_of_lte_of_lte[L: LinearOrder](a: L, b: L, x: L) {
         min_eq_right_of_gte(x, b)
         x.min(b) = b
         clamp(a, b, x) = b
+    }
+}
+
+/// Clamping an element below the lower endpoint gives the lower endpoint when the endpoints are ordered.
+theorem clamp_eq_left_of_lte[L: LinearOrder](a: L, b: L, x: L) {
+    x <= a and a <= b implies clamp(a, b, x) = a
+} by {
+    if x <= a and a <= b {
+        clamp_eq_left_of_lte_of_lte(a, b, x)
+        clamp(a, b, x) = a
+    }
+}
+
+/// Clamping an element above the upper endpoint gives the upper endpoint when the endpoints are ordered.
+theorem clamp_eq_right_of_lte[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b and b <= x implies clamp(a, b, x) = b
+} by {
+    if a <= b and b <= x {
+        clamp_eq_right_of_lte_of_lte(a, b, x)
+        clamp(a, b, x) = b
+    }
+}
+
+/// Clamping fixes an element between ordered endpoints.
+theorem clamp_eq_self_of_lte_of_lte[L: LinearOrder](a: L, b: L, x: L) {
+    a <= x and x <= b implies clamp(a, b, x) = x
+} by {
+    if a <= x and x <= b {
+        closed_interval_intro(a, b, x)
+        closed_interval(a, b, x)
+        clamp_eq_self_of_closed_interval(a, b, x)
+        clamp(a, b, x) = x
+    }
+}
+
+/// Clamping is idempotent when the endpoints are ordered.
+theorem clamp_idempotent_of_lte_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b implies clamp(a, b, clamp(a, b, x)) = clamp(a, b, x)
+} by {
+    if a <= b {
+        clamp_in_closed_interval(a, b, x)
+        closed_interval(a, b, clamp(a, b, x))
+        clamp_eq_self_of_closed_interval(a, b, clamp(a, b, x))
+        clamp(a, b, clamp(a, b, x)) = clamp(a, b, x)
+    }
+}
+
+/// Clamping is monotone in the element being clamped.
+theorem clamp_lte_clamp[L: LinearOrder](a: L, b: L, x: L, y: L) {
+    x <= y implies clamp(a, b, x) <= clamp(a, b, y)
+} by {
+    if x <= y {
+        max_lte_max_right(a, x, y)
+        a.max(x) <= a.max(y)
+        min_lte_min_left(a.max(x), a.max(y), b)
+        a.max(x).min(b) <= a.max(y).min(b)
+        clamp(a, b, x) <= clamp(a, b, y)
+    }
+}
+
+/// Clamping is monotone in the lower endpoint.
+theorem clamp_lte_clamp_left[L: LinearOrder](a: L, b: L, c: L, x: L) {
+    a <= b implies clamp(a, c, x) <= clamp(b, c, x)
+} by {
+    if a <= b {
+        max_lte_max_left(a, b, x)
+        a.max(x) <= b.max(x)
+        min_lte_min_left(a.max(x), b.max(x), c)
+        a.max(x).min(c) <= b.max(x).min(c)
+        clamp(a, c, x) <= clamp(b, c, x)
+    }
+}
+
+/// Clamping is monotone in the upper endpoint.
+theorem clamp_lte_clamp_right[L: LinearOrder](a: L, b: L, c: L, x: L) {
+    b <= c implies clamp(a, b, x) <= clamp(a, c, x)
+} by {
+    if b <= c {
+        min_lte_min_right(a.max(x), b, c)
+        a.max(x).min(b) <= a.max(x).min(c)
+        clamp(a, b, x) <= clamp(a, c, x)
+    }
+}
+
+/// Clamping is monotone in both endpoints and in the element.
+theorem clamp_lte_clamp_of_lte[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L, y: L) {
+    a1 <= a2 and b1 <= b2 and x <= y implies clamp(a1, b1, x) <= clamp(a2, b2, y)
+} by {
+    if a1 <= a2 and b1 <= b2 and x <= y {
+        max_lte_max(a1, a2, x, y)
+        a1.max(x) <= a2.max(y)
+        min_lte_min(a1.max(x), a2.max(y), b1, b2)
+        a1.max(x).min(b1) <= a2.max(y).min(b2)
+        clamp(a1, b1, x) <= clamp(a2, b2, y)
+    }
+}
+
+/// An ordered closed interval is exactly the fixed-point locus of clamping.
+theorem closed_interval_iff_clamp_eq_self[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b implies (closed_interval(a, b, x) = (clamp(a, b, x) = x))
+} by {
+    if a <= b {
+        if closed_interval(a, b, x) {
+            clamp_eq_self_of_closed_interval(a, b, x)
+            clamp(a, b, x) = x
+        }
+        if clamp(a, b, x) = x {
+            clamp_in_closed_interval(a, b, x)
+            closed_interval(a, b, clamp(a, b, x))
+            closed_interval(a, b, x)
+        }
+        closed_interval(a, b, x) = (clamp(a, b, x) = x)
     }
 }
 

@@ -137,6 +137,16 @@ theorem join_lte_iff[S: JoinSemilattice](a: S, b: S, c: S) {
     a.join(b) <= c = (a <= c and b <= c)
 }
 
+/// Meet distributes over join on the left.
+theorem meet_join_distrib_left[S: DistribLattice](a: S, b: S, c: S) {
+    a.meet(b.join(c)) = a.meet(b).join(a.meet(c))
+}
+
+/// Join distributes over meet on the left.
+theorem join_meet_distrib_left[S: DistribLattice](a: S, b: S, c: S) {
+    a.join(b.meet(c)) = a.join(b).meet(a.join(c))
+}
+
 /// Meet is commutative.
 theorem meet_comm[S: MeetSemilattice](a: S, b: S) {
     a.meet(b) = b.meet(a)
@@ -299,6 +309,108 @@ theorem join_lte_join[S: JoinSemilattice](a: S, b: S, c: S, d: S) {
     }
 }
 
+/// Meet is monotone in the left argument.
+theorem meet_lte_meet_left[S: MeetSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.meet(c) <= b.meet(c)
+} by {
+    if a <= b {
+        lte_refl(c)
+        meet_lte_meet(a, b, c, c)
+        a.meet(c) <= b.meet(c)
+    }
+}
+
+/// Meet is monotone in the right argument.
+theorem meet_lte_meet_right[S: MeetSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.meet(b) <= a.meet(c)
+} by {
+    if b <= c {
+        lte_refl(a)
+        meet_lte_meet(a, a, b, c)
+        a.meet(b) <= a.meet(c)
+    }
+}
+
+/// Join is monotone in the left argument.
+theorem join_lte_join_left[S: JoinSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.join(c) <= b.join(c)
+} by {
+    if a <= b {
+        lte_refl(c)
+        join_lte_join(a, b, c, c)
+        a.join(c) <= b.join(c)
+    }
+}
+
+/// Join is monotone in the right argument.
+theorem join_lte_join_right[S: JoinSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.join(b) <= a.join(c)
+} by {
+    if b <= c {
+        lte_refl(a)
+        join_lte_join(a, a, b, c)
+        a.join(b) <= a.join(c)
+    }
+}
+
+/// A meet equals its left argument exactly when the left argument is below the right.
+theorem meet_eq_left_iff_lte[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) = a = (a <= b)
+} by {
+    if a.meet(b) = a {
+        meet_lte_right(a, b)
+        a <= b
+    }
+    if a <= b {
+        meet_lte_left(a, b)
+        a.meet(b) <= a
+        lte_refl(a)
+        lte_meet_of_bounds(a, a, b)
+        a <= a.meet(b)
+        lte_antisymm(a.meet(b), a)
+        a.meet(b) = a
+    }
+    a.meet(b) = a = (a <= b)
+}
+
+/// A meet equals its right argument exactly when the right argument is below the left.
+theorem meet_eq_right_iff_lte[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) = b = (b <= a)
+} by {
+    meet_comm(a, b)
+    meet_eq_left_iff_lte(b, a)
+    a.meet(b) = b = (b <= a)
+}
+
+/// A join equals its left argument exactly when the right argument is below the left.
+theorem join_eq_left_iff_lte[S: JoinSemilattice](a: S, b: S) {
+    a.join(b) = a = (b <= a)
+} by {
+    if a.join(b) = a {
+        lte_join_right(a, b)
+        b <= a
+    }
+    if b <= a {
+        lte_join_left(a, b)
+        a <= a.join(b)
+        lte_refl(a)
+        join_lte_of_bounds(a, b, a)
+        a.join(b) <= a
+        lte_antisymm(a.join(b), a)
+        a.join(b) = a
+    }
+    a.join(b) = a = (b <= a)
+}
+
+/// A join equals its right argument exactly when the left argument is below the right.
+theorem join_eq_right_iff_lte[S: JoinSemilattice](a: S, b: S) {
+    a.join(b) = b = (a <= b)
+} by {
+    join_comm(a, b)
+    join_eq_left_iff_lte(b, a)
+    a.join(b) = b = (a <= b)
+}
+
 /// Meet absorbs join on the right.
 theorem meet_absorb_join[S: Lattice](a: S, b: S) {
     a.meet(a.join(b)) = a
@@ -327,4 +439,40 @@ theorem join_absorb_meet[S: Lattice](a: S, b: S) {
     a.join(a.meet(b)) <= a
     lte_antisymm(a.join(a.meet(b)), a)
     a.join(a.meet(b)) = a
+}
+
+/// Meet absorbs join on the left.
+theorem meet_absorb_join_left[S: Lattice](a: S, b: S) {
+    a.join(b).meet(a) = a
+} by {
+    meet_comm(a.join(b), a)
+    meet_absorb_join(a, b)
+}
+
+/// Join absorbs meet on the left.
+theorem join_absorb_meet_left[S: Lattice](a: S, b: S) {
+    a.meet(b).join(a) = a
+} by {
+    join_comm(a.meet(b), a)
+    join_absorb_meet(a, b)
+}
+
+/// Meet distributes over join on the right.
+theorem meet_join_distrib_right[S: DistribLattice](a: S, b: S, c: S) {
+    a.join(b).meet(c) = a.meet(c).join(b.meet(c))
+} by {
+    meet_comm(a.join(b), c)
+    meet_join_distrib_left(c, a, b)
+    meet_comm(c, a)
+    meet_comm(c, b)
+}
+
+/// Join distributes over meet on the right.
+theorem join_meet_distrib_right[S: DistribLattice](a: S, b: S, c: S) {
+    a.meet(b).join(c) = a.join(c).meet(b.join(c))
+} by {
+    join_comm(a.meet(b), c)
+    join_meet_distrib_left(c, a, b)
+    join_comm(c, a)
+    join_comm(c, b)
 }

@@ -301,3 +301,26 @@
 {"goal":"x < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[A](x, b)"]}
 {"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x2 <= x0 or right_open_interval[T0](x2, x1, x0) }[A](x, b, a)"]}
 {"goal":"order_embedding_right_open_interval_preimage","proof":[]}
+{"goal":"closed_interval(a, b, x)","proof":[]}
+{"goal":"closed_interval(f(a), f(b), f(x))","proof":[]}
+{"goal":"closed_interval(f(a), f(b), f(x)) = closed_interval(a, b, x)","proof":[]}
+{"goal":"order_embedding_closed_interval_iff","proof":[]}
+{"goal":"open_interval(a, b, x)","proof":[]}
+{"goal":"open_interval(f(a), f(b), f(x))","proof":[]}
+{"goal":"open_interval(f(a), f(b), f(x)) = open_interval(a, b, x)","proof":[]}
+{"goal":"order_embedding_open_interval_iff","proof":[]}
+{"goal":"left_open_interval(a, b, x)","proof":[]}
+{"goal":"left_open_interval(f(a), f(b), f(x))","proof":[]}
+{"goal":"left_open_interval(f(a), f(b), f(x)) = left_open_interval(a, b, x)","proof":[]}
+{"goal":"order_embedding_left_open_interval_iff","proof":[]}
+{"goal":"right_open_interval(a, b, x)","proof":[]}
+{"goal":"right_open_interval(f(a), f(b), f(x))","proof":[]}
+{"goal":"right_open_interval(f(a), f(b), f(x)) = right_open_interval(a, b, x)","proof":[]}
+{"goal":"order_embedding_right_open_interval_iff","proof":[]}
+{"goal":"f(a.max(x)) = f(a).max(f(x))","proof":[]}
+{"goal":"f(a.max(x).min(b)) = f(a.max(x)).min(f(b))","proof":[]}
+{"goal":"f(a.max(x).min(b)) = f(a).max(f(x)).min(f(b))","proof":[]}
+{"goal":"clamp(a, b, x) = a.max(x).min(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"clamp(f(a), f(b), f(x)) = f(a).max(f(x)).min(f(b))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[B](f(a), f(x), f(b))"]}
+{"goal":"f(clamp(a, b, x)) = clamp(f(a), f(b), f(x))","proof":[]}
+{"goal":"order_embedding_clamp_image","proof":[]}
