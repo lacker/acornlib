@@ -1,0 +1,1 @@
+{"goal":"top100_074_mathematical_induction","proof":["not forall(x0: Nat) { not p(x0) or p(x0.suc) } or not p(Nat.0)","p(Nat.0)","(forall(x1: Nat) { not p(x1) or p(x1.suc) } = true)","not forall(x2: Nat) { not p(x2) or p(x2.suc) }"]}
