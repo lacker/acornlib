@@ -2,7 +2,7 @@
 
 Goal: stabilize the base order hierarchy so later order-theoretic and ordered-algebraic code can depend on one standard API.
 
-- [ ] Unify the order APIs for `Nat`, `Int`, `Rat`, and `Real`
+- [ ] Audit remaining `Nat`, `Int`, `Rat`, and `Real` order theorem names and centralize the generic ones
 - [ ] Decide whether Acornlib needs a `Preorder` layer below `PartialOrder`
 
 Status:
@@ -16,3 +16,4 @@ Status:
 - The `order.ac` naming audit now includes central `le`/`ge` aliases for reflexivity, transitivity, antisymmetry, equality-to-bound lemmas, strict-to-nonstrict lemmas, negation lemmas, strict/equality decompositions, totality disjunctions, and failed-comparison consequences.
 - The central `src/order.ac` API now includes `le`/`ge` aliases for equality substitution, mixed strict/non-strict transitivity, non-strict consequences of strict chains, flipped disequality hypotheses, and `not_eq` names for strict comparisons.
 - `src/order_cases.ac` now has `le`/`ge` aliases for linear-order comparison-vs-negation equivalences.
+- The central `src/order.ac` API now includes numeric-file-compatible aliases for strict irreflexivity, swapped strict-exclusion, mixed strict/non-strict transitivity, swapped totality disjunctions, strict `min`/`max` comparison facts, and `min`/`max` monotonicity in both `le` and `ge` forms.
