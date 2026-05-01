@@ -1,6 +1,6 @@
 ---
 name: fix-merge-conflict
-description: Fix Acornlib pull request merge conflicts, especially conflicts only in generated `build/` files. Use when the user gives a PR id or URL, or asks to resolve merge conflicts in this repo: take conflicted build files from `master`, run `acorn verify` from the repo root to regenerate/update build artifacts, then commit and push the resolved PR branch when appropriate.
+description: 'Fix Acornlib pull request merge conflicts, especially conflicts only in generated `build/` files. Use when the user gives a PR id or URL, or asks to resolve merge conflicts in this repo: take conflicted build files from `master`, run `acorn verify` from the repo root to regenerate/update build artifacts, then commit and push the resolved PR branch when appropriate.'
 ---
 
 # Fix Merge Conflict
