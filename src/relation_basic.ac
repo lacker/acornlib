@@ -1027,6 +1027,26 @@ theorem relation_converse_is_total[T](r: (T, T) -> Bool) {
     }
 }
 
+/// Converse preserves antisymmetry.
+theorem relation_converse_is_antisymmetric[T](r: (T, T) -> Bool) {
+    is_antisymmetric(r) implies is_antisymmetric(relation_converse(r))
+} by {
+    if is_antisymmetric(r) {
+        is_antisymmetric(r) = forall(x0: T, y0: T) {
+            r(x0, y0) and r(y0, x0) implies x0 = y0
+        }
+        forall(x: T, y: T) {
+            if relation_converse(r, x, y) and relation_converse(r, y, x) {
+                relation_converse(r, x, y) = r(y, x)
+                relation_converse(r, y, x) = r(x, y)
+                r(y, x) and r(x, y)
+                y = x
+                x = y
+            }
+        }
+    }
+}
+
 /// Converse commutes with relation intersection.
 theorem relation_converse_intersection[A, B](r: (A, B) -> Bool, s: (A, B) -> Bool) {
     relation_converse(relation_intersection(r, s)) =
@@ -1844,6 +1864,108 @@ theorem relation_intersection_is_partial_equivalence[T](r: (T, T) -> Bool, s: (T
     }
 }
 
+/// Antisymmetry of the left factor passes to the intersection.
+theorem relation_intersection_is_antisymmetric_left[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_antisymmetric(r) implies is_antisymmetric(relation_intersection(r, s))
+} by {
+    if is_antisymmetric(r) {
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) and relation_intersection(r, s, y, x) {
+                r(x, y)
+                r(y, x)
+                antisymmetric_eq(r, x, y)
+                x = y
+            }
+        }
+    }
+}
+
+/// Antisymmetry of the right factor passes to the intersection.
+theorem relation_intersection_is_antisymmetric_right[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_antisymmetric(s) implies is_antisymmetric(relation_intersection(r, s))
+} by {
+    if is_antisymmetric(s) {
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) and relation_intersection(r, s, y, x) {
+                s(x, y)
+                s(y, x)
+                antisymmetric_eq(s, x, y)
+                x = y
+            }
+        }
+    }
+}
+
+/// Irreflexivity of the left factor passes to the intersection.
+theorem relation_intersection_is_irreflexive_left[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_irreflexive(r) implies is_irreflexive(relation_intersection(r, s))
+} by {
+    if is_irreflexive(r) {
+        forall(x: T) {
+            if relation_intersection(r, s, x, x) {
+                r(x, x)
+                false
+            }
+        }
+    }
+}
+
+/// Irreflexivity of the right factor passes to the intersection.
+theorem relation_intersection_is_irreflexive_right[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_irreflexive(s) implies is_irreflexive(relation_intersection(r, s))
+} by {
+    if is_irreflexive(s) {
+        forall(x: T) {
+            if relation_intersection(r, s, x, x) {
+                s(x, x)
+                false
+            }
+        }
+    }
+}
+
+/// Asymmetry of the left factor passes to the intersection.
+theorem relation_intersection_is_asymmetric_left[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_asymmetric(r) implies is_asymmetric(relation_intersection(r, s))
+} by {
+    if is_asymmetric(r) {
+        is_asymmetric(r) = forall(x0: T, y0: T) {
+            r(x0, y0) implies not r(y0, x0)
+        }
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                r(x, y)
+                not r(y, x)
+                if relation_intersection(r, s, y, x) {
+                    r(y, x)
+                    false
+                }
+            }
+        }
+    }
+}
+
+/// Asymmetry of the right factor passes to the intersection.
+theorem relation_intersection_is_asymmetric_right[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_asymmetric(s) implies is_asymmetric(relation_intersection(r, s))
+} by {
+    if is_asymmetric(s) {
+        is_asymmetric(s) = forall(x0: T, y0: T) {
+            s(x0, y0) implies not s(y0, x0)
+        }
+        forall(x: T, y: T) {
+            if relation_intersection(r, s, x, y) {
+                s(x, y)
+                not s(y, x)
+                if relation_intersection(r, s, y, x) {
+                    s(y, x)
+                    false
+                }
+            }
+        }
+    }
+}
+
 /// Relation union preserves reflexivity.
 theorem relation_union_is_reflexive[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
     is_reflexive(r) and is_reflexive(s) implies is_reflexive(relation_union(r, s))
@@ -1909,6 +2031,74 @@ theorem relation_union_is_total[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
             }
             r(x, y) or r(y, x)
             if r(x, y) {
+                relation_union(r, s, x, y)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            } else {
+                relation_union(r, s, y, x)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            }
+        }
+    }
+}
+
+/// Reflexivity of the left factor extends to the union.
+theorem relation_union_is_reflexive_left[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_reflexive(r) implies is_reflexive(relation_union(r, s))
+} by {
+    if is_reflexive(r) {
+        forall(x: T) {
+            reflexive_self(r, x)
+            r(x, x)
+            relation_union(r, s, x, x)
+        }
+    }
+}
+
+/// Reflexivity of the right factor extends to the union.
+theorem relation_union_is_reflexive_right[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_reflexive(s) implies is_reflexive(relation_union(r, s))
+} by {
+    if is_reflexive(s) {
+        forall(x: T) {
+            reflexive_self(s, x)
+            s(x, x)
+            relation_union(r, s, x, x)
+        }
+    }
+}
+
+/// Totality of the left factor extends to the union.
+theorem relation_union_is_total_left[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_total(r) implies is_total(relation_union(r, s))
+} by {
+    if is_total(r) {
+        is_total(r) = forall(x0: T, y0: T) {
+            r(x0, y0) or r(y0, x0)
+        }
+        forall(x: T, y: T) {
+            r(x, y) or r(y, x)
+            if r(x, y) {
+                relation_union(r, s, x, y)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            } else {
+                relation_union(r, s, y, x)
+                relation_union(r, s, x, y) or relation_union(r, s, y, x)
+            }
+        }
+    }
+}
+
+/// Totality of the right factor extends to the union.
+theorem relation_union_is_total_right[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_total(s) implies is_total(relation_union(r, s))
+} by {
+    if is_total(s) {
+        is_total(s) = forall(x0: T, y0: T) {
+            s(x0, y0) or s(y0, x0)
+        }
+        forall(x: T, y: T) {
+            s(x, y) or s(y, x)
+            if s(x, y) {
                 relation_union(r, s, x, y)
                 relation_union(r, s, x, y) or relation_union(r, s, y, x)
             } else {

@@ -27,6 +27,19 @@ define is_ideal[R: CommRing](contains: R -> Bool) -> Bool {
     and ideal_absorb_constraint(contains)
 }
 
+/// is_ideal unfolds to the conjunction of its three sub-constraints.
+theorem is_ideal_unfold[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) = (ideal_zero_constraint(contains) and ideal_add_constraint(contains) and ideal_absorb_constraint(contains))
+}
+
+/// The three ideal sub-constraints together establish is_ideal.
+theorem is_ideal_from_constraints[R: CommRing](contains: R -> Bool) {
+    ideal_zero_constraint(contains) and ideal_add_constraint(contains) and ideal_absorb_constraint(contains)
+        implies is_ideal(contains)
+} by {
+    is_ideal_unfold(contains)
+}
+
 /// An ideal contains the additive identity.
 theorem is_ideal_zero[R: CommRing](contains: R -> Bool) {
     is_ideal(contains) implies contains(R.0)
@@ -227,5 +240,410 @@ theorem principal_ideal_one_eq_unit_ideal[R: CommRing] {
         principal_ideal(R.1, x)
         unit_ideal[R](x)
         principal_ideal[R](R.1)(x) = unit_ideal[R](x)
+    }
+}
+
+/// True if every element of the first subset belongs to the second.
+define ideal_subset[R: CommRing](contains_i: R -> Bool, contains_j: R -> Bool) -> Bool {
+    forall(x: R) {
+        contains_i(x) implies contains_j(x)
+    }
+}
+
+/// Subset is reflexive.
+theorem ideal_subset_refl[R: CommRing](contains: R -> Bool) {
+    ideal_subset(contains, contains)
+} by {
+    forall(x: R) {
+        contains(x) implies contains(x)
+    }
+}
+
+/// Subset is transitive.
+theorem ideal_subset_trans[R: CommRing](contains_i: R -> Bool,
+                                        contains_j: R -> Bool,
+                                        contains_k: R -> Bool) {
+    ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_k)
+        implies ideal_subset(contains_i, contains_k)
+} by {
+    if ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_k) {
+        forall(x: R) {
+            if contains_i(x) {
+                contains_j(x)
+                contains_k(x)
+            }
+        }
+    }
+}
+
+/// Mutual subset implies pointwise equality of the membership predicates.
+theorem ideal_subset_antisymm[R: CommRing](contains_i: R -> Bool,
+                                           contains_j: R -> Bool) {
+    ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i)
+        implies contains_i = contains_j
+} by {
+    if ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i) {
+        forall(x: R) {
+            contains_i(x) = contains_j(x)
+        }
+    }
+}
+
+/// The zero ideal is contained in every ideal.
+theorem zero_ideal_subset[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_subset(zero_ideal[R], contains)
+} by {
+    if is_ideal(contains) {
+        is_ideal_zero(contains)
+        forall(x: R) {
+            if zero_ideal[R](x) {
+                x = R.0
+                contains(x)
+            }
+        }
+    }
+}
+
+/// Every subset is contained in the unit ideal.
+theorem subset_unit_ideal[R: CommRing](contains: R -> Bool) {
+    ideal_subset(contains, unit_ideal[R])
+} by {
+    forall(x: R) {
+        unit_ideal[R](x)
+    }
+}
+
+/// Membership in the intersection of two subsets.
+define ideal_inter[R: CommRing](contains_i: R -> Bool,
+                                contains_j: R -> Bool,
+                                x: R) -> Bool {
+    contains_i(x) and contains_j(x)
+}
+
+/// The intersection of two ideals satisfies ideal_zero_constraint.
+theorem ideal_inter_zero_constraint[R: CommRing](contains_i: R -> Bool,
+                                                 contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_zero_constraint(ideal_inter[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        is_ideal_zero(contains_i)
+        is_ideal_zero(contains_j)
+        contains_i(R.0) and contains_j(R.0)
+        ideal_inter(contains_i, contains_j, R.0)
+    }
+}
+
+/// The intersection of two ideals satisfies ideal_add_constraint.
+theorem ideal_inter_add_constraint[R: CommRing](contains_i: R -> Bool,
+                                                contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_add_constraint(ideal_inter[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        forall(a: R, b: R) {
+            if ideal_inter(contains_i, contains_j, a) and ideal_inter(contains_i, contains_j, b) {
+                contains_i(a) and contains_j(a)
+                contains_i(b) and contains_j(b)
+                is_ideal_add(contains_i, a, b)
+                is_ideal_add(contains_j, a, b)
+                contains_i(a + b) and contains_j(a + b)
+                ideal_inter(contains_i, contains_j, a + b)
+            }
+        }
+    }
+}
+
+/// The intersection of two ideals satisfies ideal_absorb_constraint.
+theorem ideal_inter_absorb_constraint[R: CommRing](contains_i: R -> Bool,
+                                                   contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_absorb_constraint(ideal_inter[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        forall(r: R, a: R) {
+            if ideal_inter(contains_i, contains_j, a) {
+                contains_i(a) and contains_j(a)
+                is_ideal_absorb(contains_i, r, a)
+                is_ideal_absorb(contains_j, r, a)
+                contains_i(r * a) and contains_j(r * a)
+                ideal_inter(contains_i, contains_j, r * a)
+            }
+        }
+    }
+}
+
+/// The intersection of two ideals is an ideal.
+theorem ideal_inter_is_ideal[R: CommRing](contains_i: R -> Bool,
+                                          contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies is_ideal(ideal_inter[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        ideal_inter_zero_constraint(contains_i, contains_j)
+        ideal_inter_add_constraint(contains_i, contains_j)
+        ideal_inter_absorb_constraint(contains_i, contains_j)
+        ideal_zero_constraint(ideal_inter[R](contains_i, contains_j)) and ideal_add_constraint(ideal_inter[R](contains_i, contains_j)) and ideal_absorb_constraint(ideal_inter[R](contains_i, contains_j))
+        is_ideal_unfold(ideal_inter[R](contains_i, contains_j))
+        is_ideal(ideal_inter[R](contains_i, contains_j))
+    }
+}
+
+/// The intersection is contained in the left subset.
+theorem ideal_inter_subset_left[R: CommRing](contains_i: R -> Bool,
+                                             contains_j: R -> Bool) {
+    ideal_subset(ideal_inter[R](contains_i, contains_j), contains_i)
+} by {
+    forall(x: R) {
+        if ideal_inter(contains_i, contains_j, x) {
+            ideal_inter(contains_i, contains_j, x) = (contains_i(x) and contains_j(x))
+            contains_i(x)
+        }
+    }
+}
+
+/// The intersection is contained in the right subset.
+theorem ideal_inter_subset_right[R: CommRing](contains_i: R -> Bool,
+                                              contains_j: R -> Bool) {
+    ideal_subset(ideal_inter[R](contains_i, contains_j), contains_j)
+} by {
+    forall(x: R) {
+        if ideal_inter(contains_i, contains_j, x) {
+            ideal_inter(contains_i, contains_j, x) = (contains_i(x) and contains_j(x))
+            contains_j(x)
+        }
+    }
+}
+
+/// Any subset contained in both subsets is contained in their intersection.
+theorem ideal_inter_glb[R: CommRing](contains_i: R -> Bool,
+                                     contains_j: R -> Bool,
+                                     contains_k: R -> Bool) {
+    ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j)
+        implies ideal_subset(contains_k, ideal_inter[R](contains_i, contains_j))
+} by {
+    if ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j) {
+        forall(x: R) {
+            if contains_k(x) {
+                contains_i(x)
+                contains_j(x)
+                ideal_inter(contains_i, contains_j, x) = (contains_i(x) and contains_j(x))
+                ideal_inter(contains_i, contains_j, x)
+            }
+        }
+    }
+}
+
+/// The intersection is commutative.
+theorem ideal_inter_comm[R: CommRing](contains_i: R -> Bool,
+                                      contains_j: R -> Bool) {
+    ideal_inter[R](contains_i, contains_j) = ideal_inter[R](contains_j, contains_i)
+} by {
+    forall(x: R) {
+        ideal_inter[R](contains_i, contains_j)(x) = (contains_i(x) and contains_j(x))
+        ideal_inter[R](contains_j, contains_i)(x) = (contains_j(x) and contains_i(x))
+        ideal_inter[R](contains_i, contains_j)(x) = ideal_inter[R](contains_j, contains_i)(x)
+    }
+}
+
+/// Membership in the sum of two subsets: elements decomposable as a + b
+/// with a in the first subset and b in the second.
+define ideal_sum[R: CommRing](contains_i: R -> Bool,
+                              contains_j: R -> Bool,
+                              x: R) -> Bool {
+    exists(a: R, b: R) {
+        contains_i(a) and contains_j(b) and x = a + b
+    }
+}
+
+/// The sum of two ideals contains the additive identity.
+theorem ideal_sum_zero_constraint[R: CommRing](contains_i: R -> Bool,
+                                               contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_zero_constraint(ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        is_ideal_zero(contains_i)
+        is_ideal_zero(contains_j)
+        contains_i(R.0)
+        contains_j(R.0)
+        R.0 = R.0 + R.0
+        contains_i(R.0) and contains_j(R.0) and R.0 = R.0 + R.0
+        exists(a: R, b: R) {
+            contains_i(a) and contains_j(b) and R.0 = a + b
+        }
+        ideal_sum(contains_i, contains_j, R.0)
+    }
+}
+
+/// The sum of two ideals is closed under addition.
+theorem ideal_sum_add_constraint[R: CommRing](contains_i: R -> Bool,
+                                              contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_add_constraint(ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        forall(x: R, y: R) {
+            if ideal_sum(contains_i, contains_j, x) and ideal_sum(contains_i, contains_j, y) {
+                let (ax: R, bx: R) satisfy {
+                    contains_i(ax) and contains_j(bx) and x = ax + bx
+                }
+                let (ay: R, b2: R) satisfy {
+                    contains_i(ay) and contains_j(b2) and y = ay + b2
+                }
+                is_ideal_add(contains_i, ax, ay)
+                is_ideal_add(contains_j, bx, b2)
+                contains_i(ax + ay)
+                contains_j(bx + b2)
+                x + y = (ax + bx) + (ay + b2)
+                (ax + bx) + (ay + b2) = (ax + ay) + (bx + b2)
+                x + y = (ax + ay) + (bx + b2)
+                contains_i(ax + ay) and contains_j(bx + b2) and x + y = (ax + ay) + (bx + b2)
+                exists(p: R, q: R) {
+                    contains_i(p) and contains_j(q) and x + y = p + q
+                }
+                ideal_sum(contains_i, contains_j, x + y)
+            }
+        }
+    }
+}
+
+/// The sum of two ideals absorbs ring multiplication.
+theorem ideal_sum_absorb_constraint[R: CommRing](contains_i: R -> Bool,
+                                                 contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies ideal_absorb_constraint(ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        forall(r: R, x: R) {
+            if ideal_sum(contains_i, contains_j, x) {
+                let (a: R, b: R) satisfy {
+                    contains_i(a) and contains_j(b) and x = a + b
+                }
+                is_ideal_absorb(contains_i, r, a)
+                is_ideal_absorb(contains_j, r, b)
+                contains_i(r * a)
+                contains_j(r * b)
+                r * x = r * (a + b)
+                r * (a + b) = r * a + r * b
+                r * x = r * a + r * b
+                contains_i(r * a) and contains_j(r * b) and r * x = r * a + r * b
+                exists(c: R, d: R) {
+                    contains_i(c) and contains_j(d) and r * x = c + d
+                }
+                ideal_sum(contains_i, contains_j, r * x)
+            }
+        }
+    }
+}
+
+/// The sum of two ideals is an ideal.
+theorem ideal_sum_is_ideal[R: CommRing](contains_i: R -> Bool,
+                                        contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j)
+        implies is_ideal(ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) {
+        ideal_sum_zero_constraint(contains_i, contains_j)
+        ideal_sum_add_constraint(contains_i, contains_j)
+        ideal_sum_absorb_constraint(contains_i, contains_j)
+        ideal_zero_constraint(ideal_sum[R](contains_i, contains_j)) and ideal_add_constraint(ideal_sum[R](contains_i, contains_j)) and ideal_absorb_constraint(ideal_sum[R](contains_i, contains_j))
+        is_ideal_unfold(ideal_sum[R](contains_i, contains_j))
+        is_ideal(ideal_sum[R](contains_i, contains_j))
+    }
+}
+
+/// The first ideal is contained in the sum of two ideals.
+theorem ideal_sum_subset_left[R: CommRing](contains_i: R -> Bool,
+                                           contains_j: R -> Bool) {
+    is_ideal(contains_j) implies ideal_subset(contains_i, ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_j) {
+        is_ideal_zero(contains_j)
+        forall(x: R) {
+            if contains_i(x) {
+                x = x + R.0
+                contains_i(x) and contains_j(R.0) and x = x + R.0
+                exists(a: R, b: R) {
+                    contains_i(a) and contains_j(b) and x = a + b
+                }
+                ideal_sum(contains_i, contains_j, x)
+            }
+        }
+    }
+}
+
+/// The second ideal is contained in the sum of two ideals.
+theorem ideal_sum_subset_right[R: CommRing](contains_i: R -> Bool,
+                                            contains_j: R -> Bool) {
+    is_ideal(contains_i) implies ideal_subset(contains_j, ideal_sum[R](contains_i, contains_j))
+} by {
+    if is_ideal(contains_i) {
+        is_ideal_zero(contains_i)
+        forall(x: R) {
+            if contains_j(x) {
+                x = R.0 + x
+                contains_i(R.0) and contains_j(x) and x = R.0 + x
+                exists(a: R, b: R) {
+                    contains_i(a) and contains_j(b) and x = a + b
+                }
+                ideal_sum(contains_i, contains_j, x)
+            }
+        }
+    }
+}
+
+/// Any ideal containing both subsets contains their sum.
+theorem ideal_sum_lub[R: CommRing](contains_i: R -> Bool,
+                                   contains_j: R -> Bool,
+                                   contains_k: R -> Bool) {
+    is_ideal(contains_k) and ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k)
+        implies ideal_subset(ideal_sum[R](contains_i, contains_j), contains_k)
+} by {
+    if is_ideal(contains_k) and ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k) {
+        forall(x: R) {
+            if ideal_sum(contains_i, contains_j, x) {
+                let (a: R, b: R) satisfy {
+                    contains_i(a) and contains_j(b) and x = a + b
+                }
+                contains_k(a)
+                contains_k(b)
+                is_ideal_add(contains_k, a, b)
+                contains_k(a + b)
+                contains_k(x)
+            }
+        }
+    }
+}
+
+/// The sum is commutative.
+theorem ideal_sum_comm[R: CommRing](contains_i: R -> Bool,
+                                    contains_j: R -> Bool) {
+    ideal_sum[R](contains_i, contains_j) = ideal_sum[R](contains_j, contains_i)
+} by {
+    forall(x: R) {
+        if ideal_sum(contains_i, contains_j, x) {
+            let (a: R, b: R) satisfy {
+                contains_i(a) and contains_j(b) and x = a + b
+            }
+            x = b + a
+            contains_j(b) and contains_i(a) and x = b + a
+            exists(c: R, d: R) {
+                contains_j(c) and contains_i(d) and x = c + d
+            }
+            ideal_sum(contains_j, contains_i, x)
+        }
+        if ideal_sum(contains_j, contains_i, x) {
+            let (a: R, b: R) satisfy {
+                contains_j(a) and contains_i(b) and x = a + b
+            }
+            x = b + a
+            contains_i(b) and contains_j(a) and x = b + a
+            exists(c: R, d: R) {
+                contains_i(c) and contains_j(d) and x = c + d
+            }
+            ideal_sum(contains_i, contains_j, x)
+        }
+        ideal_sum[R](contains_i, contains_j)(x) = ideal_sum[R](contains_j, contains_i)(x)
     }
 }
