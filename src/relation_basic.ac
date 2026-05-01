@@ -1308,6 +1308,100 @@ theorem relation_symmetric_closure_subset_of_symmetric[T](r: (T, T) -> Bool, s: 
     }
 }
 
+/// Reflexive closure is monotone in its argument.
+theorem relation_reflexive_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies
+        relation_subset(relation_reflexive_closure(r), relation_reflexive_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_reflexive_closure(r, x, y) {
+                relation_reflexive_closure(r, x, y) = (eq_relation[T](x, y) or r(x, y))
+                if eq_relation[T](x, y) {
+                    relation_reflexive_closure(s, x, y)
+                } else {
+                    relation_subset_step(r, s, x, y)
+                    s(x, y)
+                    relation_reflexive_closure(s, x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Reflexive closure of a reflexive relation equals itself.
+theorem relation_reflexive_closure_eq_self_of_reflexive[T](r: (T, T) -> Bool) {
+    is_reflexive(r) implies relation_reflexive_closure(r) = r
+} by {
+    if is_reflexive(r) {
+        relation_reflexive_closure_subset_of_reflexive(r, r)
+        relation_subset_refl(r)
+        relation_subset(r, r)
+        relation_subset(relation_reflexive_closure(r), r)
+        relation_subset_reflexive_closure(r)
+        relation_subset(r, relation_reflexive_closure(r))
+        relation_eq_iff_subset_both(relation_reflexive_closure(r), r)
+        relation_reflexive_closure(r) = r
+    }
+}
+
+/// Reflexive closure is idempotent.
+theorem relation_reflexive_closure_idempotent[T](r: (T, T) -> Bool) {
+    relation_reflexive_closure(relation_reflexive_closure(r)) = relation_reflexive_closure(r)
+} by {
+    relation_reflexive_closure_is_reflexive(r)
+    relation_reflexive_closure_eq_self_of_reflexive(relation_reflexive_closure(r))
+}
+
+/// Symmetric closure is monotone in its argument.
+theorem relation_symmetric_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies
+        relation_subset(relation_symmetric_closure(r), relation_symmetric_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_symmetric_closure(r, x, y) {
+                relation_symmetric_closure(r, x, y) = (r(x, y) or relation_converse(r, x, y))
+                if r(x, y) {
+                    relation_subset_step(r, s, x, y)
+                    s(x, y)
+                    relation_symmetric_closure(s, x, y)
+                } else {
+                    r(y, x)
+                    relation_subset_step(r, s, y, x)
+                    s(y, x)
+                    relation_converse(s, x, y)
+                    relation_symmetric_closure(s, x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Symmetric closure of a symmetric relation equals itself.
+theorem relation_symmetric_closure_eq_self_of_symmetric[T](r: (T, T) -> Bool) {
+    is_symmetric(r) implies relation_symmetric_closure(r) = r
+} by {
+    if is_symmetric(r) {
+        relation_symmetric_closure_subset_of_symmetric(r, r)
+        relation_subset_refl(r)
+        relation_subset(r, r)
+        relation_subset(relation_symmetric_closure(r), r)
+        relation_subset_symmetric_closure(r)
+        relation_subset(r, relation_symmetric_closure(r))
+        relation_eq_iff_subset_both(relation_symmetric_closure(r), r)
+        relation_symmetric_closure(r) = r
+    }
+}
+
+/// Symmetric closure is idempotent.
+theorem relation_symmetric_closure_idempotent[T](r: (T, T) -> Bool) {
+    relation_symmetric_closure(relation_symmetric_closure(r)) = relation_symmetric_closure(r)
+} by {
+    relation_symmetric_closure_is_symmetric(r)
+    relation_symmetric_closure_eq_self_of_symmetric(relation_symmetric_closure(r))
+}
+
 /// An equivalence relation is symmetric.
 theorem equivalence_is_symmetric[T](f: (T, T) -> Bool) {
     is_equivalence(f) implies is_symmetric(f)

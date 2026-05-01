@@ -5,21 +5,30 @@
 {"goal":"clamp_at","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"closed_interval_intro","proof":[]}
+{"goal":"closed_interval(a, b, x)","proof":[]}
+{"goal":"closed_interval_of_le_of_le","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"closed_interval_left","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"le_of_closed_interval_left","proof":["not closed_interval(a, b, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"closed_interval_right","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"le_of_closed_interval_right","proof":["not closed_interval(a, b, x)"]}
 {"goal":"a <= a.max(x)","proof":[]}
 {"goal":"a <= a.max(x).min(b)","proof":[]}
 {"goal":"a <= clamp(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"lte_clamp_of_lte_endpoints","proof":[]}
+{"goal":"a <= clamp(a, b, x)","proof":[]}
+{"goal":"le_clamp_of_le_endpoints","proof":["not a <= b"]}
 {"goal":"clamp(a, b, x) = a.max(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"a.max(x) <= b","proof":[]}
 {"goal":"clamp(a, b, x) <= b","proof":[]}
 {"goal":"clamp(a, b, x) = b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) = x1 or x0 < x1 }[L](a.max(x), b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[L](a.max(x), b)"]}
 {"goal":"clamp(a, b, x) <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](clamp(a, b, x), b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[L](clamp(a, b, x), b)"]}
 {"goal":"clamp_lte_right","proof":[]}
-{"goal":"a <= clamp(a, b, x)","proof":[]}
+{"goal":"clamp_le_right","proof":[]}
+{"goal":"a <= clamp(a, b, x)","proof":["not a <= b"]}
 {"goal":"clamp(a, b, x) <= b","proof":[]}
 {"goal":"closed_interval(a, b, clamp(a, b, x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[L](a, clamp(a, b, x), b)"]}
 {"goal":"clamp_in_closed_interval","proof":[]}
@@ -54,17 +63,25 @@
 {"goal":"a.max(x).min(b) <= a.max(y).min(b)","proof":[]}
 {"goal":"clamp(a, b, x) <= clamp(a, b, y)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, y, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"clamp_lte_clamp","proof":[]}
-{"goal":"a.max(x) <= b.max(x)","proof":["not a <= b"]}
-{"goal":"a.max(x).min(c) <= b.max(x).min(c)","proof":["not a.max(x) <= b.max(x)"]}
-{"goal":"clamp(a, c, x) <= clamp(b, c, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](b, x, c)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, c)","a.max(x) <= b.max(x)","a.max(x).min(c) <= b.max(x).min(c)","clamp(a, c, x) <= b.max(x).min(c)","not clamp(a, c, x) <= b.max(x).min(c)"]}
-{"goal":"clamp_lte_clamp_left","proof":["not a <= b"]}
-{"goal":"a.max(x).min(b) <= a.max(x).min(c)","proof":["not b <= c"]}
-{"goal":"clamp(a, b, x) <= clamp(a, c, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, c)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)","a.max(x).min(b) <= a.max(x).min(c)","clamp(a, b, x) <= a.max(x).min(c)","not clamp(a, b, x) <= a.max(x).min(c)"]}
-{"goal":"clamp_lte_clamp_right","proof":["not b <= c"]}
-{"goal":"a1.max(x) <= a2.max(y)","proof":["not x <= y or not a1 <= a2","x <= y","not a1 <= a2","a1 <= a2 and b1 <= b2"]}
-{"goal":"a1.max(x).min(b1) <= a2.max(y).min(b2)","proof":["not a1.max(x) <= a2.max(y) or not b1 <= b2","not b1 <= b2","a1 <= a2 and b1 <= b2"]}
-{"goal":"clamp(a1, b1, x) <= clamp(a2, b2, y)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a2, y, b2)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a1, x, b1)","clamp(a1, b1, x) <= a2.max(y).min(b2)","not clamp(a1, b1, x) <= a2.max(y).min(b2)"]}
-{"goal":"clamp_lte_clamp_of_lte","proof":["not x <= y or not b1 <= b2 or not a1 <= a2","x <= y","not b1 <= b2 or not a1 <= a2","a1 <= a2 and b1 <= b2","not a1 <= a2"]}
+{"goal":"clamp(a, b, x) <= clamp(a, b, y)","proof":["not x <= y"]}
+{"goal":"clamp_le_clamp","proof":["not x <= y"]}
+{"goal":"a.max(x) <= b.max(x)","proof":[]}
+{"goal":"a.max(x).min(c) <= b.max(x).min(c)","proof":[]}
+{"goal":"clamp(a, c, x) <= clamp(b, c, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](b, x, c)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, c)"]}
+{"goal":"clamp_lte_clamp_left","proof":[]}
+{"goal":"clamp(a, c, x) <= clamp(b, c, x)","proof":["not a <= b"]}
+{"goal":"clamp_le_clamp_left","proof":["not a <= b"]}
+{"goal":"a.max(x).min(b) <= a.max(x).min(c)","proof":[]}
+{"goal":"clamp(a, b, x) <= clamp(a, c, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, c)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"clamp_lte_clamp_right","proof":[]}
+{"goal":"clamp(a, b, x) <= clamp(a, c, x)","proof":["not b <= c"]}
+{"goal":"clamp_le_clamp_right","proof":["not b <= c"]}
+{"goal":"a1.max(x) <= a2.max(y)","proof":[]}
+{"goal":"a1.max(x).min(b1) <= a2.max(y).min(b2)","proof":[]}
+{"goal":"clamp(a1, b1, x) <= clamp(a2, b2, y)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a2, y, b2)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x0.max(x1).min(x2) = clamp[T0](x0, x2, x1) }[L](a1, x, b1)"]}
+{"goal":"clamp_lte_clamp_of_lte","proof":[]}
+{"goal":"clamp(a1, b1, x) <= clamp(a2, b2, y)","proof":["not x <= y or not b1 <= b2 or not a1 <= a2","x <= y","not b1 <= b2 or not a1 <= a2","a1 <= a2 and b1 <= b2","not a1 <= a2"]}
+{"goal":"clamp_le_clamp_of_le","proof":["not x <= y or not b1 <= b2 or not a1 <= a2","x <= y","not b1 <= b2 or not a1 <= a2","a1 <= a2 and b1 <= b2","not a1 <= a2"]}
 {"goal":"clamp(a, b, x) = x","proof":[]}
 {"goal":"closed_interval(a, b, clamp(a, b, x))","proof":[]}
 {"goal":"closed_interval(a, b, x)","proof":[]}
@@ -72,18 +89,24 @@
 {"goal":"closed_interval_iff_clamp_eq_self","proof":[]}
 {"goal":"open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_intro","proof":[]}
+{"goal":"open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"open_interval_of_lt_of_lt","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_left","proof":[]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_right","proof":[]}
 {"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"left_open_interval_intro","proof":[]}
+{"goal":"left_open_interval(a, b, x)","proof":[]}
+{"goal":"left_open_interval_of_lt_of_le","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"left_open_interval_left","proof":[]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a, b, x)"]}
 {"goal":"left_open_interval_right","proof":[]}
 {"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"right_open_interval_intro","proof":[]}
+{"goal":"right_open_interval(a, b, x)","proof":[]}
+{"goal":"right_open_interval_of_le_of_lt","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, b, x)"]}
 {"goal":"right_open_interval_left","proof":[]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
@@ -92,17 +115,17 @@
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, x)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)"]}
-{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_subset_closed_interval","proof":[]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a, b, x)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, x)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a, b, x)"]}
-{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"left_open_interval_subset_closed_interval","proof":[]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, b, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)"]}
-{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"right_open_interval_subset_closed_interval","proof":[]}
 {"goal":"a <= x","proof":[]}
 {"goal":"x <= b","proof":[]}
@@ -156,12 +179,12 @@
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a, b, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)"]}
-{"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_subset_left_open_interval","proof":[]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a, b, x)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, x)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
-{"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
+{"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_subset_right_open_interval","proof":[]}
 {"goal":"closed_interval_self","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, a, x)"]}
