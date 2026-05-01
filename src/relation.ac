@@ -1389,3 +1389,77 @@ theorem relation_equivalence_closure_converse[T](r: (T, T) -> Bool) {
 
     relation_eq_iff_subset_both(relation_equivalence_closure(relation_converse(r)), relation_equivalence_closure(r))
 }
+
+/// One step then any number of steps lies in the transitive closure.
+theorem relation_compose_subset_trans_closure_left[T](r: (T, T) -> Bool) {
+    relation_subset(
+        relation_compose(r, relation_refl_trans_closure(r)),
+        relation_trans_closure(r)
+    )
+} by {
+    forall(x: T, z: T) {
+        if relation_compose(r, relation_refl_trans_closure(r), x, z) {
+            relation_compose_has_witness(r, relation_refl_trans_closure(r), x, z)
+            let y: T satisfy {
+                r(x, y) and relation_refl_trans_closure(r, y, z)
+            }
+            let n: Nat satisfy {
+                relation_power(r, n, y, z)
+            }
+            relation_compose_intro(r, relation_power(r, n), x, y, z)
+            relation_compose(r, relation_power(r, n), x, z)
+            relation_power_suc_left(r, n)
+            relation_power(r, n.suc, x, z)
+            relation_power_positive_in_trans_closure(r, n, x, z)
+            relation_trans_closure(r, x, z)
+        }
+    }
+}
+
+/// Any number of steps then one step lies in the transitive closure.
+theorem relation_compose_subset_trans_closure_right[T](r: (T, T) -> Bool) {
+    relation_subset(
+        relation_compose(relation_refl_trans_closure(r), r),
+        relation_trans_closure(r)
+    )
+} by {
+    forall(x: T, z: T) {
+        if relation_compose(relation_refl_trans_closure(r), r, x, z) {
+            relation_compose_has_witness(relation_refl_trans_closure(r), r, x, z)
+            let y: T satisfy {
+                relation_refl_trans_closure(r, x, y) and r(y, z)
+            }
+            let n: Nat satisfy {
+                relation_power(r, n, x, y)
+            }
+            relation_compose_intro(relation_power(r, n), r, x, y, z)
+            relation_compose(relation_power(r, n), r, x, z)
+            relation_power_suc(r, n)
+            relation_power(r, n.suc, x, z)
+            relation_power_positive_in_trans_closure(r, n, x, z)
+            relation_trans_closure(r, x, z)
+        }
+    }
+}
+
+/// Composition of the reflexive-transitive closure with itself equals the reflexive-transitive closure.
+theorem relation_refl_trans_closure_compose_eq[T](r: (T, T) -> Bool) {
+    relation_compose(relation_refl_trans_closure(r), relation_refl_trans_closure(r)) =
+        relation_refl_trans_closure(r)
+} by {
+    let u = relation_compose(relation_refl_trans_closure(r), relation_refl_trans_closure(r))
+    let v = relation_refl_trans_closure(r)
+    relation_refl_trans_closure_compose_subset(r)
+    relation_subset(u, v)
+    relation_refl_trans_closure_is_reflexive(r)
+    forall(x: T, y: T) {
+        if v(x, y) {
+            reflexive_self(v, y)
+            v(y, y)
+            relation_compose_intro(v, v, x, y, y)
+            u(x, y)
+        }
+    }
+    relation_subset(v, u)
+    relation_eq_iff_subset_both(u, v)
+}
