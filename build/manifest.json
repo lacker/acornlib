@@ -2,6 +2,8 @@
   "version": 20,
   "modules": {
     "add": "63496f5fa02f250a2bf9857cac1ee67281fac403f2bd3e2efea4a2df17919f48",
+    "add_comm_group_hom": "b6f31e0d2c0cbbbed4b00a0cb20970c29f9a1a8a24ef3bb0cf19c58d7e8a6ad7",
+    "add_comm_monoid_hom": "22db7c80d0a7bc31e22756a2e59347c978c904f88af9b2a42907006f934180c4",
     "add_comm_group": "713784c949aae900280547549a9b2cbb07f7d1360b9ba5733ab9354cbe47b125",
     "add_comm_monoid": "f83108155f4d8a3ec7f502587ca811010459fa81989f81a22c11b60f209aea3c",
     "add_comm_semigroup": "1833ad440895bca78eb716b65b76c4ff547241ff2077ff8f4c516ad08c850c85",
