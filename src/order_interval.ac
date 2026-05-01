@@ -1,6 +1,7 @@
 /// Interval predicates for linear orders.
 
-from order import LinearOrder, lte_trans, lt_trans, lt_of_lte_of_lt, lt_of_lt_of_lte
+from order import LinearOrder, lte_trans, lte_antisymm, lt_trans, lt_imp_lte, not_lt_ref,
+    gt_imp_not_lte, lt_of_lte_of_lt, lt_of_lt_of_lte
 
 /// True if an element lies in the closed interval with endpoints `a` and `b`.
 define closed_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
@@ -187,6 +188,134 @@ theorem right_open_interval_subset_closed_interval[L: LinearOrder](a: L, b: L, x
     }
 }
 
+/// A closed interval has no members when the left endpoint is strictly above the right endpoint.
+theorem not_closed_interval_of_gt_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    a > b implies not closed_interval(a, b, x)
+} by {
+    if a > b {
+        if closed_interval(a, b, x) {
+            closed_interval_left(a, b, x)
+            a <= x
+            closed_interval_right(a, b, x)
+            x <= b
+            lte_trans(a, x, b)
+            a <= b
+            gt_imp_not_lte(a, b)
+            not (a <= b)
+            false
+        }
+    }
+}
+
+/// An open interval has no members when the endpoints are not strictly ordered.
+theorem not_open_interval_of_not_lt_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    not (a < b) implies not open_interval(a, b, x)
+} by {
+    if not (a < b) {
+        if open_interval(a, b, x) {
+            open_interval_left(a, b, x)
+            a < x
+            open_interval_right(a, b, x)
+            x < b
+            lt_trans(a, x, b)
+            a < b
+            false
+        }
+    }
+}
+
+/// A left-open interval has no members when the endpoints are not strictly ordered.
+theorem not_left_open_interval_of_not_lt_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    not (a < b) implies not left_open_interval(a, b, x)
+} by {
+    if not (a < b) {
+        if left_open_interval(a, b, x) {
+            left_open_interval_left(a, b, x)
+            a < x
+            left_open_interval_right(a, b, x)
+            x <= b
+            lt_of_lt_of_lte(a, x, b)
+            a < b
+            false
+        }
+    }
+}
+
+/// A right-open interval has no members when the endpoints are not strictly ordered.
+theorem not_right_open_interval_of_not_lt_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    not (a < b) implies not right_open_interval(a, b, x)
+} by {
+    if not (a < b) {
+        if right_open_interval(a, b, x) {
+            right_open_interval_left(a, b, x)
+            a <= x
+            right_open_interval_right(a, b, x)
+            x < b
+            lt_of_lte_of_lt(a, x, b)
+            a < b
+            false
+        }
+    }
+}
+
+/// A closed interval with equal endpoints contains only that endpoint.
+theorem closed_interval_eq_endpoint_of_endpoints_eq[L: LinearOrder](a: L, b: L, x: L) {
+    a = b and closed_interval(a, b, x) implies x = a
+} by {
+    if a = b and closed_interval(a, b, x) {
+        closed_interval_left(a, b, x)
+        a <= x
+        closed_interval_right(a, b, x)
+        x <= b
+        x <= a
+        lte_antisymm(a, x)
+        a = x
+        x = a
+    }
+}
+
+/// Ordered endpoints give a member of the closed interval.
+theorem closed_interval_nonempty_of_lte[L: LinearOrder](a: L, b: L) {
+    a <= b implies exists(x: L) {
+        closed_interval(a, b, x)
+    }
+} by {
+    if a <= b {
+        closed_interval_intro(a, b, a)
+        exists(x: L) {
+            x = a and closed_interval(a, b, x)
+        }
+    }
+}
+
+/// Strictly ordered endpoints give a member of the left-open interval.
+theorem left_open_interval_nonempty_of_lt[L: LinearOrder](a: L, b: L) {
+    a < b implies exists(x: L) {
+        left_open_interval(a, b, x)
+    }
+} by {
+    if a < b {
+        left_open_interval_intro(a, b, b)
+        exists(x: L) {
+            x = b and left_open_interval(a, b, x)
+        }
+    }
+}
+
+/// Strictly ordered endpoints give a member of the right-open interval.
+theorem right_open_interval_nonempty_of_lt[L: LinearOrder](a: L, b: L) {
+    a < b implies exists(x: L) {
+        right_open_interval(a, b, x)
+    }
+} by {
+    if a < b {
+        right_open_interval_intro(a, b, a)
+        exists(x: L) {
+            x = a and right_open_interval(a, b, x)
+        }
+    }
+}
+
 /// Membership in a closed interval forces the lower endpoint below the upper endpoint.
 theorem closed_interval_endpoints_lte[L: LinearOrder](a: L, b: L, x: L) {
     closed_interval(a, b, x) implies a <= b
@@ -266,6 +395,19 @@ theorem closed_interval_self[L: LinearOrder](a: L) {
     closed_interval_intro(a, a, a)
 }
 
+/// A point belongs to the degenerate closed interval exactly at its endpoint.
+theorem closed_interval_self_at[L: LinearOrder](a: L, x: L) {
+    closed_interval(a, a, x) implies x = a
+} by {
+    if closed_interval(a, a, x) {
+        a <= x
+        x <= a
+        lte_antisymm(a, x)
+        a = x
+        x = a
+    }
+}
+
 /// The left endpoint belongs to a closed interval exactly when the endpoints are ordered.
 theorem closed_interval_left_endpoint[L: LinearOrder](a: L, b: L) {
     a <= b implies closed_interval(a, b, a)
@@ -275,12 +417,90 @@ theorem closed_interval_left_endpoint[L: LinearOrder](a: L, b: L) {
     }
 }
 
+/// The left endpoint belongs to a closed interval exactly when the endpoints are ordered.
+theorem closed_interval_left_endpoint_iff[L: LinearOrder](a: L, b: L) {
+    closed_interval(a, b, a) = (a <= b)
+} by {
+    if closed_interval(a, b, a) {
+        closed_interval_right(a, b, a)
+        a <= b
+    }
+    if a <= b {
+        closed_interval_left_endpoint(a, b)
+        closed_interval(a, b, a)
+    }
+    closed_interval(a, b, a) = (a <= b)
+}
+
 /// The right endpoint belongs to a closed interval exactly when the endpoints are ordered.
 theorem closed_interval_right_endpoint[L: LinearOrder](a: L, b: L) {
     a <= b implies closed_interval(a, b, b)
 } by {
     if a <= b {
         closed_interval_intro(a, b, b)
+    }
+}
+
+/// The right endpoint belongs to a closed interval exactly when the endpoints are ordered.
+theorem closed_interval_right_endpoint_iff[L: LinearOrder](a: L, b: L) {
+    closed_interval(a, b, b) = (a <= b)
+} by {
+    if closed_interval(a, b, b) {
+        closed_interval_left(a, b, b)
+        a <= b
+    }
+    if a <= b {
+        closed_interval_right_endpoint(a, b)
+        closed_interval(a, b, b)
+    }
+    closed_interval(a, b, b) = (a <= b)
+}
+
+/// The left endpoint does not belong to the corresponding open interval.
+theorem not_open_interval_left_endpoint[L: LinearOrder](a: L, b: L) {
+    not open_interval(a, b, a)
+} by {
+    if open_interval(a, b, a) {
+        open_interval_left(a, b, a)
+        a < a
+        not_lt_ref(a)
+        false
+    }
+}
+
+/// The right endpoint does not belong to the corresponding open interval.
+theorem not_open_interval_right_endpoint[L: LinearOrder](a: L, b: L) {
+    not open_interval(a, b, b)
+} by {
+    if open_interval(a, b, b) {
+        open_interval_right(a, b, b)
+        b < b
+        not_lt_ref(b)
+        false
+    }
+}
+
+/// The left endpoint does not belong to the corresponding left-open interval.
+theorem not_left_open_interval_left_endpoint[L: LinearOrder](a: L, b: L) {
+    not left_open_interval(a, b, a)
+} by {
+    if left_open_interval(a, b, a) {
+        left_open_interval_left(a, b, a)
+        a < a
+        not_lt_ref(a)
+        false
+    }
+}
+
+/// The right endpoint does not belong to the corresponding right-open interval.
+theorem not_right_open_interval_right_endpoint[L: LinearOrder](a: L, b: L) {
+    not right_open_interval(a, b, b)
+} by {
+    if right_open_interval(a, b, b) {
+        right_open_interval_right(a, b, b)
+        b < b
+        not_lt_ref(b)
+        false
     }
 }
 
@@ -293,6 +513,21 @@ theorem right_open_interval_left_endpoint[L: LinearOrder](a: L, b: L) {
     }
 }
 
+/// The left endpoint belongs to a right-open interval exactly when it is strictly below the right endpoint.
+theorem right_open_interval_left_endpoint_iff[L: LinearOrder](a: L, b: L) {
+    right_open_interval(a, b, a) = (a < b)
+} by {
+    if right_open_interval(a, b, a) {
+        right_open_interval_right(a, b, a)
+        a < b
+    }
+    if a < b {
+        right_open_interval_left_endpoint(a, b)
+        right_open_interval(a, b, a)
+    }
+    right_open_interval(a, b, a) = (a < b)
+}
+
 /// The right endpoint belongs to a left-open interval when it is strictly above the left endpoint.
 theorem left_open_interval_right_endpoint[L: LinearOrder](a: L, b: L) {
     a < b implies left_open_interval(a, b, b)
@@ -300,6 +535,21 @@ theorem left_open_interval_right_endpoint[L: LinearOrder](a: L, b: L) {
     if a < b {
         left_open_interval_intro(a, b, b)
     }
+}
+
+/// The right endpoint belongs to a left-open interval exactly when it is strictly above the left endpoint.
+theorem left_open_interval_right_endpoint_iff[L: LinearOrder](a: L, b: L) {
+    left_open_interval(a, b, b) = (a < b)
+} by {
+    if left_open_interval(a, b, b) {
+        left_open_interval_left(a, b, b)
+        a < b
+    }
+    if a < b {
+        left_open_interval_right_endpoint(a, b)
+        left_open_interval(a, b, b)
+    }
+    left_open_interval(a, b, b) = (a < b)
 }
 
 /// Enlarging the endpoints preserves membership in a closed interval.
@@ -314,6 +564,16 @@ theorem closed_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
         lte_trans(x, b2, b1)
         x <= b1
         closed_interval(a1, b1, x)
+    }
+}
+
+/// A closed interval is contained in another closed interval when its endpoints are inside the larger bounds.
+theorem closed_interval_subset_closed_interval[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    a2 <= a1 and b1 <= b2 and closed_interval(a1, b1, x) implies closed_interval(a2, b2, x)
+} by {
+    if a2 <= a1 and b1 <= b2 and closed_interval(a1, b1, x) {
+        closed_interval_mono(a2, a1, b2, b1, x)
+        closed_interval(a2, b2, x)
     }
 }
 
@@ -332,6 +592,16 @@ theorem open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
     }
 }
 
+/// An open interval is contained in another open interval when its endpoints are inside the larger bounds.
+theorem open_interval_subset_open_interval[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    a2 <= a1 and b1 <= b2 and open_interval(a1, b1, x) implies open_interval(a2, b2, x)
+} by {
+    if a2 <= a1 and b1 <= b2 and open_interval(a1, b1, x) {
+        open_interval_mono(a2, a1, b2, b1, x)
+        open_interval(a2, b2, x)
+    }
+}
+
 /// Enlarging the endpoints preserves membership in a left-open interval.
 theorem left_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
     a1 <= a2 and b2 <= b1 and left_open_interval(a2, b2, x) implies left_open_interval(a1, b1, x)
@@ -347,6 +617,16 @@ theorem left_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L
     }
 }
 
+/// A left-open interval is contained in another left-open interval when its endpoints are inside the larger bounds.
+theorem left_open_interval_subset_left_open_interval[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    a2 <= a1 and b1 <= b2 and left_open_interval(a1, b1, x) implies left_open_interval(a2, b2, x)
+} by {
+    if a2 <= a1 and b1 <= b2 and left_open_interval(a1, b1, x) {
+        left_open_interval_mono(a2, a1, b2, b1, x)
+        left_open_interval(a2, b2, x)
+    }
+}
+
 /// Enlarging the endpoints preserves membership in a right-open interval.
 theorem right_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
     a1 <= a2 and b2 <= b1 and right_open_interval(a2, b2, x) implies right_open_interval(a1, b1, x)
@@ -359,6 +639,16 @@ theorem right_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: 
         lt_of_lt_of_lte(x, b2, b1)
         x < b1
         right_open_interval(a1, b1, x)
+    }
+}
+
+/// A right-open interval is contained in another right-open interval when its endpoints are inside the larger bounds.
+theorem right_open_interval_subset_right_open_interval[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    a2 <= a1 and b1 <= b2 and right_open_interval(a1, b1, x) implies right_open_interval(a2, b2, x)
+} by {
+    if a2 <= a1 and b1 <= b2 and right_open_interval(a1, b1, x) {
+        right_open_interval_mono(a2, a1, b2, b1, x)
+        right_open_interval(a2, b2, x)
     }
 }
 
@@ -503,6 +793,278 @@ theorem bounded_by_interval_iff_bounds[L: LinearOrder](p: L -> Bool, a: L, b: L)
         is_bounded_by_interval(p, a, b)
     }
     is_bounded_by_interval(p, a, b) = (is_lower_bound(p, a) and is_upper_bound(p, b))
+}
+
+/// The left endpoint is a lower bound for the corresponding closed interval.
+theorem closed_interval_lower_bound[L: LinearOrder](a: L, b: L) {
+    is_lower_bound(closed_interval(a, b), a)
+} by {
+    forall(x: L) {
+        if closed_interval(a, b, x) {
+            closed_interval_left(a, b, x)
+            a <= x
+        }
+    }
+}
+
+/// The right endpoint is an upper bound for the corresponding closed interval.
+theorem closed_interval_upper_bound[L: LinearOrder](a: L, b: L) {
+    is_upper_bound(closed_interval(a, b), b)
+} by {
+    forall(x: L) {
+        if closed_interval(a, b, x) {
+            closed_interval_right(a, b, x)
+            x <= b
+        }
+    }
+}
+
+/// A closed interval is bounded by its endpoints.
+theorem closed_interval_bounded_by_self[L: LinearOrder](a: L, b: L) {
+    is_bounded_by_interval(closed_interval(a, b), a, b)
+} by {
+    closed_interval_lower_bound(a, b)
+    closed_interval_upper_bound(a, b)
+    bounds_imp_bounded_by_interval(closed_interval(a, b), a, b)
+}
+
+/// The left endpoint is a lower bound for the corresponding open interval.
+theorem open_interval_lower_bound[L: LinearOrder](a: L, b: L) {
+    is_lower_bound(open_interval(a, b), a)
+} by {
+    forall(x: L) {
+        if open_interval(a, b, x) {
+            open_interval_left(a, b, x)
+            a < x
+            lt_imp_lte(a, x)
+            a <= x
+        }
+    }
+}
+
+/// The right endpoint is an upper bound for the corresponding open interval.
+theorem open_interval_upper_bound[L: LinearOrder](a: L, b: L) {
+    is_upper_bound(open_interval(a, b), b)
+} by {
+    forall(x: L) {
+        if open_interval(a, b, x) {
+            open_interval_right(a, b, x)
+            x < b
+            lt_imp_lte(x, b)
+            x <= b
+        }
+    }
+}
+
+/// An open interval is bounded by its endpoints.
+theorem open_interval_bounded_by_closed_interval[L: LinearOrder](a: L, b: L) {
+    is_bounded_by_interval(open_interval(a, b), a, b)
+} by {
+    open_interval_lower_bound(a, b)
+    open_interval_upper_bound(a, b)
+    bounds_imp_bounded_by_interval(open_interval(a, b), a, b)
+}
+
+/// The left endpoint is a lower bound for the corresponding left-open interval.
+theorem left_open_interval_lower_bound[L: LinearOrder](a: L, b: L) {
+    is_lower_bound(left_open_interval(a, b), a)
+} by {
+    forall(x: L) {
+        if left_open_interval(a, b, x) {
+            left_open_interval_left(a, b, x)
+            a < x
+            lt_imp_lte(a, x)
+            a <= x
+        }
+    }
+}
+
+/// The right endpoint is an upper bound for the corresponding left-open interval.
+theorem left_open_interval_upper_bound[L: LinearOrder](a: L, b: L) {
+    is_upper_bound(left_open_interval(a, b), b)
+} by {
+    forall(x: L) {
+        if left_open_interval(a, b, x) {
+            left_open_interval_right(a, b, x)
+            x <= b
+        }
+    }
+}
+
+/// A left-open interval is bounded by its endpoints.
+theorem left_open_interval_bounded_by_closed_interval[L: LinearOrder](a: L, b: L) {
+    is_bounded_by_interval(left_open_interval(a, b), a, b)
+} by {
+    left_open_interval_lower_bound(a, b)
+    left_open_interval_upper_bound(a, b)
+    bounds_imp_bounded_by_interval(left_open_interval(a, b), a, b)
+}
+
+/// The left endpoint is a lower bound for the corresponding right-open interval.
+theorem right_open_interval_lower_bound[L: LinearOrder](a: L, b: L) {
+    is_lower_bound(right_open_interval(a, b), a)
+} by {
+    forall(x: L) {
+        if right_open_interval(a, b, x) {
+            right_open_interval_left(a, b, x)
+            a <= x
+        }
+    }
+}
+
+/// The right endpoint is an upper bound for the corresponding right-open interval.
+theorem right_open_interval_upper_bound[L: LinearOrder](a: L, b: L) {
+    is_upper_bound(right_open_interval(a, b), b)
+} by {
+    forall(x: L) {
+        if right_open_interval(a, b, x) {
+            right_open_interval_right(a, b, x)
+            x < b
+            lt_imp_lte(x, b)
+            x <= b
+        }
+    }
+}
+
+/// A right-open interval is bounded by its endpoints.
+theorem right_open_interval_bounded_by_closed_interval[L: LinearOrder](a: L, b: L) {
+    is_bounded_by_interval(right_open_interval(a, b), a, b)
+} by {
+    right_open_interval_lower_bound(a, b)
+    right_open_interval_upper_bound(a, b)
+    bounds_imp_bounded_by_interval(right_open_interval(a, b), a, b)
+}
+
+/// A closed interval is bounded below.
+theorem closed_interval_bounded_below[L: LinearOrder](a: L, b: L) {
+    is_bounded_below(closed_interval(a, b))
+} by {
+    closed_interval_lower_bound(a, b)
+    exists(x: L) {
+        x = a and is_lower_bound(closed_interval(a, b), x)
+    }
+    is_bounded_below(closed_interval(a, b))
+}
+
+/// A closed interval is bounded above.
+theorem closed_interval_bounded_above[L: LinearOrder](a: L, b: L) {
+    is_bounded_above(closed_interval(a, b))
+} by {
+    closed_interval_upper_bound(a, b)
+    exists(x: L) {
+        x = b and is_upper_bound(closed_interval(a, b), x)
+    }
+    is_bounded_above(closed_interval(a, b))
+}
+
+/// A closed interval is bounded.
+theorem closed_interval_bounded[L: LinearOrder](a: L, b: L) {
+    is_bounded(closed_interval(a, b))
+} by {
+    closed_interval_bounded_by_self(a, b)
+    exists(x: L, y: L) {
+        x = a and y = b and is_bounded_by_interval(closed_interval(a, b), x, y)
+    }
+    is_bounded(closed_interval(a, b))
+}
+
+/// An open interval is bounded below.
+theorem open_interval_bounded_below[L: LinearOrder](a: L, b: L) {
+    is_bounded_below(open_interval(a, b))
+} by {
+    open_interval_lower_bound(a, b)
+    exists(x: L) {
+        x = a and is_lower_bound(open_interval(a, b), x)
+    }
+    is_bounded_below(open_interval(a, b))
+}
+
+/// An open interval is bounded above.
+theorem open_interval_bounded_above[L: LinearOrder](a: L, b: L) {
+    is_bounded_above(open_interval(a, b))
+} by {
+    open_interval_upper_bound(a, b)
+    exists(x: L) {
+        x = b and is_upper_bound(open_interval(a, b), x)
+    }
+    is_bounded_above(open_interval(a, b))
+}
+
+/// An open interval is bounded.
+theorem open_interval_bounded[L: LinearOrder](a: L, b: L) {
+    is_bounded(open_interval(a, b))
+} by {
+    open_interval_bounded_by_closed_interval(a, b)
+    exists(x: L, y: L) {
+        x = a and y = b and is_bounded_by_interval(open_interval(a, b), x, y)
+    }
+    is_bounded(open_interval(a, b))
+}
+
+/// A left-open interval is bounded below.
+theorem left_open_interval_bounded_below[L: LinearOrder](a: L, b: L) {
+    is_bounded_below(left_open_interval(a, b))
+} by {
+    left_open_interval_lower_bound(a, b)
+    exists(x: L) {
+        x = a and is_lower_bound(left_open_interval(a, b), x)
+    }
+    is_bounded_below(left_open_interval(a, b))
+}
+
+/// A left-open interval is bounded above.
+theorem left_open_interval_bounded_above[L: LinearOrder](a: L, b: L) {
+    is_bounded_above(left_open_interval(a, b))
+} by {
+    left_open_interval_upper_bound(a, b)
+    exists(x: L) {
+        x = b and is_upper_bound(left_open_interval(a, b), x)
+    }
+    is_bounded_above(left_open_interval(a, b))
+}
+
+/// A left-open interval is bounded.
+theorem left_open_interval_bounded[L: LinearOrder](a: L, b: L) {
+    is_bounded(left_open_interval(a, b))
+} by {
+    left_open_interval_bounded_by_closed_interval(a, b)
+    exists(x: L, y: L) {
+        x = a and y = b and is_bounded_by_interval(left_open_interval(a, b), x, y)
+    }
+    is_bounded(left_open_interval(a, b))
+}
+
+/// A right-open interval is bounded below.
+theorem right_open_interval_bounded_below[L: LinearOrder](a: L, b: L) {
+    is_bounded_below(right_open_interval(a, b))
+} by {
+    right_open_interval_lower_bound(a, b)
+    exists(x: L) {
+        x = a and is_lower_bound(right_open_interval(a, b), x)
+    }
+    is_bounded_below(right_open_interval(a, b))
+}
+
+/// A right-open interval is bounded above.
+theorem right_open_interval_bounded_above[L: LinearOrder](a: L, b: L) {
+    is_bounded_above(right_open_interval(a, b))
+} by {
+    right_open_interval_upper_bound(a, b)
+    exists(x: L) {
+        x = b and is_upper_bound(right_open_interval(a, b), x)
+    }
+    is_bounded_above(right_open_interval(a, b))
+}
+
+/// A right-open interval is bounded.
+theorem right_open_interval_bounded[L: LinearOrder](a: L, b: L) {
+    is_bounded(right_open_interval(a, b))
+} by {
+    right_open_interval_bounded_by_closed_interval(a, b)
+    exists(x: L, y: L) {
+        x = a and y = b and is_bounded_by_interval(right_open_interval(a, b), x, y)
+    }
+    is_bounded(right_open_interval(a, b))
 }
 
 /// A lower bound remains a lower bound after moving it downward.

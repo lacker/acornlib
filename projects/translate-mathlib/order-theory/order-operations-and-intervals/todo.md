@@ -13,3 +13,4 @@ Status:
 - `src/order_cases.ac` now includes `>=` and `>` oriented aliases for the existing `min`/`max` lower-bound and upper-bound characterizations.
 - `src/order.ac` now has central `min`/`max` commutativity aliases, associativity variants, right-commutativity, absorption variants, and two-sided plus one-sided monotonicity lemmas.
 - `src/order_interval.ac` now has endpoint consequences, endpoint membership, interval-subset, interval-bound monotonicity, and bounded-below / bounded-above projection lemmas.
+- `src/order_interval.ac` now has endpoint iff/nonmembership facts, interval emptiness and nonemptiness facts, same-shape interval subset aliases, and boundedness facts for closed, open, and half-open intervals.

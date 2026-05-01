@@ -42,6 +42,39 @@
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)"]}
 {"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"right_open_interval_subset_closed_interval","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"a <= b","proof":[]}
+{"goal":"not a <= b","proof":["not a > b"]}
+{"goal":"false","proof":[]}
+{"goal":"not_closed_interval_of_gt_endpoints","proof":["not a > b or false = true"]}
+{"goal":"a < x","proof":[]}
+{"goal":"x < b","proof":[]}
+{"goal":"a < b","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_open_interval_of_not_lt_endpoints","proof":["a < b or false = true"]}
+{"goal":"a < x","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"a < b","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_left_open_interval_of_not_lt_endpoints","proof":["a < b or false = true"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"x < b","proof":[]}
+{"goal":"a < b","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_right_open_interval_of_not_lt_endpoints","proof":["a < b or false = true"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"x <= a","proof":[]}
+{"goal":"a = x","proof":[]}
+{"goal":"x = a","proof":[]}
+{"goal":"closed_interval_eq_endpoint_of_endpoints_eq","proof":["not closed_interval(a, b, x) or b != a","b = a","closed_interval(a, b, x)","not closed_interval(a, b, x)"]}
+{"goal":"exists(k0: L) { k0 = a and closed_interval(a, b, k0) }","proof":["function[T0: lib(order).PartialOrder](x0: T0) { x0 <= x0 }[L](a)","not a <= a or closed_interval(a, b, a)","function(x0: L) { not (x0 = a and closed_interval(a, b, x0)) }(a)","function(x0: L) { not closed_interval(a, b, x0) or a != x0 }(a)","not closed_interval(a, b, a)"]}
+{"goal":"closed_interval_nonempty_of_lte","proof":["let w0: L satisfy { w0 = a and closed_interval(a, b, w0) }","function(x0: L) { not closed_interval(a, b, x0) }(w0)"]}
+{"goal":"exists(k0: L) { k0 = b and left_open_interval(a, b, k0) }","proof":["function[T0: lib(order).PartialOrder](x0: T0) { x0 <= x0 }[L](b)","not b <= b or left_open_interval(a, b, b)","function(x0: L) { not (x0 = b and left_open_interval(a, b, x0)) }(b)","function(x0: L) { not left_open_interval(a, b, x0) or b != x0 }(b)","not left_open_interval(a, b, b)"]}
+{"goal":"left_open_interval_nonempty_of_lt","proof":["let w0: L satisfy { w0 = b and left_open_interval(a, b, w0) }","function(x0: L) { not left_open_interval(a, b, x0) }(w0)"]}
+{"goal":"exists(k0: L) { k0 = a and right_open_interval(a, b, k0) }","proof":["function[T0: lib(order).PartialOrder](x0: T0) { x0 <= x0 }[L](a)","not a <= a or right_open_interval(a, b, a)","function(x0: L) { not (x0 = a and right_open_interval(a, b, x0)) }(a)","function(x0: L) { not right_open_interval(a, b, x0) or a != x0 }(a)","not right_open_interval(a, b, a)"]}
+{"goal":"right_open_interval_nonempty_of_lt","proof":["let w0: L satisfy { w0 = a and right_open_interval(a, b, w0) }","function(x0: L) { not right_open_interval(a, b, x0) }(w0)"]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, b, x)"]}
 {"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a, b, x)"]}
 {"goal":"a <= b","proof":[]}
@@ -56,47 +89,88 @@
 {"goal":"left_open_interval_endpoints_lt","proof":[]}
 {"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, b, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
-{"goal":"a < b","proof":[]}
+{"goal":"a < b","proof":["not x < b or not a <= x","not a <= x"]}
 {"goal":"right_open_interval_endpoints_lt","proof":[]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a, b, x)"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
-{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)"]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](x, b)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](x, b)","x.max(b) != b","x.max(b) = b"]}
 {"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_subset_left_open_interval","proof":[]}
 {"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a, b, x)"]}
-{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, x)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, x)"]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[L](a, x)","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[L](a, x)","a.max(x) != x","a.max(x) = x"]}
 {"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a, b, x)"]}
 {"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](a, x, b)"]}
 {"goal":"open_interval_subset_right_open_interval","proof":[]}
 {"goal":"closed_interval_self","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a, a, x)"]}
+{"goal":"x <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a, a, x)"]}
+{"goal":"a = x","proof":["not x <= a or not a <= x","not a <= x"]}
+{"goal":"x = a","proof":[]}
+{"goal":"closed_interval_self_at","proof":[]}
 {"goal":"closed_interval_left_endpoint","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
+{"goal":"a <= b","proof":[]}
+{"goal":"closed_interval(a, b, a)","proof":[]}
+{"goal":"closed_interval(a, b, a) = a <= b","proof":[]}
+{"goal":"closed_interval_left_endpoint_iff","proof":[]}
 {"goal":"closed_interval_right_endpoint","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, b)"]}
+{"goal":"a <= b","proof":["not closed_interval(a, b, b)"]}
+{"goal":"closed_interval(a, b, b)","proof":[]}
+{"goal":"closed_interval(a, b, b) = a <= b","proof":[]}
+{"goal":"closed_interval_right_endpoint_iff","proof":[]}
+{"goal":"a < a","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_open_interval_left_endpoint","proof":[]}
+{"goal":"b < b","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_open_interval_right_endpoint","proof":[]}
+{"goal":"a < a","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_left_open_interval_left_endpoint","proof":[]}
+{"goal":"b < b","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not_right_open_interval_right_endpoint","proof":[]}
 {"goal":"right_open_interval_left_endpoint","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
+{"goal":"a < b","proof":["not right_open_interval(a, b, a)"]}
+{"goal":"right_open_interval(a, b, a)","proof":[]}
+{"goal":"right_open_interval(a, b, a) = a < b","proof":[]}
+{"goal":"right_open_interval_left_endpoint_iff","proof":[]}
 {"goal":"left_open_interval_right_endpoint","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, b)"]}
+{"goal":"a < b","proof":["not left_open_interval(a, b, b)"]}
+{"goal":"left_open_interval(a, b, b)","proof":[]}
+{"goal":"left_open_interval(a, b, b) = a < b","proof":[]}
+{"goal":"left_open_interval_right_endpoint_iff","proof":[]}
 {"goal":"a2 <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a2, b2, x)"]}
 {"goal":"a1 <= x","proof":[]}
 {"goal":"x <= b2","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a2, b2, x)"]}
 {"goal":"x <= b1","proof":[]}
 {"goal":"closed_interval(a1, b1, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[L](a1, x, b1)"]}
 {"goal":"closed_interval_mono","proof":[]}
+{"goal":"closed_interval(a2, b2, x)","proof":[]}
+{"goal":"closed_interval_subset_closed_interval","proof":[]}
 {"goal":"a2 < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a2, b2, x)"]}
 {"goal":"a1 < x","proof":[]}
 {"goal":"x < b2","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a2, b2, x)"]}
 {"goal":"x < b1","proof":[]}
 {"goal":"open_interval(a1, b1, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or open_interval[T0](x0, x2, x1) }[L](a1, x, b1)"]}
 {"goal":"open_interval_mono","proof":[]}
+{"goal":"open_interval(a2, b2, x)","proof":[]}
+{"goal":"open_interval_subset_open_interval","proof":[]}
 {"goal":"a2 < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[L](a2, b2, x)"]}
 {"goal":"a1 < x","proof":[]}
 {"goal":"x <= b2","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[L](a2, b2, x)"]}
 {"goal":"x <= b1","proof":[]}
 {"goal":"left_open_interval(a1, b1, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 <= x2 or left_open_interval[T0](x0, x2, x1) }[L](a1, x, b1)"]}
 {"goal":"left_open_interval_mono","proof":[]}
+{"goal":"left_open_interval(a2, b2, x)","proof":[]}
+{"goal":"left_open_interval_subset_left_open_interval","proof":[]}
 {"goal":"a2 <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](a2, b2, x)"]}
 {"goal":"a1 <= x","proof":[]}
 {"goal":"x < b2","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[L](a2, b2, x)"]}
 {"goal":"x < b1","proof":[]}
 {"goal":"right_open_interval(a1, b1, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x2 <= x0 or right_open_interval[T0](x2, x1, x0) }[L](x, b1, a1)"]}
 {"goal":"right_open_interval_mono","proof":[]}
+{"goal":"right_open_interval(a2, b2, x)","proof":[]}
+{"goal":"right_open_interval_subset_right_open_interval","proof":[]}
 {"goal":"is_lower_bound(p, a) = forall(x0: L) { p(x0) implies a <= x0 }","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](p, a)"]}
 {"goal":"a <= x","proof":["p(x)","is_lower_bound(p, a)","(forall(x0: L) { not p(x0) or a <= x0 } = true)","function(x0: L) { not (p(x0) and not a <= x0) }(x)"]}
 {"goal":"lower_bound_step","proof":[]}
@@ -122,6 +196,66 @@
 {"goal":"is_bounded_by_interval(p, a, b)","proof":[]}
 {"goal":"is_bounded_by_interval(p, a, b) = (is_lower_bound(p, a) and is_upper_bound(p, b))","proof":[]}
 {"goal":"bounded_by_interval_iff_bounds","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"closed_interval_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](closed_interval(a, b), a)","let w0: L satisfy { closed_interval(a, b, w0) and not a <= w0 }","function(x0: L) { not closed_interval(a, b, x0) or a <= x0 }(w0)"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"closed_interval_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[L](closed_interval(a, b), b)","let w0: L satisfy { closed_interval(a, b, w0) and not w0 <= b }","function(x0: L) { not closed_interval(a, b, x0) or x0 <= b }(w0)"]}
+{"goal":"closed_interval_bounded_by_self","proof":[]}
+{"goal":"a < x","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"open_interval_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](open_interval(a, b), a)","let w0: L satisfy { open_interval(a, b, w0) and not a <= w0 }","function(x0: L) { not open_interval(a, b, x0) or a <= x0 }(w0)"]}
+{"goal":"x < b","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"open_interval_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[L](open_interval(a, b), b)","let w0: L satisfy { open_interval(a, b, w0) and not w0 <= b }","function(x0: L) { not open_interval(a, b, x0) or x0 <= b }(w0)"]}
+{"goal":"open_interval_bounded_by_closed_interval","proof":[]}
+{"goal":"a < x","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"left_open_interval_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](left_open_interval(a, b), a)","let w0: L satisfy { left_open_interval(a, b, w0) and not a <= w0 }","function(x0: L) { not left_open_interval(a, b, x0) or a <= x0 }(w0)"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"left_open_interval_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[L](left_open_interval(a, b), b)","let w0: L satisfy { left_open_interval(a, b, w0) and not w0 <= b }","function(x0: L) { not left_open_interval(a, b, x0) or x0 <= b }(w0)"]}
+{"goal":"left_open_interval_bounded_by_closed_interval","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"right_open_interval_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](right_open_interval(a, b), a)","let w0: L satisfy { right_open_interval(a, b, w0) and not a <= w0 }","function(x0: L) { not right_open_interval(a, b, x0) or a <= x0 }(w0)"]}
+{"goal":"x < b","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"right_open_interval_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[L](right_open_interval(a, b), b)","let w0: L satisfy { right_open_interval(a, b, w0) and not w0 <= b }","function(x0: L) { not right_open_interval(a, b, x0) or x0 <= b }(w0)"]}
+{"goal":"right_open_interval_bounded_by_closed_interval","proof":[]}
+{"goal":"exists(k0: L) { k0 = a and is_lower_bound(closed_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_below[L](closed_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[L](closed_interval(a, b))","not exists(k0: L) { is_lower_bound(closed_interval(a, b), k0) }","function(x0: L) { not is_lower_bound(closed_interval(a, b), x0) }(a)"]}
+{"goal":"closed_interval_bounded_below","proof":[]}
+{"goal":"exists(k0: L) { k0 = b and is_upper_bound(closed_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_above[L](closed_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[L](closed_interval(a, b))","not exists(k0: L) { is_upper_bound(closed_interval(a, b), k0) }","function(x0: L) { not is_upper_bound(closed_interval(a, b), x0) }(b)"]}
+{"goal":"closed_interval_bounded_above","proof":[]}
+{"goal":"exists(k0: L, k1: L) { k0 = a and k1 = b and is_bounded_by_interval(closed_interval(a, b), k0, k1) }","proof":[]}
+{"goal":"is_bounded[L](closed_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[L](closed_interval(a, b))","not exists(k0: L, k1: L) { is_bounded_by_interval(closed_interval(a, b), k0, k1) }","function(x0: L) { not exists(k0: L) { is_bounded_by_interval(closed_interval(a, b), x0, k0) } }(a)","function(x0: L, x1: L) { not is_bounded_by_interval(closed_interval(a, b), x0, x1) }(a, b)"]}
+{"goal":"closed_interval_bounded","proof":[]}
+{"goal":"exists(k0: L) { k0 = a and is_lower_bound(open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_below[L](open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[L](open_interval(a, b))","not exists(k0: L) { is_lower_bound(open_interval(a, b), k0) }","function(x0: L) { not is_lower_bound(open_interval(a, b), x0) }(a)"]}
+{"goal":"open_interval_bounded_below","proof":[]}
+{"goal":"exists(k0: L) { k0 = b and is_upper_bound(open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_above[L](open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[L](open_interval(a, b))","not exists(k0: L) { is_upper_bound(open_interval(a, b), k0) }","function(x0: L) { not is_upper_bound(open_interval(a, b), x0) }(b)"]}
+{"goal":"open_interval_bounded_above","proof":[]}
+{"goal":"exists(k0: L, k1: L) { k0 = a and k1 = b and is_bounded_by_interval(open_interval(a, b), k0, k1) }","proof":[]}
+{"goal":"is_bounded[L](open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[L](open_interval(a, b))","not exists(k0: L, k1: L) { is_bounded_by_interval(open_interval(a, b), k0, k1) }","function(x0: L) { not exists(k0: L) { is_bounded_by_interval(open_interval(a, b), x0, k0) } }(a)","function(x0: L, x1: L) { not is_bounded_by_interval(open_interval(a, b), x0, x1) }(a, b)"]}
+{"goal":"open_interval_bounded","proof":[]}
+{"goal":"exists(k0: L) { k0 = a and is_lower_bound(left_open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_below[L](left_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[L](left_open_interval(a, b))","not exists(k0: L) { is_lower_bound(left_open_interval(a, b), k0) }","function(x0: L) { not is_lower_bound(left_open_interval(a, b), x0) }(a)"]}
+{"goal":"left_open_interval_bounded_below","proof":[]}
+{"goal":"exists(k0: L) { k0 = b and is_upper_bound(left_open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_above[L](left_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[L](left_open_interval(a, b))","not exists(k0: L) { is_upper_bound(left_open_interval(a, b), k0) }","function(x0: L) { not is_upper_bound(left_open_interval(a, b), x0) }(b)"]}
+{"goal":"left_open_interval_bounded_above","proof":[]}
+{"goal":"exists(k0: L, k1: L) { k0 = a and k1 = b and is_bounded_by_interval(left_open_interval(a, b), k0, k1) }","proof":[]}
+{"goal":"is_bounded[L](left_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[L](left_open_interval(a, b))","not exists(k0: L, k1: L) { is_bounded_by_interval(left_open_interval(a, b), k0, k1) }","function(x0: L) { not exists(k0: L) { is_bounded_by_interval(left_open_interval(a, b), x0, k0) } }(a)","function(x0: L, x1: L) { not is_bounded_by_interval(left_open_interval(a, b), x0, x1) }(a, b)"]}
+{"goal":"left_open_interval_bounded","proof":[]}
+{"goal":"exists(k0: L) { k0 = a and is_lower_bound(right_open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_below[L](right_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[L](right_open_interval(a, b))","not exists(k0: L) { is_lower_bound(right_open_interval(a, b), k0) }","function(x0: L) { not is_lower_bound(right_open_interval(a, b), x0) }(a)"]}
+{"goal":"right_open_interval_bounded_below","proof":[]}
+{"goal":"exists(k0: L) { k0 = b and is_upper_bound(right_open_interval(a, b), k0) }","proof":[]}
+{"goal":"is_bounded_above[L](right_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[L](right_open_interval(a, b))","not exists(k0: L) { is_upper_bound(right_open_interval(a, b), k0) }","function(x0: L) { not is_upper_bound(right_open_interval(a, b), x0) }(b)"]}
+{"goal":"right_open_interval_bounded_above","proof":[]}
+{"goal":"exists(k0: L, k1: L) { k0 = a and k1 = b and is_bounded_by_interval(right_open_interval(a, b), k0, k1) }","proof":[]}
+{"goal":"is_bounded[L](right_open_interval(a, b))","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[L](right_open_interval(a, b))","not exists(k0: L, k1: L) { is_bounded_by_interval(right_open_interval(a, b), k0, k1) }","function(x0: L) { not exists(k0: L) { is_bounded_by_interval(right_open_interval(a, b), x0, k0) } }(a)","function(x0: L, x1: L) { not is_bounded_by_interval(right_open_interval(a, b), x0, x1) }(a, b)"]}
+{"goal":"right_open_interval_bounded","proof":[]}
 {"goal":"b <= x","proof":[]}
 {"goal":"a <= x","proof":[]}
 {"goal":"lower_bound_mono","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[L](p, a)"]}
