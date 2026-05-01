@@ -23,6 +23,11 @@ work (linear maps, bases, matrices, etc.) can build on.
 
 - [ ] Add bundled `ModuleHom[R, M, N]` once the 3-typeclass-param structure bug is fixed,
       with extensionality, projections, identity, and composition.
-- [ ] Add submodules (subset closed under addition, negation, and scalar action).
-- [ ] Add kernel and image of a linear map.
+- [ ] Package the kernel and image of a linear map as `Submodule` values once the final conjunct-combination proofs are decomposed enough for certificate search.
 - [ ] Add module quotient by a submodule.
+
+Status:
+
+- `src/submodule.ac` defines `submodule_zero_constraint`, `submodule_add_constraint`, `submodule_neg_constraint`, `submodule_smul_constraint`, `is_submodule`, and the bundled `Submodule[R, M]` structure, with extensionality and basic closure lemmas.
+- Submodule intersections are represented by `submodule_intersection_contains`, with verified closure lemmas and a combined `submodule_intersection_is_submodule` theorem.
+- Linear-map kernels and images are represented by `linear_map_kernel` and `linear_map_image`, with verified zero/add/neg/smul closure lemmas. The combined kernel/image-as-submodule packaging remains as the next small decomposition task.
