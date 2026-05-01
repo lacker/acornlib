@@ -2,6 +2,18 @@
 
 Goal: cover the ring-theoretic infrastructure that underlies algebraic geometry and modern number theory.
 
+## Design Choice
+
+`Ideal` is represented as a predicate `is_ideal[R: CommRing](contains: R -> Bool) -> Bool`
+in `src/ideal.ac`, split into three named sub-constraints
+(`ideal_zero_constraint`, `ideal_add_constraint`, `ideal_absorb_constraint`).
+No bundled `Ideal[R]` structure is introduced yet — bundle later if a use site
+requires it. Prototype includes `zero_ideal`, `unit_ideal`, `principal_ideal`,
+their `is_ideal` proofs, plus `principal_ideal_zero_eq_zero_ideal` and
+`principal_ideal_one_eq_unit_ideal`.
+
+## Roadmap
+
 - [ ] Build the lattice API for ideals
 - [ ] Add quotient rings and their universal properties
 - [ ] Support prime ideals, maximal ideals, and local rings
