@@ -1,0 +1,47 @@
+from int import Int
+from list import List
+from nat import Nat
+from zmod import int_mod_rel, int_read_mod3_compatible
+
+/// Reads a list of base-10 integer digits from left to right, starting with an accumulator.
+define int_read_digits_acc(digits: List[Int], acc: Int) -> Int {
+    match digits {
+        List.nil {
+            acc
+        }
+        List.cons(head, tail) {
+            int_read_digits_acc(tail, acc.read(head))
+        }
+    }
+}
+
+/// Reading the same list of digits preserves congruence modulo 3.
+theorem int_read_digits_acc_mod3_compatible(digits: List[Int], x: Int, y: Int) {
+    int_mod_rel(Nat.3, x, y) implies
+    int_mod_rel(Nat.3, int_read_digits_acc(digits, x), int_read_digits_acc(digits, y))
+} by {
+    define p(ds: List[Int]) -> Bool {
+        forall(a: Int, b: Int) {
+            int_mod_rel(Nat.3, a, b) implies
+            int_mod_rel(Nat.3, int_read_digits_acc(ds, a), int_read_digits_acc(ds, b))
+        }
+    }
+    p(List.nil[Int])
+    forall(head: Int, tail: List[Int]) {
+        if p(tail) {
+            forall(a: Int, b: Int) {
+                if int_mod_rel(Nat.3, a, b) {
+                    int_read_mod3_compatible(a, b, head)
+                    p(tail)
+                    int_mod_rel(Nat.3, int_read_digits_acc(tail, a.read(head)), int_read_digits_acc(tail, b.read(head)))
+                    int_read_digits_acc(List.cons(head, tail), a) = int_read_digits_acc(tail, a.read(head))
+                    int_read_digits_acc(List.cons(head, tail), b) = int_read_digits_acc(tail, b.read(head))
+                    int_mod_rel(Nat.3, int_read_digits_acc(List.cons(head, tail), a), int_read_digits_acc(List.cons(head, tail), b))
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(ds: List[Int]) { p(ds) })
+    p(digits)
+}
