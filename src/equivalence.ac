@@ -1,6 +1,6 @@
 /// Generic infrastructure for equivalence classes.
 
-from relation_basic import is_equivalence
+from relation_basic import is_equivalence, is_reflexive, is_symmetric, is_transitive
 from relation_transport import respects_unary_op, respects_binary_op, respects_unary_op_step,
     respects_binary_op_step, is_unary_congruence, is_binary_congruence
 from functions import Inhabited
@@ -1511,5 +1511,106 @@ theorem quotient_image_preimage_on_relation[T](qrel: QuotientRelation[T], qs: Se
         }
         set_ext(u, qs)
     }
+}
+
+/// The kernel of a function: representatives are related when they share an image.
+define kernel_relation[T, U](f: T -> U, x: T, y: T) -> Bool {
+    f(x) = f(y)
+}
+
+/// The kernel relation is reflexive.
+theorem kernel_relation_is_reflexive[T, U](f: T -> U) {
+    is_reflexive(kernel_relation(f))
+} by {
+    forall(x: T) {
+        f(x) = f(x)
+        kernel_relation(f, x, x)
+    }
+}
+
+/// The kernel relation is symmetric.
+theorem kernel_relation_is_symmetric[T, U](f: T -> U) {
+    is_symmetric(kernel_relation(f))
+} by {
+    forall(x: T, y: T) {
+        if kernel_relation(f, x, y) {
+            f(x) = f(y)
+            f(y) = f(x)
+            kernel_relation(f, y, x)
+        }
+    }
+}
+
+/// The kernel relation is transitive.
+theorem kernel_relation_is_transitive[T, U](f: T -> U) {
+    is_transitive(kernel_relation(f))
+} by {
+    forall(x: T, y: T, z: T) {
+        if kernel_relation(f, x, y) and kernel_relation(f, y, z) {
+            f(x) = f(y)
+            f(y) = f(z)
+            f(x) = f(z)
+            kernel_relation(f, x, z)
+        }
+    }
+}
+
+/// The kernel relation is an equivalence relation.
+theorem kernel_relation_is_equivalence[T, U](f: T -> U) {
+    is_equivalence(kernel_relation(f))
+} by {
+    kernel_relation_is_reflexive(f)
+    kernel_relation_is_symmetric(f)
+    kernel_relation_is_transitive(f)
+}
+
+/// The quotient relation associated to the kernel of a function.
+let kernel_quotient_relation[T, U](f: T -> U) -> result: QuotientRelation[T] satisfy {
+    QuotientRelation[T].new(kernel_relation(f)) = Option.some(result)
+} by {
+    kernel_relation_is_equivalence(f)
+}
+
+/// The kernel quotient relation has the kernel relation as its underlying relation.
+theorem kernel_quotient_relation_rel[T, U](f: T -> U) {
+    kernel_quotient_relation(f).rel = kernel_relation(f)
+} by {
+    QuotientRelation[T].new(kernel_relation(f)) = Option.some(kernel_quotient_relation(f))
+    quotient_relation_new_round_trip(kernel_relation(f), kernel_quotient_relation(f))
+}
+
+/// Every function respects its own kernel relation.
+theorem kernel_relation_respects[T, U](f: T -> U) {
+    quotient_respects(kernel_quotient_relation(f), f)
+} by {
+    forall(a: T, b: T) {
+        if kernel_quotient_relation(f).rel(a, b) {
+            kernel_quotient_relation_rel(f)
+            kernel_relation(f, a, b)
+            f(a) = f(b)
+        }
+    }
+}
+
+/// The function on the kernel quotient that factors a function through its kernel.
+define kernel_lift[T, U: Inhabited](f: T -> U) -> Quotient[T] -> U {
+    quotient_lift(kernel_quotient_relation(f), f)
+}
+
+/// The kernel lift agrees with the original function on projected representatives.
+theorem kernel_lift_projection[T, U: Inhabited](f: T -> U, a: T) {
+    kernel_lift(f, quotient_projection(kernel_quotient_relation(f), a)) = f(a)
+} by {
+    kernel_relation_respects(f)
+    quotient_lift_projection(kernel_quotient_relation(f), f, a)
+}
+
+/// Equality of kernel projections is equality of the function values.
+theorem kernel_quotient_projection_eq_iff[T, U](f: T -> U, a: T, b: T) {
+    (quotient_projection(kernel_quotient_relation(f), a) = quotient_projection(kernel_quotient_relation(f), b))
+    = (f(a) = f(b))
+} by {
+    quotient_projection_eq_iff_rel(kernel_quotient_relation(f), a, b)
+    kernel_quotient_relation_rel(f)
 }
 
