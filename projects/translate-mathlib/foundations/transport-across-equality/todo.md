@@ -7,4 +7,5 @@ Goal: support moving data and theorems across definitional boundaries in a contr
 Status:
 
 - Relation property transport in `src/relation_basic.ac` now uses the shared binary-function equality transport API.
+- Pullback distributes over union, intersection, and converse; pushforward distributes over union, commutes with converse, and lies inside the intersection of pushforwards (`relation_pullback_union`, `relation_pushforward_union`, `relation_pushforward_converse`, `relation_pushforward_intersection_subset` in `src/relation_transport.ac`).
 - Type-level equality is not currently exposed as a value-level equality form: `acorn verify - --read-only` reports that type parameters are not values in equality expressions.
