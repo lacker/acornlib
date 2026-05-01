@@ -2,7 +2,7 @@
 
 Goal: support quotient objects as first-class foundational tools using equivalence-class constrained structures instead of one-off encodings.
 
-- [ ] Add quotient constructions for groups, rings, and modules on top of the chosen API
+- [ ] [Algebraic quotient constructions for groups, rings, and modules](algebraic-quotients/todo.md)
 
 Status:
 
