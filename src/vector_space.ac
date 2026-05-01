@@ -1,0 +1,38 @@
+from field import Field
+from add_comm_group import AddCommGroup
+from module import Module, module_smul_zero_left, module_smul_zero_right
+
+/// Convention: a vector space over a field F is a Module[F, V] with V: AddCommGroup.
+/// We do not introduce a separate VectorSpace structure; instead we re-use the
+/// existing Module API and add field-specific lemmas here.
+
+/// Scalar multiplication by a nonzero element annihilates only the zero vector.
+theorem vector_space_smul_eq_zero[F: Field, V: AddCommGroup](
+    m: Module[F, V], r: F, v: V) {
+    m.smul(r, v) = V.0 implies r = F.0 or v = V.0
+} by {
+    if m.smul(r, v) = V.0 {
+        if r = F.0 {
+            r = F.0 or v = V.0
+        } else {
+            r * r.inverse = F.1
+            m.smul(r * r.inverse, v) = m.smul(F.1, v)
+            m.smul(r * r.inverse, v) = v
+            m.smul(r, m.smul(r.inverse, v)) = m.smul(r * r.inverse, v)
+            m.smul(r * r.inverse, v) = m.smul(r, m.smul(r.inverse, v))
+            v = m.smul(r, m.smul(r.inverse, v))
+            // Use commutativity of ring multiplication.
+            r.inverse * r = r * r.inverse
+            r.inverse * r = F.1
+            m.smul(r.inverse * r, v) = m.smul(F.1, v)
+            m.smul(r.inverse * r, v) = v
+            m.smul(r.inverse, m.smul(r, v)) = m.smul(r.inverse * r, v)
+            m.smul(r.inverse, m.smul(r, v)) = v
+            m.smul(r.inverse, V.0) = v
+            module_smul_zero_right(m, r.inverse)
+            m.smul(r.inverse, V.0) = V.0
+            v = V.0
+            r = F.0 or v = V.0
+        }
+    }
+}
