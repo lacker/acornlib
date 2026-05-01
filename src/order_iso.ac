@@ -1,0 +1,348 @@
+/// Order isomorphisms between partially ordered types.
+
+from functions import identity_fn, is_injective_fn, is_surjective_fn, is_bijection_fn
+from order import PartialOrder
+from order_maps import is_order_embedding, order_embedding_apply_le,
+    order_embedding_reflects_lte, identity_is_order_embedding
+
+/// True if two maps are inverse order-preserving maps.
+define is_order_iso_pair[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) -> Bool {
+    forall(a: A) {
+        g(f(a)) = a
+    } and forall(b: B) {
+        f(g(b)) = b
+    } and is_order_embedding(f) and is_order_embedding(g)
+}
+
+/// An order isomorphism pair has a left inverse.
+theorem order_iso_pair_left_inverse[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, a: A) {
+    is_order_iso_pair(f, g) implies g(f(a)) = a
+} by {
+    if is_order_iso_pair(f, g) {
+        is_order_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_order_embedding(f) and is_order_embedding(g))
+        g(f(a)) = a
+    }
+}
+
+/// An order isomorphism pair has a right inverse.
+theorem order_iso_pair_right_inverse[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, b: B) {
+    is_order_iso_pair(f, g) implies f(g(b)) = b
+} by {
+    if is_order_iso_pair(f, g) {
+        is_order_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_order_embedding(f) and is_order_embedding(g))
+        f(g(b)) = b
+    }
+}
+
+/// The forward map of an order isomorphism pair is an order embedding.
+theorem order_iso_pair_map_is_order_embedding[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_iso_pair(f, g) implies is_order_embedding(f)
+} by {
+    if is_order_iso_pair(f, g) {
+        is_order_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_order_embedding(f) and is_order_embedding(g))
+        is_order_embedding(f)
+    }
+}
+
+/// The inverse map of an order isomorphism pair is an order embedding.
+theorem order_iso_pair_inv_is_order_embedding[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_iso_pair(f, g) implies is_order_embedding(g)
+} by {
+    if is_order_iso_pair(f, g) {
+        is_order_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_order_embedding(f) and is_order_embedding(g))
+        is_order_embedding(g)
+    }
+}
+
+/// An order isomorphism with explicit inverse data.
+structure OrderIso[A: PartialOrder, B: PartialOrder] {
+    /// The order-preserving map.
+    map: A -> B
+
+    /// The inverse order-preserving map.
+    inv: B -> A
+} constraint {
+    is_order_iso_pair(map, inv)
+}
+
+/// Construction of an order isomorphism remembers the underlying map.
+theorem order_iso_new_map[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, e: OrderIso[A, B]) {
+    OrderIso[A, B].new(f, g) = Option.some(e) implies e.map = f
+}
+
+/// Construction of an order isomorphism remembers the inverse map.
+theorem order_iso_new_inv[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, e: OrderIso[A, B]) {
+    OrderIso[A, B].new(f, g) = Option.some(e) implies e.inv = g
+}
+
+/// Every order isomorphism is reconstructed from its maps.
+theorem order_iso_new_self[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    OrderIso[A, B].new(e.map, e.inv) = Option.some(e)
+}
+
+/// Equality of options containing order isomorphisms is equality of order isomorphisms.
+theorem order_iso_some_injective[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], h: OrderIso[A, B]) {
+    Option.some(e) = Option.some(h) implies e = h
+}
+
+/// Order isomorphisms are equal when their maps and inverse maps are equal.
+theorem order_iso_ext[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], h: OrderIso[A, B]) {
+    e.map = h.map and e.inv = h.inv implies e = h
+} by {
+    if e.map = h.map and e.inv = h.inv {
+        OrderIso[A, B].new(e.map, e.inv) = Option.some(e)
+        OrderIso[A, B].new(h.map, h.inv) = Option.some(h)
+        Option.some(e) = Option.some(h)
+        order_iso_some_injective(e, h)
+    }
+}
+
+/// Equal order isomorphisms have equal underlying maps.
+theorem order_iso_eq_map[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], h: OrderIso[A, B]) {
+    e = h implies e.map = h.map
+}
+
+/// Equal order isomorphisms have equal inverse maps.
+theorem order_iso_eq_inv[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], h: OrderIso[A, B]) {
+    e = h implies e.inv = h.inv
+}
+
+/// The inverse map is a left inverse of the map.
+theorem order_iso_left_inverse[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], a: A) {
+    e.inv(e.map(a)) = a
+} by {
+    OrderIso[A, B].constraint(e.map, e.inv)
+    is_order_iso_pair(e.map, e.inv)
+    order_iso_pair_left_inverse(e.map, e.inv, a)
+}
+
+/// The inverse map is a right inverse of the map.
+theorem order_iso_right_inverse[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], b: B) {
+    e.map(e.inv(b)) = b
+} by {
+    OrderIso[A, B].constraint(e.map, e.inv)
+    is_order_iso_pair(e.map, e.inv)
+    order_iso_pair_right_inverse(e.map, e.inv, b)
+}
+
+/// The underlying map of an order isomorphism is an order embedding.
+theorem order_iso_map_is_order_embedding[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_order_embedding(e.map)
+} by {
+    OrderIso[A, B].constraint(e.map, e.inv)
+    is_order_iso_pair(e.map, e.inv)
+    order_iso_pair_map_is_order_embedding(e.map, e.inv)
+}
+
+/// The inverse map of an order isomorphism is an order embedding.
+theorem order_iso_inv_is_order_embedding[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_order_embedding(e.inv)
+} by {
+    order_iso_map_is_order_embedding(e)
+    forall(x: B, y: B) {
+        order_iso_right_inverse(e, x)
+        e.map(e.inv(x)) = x
+        order_iso_right_inverse(e, y)
+        e.map(e.inv(y)) = y
+        if e.inv(x) <= e.inv(y) {
+            order_embedding_apply_le(e.map, e.inv(x), e.inv(y))
+            e.map(e.inv(x)) <= e.map(e.inv(y))
+            x <= y
+        }
+        if x <= y {
+            e.map(e.inv(x)) <= e.map(e.inv(y))
+            order_embedding_reflects_lte(e.map, e.inv(x), e.inv(y))
+            e.inv(x) <= e.inv(y)
+        }
+        e.inv(x) <= e.inv(y) = (x <= y)
+    }
+}
+
+/// The underlying map of an order isomorphism is injective.
+theorem order_iso_map_is_injective[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_injective_fn(e.map)
+} by {
+    forall(x: A, y: A) {
+        if e.map(x) = e.map(y) {
+            order_iso_left_inverse(e, x)
+            order_iso_left_inverse(e, y)
+            x = y
+        }
+    }
+}
+
+/// The underlying map of an order isomorphism is surjective.
+theorem order_iso_map_is_surjective[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_surjective_fn(e.map)
+} by {
+    forall(y: B) {
+        exists(x: A) {
+            x = e.inv(y) and e.map(x) = y
+        }
+    }
+}
+
+/// The underlying map of an order isomorphism is bijective.
+theorem order_iso_map_is_bijection[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_bijection_fn(e.map)
+} by {
+    order_iso_map_is_injective(e)
+    is_injective_fn(e.map)
+    order_iso_map_is_surjective(e)
+    is_surjective_fn(e.map)
+    is_bijection_fn(e.map)
+}
+
+/// The inverse map of an order isomorphism is injective.
+theorem order_iso_inv_is_injective[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_injective_fn(e.inv)
+} by {
+    forall(x: B, y: B) {
+        if e.inv(x) = e.inv(y) {
+            order_iso_right_inverse(e, x)
+            order_iso_right_inverse(e, y)
+            x = y
+        }
+    }
+}
+
+/// The inverse map of an order isomorphism is surjective.
+theorem order_iso_inv_is_surjective[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_surjective_fn(e.inv)
+} by {
+    forall(x: A) {
+        exists(y: B) {
+            y = e.map(x) and e.inv(y) = x
+        }
+    }
+}
+
+/// The inverse map of an order isomorphism is bijective.
+theorem order_iso_inv_is_bijection[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    is_bijection_fn(e.inv)
+} by {
+    order_iso_inv_is_injective(e)
+    is_injective_fn(e.inv)
+    order_iso_inv_is_surjective(e)
+    is_surjective_fn(e.inv)
+    is_bijection_fn(e.inv)
+}
+
+/// An order isomorphism preserves non-strict order.
+theorem order_iso_apply_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    x <= y implies e.map(x) <= e.map(y)
+} by {
+    if x <= y {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_apply_le(e.map, x, y)
+        e.map(x) <= e.map(y)
+    }
+}
+
+/// An order isomorphism reflects non-strict order.
+theorem order_iso_reflects_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) <= e.map(y) implies x <= y
+} by {
+    if e.map(x) <= e.map(y) {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_reflects_lte(e.map, x, y)
+        x <= y
+    }
+}
+
+/// An order isomorphism preserves and reflects non-strict order.
+theorem order_iso_le_iff_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) <= e.map(y) = (x <= y)
+} by {
+    if e.map(x) <= e.map(y) {
+        order_iso_reflects_le(e, x, y)
+        x <= y
+    }
+    if x <= y {
+        order_iso_apply_le(e, x, y)
+        e.map(x) <= e.map(y)
+    }
+    e.map(x) <= e.map(y) = (x <= y)
+}
+
+/// An inverse order isomorphism preserves non-strict order.
+theorem order_iso_inv_apply_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    x <= y implies e.inv(x) <= e.inv(y)
+} by {
+    if x <= y {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_apply_le(e.inv, x, y)
+        e.inv(x) <= e.inv(y)
+    }
+}
+
+/// An inverse order isomorphism reflects non-strict order.
+theorem order_iso_inv_reflects_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) <= e.inv(y) implies x <= y
+} by {
+    if e.inv(x) <= e.inv(y) {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_reflects_lte(e.inv, x, y)
+        x <= y
+    }
+}
+
+/// An inverse order isomorphism preserves and reflects non-strict order.
+theorem order_iso_inv_le_iff_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) <= e.inv(y) = (x <= y)
+} by {
+    if e.inv(x) <= e.inv(y) {
+        order_iso_inv_reflects_le(e, x, y)
+        x <= y
+    }
+    if x <= y {
+        order_iso_inv_apply_le(e, x, y)
+        e.inv(x) <= e.inv(y)
+    }
+    e.inv(x) <= e.inv(y) = (x <= y)
+}
+
+/// The identity map as an order isomorphism.
+let identity_order_iso[A: PartialOrder](anchor: A) -> result: OrderIso[A, A] satisfy {
+    result.map = identity_fn[A] and result.inv = identity_fn[A]
+} by {
+    identity_is_order_embedding[A]
+    is_order_embedding(identity_fn[A])
+    forall(a: A) {
+        identity_fn[A](identity_fn[A](a)) = a
+    }
+    is_order_iso_pair(identity_fn[A], identity_fn[A])
+    let e: OrderIso[A, A] satisfy {
+        OrderIso[A, A].new(identity_fn[A], identity_fn[A]) = Option.some(e)
+    }
+    order_iso_new_map(identity_fn[A], identity_fn[A], e)
+    e.map = identity_fn[A]
+    order_iso_new_inv(identity_fn[A], identity_fn[A], e)
+    e.inv = identity_fn[A]
+}
+
+/// The identity order isomorphism has the identity map.
+theorem identity_order_iso_map[A: PartialOrder](anchor: A) {
+    identity_order_iso(anchor).map = identity_fn[A]
+}
+
+/// The identity order isomorphism has the identity inverse map.
+theorem identity_order_iso_inv[A: PartialOrder](anchor: A) {
+    identity_order_iso(anchor).inv = identity_fn[A]
+}
