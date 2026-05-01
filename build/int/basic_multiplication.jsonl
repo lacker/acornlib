@@ -1,0 +1,361 @@
+{"goal":"int_mul_pos_1_1","proof":["Int.from_nat(1) * Int.from_nat(1) != Int.from_nat(1 * 1)"]}
+{"goal":"int_mul_pos_1_2","proof":["Int.from_nat(1) * Int.from_nat(2) != Int.from_nat(1 * 2)"]}
+{"goal":"int_mul_pos_1_3","proof":["Int.from_nat(1) * Int.from_nat(3) != Int.from_nat(1 * 3)"]}
+{"goal":"int_mul_pos_1_4","proof":["Int.from_nat(1) * Int.from_nat(4) != Int.from_nat(1 * 4)"]}
+{"goal":"int_mul_pos_1_5","proof":["Int.from_nat(1) * Int.from_nat(5) != Int.from_nat(1 * 5)"]}
+{"goal":"int_mul_pos_1_6","proof":["Int.from_nat(1) * Int.from_nat(6) != Int.from_nat(1 * 6)"]}
+{"goal":"int_mul_pos_1_7","proof":["Int.from_nat(1) * Int.from_nat(7) != Int.from_nat(1 * 7)"]}
+{"goal":"int_mul_pos_1_8","proof":["Int.from_nat(1) * Int.from_nat(8) != Int.from_nat(1 * 8)"]}
+{"goal":"int_mul_pos_1_9","proof":["Int.from_nat(1) * Int.from_nat(9) != Int.from_nat(1 * 9)"]}
+{"goal":"int_mul_pos_2_1","proof":["Int.from_nat(2) * Int.from_nat(1) != Int.from_nat(2 * 1)"]}
+{"goal":"int_mul_pos_2_2","proof":["Int.from_nat(2) * Int.from_nat(2) != Int.from_nat(2 * 2)"]}
+{"goal":"int_mul_pos_2_3","proof":[]}
+{"goal":"int_mul_pos_2_4","proof":["Int.from_nat(2) * Int.from_nat(4) != Int.from_nat(2 * 4)"]}
+{"goal":"int_mul_pos_2_5","proof":["Int.from_nat(2) * Int.from_nat(5) != Int.from_nat(2 * 5)"]}
+{"goal":"int_mul_pos_2_6","proof":["Int.from_nat(2) * Int.from_nat(6) != Int.from_nat(2 * 6)"]}
+{"goal":"int_mul_pos_2_7","proof":["Int.from_nat(2) * Int.from_nat(7) != Int.from_nat(2 * 7)"]}
+{"goal":"int_mul_pos_2_8","proof":["Int.from_nat(2) * Int.from_nat(8) != Int.from_nat(2 * 8)"]}
+{"goal":"int_mul_pos_2_9","proof":["Int.from_nat(2) * Int.from_nat(9) != Int.from_nat(2 * 9)"]}
+{"goal":"int_mul_pos_3_1","proof":["Int.from_nat(3) * Int.from_nat(1) != Int.from_nat(3 * 1)"]}
+{"goal":"int_mul_pos_3_2","proof":["Int.from_nat(3) * Int.from_nat(2) != Int.from_nat(3 * 2)"]}
+{"goal":"int_mul_pos_3_3","proof":["Int.from_nat(3) * Int.from_nat(3) != Int.from_nat(3 * 3)"]}
+{"goal":"int_mul_pos_3_4","proof":[]}
+{"goal":"int_mul_pos_3_5","proof":["Int.from_nat(3) * Int.from_nat(5) != Int.from_nat(3 * 5)"]}
+{"goal":"int_mul_pos_3_6","proof":["Int.from_nat(3) * Int.from_nat(6) != Int.from_nat(3 * 6)"]}
+{"goal":"int_mul_pos_3_7","proof":["Int.from_nat(3) * Int.from_nat(7) != Int.from_nat(3 * 7)"]}
+{"goal":"int_mul_pos_3_8","proof":["Int.from_nat(3) * Int.from_nat(8) != Int.from_nat(3 * 8)"]}
+{"goal":"int_mul_pos_3_9","proof":["Int.from_nat(3) * Int.from_nat(9) != Int.from_nat(3 * 9)"]}
+{"goal":"int_mul_pos_4_1","proof":["Int.from_nat(4) * Int.from_nat(1) != Int.from_nat(4 * 1)"]}
+{"goal":"int_mul_pos_4_2","proof":["Int.from_nat(4) * Int.from_nat(2) != Int.from_nat(4 * 2)"]}
+{"goal":"int_mul_pos_4_3","proof":["Int.from_nat(4) * Int.from_nat(3) != Int.from_nat(4 * 3)"]}
+{"goal":"int_mul_pos_4_4","proof":["Int.from_nat(4) * Int.from_nat(4) != Int.from_nat(4 * 4)"]}
+{"goal":"int_mul_pos_4_5","proof":["Int.from_nat(4) * Int.from_nat(5) != Int.from_nat(4 * 5)"]}
+{"goal":"int_mul_pos_4_6","proof":["Int.from_nat(4) * Int.from_nat(6) != Int.from_nat(4 * 6)"]}
+{"goal":"int_mul_pos_4_7","proof":["Int.from_nat(4) * Int.from_nat(7) != Int.from_nat(4 * 7)"]}
+{"goal":"int_mul_pos_4_8","proof":["Int.from_nat(4) * Int.from_nat(8) != Int.from_nat(4 * 8)"]}
+{"goal":"int_mul_pos_4_9","proof":["Int.from_nat(4) * Int.from_nat(9) != Int.from_nat(4 * 9)"]}
+{"goal":"int_mul_pos_5_1","proof":["Int.from_nat(5) * Int.from_nat(1) != Int.from_nat(5 * 1)"]}
+{"goal":"int_mul_pos_5_2","proof":["Int.from_nat(5) * Int.from_nat(2) != Int.from_nat(5 * 2)"]}
+{"goal":"int_mul_pos_5_3","proof":["Int.from_nat(5) * Int.from_nat(3) != Int.from_nat(5 * 3)"]}
+{"goal":"int_mul_pos_5_4","proof":["Int.from_nat(5) * Int.from_nat(4) != Int.from_nat(5 * 4)"]}
+{"goal":"int_mul_pos_5_5","proof":["Int.from_nat(5) * Int.from_nat(5) != Int.from_nat(5 * 5)"]}
+{"goal":"int_mul_pos_5_6","proof":["Int.from_nat(5) * Int.from_nat(6) != Int.from_nat(5 * 6)"]}
+{"goal":"int_mul_pos_5_7","proof":["Int.from_nat(5) * Int.from_nat(7) != Int.from_nat(5 * 7)"]}
+{"goal":"int_mul_pos_5_8","proof":["Int.from_nat(5) * Int.from_nat(8) != Int.from_nat(5 * 8)"]}
+{"goal":"int_mul_pos_5_9","proof":["Int.from_nat(5) * Int.from_nat(9) != Int.from_nat(5 * 9)"]}
+{"goal":"int_mul_pos_6_1","proof":["Int.from_nat(6) * Int.from_nat(1) != Int.from_nat(6 * 1)"]}
+{"goal":"int_mul_pos_6_2","proof":["Int.from_nat(6) * Int.from_nat(2) != Int.from_nat(6 * 2)"]}
+{"goal":"int_mul_pos_6_3","proof":["Int.from_nat(6) * Int.from_nat(3) != Int.from_nat(6 * 3)"]}
+{"goal":"int_mul_pos_6_4","proof":["Int.from_nat(6) * Int.from_nat(4) != Int.from_nat(6 * 4)"]}
+{"goal":"int_mul_pos_6_5","proof":["Int.from_nat(6) * Int.from_nat(5) != Int.from_nat(6 * 5)"]}
+{"goal":"int_mul_pos_6_6","proof":["Int.from_nat(6) * Int.from_nat(6) != Int.from_nat(6 * 6)"]}
+{"goal":"int_mul_pos_6_7","proof":["Int.from_nat(6) * Int.from_nat(7) != Int.from_nat(6 * 7)"]}
+{"goal":"int_mul_pos_6_8","proof":["Int.from_nat(6) * Int.from_nat(8) != Int.from_nat(6 * 8)"]}
+{"goal":"int_mul_pos_6_9","proof":["Int.from_nat(6) * Int.from_nat(9) != Int.from_nat(6 * 9)"]}
+{"goal":"int_mul_pos_7_1","proof":["Int.from_nat(7) * Int.from_nat(1) != Int.from_nat(7 * 1)"]}
+{"goal":"int_mul_pos_7_2","proof":["Int.from_nat(7) * Int.from_nat(2) != Int.from_nat(7 * 2)"]}
+{"goal":"int_mul_pos_7_3","proof":["Int.from_nat(7) * Int.from_nat(3) != Int.from_nat(7 * 3)"]}
+{"goal":"int_mul_pos_7_4","proof":["Int.from_nat(7) * Int.from_nat(4) != Int.from_nat(7 * 4)"]}
+{"goal":"int_mul_pos_7_5","proof":["Int.from_nat(7) * Int.from_nat(5) != Int.from_nat(7 * 5)"]}
+{"goal":"int_mul_pos_7_6","proof":["Int.from_nat(7) * Int.from_nat(6) != Int.from_nat(7 * 6)"]}
+{"goal":"int_mul_pos_7_7","proof":["Int.from_nat(7) * Int.from_nat(7) != Int.from_nat(7 * 7)"]}
+{"goal":"int_mul_pos_7_8","proof":["Int.from_nat(7) * Int.from_nat(8) != Int.from_nat(7 * 8)"]}
+{"goal":"int_mul_pos_7_9","proof":["Int.from_nat(7) * Int.from_nat(9) != Int.from_nat(7 * 9)"]}
+{"goal":"int_mul_pos_8_1","proof":["Int.from_nat(8) * Int.from_nat(1) != Int.from_nat(8 * 1)"]}
+{"goal":"int_mul_pos_8_2","proof":["Int.from_nat(8) * Int.from_nat(2) != Int.from_nat(8 * 2)"]}
+{"goal":"int_mul_pos_8_3","proof":["Int.from_nat(8) * Int.from_nat(3) != Int.from_nat(8 * 3)"]}
+{"goal":"int_mul_pos_8_4","proof":["Int.from_nat(8) * Int.from_nat(4) != Int.from_nat(8 * 4)"]}
+{"goal":"int_mul_pos_8_5","proof":["Int.from_nat(8) * Int.from_nat(5) != Int.from_nat(8 * 5)"]}
+{"goal":"int_mul_pos_8_6","proof":["Int.from_nat(8) * Int.from_nat(6) != Int.from_nat(8 * 6)"]}
+{"goal":"int_mul_pos_8_7","proof":["Int.from_nat(8) * Int.from_nat(7) != Int.from_nat(8 * 7)"]}
+{"goal":"int_mul_pos_8_8","proof":["Int.from_nat(8) * Int.from_nat(8) != Int.from_nat(8 * 8)"]}
+{"goal":"int_mul_pos_8_9","proof":["Int.from_nat(8) * Int.from_nat(9) != Int.from_nat(8 * 9)"]}
+{"goal":"int_mul_pos_9_1","proof":["Int.from_nat(9) * Int.from_nat(1) != Int.from_nat(9 * 1)"]}
+{"goal":"int_mul_pos_9_2","proof":["Int.from_nat(9) * Int.from_nat(2) != Int.from_nat(9 * 2)"]}
+{"goal":"int_mul_pos_9_3","proof":["Int.from_nat(9) * Int.from_nat(3) != Int.from_nat(9 * 3)"]}
+{"goal":"int_mul_pos_9_4","proof":["Int.from_nat(9) * Int.from_nat(4) != Int.from_nat(9 * 4)"]}
+{"goal":"int_mul_pos_9_5","proof":["Int.from_nat(9) * Int.from_nat(5) != Int.from_nat(9 * 5)"]}
+{"goal":"int_mul_pos_9_6","proof":["Int.from_nat(9) * Int.from_nat(6) != Int.from_nat(9 * 6)"]}
+{"goal":"int_mul_pos_9_7","proof":["Int.from_nat(9) * Int.from_nat(7) != Int.from_nat(9 * 7)"]}
+{"goal":"int_mul_pos_9_8","proof":["Int.from_nat(9) * Int.from_nat(8) != Int.from_nat(9 * 8)"]}
+{"goal":"int_mul_pos_9_9","proof":["Int.from_nat(9) * Int.from_nat(9) != Int.from_nat(9 * 9)"]}
+{"goal":"int_mul_neg_left_1_1","proof":["-Int.from_nat(1) * Int.from_nat(1) != -Int.from_nat(1 * 1)"]}
+{"goal":"int_mul_neg_left_1_2","proof":["-Int.from_nat(1) * Int.from_nat(2) != -Int.from_nat(1 * 2)"]}
+{"goal":"int_mul_neg_left_1_3","proof":["-Int.from_nat(1) * Int.from_nat(3) != -Int.from_nat(1 * 3)"]}
+{"goal":"int_mul_neg_left_1_4","proof":["-Int.from_nat(1) * Int.from_nat(4) != -Int.from_nat(1 * 4)"]}
+{"goal":"int_mul_neg_left_1_5","proof":["-Int.from_nat(1) * Int.from_nat(5) != -Int.from_nat(1 * 5)"]}
+{"goal":"int_mul_neg_left_1_6","proof":["-Int.from_nat(1) * Int.from_nat(6) != -Int.from_nat(1 * 6)"]}
+{"goal":"int_mul_neg_left_1_7","proof":["-Int.from_nat(1) * Int.from_nat(7) != -Int.from_nat(1 * 7)"]}
+{"goal":"int_mul_neg_left_1_8","proof":["-Int.from_nat(1) * Int.from_nat(8) != -Int.from_nat(1 * 8)"]}
+{"goal":"int_mul_neg_left_1_9","proof":["-Int.from_nat(1) * Int.from_nat(9) != -Int.from_nat(1 * 9)"]}
+{"goal":"int_mul_neg_left_2_1","proof":["-Int.from_nat(2) * Int.from_nat(1) != -Int.from_nat(2 * 1)"]}
+{"goal":"int_mul_neg_left_2_2","proof":["-Int.from_nat(2) * Int.from_nat(2) != -Int.from_nat(2 * 2)"]}
+{"goal":"int_mul_neg_left_2_3","proof":["-Int.from_nat(2) * Int.from_nat(3) != -Int.from_nat(2 * 3)"]}
+{"goal":"int_mul_neg_left_2_4","proof":["-Int.from_nat(2) * Int.from_nat(4) != -Int.from_nat(2 * 4)"]}
+{"goal":"int_mul_neg_left_2_5","proof":["-Int.from_nat(2) * Int.from_nat(5) != -Int.from_nat(2 * 5)"]}
+{"goal":"int_mul_neg_left_2_6","proof":["-Int.from_nat(2) * Int.from_nat(6) != -Int.from_nat(2 * 6)"]}
+{"goal":"int_mul_neg_left_2_7","proof":["-Int.from_nat(2) * Int.from_nat(7) != -Int.from_nat(2 * 7)"]}
+{"goal":"int_mul_neg_left_2_8","proof":["-Int.from_nat(2) * Int.from_nat(8) != -Int.from_nat(2 * 8)"]}
+{"goal":"int_mul_neg_left_2_9","proof":["-Int.from_nat(2) * Int.from_nat(9) != -Int.from_nat(2 * 9)"]}
+{"goal":"int_mul_neg_left_3_1","proof":["-Int.from_nat(3) * Int.from_nat(1) != -Int.from_nat(3 * 1)"]}
+{"goal":"int_mul_neg_left_3_2","proof":["-Int.from_nat(3) * Int.from_nat(2) != -Int.from_nat(3 * 2)"]}
+{"goal":"int_mul_neg_left_3_3","proof":["-Int.from_nat(3) * Int.from_nat(3) != -Int.from_nat(3 * 3)"]}
+{"goal":"int_mul_neg_left_3_4","proof":["-Int.from_nat(3) * Int.from_nat(4) != -Int.from_nat(3 * 4)"]}
+{"goal":"int_mul_neg_left_3_5","proof":["-Int.from_nat(3) * Int.from_nat(5) != -Int.from_nat(3 * 5)"]}
+{"goal":"int_mul_neg_left_3_6","proof":["-Int.from_nat(3) * Int.from_nat(6) != -Int.from_nat(3 * 6)"]}
+{"goal":"int_mul_neg_left_3_7","proof":["-Int.from_nat(3) * Int.from_nat(7) != -Int.from_nat(3 * 7)"]}
+{"goal":"int_mul_neg_left_3_8","proof":["-Int.from_nat(3) * Int.from_nat(8) != -Int.from_nat(3 * 8)"]}
+{"goal":"int_mul_neg_left_3_9","proof":["-Int.from_nat(3) * Int.from_nat(9) != -Int.from_nat(3 * 9)"]}
+{"goal":"int_mul_neg_left_4_1","proof":["-Int.from_nat(4) * Int.from_nat(1) != -Int.from_nat(4 * 1)"]}
+{"goal":"int_mul_neg_left_4_2","proof":["-Int.from_nat(4) * Int.from_nat(2) != -Int.from_nat(4 * 2)"]}
+{"goal":"int_mul_neg_left_4_3","proof":["-Int.from_nat(4) * Int.from_nat(3) != -Int.from_nat(4 * 3)"]}
+{"goal":"int_mul_neg_left_4_4","proof":["-Int.from_nat(4) * Int.from_nat(4) != -Int.from_nat(4 * 4)"]}
+{"goal":"int_mul_neg_left_4_5","proof":["-Int.from_nat(4) * Int.from_nat(5) != -Int.from_nat(4 * 5)"]}
+{"goal":"int_mul_neg_left_4_6","proof":["-Int.from_nat(4) * Int.from_nat(6) != -Int.from_nat(4 * 6)"]}
+{"goal":"int_mul_neg_left_4_7","proof":["-Int.from_nat(4) * Int.from_nat(7) != -Int.from_nat(4 * 7)"]}
+{"goal":"int_mul_neg_left_4_8","proof":["-Int.from_nat(4) * Int.from_nat(8) != -Int.from_nat(4 * 8)"]}
+{"goal":"int_mul_neg_left_4_9","proof":["-Int.from_nat(4) * Int.from_nat(9) != -Int.from_nat(4 * 9)"]}
+{"goal":"int_mul_neg_left_5_1","proof":["-Int.from_nat(5) * Int.from_nat(1) != -Int.from_nat(5 * 1)"]}
+{"goal":"int_mul_neg_left_5_2","proof":["-Int.from_nat(5) * Int.from_nat(2) != -Int.from_nat(5 * 2)"]}
+{"goal":"int_mul_neg_left_5_3","proof":["-Int.from_nat(5) * Int.from_nat(3) != -Int.from_nat(5 * 3)"]}
+{"goal":"int_mul_neg_left_5_4","proof":["-Int.from_nat(5) * Int.from_nat(4) != -Int.from_nat(5 * 4)"]}
+{"goal":"int_mul_neg_left_5_5","proof":["-Int.from_nat(5) * Int.from_nat(5) != -Int.from_nat(5 * 5)"]}
+{"goal":"int_mul_neg_left_5_6","proof":["-Int.from_nat(5) * Int.from_nat(6) != -Int.from_nat(5 * 6)"]}
+{"goal":"int_mul_neg_left_5_7","proof":["-Int.from_nat(5) * Int.from_nat(7) != -Int.from_nat(5 * 7)"]}
+{"goal":"int_mul_neg_left_5_8","proof":["-Int.from_nat(5) * Int.from_nat(8) != -Int.from_nat(5 * 8)"]}
+{"goal":"int_mul_neg_left_5_9","proof":["-Int.from_nat(5) * Int.from_nat(9) != -Int.from_nat(5 * 9)"]}
+{"goal":"int_mul_neg_left_6_1","proof":["-Int.from_nat(6) * Int.from_nat(1) != -Int.from_nat(6 * 1)"]}
+{"goal":"int_mul_neg_left_6_2","proof":["-Int.from_nat(6) * Int.from_nat(2) != -Int.from_nat(6 * 2)"]}
+{"goal":"int_mul_neg_left_6_3","proof":["-Int.from_nat(6) * Int.from_nat(3) != -Int.from_nat(6 * 3)"]}
+{"goal":"int_mul_neg_left_6_4","proof":["-Int.from_nat(6) * Int.from_nat(4) != -Int.from_nat(6 * 4)"]}
+{"goal":"int_mul_neg_left_6_5","proof":["-Int.from_nat(6) * Int.from_nat(5) != -Int.from_nat(6 * 5)"]}
+{"goal":"int_mul_neg_left_6_6","proof":["-Int.from_nat(6) * Int.from_nat(6) != -Int.from_nat(6 * 6)"]}
+{"goal":"int_mul_neg_left_6_7","proof":["-Int.from_nat(6) * Int.from_nat(7) != -Int.from_nat(6 * 7)"]}
+{"goal":"int_mul_neg_left_6_8","proof":["-Int.from_nat(6) * Int.from_nat(8) != -Int.from_nat(6 * 8)"]}
+{"goal":"int_mul_neg_left_6_9","proof":["-Int.from_nat(6) * Int.from_nat(9) != -Int.from_nat(6 * 9)"]}
+{"goal":"int_mul_neg_left_7_1","proof":["-Int.from_nat(7) * Int.from_nat(1) != -Int.from_nat(7 * 1)"]}
+{"goal":"int_mul_neg_left_7_2","proof":["-Int.from_nat(7) * Int.from_nat(2) != -Int.from_nat(7 * 2)"]}
+{"goal":"int_mul_neg_left_7_3","proof":["-Int.from_nat(7) * Int.from_nat(3) != -Int.from_nat(7 * 3)"]}
+{"goal":"int_mul_neg_left_7_4","proof":["-Int.from_nat(7) * Int.from_nat(4) != -Int.from_nat(7 * 4)"]}
+{"goal":"int_mul_neg_left_7_5","proof":["-Int.from_nat(7) * Int.from_nat(5) != -Int.from_nat(7 * 5)"]}
+{"goal":"int_mul_neg_left_7_6","proof":["-Int.from_nat(7) * Int.from_nat(6) != -Int.from_nat(7 * 6)"]}
+{"goal":"int_mul_neg_left_7_7","proof":["-Int.from_nat(7) * Int.from_nat(7) != -Int.from_nat(7 * 7)"]}
+{"goal":"int_mul_neg_left_7_8","proof":["-Int.from_nat(7) * Int.from_nat(8) != -Int.from_nat(7 * 8)"]}
+{"goal":"int_mul_neg_left_7_9","proof":["-Int.from_nat(7) * Int.from_nat(9) != -Int.from_nat(7 * 9)"]}
+{"goal":"int_mul_neg_left_8_1","proof":["-Int.from_nat(8) * Int.from_nat(1) != -Int.from_nat(8 * 1)"]}
+{"goal":"int_mul_neg_left_8_2","proof":["-Int.from_nat(8) * Int.from_nat(2) != -Int.from_nat(8 * 2)"]}
+{"goal":"int_mul_neg_left_8_3","proof":["-Int.from_nat(8) * Int.from_nat(3) != -Int.from_nat(8 * 3)"]}
+{"goal":"int_mul_neg_left_8_4","proof":["-Int.from_nat(8) * Int.from_nat(4) != -Int.from_nat(8 * 4)"]}
+{"goal":"int_mul_neg_left_8_5","proof":["-Int.from_nat(8) * Int.from_nat(5) != -Int.from_nat(8 * 5)"]}
+{"goal":"int_mul_neg_left_8_6","proof":["-Int.from_nat(8) * Int.from_nat(6) != -Int.from_nat(8 * 6)"]}
+{"goal":"int_mul_neg_left_8_7","proof":["-Int.from_nat(8) * Int.from_nat(7) != -Int.from_nat(8 * 7)"]}
+{"goal":"int_mul_neg_left_8_8","proof":["-Int.from_nat(8) * Int.from_nat(8) != -Int.from_nat(8 * 8)"]}
+{"goal":"int_mul_neg_left_8_9","proof":["-Int.from_nat(8) * Int.from_nat(9) != -Int.from_nat(8 * 9)"]}
+{"goal":"int_mul_neg_left_9_1","proof":["-Int.from_nat(9) * Int.from_nat(1) != -Int.from_nat(9 * 1)"]}
+{"goal":"int_mul_neg_left_9_2","proof":["-Int.from_nat(9) * Int.from_nat(2) != -Int.from_nat(9 * 2)"]}
+{"goal":"int_mul_neg_left_9_3","proof":["-Int.from_nat(9) * Int.from_nat(3) != -Int.from_nat(9 * 3)"]}
+{"goal":"int_mul_neg_left_9_4","proof":["-Int.from_nat(9) * Int.from_nat(4) != -Int.from_nat(9 * 4)"]}
+{"goal":"int_mul_neg_left_9_5","proof":["-Int.from_nat(9) * Int.from_nat(5) != -Int.from_nat(9 * 5)"]}
+{"goal":"int_mul_neg_left_9_6","proof":["-Int.from_nat(9) * Int.from_nat(6) != -Int.from_nat(9 * 6)"]}
+{"goal":"int_mul_neg_left_9_7","proof":["-Int.from_nat(9) * Int.from_nat(7) != -Int.from_nat(9 * 7)"]}
+{"goal":"int_mul_neg_left_9_8","proof":["-Int.from_nat(9) * Int.from_nat(8) != -Int.from_nat(9 * 8)"]}
+{"goal":"int_mul_neg_left_9_9","proof":["-Int.from_nat(9) * Int.from_nat(9) != -Int.from_nat(9 * 9)"]}
+{"goal":"int_mul_neg_right_1_1","proof":["Int.from_nat(1) * -Int.from_nat(1) != -Int.from_nat(1 * 1)"]}
+{"goal":"int_mul_neg_right_1_2","proof":["Int.from_nat(1) * -Int.from_nat(2) != -Int.from_nat(1 * 2)"]}
+{"goal":"int_mul_neg_right_1_3","proof":["Int.from_nat(1) * -Int.from_nat(3) != -Int.from_nat(1 * 3)"]}
+{"goal":"int_mul_neg_right_1_4","proof":["Int.from_nat(1) * -Int.from_nat(4) != -Int.from_nat(1 * 4)"]}
+{"goal":"int_mul_neg_right_1_5","proof":["Int.from_nat(1) * -Int.from_nat(5) != -Int.from_nat(1 * 5)"]}
+{"goal":"int_mul_neg_right_1_6","proof":["Int.from_nat(1) * -Int.from_nat(6) != -Int.from_nat(1 * 6)"]}
+{"goal":"int_mul_neg_right_1_7","proof":["Int.from_nat(1) * -Int.from_nat(7) != -Int.from_nat(1 * 7)"]}
+{"goal":"int_mul_neg_right_1_8","proof":["Int.from_nat(1) * -Int.from_nat(8) != -Int.from_nat(1 * 8)"]}
+{"goal":"int_mul_neg_right_1_9","proof":["Int.from_nat(1) * -Int.from_nat(9) != -Int.from_nat(1 * 9)"]}
+{"goal":"int_mul_neg_right_2_1","proof":["Int.from_nat(2) * -Int.from_nat(1) != -Int.from_nat(2 * 1)"]}
+{"goal":"int_mul_neg_right_2_2","proof":["Int.from_nat(2) * -Int.from_nat(2) != -Int.from_nat(2 * 2)"]}
+{"goal":"int_mul_neg_right_2_3","proof":["Int.from_nat(2) * -Int.from_nat(3) != -Int.from_nat(2 * 3)"]}
+{"goal":"int_mul_neg_right_2_4","proof":["Int.from_nat(2) * -Int.from_nat(4) != -Int.from_nat(2 * 4)"]}
+{"goal":"int_mul_neg_right_2_5","proof":["Int.from_nat(2) * -Int.from_nat(5) != -Int.from_nat(2 * 5)"]}
+{"goal":"int_mul_neg_right_2_6","proof":["Int.from_nat(2) * -Int.from_nat(6) != -Int.from_nat(2 * 6)"]}
+{"goal":"int_mul_neg_right_2_7","proof":["Int.from_nat(2) * -Int.from_nat(7) != -Int.from_nat(2 * 7)"]}
+{"goal":"int_mul_neg_right_2_8","proof":["Int.from_nat(2) * -Int.from_nat(8) != -Int.from_nat(2 * 8)"]}
+{"goal":"int_mul_neg_right_2_9","proof":["Int.from_nat(2) * -Int.from_nat(9) != -Int.from_nat(2 * 9)"]}
+{"goal":"int_mul_neg_right_3_1","proof":["Int.from_nat(3) * -Int.from_nat(1) != -Int.from_nat(3 * 1)"]}
+{"goal":"int_mul_neg_right_3_2","proof":["Int.from_nat(3) * -Int.from_nat(2) != -Int.from_nat(3 * 2)"]}
+{"goal":"int_mul_neg_right_3_3","proof":["Int.from_nat(3) * -Int.from_nat(3) != -Int.from_nat(3 * 3)"]}
+{"goal":"int_mul_neg_right_3_4","proof":["Int.from_nat(3) * -Int.from_nat(4) != -Int.from_nat(3 * 4)"]}
+{"goal":"int_mul_neg_right_3_5","proof":["Int.from_nat(3) * -Int.from_nat(5) != -Int.from_nat(3 * 5)"]}
+{"goal":"int_mul_neg_right_3_6","proof":["Int.from_nat(3) * -Int.from_nat(6) != -Int.from_nat(3 * 6)"]}
+{"goal":"int_mul_neg_right_3_7","proof":["Int.from_nat(3) * -Int.from_nat(7) != -Int.from_nat(3 * 7)"]}
+{"goal":"int_mul_neg_right_3_8","proof":["Int.from_nat(3) * -Int.from_nat(8) != -Int.from_nat(3 * 8)"]}
+{"goal":"int_mul_neg_right_3_9","proof":["Int.from_nat(3) * -Int.from_nat(9) != -Int.from_nat(3 * 9)"]}
+{"goal":"int_mul_neg_right_4_1","proof":["Int.from_nat(4) * -Int.from_nat(1) != -Int.from_nat(4 * 1)"]}
+{"goal":"int_mul_neg_right_4_2","proof":["Int.from_nat(4) * -Int.from_nat(2) != -Int.from_nat(4 * 2)"]}
+{"goal":"int_mul_neg_right_4_3","proof":["Int.from_nat(4) * -Int.from_nat(3) != -Int.from_nat(4 * 3)"]}
+{"goal":"int_mul_neg_right_4_4","proof":["Int.from_nat(4) * -Int.from_nat(4) != -Int.from_nat(4 * 4)"]}
+{"goal":"int_mul_neg_right_4_5","proof":["Int.from_nat(4) * -Int.from_nat(5) != -Int.from_nat(4 * 5)"]}
+{"goal":"int_mul_neg_right_4_6","proof":["Int.from_nat(4) * -Int.from_nat(6) != -Int.from_nat(4 * 6)"]}
+{"goal":"int_mul_neg_right_4_7","proof":["Int.from_nat(4) * -Int.from_nat(7) != -Int.from_nat(4 * 7)"]}
+{"goal":"int_mul_neg_right_4_8","proof":["Int.from_nat(4) * -Int.from_nat(8) != -Int.from_nat(4 * 8)"]}
+{"goal":"int_mul_neg_right_4_9","proof":["Int.from_nat(4) * -Int.from_nat(9) != -Int.from_nat(4 * 9)"]}
+{"goal":"int_mul_neg_right_5_1","proof":["Int.from_nat(5) * -Int.from_nat(1) != -Int.from_nat(5 * 1)"]}
+{"goal":"int_mul_neg_right_5_2","proof":["Int.from_nat(5) * -Int.from_nat(2) != -Int.from_nat(5 * 2)"]}
+{"goal":"int_mul_neg_right_5_3","proof":["Int.from_nat(5) * -Int.from_nat(3) != -Int.from_nat(5 * 3)"]}
+{"goal":"int_mul_neg_right_5_4","proof":["Int.from_nat(5) * -Int.from_nat(4) != -Int.from_nat(5 * 4)"]}
+{"goal":"int_mul_neg_right_5_5","proof":["Int.from_nat(5) * -Int.from_nat(5) != -Int.from_nat(5 * 5)"]}
+{"goal":"int_mul_neg_right_5_6","proof":["Int.from_nat(5) * -Int.from_nat(6) != -Int.from_nat(5 * 6)"]}
+{"goal":"int_mul_neg_right_5_7","proof":["Int.from_nat(5) * -Int.from_nat(7) != -Int.from_nat(5 * 7)"]}
+{"goal":"int_mul_neg_right_5_8","proof":["Int.from_nat(5) * -Int.from_nat(8) != -Int.from_nat(5 * 8)"]}
+{"goal":"int_mul_neg_right_5_9","proof":["Int.from_nat(5) * -Int.from_nat(9) != -Int.from_nat(5 * 9)"]}
+{"goal":"int_mul_neg_right_6_1","proof":["Int.from_nat(6) * -Int.from_nat(1) != -Int.from_nat(6 * 1)"]}
+{"goal":"int_mul_neg_right_6_2","proof":["Int.from_nat(6) * -Int.from_nat(2) != -Int.from_nat(6 * 2)"]}
+{"goal":"int_mul_neg_right_6_3","proof":["Int.from_nat(6) * -Int.from_nat(3) != -Int.from_nat(6 * 3)"]}
+{"goal":"int_mul_neg_right_6_4","proof":["Int.from_nat(6) * -Int.from_nat(4) != -Int.from_nat(6 * 4)"]}
+{"goal":"int_mul_neg_right_6_5","proof":["Int.from_nat(6) * -Int.from_nat(5) != -Int.from_nat(6 * 5)"]}
+{"goal":"int_mul_neg_right_6_6","proof":["Int.from_nat(6) * -Int.from_nat(6) != -Int.from_nat(6 * 6)"]}
+{"goal":"int_mul_neg_right_6_7","proof":["Int.from_nat(6) * -Int.from_nat(7) != -Int.from_nat(6 * 7)"]}
+{"goal":"int_mul_neg_right_6_8","proof":["Int.from_nat(6) * -Int.from_nat(8) != -Int.from_nat(6 * 8)"]}
+{"goal":"int_mul_neg_right_6_9","proof":["Int.from_nat(6) * -Int.from_nat(9) != -Int.from_nat(6 * 9)"]}
+{"goal":"int_mul_neg_right_7_1","proof":["Int.from_nat(7) * -Int.from_nat(1) != -Int.from_nat(7 * 1)"]}
+{"goal":"int_mul_neg_right_7_2","proof":["Int.from_nat(7) * -Int.from_nat(2) != -Int.from_nat(7 * 2)"]}
+{"goal":"int_mul_neg_right_7_3","proof":["Int.from_nat(7) * -Int.from_nat(3) != -Int.from_nat(7 * 3)"]}
+{"goal":"int_mul_neg_right_7_4","proof":["Int.from_nat(7) * -Int.from_nat(4) != -Int.from_nat(7 * 4)"]}
+{"goal":"int_mul_neg_right_7_5","proof":["Int.from_nat(7) * -Int.from_nat(5) != -Int.from_nat(7 * 5)"]}
+{"goal":"int_mul_neg_right_7_6","proof":["Int.from_nat(7) * -Int.from_nat(6) != -Int.from_nat(7 * 6)"]}
+{"goal":"int_mul_neg_right_7_7","proof":["Int.from_nat(7) * -Int.from_nat(7) != -Int.from_nat(7 * 7)"]}
+{"goal":"int_mul_neg_right_7_8","proof":["Int.from_nat(7) * -Int.from_nat(8) != -Int.from_nat(7 * 8)"]}
+{"goal":"int_mul_neg_right_7_9","proof":["Int.from_nat(7) * -Int.from_nat(9) != -Int.from_nat(7 * 9)"]}
+{"goal":"int_mul_neg_right_8_1","proof":["Int.from_nat(8) * -Int.from_nat(1) != -Int.from_nat(8 * 1)"]}
+{"goal":"int_mul_neg_right_8_2","proof":["Int.from_nat(8) * -Int.from_nat(2) != -Int.from_nat(8 * 2)"]}
+{"goal":"int_mul_neg_right_8_3","proof":["Int.from_nat(8) * -Int.from_nat(3) != -Int.from_nat(8 * 3)"]}
+{"goal":"int_mul_neg_right_8_4","proof":["Int.from_nat(8) * -Int.from_nat(4) != -Int.from_nat(8 * 4)"]}
+{"goal":"int_mul_neg_right_8_5","proof":["Int.from_nat(8) * -Int.from_nat(5) != -Int.from_nat(8 * 5)"]}
+{"goal":"int_mul_neg_right_8_6","proof":["Int.from_nat(8) * -Int.from_nat(6) != -Int.from_nat(8 * 6)"]}
+{"goal":"int_mul_neg_right_8_7","proof":["Int.from_nat(8) * -Int.from_nat(7) != -Int.from_nat(8 * 7)"]}
+{"goal":"int_mul_neg_right_8_8","proof":["Int.from_nat(8) * -Int.from_nat(8) != -Int.from_nat(8 * 8)"]}
+{"goal":"int_mul_neg_right_8_9","proof":["Int.from_nat(8) * -Int.from_nat(9) != -Int.from_nat(8 * 9)"]}
+{"goal":"int_mul_neg_right_9_1","proof":["Int.from_nat(9) * -Int.from_nat(1) != -Int.from_nat(9 * 1)"]}
+{"goal":"int_mul_neg_right_9_2","proof":["Int.from_nat(9) * -Int.from_nat(2) != -Int.from_nat(9 * 2)"]}
+{"goal":"int_mul_neg_right_9_3","proof":["Int.from_nat(9) * -Int.from_nat(3) != -Int.from_nat(9 * 3)"]}
+{"goal":"int_mul_neg_right_9_4","proof":["Int.from_nat(9) * -Int.from_nat(4) != -Int.from_nat(9 * 4)"]}
+{"goal":"int_mul_neg_right_9_5","proof":["Int.from_nat(9) * -Int.from_nat(5) != -Int.from_nat(9 * 5)"]}
+{"goal":"int_mul_neg_right_9_6","proof":["Int.from_nat(9) * -Int.from_nat(6) != -Int.from_nat(9 * 6)"]}
+{"goal":"int_mul_neg_right_9_7","proof":["Int.from_nat(9) * -Int.from_nat(7) != -Int.from_nat(9 * 7)"]}
+{"goal":"int_mul_neg_right_9_8","proof":["Int.from_nat(9) * -Int.from_nat(8) != -Int.from_nat(9 * 8)"]}
+{"goal":"int_mul_neg_right_9_9","proof":["Int.from_nat(9) * -Int.from_nat(9) != -Int.from_nat(9 * 9)"]}
+{"goal":"int_mul_neg_neg_1_1","proof":["-Int.from_nat(1) * -Int.from_nat(1) != Int.from_nat(1 * 1)"]}
+{"goal":"int_mul_neg_neg_1_2","proof":["-Int.from_nat(1) * -Int.from_nat(2) != Int.from_nat(1 * 2)"]}
+{"goal":"int_mul_neg_neg_1_3","proof":["-Int.from_nat(1) * -Int.from_nat(3) != Int.from_nat(1 * 3)"]}
+{"goal":"int_mul_neg_neg_1_4","proof":["-Int.from_nat(1) * -Int.from_nat(4) != Int.from_nat(1 * 4)"]}
+{"goal":"int_mul_neg_neg_1_5","proof":["-Int.from_nat(1) * -Int.from_nat(5) != Int.from_nat(1 * 5)"]}
+{"goal":"int_mul_neg_neg_1_6","proof":["-Int.from_nat(1) * -Int.from_nat(6) != Int.from_nat(1 * 6)"]}
+{"goal":"int_mul_neg_neg_1_7","proof":["-Int.from_nat(1) * -Int.from_nat(7) != Int.from_nat(1 * 7)"]}
+{"goal":"int_mul_neg_neg_1_8","proof":["-Int.from_nat(1) * -Int.from_nat(8) != Int.from_nat(1 * 8)"]}
+{"goal":"int_mul_neg_neg_1_9","proof":["-Int.from_nat(1) * -Int.from_nat(9) != Int.from_nat(1 * 9)"]}
+{"goal":"int_mul_neg_neg_2_1","proof":["-Int.from_nat(2) * -Int.from_nat(1) != Int.from_nat(2 * 1)"]}
+{"goal":"int_mul_neg_neg_2_2","proof":["-Int.from_nat(2) * -Int.from_nat(2) != Int.from_nat(2 * 2)"]}
+{"goal":"int_mul_neg_neg_2_3","proof":["-Int.from_nat(2) * -Int.from_nat(3) != Int.from_nat(2 * 3)"]}
+{"goal":"int_mul_neg_neg_2_4","proof":["-Int.from_nat(2) * -Int.from_nat(4) != Int.from_nat(2 * 4)"]}
+{"goal":"int_mul_neg_neg_2_5","proof":["-Int.from_nat(2) * -Int.from_nat(5) != Int.from_nat(2 * 5)"]}
+{"goal":"int_mul_neg_neg_2_6","proof":["-Int.from_nat(2) * -Int.from_nat(6) != Int.from_nat(2 * 6)"]}
+{"goal":"int_mul_neg_neg_2_7","proof":["-Int.from_nat(2) * -Int.from_nat(7) != Int.from_nat(2 * 7)"]}
+{"goal":"int_mul_neg_neg_2_8","proof":["-Int.from_nat(2) * -Int.from_nat(8) != Int.from_nat(2 * 8)"]}
+{"goal":"int_mul_neg_neg_2_9","proof":["-Int.from_nat(2) * -Int.from_nat(9) != Int.from_nat(2 * 9)"]}
+{"goal":"int_mul_neg_neg_3_1","proof":["-Int.from_nat(3) * -Int.from_nat(1) != Int.from_nat(3 * 1)"]}
+{"goal":"int_mul_neg_neg_3_2","proof":["-Int.from_nat(3) * -Int.from_nat(2) != Int.from_nat(3 * 2)"]}
+{"goal":"int_mul_neg_neg_3_3","proof":["-Int.from_nat(3) * -Int.from_nat(3) != Int.from_nat(3 * 3)"]}
+{"goal":"int_mul_neg_neg_3_4","proof":["-Int.from_nat(3) * -Int.from_nat(4) != Int.from_nat(3 * 4)"]}
+{"goal":"int_mul_neg_neg_3_5","proof":["-Int.from_nat(3) * -Int.from_nat(5) != Int.from_nat(3 * 5)"]}
+{"goal":"int_mul_neg_neg_3_6","proof":["-Int.from_nat(3) * -Int.from_nat(6) != Int.from_nat(3 * 6)"]}
+{"goal":"int_mul_neg_neg_3_7","proof":["-Int.from_nat(3) * -Int.from_nat(7) != Int.from_nat(3 * 7)"]}
+{"goal":"int_mul_neg_neg_3_8","proof":["-Int.from_nat(3) * -Int.from_nat(8) != Int.from_nat(3 * 8)"]}
+{"goal":"int_mul_neg_neg_3_9","proof":["-Int.from_nat(3) * -Int.from_nat(9) != Int.from_nat(3 * 9)"]}
+{"goal":"int_mul_neg_neg_4_1","proof":["-Int.from_nat(4) * -Int.from_nat(1) != Int.from_nat(4 * 1)"]}
+{"goal":"int_mul_neg_neg_4_2","proof":["-Int.from_nat(4) * -Int.from_nat(2) != Int.from_nat(4 * 2)"]}
+{"goal":"int_mul_neg_neg_4_3","proof":["-Int.from_nat(4) * -Int.from_nat(3) != Int.from_nat(4 * 3)"]}
+{"goal":"int_mul_neg_neg_4_4","proof":["-Int.from_nat(4) * -Int.from_nat(4) != Int.from_nat(4 * 4)"]}
+{"goal":"int_mul_neg_neg_4_5","proof":["-Int.from_nat(4) * -Int.from_nat(5) != Int.from_nat(4 * 5)"]}
+{"goal":"int_mul_neg_neg_4_6","proof":["-Int.from_nat(4) * -Int.from_nat(6) != Int.from_nat(4 * 6)"]}
+{"goal":"int_mul_neg_neg_4_7","proof":["-Int.from_nat(4) * -Int.from_nat(7) != Int.from_nat(4 * 7)"]}
+{"goal":"int_mul_neg_neg_4_8","proof":["-Int.from_nat(4) * -Int.from_nat(8) != Int.from_nat(4 * 8)"]}
+{"goal":"int_mul_neg_neg_4_9","proof":["-Int.from_nat(4) * -Int.from_nat(9) != Int.from_nat(4 * 9)"]}
+{"goal":"int_mul_neg_neg_5_1","proof":["-Int.from_nat(5) * -Int.from_nat(1) != Int.from_nat(5 * 1)"]}
+{"goal":"int_mul_neg_neg_5_2","proof":["-Int.from_nat(5) * -Int.from_nat(2) != Int.from_nat(5 * 2)"]}
+{"goal":"int_mul_neg_neg_5_3","proof":["-Int.from_nat(5) * -Int.from_nat(3) != Int.from_nat(5 * 3)"]}
+{"goal":"int_mul_neg_neg_5_4","proof":["-Int.from_nat(5) * -Int.from_nat(4) != Int.from_nat(5 * 4)"]}
+{"goal":"int_mul_neg_neg_5_5","proof":["-Int.from_nat(5) * -Int.from_nat(5) != Int.from_nat(5 * 5)"]}
+{"goal":"int_mul_neg_neg_5_6","proof":["-Int.from_nat(5) * -Int.from_nat(6) != Int.from_nat(5 * 6)"]}
+{"goal":"int_mul_neg_neg_5_7","proof":["-Int.from_nat(5) * -Int.from_nat(7) != Int.from_nat(5 * 7)"]}
+{"goal":"int_mul_neg_neg_5_8","proof":["-Int.from_nat(5) * -Int.from_nat(8) != Int.from_nat(5 * 8)"]}
+{"goal":"int_mul_neg_neg_5_9","proof":["-Int.from_nat(5) * -Int.from_nat(9) != Int.from_nat(5 * 9)"]}
+{"goal":"int_mul_neg_neg_6_1","proof":["-Int.from_nat(6) * -Int.from_nat(1) != Int.from_nat(6 * 1)"]}
+{"goal":"int_mul_neg_neg_6_2","proof":["-Int.from_nat(6) * -Int.from_nat(2) != Int.from_nat(6 * 2)"]}
+{"goal":"int_mul_neg_neg_6_3","proof":["-Int.from_nat(6) * -Int.from_nat(3) != Int.from_nat(6 * 3)"]}
+{"goal":"int_mul_neg_neg_6_4","proof":["-Int.from_nat(6) * -Int.from_nat(4) != Int.from_nat(6 * 4)"]}
+{"goal":"int_mul_neg_neg_6_5","proof":["-Int.from_nat(6) * -Int.from_nat(5) != Int.from_nat(6 * 5)"]}
+{"goal":"int_mul_neg_neg_6_6","proof":["-Int.from_nat(6) * -Int.from_nat(6) != Int.from_nat(6 * 6)"]}
+{"goal":"int_mul_neg_neg_6_7","proof":["-Int.from_nat(6) * -Int.from_nat(7) != Int.from_nat(6 * 7)"]}
+{"goal":"int_mul_neg_neg_6_8","proof":["-Int.from_nat(6) * -Int.from_nat(8) != Int.from_nat(6 * 8)"]}
+{"goal":"int_mul_neg_neg_6_9","proof":["-Int.from_nat(6) * -Int.from_nat(9) != Int.from_nat(6 * 9)"]}
+{"goal":"int_mul_neg_neg_7_1","proof":["-Int.from_nat(7) * -Int.from_nat(1) != Int.from_nat(7 * 1)"]}
+{"goal":"int_mul_neg_neg_7_2","proof":["-Int.from_nat(7) * -Int.from_nat(2) != Int.from_nat(7 * 2)"]}
+{"goal":"int_mul_neg_neg_7_3","proof":["-Int.from_nat(7) * -Int.from_nat(3) != Int.from_nat(7 * 3)"]}
+{"goal":"int_mul_neg_neg_7_4","proof":["-Int.from_nat(7) * -Int.from_nat(4) != Int.from_nat(7 * 4)"]}
+{"goal":"int_mul_neg_neg_7_5","proof":["-Int.from_nat(7) * -Int.from_nat(5) != Int.from_nat(7 * 5)"]}
+{"goal":"int_mul_neg_neg_7_6","proof":["-Int.from_nat(7) * -Int.from_nat(6) != Int.from_nat(7 * 6)"]}
+{"goal":"int_mul_neg_neg_7_7","proof":["-Int.from_nat(7) * -Int.from_nat(7) != Int.from_nat(7 * 7)"]}
+{"goal":"int_mul_neg_neg_7_8","proof":["-Int.from_nat(7) * -Int.from_nat(8) != Int.from_nat(7 * 8)"]}
+{"goal":"int_mul_neg_neg_7_9","proof":["-Int.from_nat(7) * -Int.from_nat(9) != Int.from_nat(7 * 9)"]}
+{"goal":"int_mul_neg_neg_8_1","proof":["-Int.from_nat(8) * -Int.from_nat(1) != Int.from_nat(8 * 1)"]}
+{"goal":"int_mul_neg_neg_8_2","proof":["-Int.from_nat(8) * -Int.from_nat(2) != Int.from_nat(8 * 2)"]}
+{"goal":"int_mul_neg_neg_8_3","proof":["-Int.from_nat(8) * -Int.from_nat(3) != Int.from_nat(8 * 3)"]}
+{"goal":"int_mul_neg_neg_8_4","proof":["-Int.from_nat(8) * -Int.from_nat(4) != Int.from_nat(8 * 4)"]}
+{"goal":"int_mul_neg_neg_8_5","proof":["-Int.from_nat(8) * -Int.from_nat(5) != Int.from_nat(8 * 5)"]}
+{"goal":"int_mul_neg_neg_8_6","proof":["-Int.from_nat(8) * -Int.from_nat(6) != Int.from_nat(8 * 6)"]}
+{"goal":"int_mul_neg_neg_8_7","proof":["-Int.from_nat(8) * -Int.from_nat(7) != Int.from_nat(8 * 7)"]}
+{"goal":"int_mul_neg_neg_8_8","proof":["-Int.from_nat(8) * -Int.from_nat(8) != Int.from_nat(8 * 8)"]}
+{"goal":"int_mul_neg_neg_8_9","proof":["-Int.from_nat(8) * -Int.from_nat(9) != Int.from_nat(8 * 9)"]}
+{"goal":"int_mul_neg_neg_9_1","proof":["-Int.from_nat(9) * -Int.from_nat(1) != Int.from_nat(9 * 1)"]}
+{"goal":"int_mul_neg_neg_9_2","proof":["-Int.from_nat(9) * -Int.from_nat(2) != Int.from_nat(9 * 2)"]}
+{"goal":"int_mul_neg_neg_9_3","proof":["-Int.from_nat(9) * -Int.from_nat(3) != Int.from_nat(9 * 3)"]}
+{"goal":"int_mul_neg_neg_9_4","proof":["-Int.from_nat(9) * -Int.from_nat(4) != Int.from_nat(9 * 4)"]}
+{"goal":"int_mul_neg_neg_9_5","proof":["-Int.from_nat(9) * -Int.from_nat(5) != Int.from_nat(9 * 5)"]}
+{"goal":"int_mul_neg_neg_9_6","proof":["-Int.from_nat(9) * -Int.from_nat(6) != Int.from_nat(9 * 6)"]}
+{"goal":"int_mul_neg_neg_9_7","proof":["-Int.from_nat(9) * -Int.from_nat(7) != Int.from_nat(9 * 7)"]}
+{"goal":"int_mul_neg_neg_9_8","proof":["-Int.from_nat(9) * -Int.from_nat(8) != Int.from_nat(9 * 8)"]}
+{"goal":"int_mul_neg_neg_9_9","proof":["-Int.from_nat(9) * -Int.from_nat(9) != Int.from_nat(9 * 9)"]}
+{"goal":"int_mul_zero_zero","proof":[]}
+{"goal":"int_mul_zero_pos_1","proof":[]}
+{"goal":"int_mul_pos_zero_1","proof":[]}
+{"goal":"int_mul_zero_neg_1","proof":[]}
+{"goal":"int_mul_neg_zero_1","proof":[]}
+{"goal":"int_mul_zero_pos_2","proof":[]}
+{"goal":"int_mul_pos_zero_2","proof":[]}
+{"goal":"int_mul_zero_neg_2","proof":[]}
+{"goal":"int_mul_neg_zero_2","proof":[]}
+{"goal":"int_mul_zero_pos_3","proof":[]}
+{"goal":"int_mul_pos_zero_3","proof":[]}
+{"goal":"int_mul_zero_neg_3","proof":[]}
+{"goal":"int_mul_neg_zero_3","proof":[]}
+{"goal":"int_mul_zero_pos_4","proof":[]}
+{"goal":"int_mul_pos_zero_4","proof":[]}
+{"goal":"int_mul_zero_neg_4","proof":[]}
+{"goal":"int_mul_neg_zero_4","proof":[]}
+{"goal":"int_mul_zero_pos_5","proof":[]}
+{"goal":"int_mul_pos_zero_5","proof":[]}
+{"goal":"int_mul_zero_neg_5","proof":[]}
+{"goal":"int_mul_neg_zero_5","proof":[]}
+{"goal":"int_mul_zero_pos_6","proof":[]}
+{"goal":"int_mul_pos_zero_6","proof":[]}
+{"goal":"int_mul_zero_neg_6","proof":[]}
+{"goal":"int_mul_neg_zero_6","proof":[]}
+{"goal":"int_mul_zero_pos_7","proof":[]}
+{"goal":"int_mul_pos_zero_7","proof":[]}
+{"goal":"int_mul_zero_neg_7","proof":[]}
+{"goal":"int_mul_neg_zero_7","proof":[]}
+{"goal":"int_mul_zero_pos_8","proof":[]}
+{"goal":"int_mul_pos_zero_8","proof":[]}
+{"goal":"int_mul_zero_neg_8","proof":[]}
+{"goal":"int_mul_neg_zero_8","proof":[]}
+{"goal":"int_mul_zero_pos_9","proof":[]}
+{"goal":"int_mul_pos_zero_9","proof":[]}
+{"goal":"int_mul_zero_neg_9","proof":[]}
+{"goal":"int_mul_neg_zero_9","proof":[]}
