@@ -578,3 +578,237 @@ theorem join_meet_distrib_right[S: DistribLattice](a: S, b: S, c: S) {
     join_comm(c, a)
     join_comm(c, b)
 }
+
+/// An infimum is below its left argument.
+theorem inf_le_left[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) <= a
+} by {
+    meet_lte_left(a, b)
+}
+
+/// An infimum is below its right argument.
+theorem inf_le_right[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) <= b
+} by {
+    meet_lte_right(a, b)
+}
+
+/// A common lower bound is below the infimum.
+theorem le_inf[S: MeetSemilattice](c: S, a: S, b: S) {
+    c <= a and c <= b implies c <= a.meet(b)
+} by {
+    if c <= a and c <= b {
+        lte_meet_of_bounds(c, a, b)
+        c <= a.meet(b)
+    }
+}
+
+/// Being below an infimum is equivalent to being below each argument.
+theorem le_inf_iff[S: MeetSemilattice](c: S, a: S, b: S) {
+    c <= a.meet(b) = (c <= a and c <= b)
+} by {
+    lte_meet_iff(c, a, b)
+}
+
+/// The left argument is below the supremum.
+theorem le_sup_left[S: JoinSemilattice](a: S, b: S) {
+    a <= a.join(b)
+} by {
+    lte_join_left(a, b)
+}
+
+/// The right argument is below the supremum.
+theorem le_sup_right[S: JoinSemilattice](a: S, b: S) {
+    b <= a.join(b)
+} by {
+    lte_join_right(a, b)
+}
+
+/// A supremum is below every common upper bound.
+theorem sup_le[S: JoinSemilattice](a: S, b: S, c: S) {
+    a <= c and b <= c implies a.join(b) <= c
+} by {
+    if a <= c and b <= c {
+        join_lte_of_bounds(a, b, c)
+        a.join(b) <= c
+    }
+}
+
+/// A supremum is below a point exactly when each argument is below that point.
+theorem sup_le_iff[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b) <= c = (a <= c and b <= c)
+} by {
+    join_lte_iff(a, b, c)
+}
+
+/// Infimum is commutative.
+theorem inf_comm[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) = b.meet(a)
+} by {
+    meet_comm(a, b)
+}
+
+/// Supremum is commutative.
+theorem sup_comm[S: JoinSemilattice](a: S, b: S) {
+    a.join(b) = b.join(a)
+} by {
+    join_comm(a, b)
+}
+
+/// Infimum is associative.
+theorem inf_assoc[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b).meet(c) = a.meet(b.meet(c))
+} by {
+    meet_assoc(a, b, c)
+}
+
+/// Supremum is associative.
+theorem sup_assoc[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b).join(c) = a.join(b.join(c))
+} by {
+    join_assoc(a, b, c)
+}
+
+/// Infimum is idempotent.
+theorem inf_idem[S: MeetSemilattice](a: S) {
+    a.meet(a) = a
+} by {
+    meet_idem(a)
+}
+
+/// Supremum is idempotent.
+theorem sup_idem[S: JoinSemilattice](a: S) {
+    a.join(a) = a
+} by {
+    join_idem(a)
+}
+
+/// Infimum is monotone in both arguments.
+theorem inf_le_inf[S: MeetSemilattice](a: S, b: S, c: S, d: S) {
+    a <= b and c <= d implies a.meet(c) <= b.meet(d)
+} by {
+    if a <= b and c <= d {
+        meet_lte_meet(a, b, c, d)
+        a.meet(c) <= b.meet(d)
+    }
+}
+
+/// Supremum is monotone in both arguments.
+theorem sup_le_sup[S: JoinSemilattice](a: S, b: S, c: S, d: S) {
+    a <= b and c <= d implies a.join(c) <= b.join(d)
+} by {
+    if a <= b and c <= d {
+        join_lte_join(a, b, c, d)
+        a.join(c) <= b.join(d)
+    }
+}
+
+/// Infimum is monotone in the left argument.
+theorem inf_le_inf_left[S: MeetSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.meet(c) <= b.meet(c)
+} by {
+    if a <= b {
+        meet_lte_meet_left(a, b, c)
+        a.meet(c) <= b.meet(c)
+    }
+}
+
+/// Infimum is monotone in the right argument.
+theorem inf_le_inf_right[S: MeetSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.meet(b) <= a.meet(c)
+} by {
+    if b <= c {
+        meet_lte_meet_right(a, b, c)
+        a.meet(b) <= a.meet(c)
+    }
+}
+
+/// Supremum is monotone in the left argument.
+theorem sup_le_sup_left[S: JoinSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.join(c) <= b.join(c)
+} by {
+    if a <= b {
+        join_lte_join_left(a, b, c)
+        a.join(c) <= b.join(c)
+    }
+}
+
+/// Supremum is monotone in the right argument.
+theorem sup_le_sup_right[S: JoinSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.join(b) <= a.join(c)
+} by {
+    if b <= c {
+        join_lte_join_right(a, b, c)
+        a.join(b) <= a.join(c)
+    }
+}
+
+/// An infimum equals its left argument exactly when the left argument is below the right.
+theorem inf_eq_left_iff[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) = a = (a <= b)
+} by {
+    meet_eq_left_iff_lte(a, b)
+}
+
+/// An infimum equals its right argument exactly when the right argument is below the left.
+theorem inf_eq_right_iff[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) = b = (b <= a)
+} by {
+    meet_eq_right_iff_lte(a, b)
+}
+
+/// A supremum equals its left argument exactly when the right argument is below the left.
+theorem sup_eq_left_iff[S: JoinSemilattice](a: S, b: S) {
+    a.join(b) = a = (b <= a)
+} by {
+    join_eq_left_iff_lte(a, b)
+}
+
+/// A supremum equals its right argument exactly when the left argument is below the right.
+theorem sup_eq_right_iff[S: JoinSemilattice](a: S, b: S) {
+    a.join(b) = b = (a <= b)
+} by {
+    join_eq_right_iff_lte(a, b)
+}
+
+/// Infimum absorbs a supremum on the right.
+theorem inf_sup_self[S: Lattice](a: S, b: S) {
+    a.meet(a.join(b)) = a
+} by {
+    meet_absorb_join(a, b)
+}
+
+/// Supremum absorbs an infimum on the right.
+theorem sup_inf_self[S: Lattice](a: S, b: S) {
+    a.join(a.meet(b)) = a
+} by {
+    join_absorb_meet(a, b)
+}
+
+/// Infimum distributes over supremum on the left.
+theorem inf_sup_left[S: DistribLattice](a: S, b: S, c: S) {
+    a.meet(b.join(c)) = a.meet(b).join(a.meet(c))
+} by {
+    meet_join_distrib_left(a, b, c)
+}
+
+/// Supremum distributes over infimum on the left.
+theorem sup_inf_left[S: DistribLattice](a: S, b: S, c: S) {
+    a.join(b.meet(c)) = a.join(b).meet(a.join(c))
+} by {
+    join_meet_distrib_left(a, b, c)
+}
+
+/// Infimum distributes over supremum on the right.
+theorem inf_sup_right[S: DistribLattice](a: S, b: S, c: S) {
+    a.join(b).meet(c) = a.meet(c).join(b.meet(c))
+} by {
+    meet_join_distrib_right(a, b, c)
+}
+
+/// Supremum distributes over infimum on the right.
+theorem sup_inf_right[S: DistribLattice](a: S, b: S, c: S) {
+    a.meet(b).join(c) = a.join(c).meet(b.join(c))
+} by {
+    join_meet_distrib_right(a, b, c)
+}
