@@ -3,7 +3,9 @@
   "modules": {
     "add": "63496f5fa02f250a2bf9857cac1ee67281fac403f2bd3e2efea4a2df17919f48",
     "add_comm_group": "48183ba77a0f1d6ea54318268d506a01debcdd51f33f3434dcf7b19341a8ad59",
+    "add_comm_group_hom": "b6f31e0d2c0cbbbed4b00a0cb20970c29f9a1a8a24ef3bb0cf19c58d7e8a6ad7",
     "add_comm_monoid": "a3b3a945634a35128e01f8c2be861a0bff49b46efbd5ffb9ade20b4407c0641f",
+    "add_comm_monoid_hom": "22db7c80d0a7bc31e22756a2e59347c978c904f88af9b2a42907006f934180c4",
     "add_comm_semigroup": "1833ad440895bca78eb716b65b76c4ff547241ff2077ff8f4c516ad08c850c85",
     "add_group": "17ce52e7960d1ae5d780498229cff09ad38956e1c0dbe2e2acf750cc226eb6c4",
     "add_monoid": "4bbb0747c927de6b407b4f8d974a75906d35a82d36982a7a14c82cc7814206ee",
