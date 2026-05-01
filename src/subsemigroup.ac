@@ -28,6 +28,60 @@ theorem subsemigroup_ext[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
     }
 }
 
+/// Equal subsemigroups have equal membership predicates.
+theorem subsemigroup_eq_contains[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal subsemigroups have equal membership at every element.
+theorem subsemigroup_eq_contains_at[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S], x: S) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of subsemigroups transports predicates on subsemigroups.
+theorem subsemigroup_eq_transport_predicate[S: Semigroup](
+    p: Subsemigroup[S] -> Bool,
+    a: Subsemigroup[S],
+    b: Subsemigroup[S]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of subsemigroups transports predicates on subsemigroups in the reverse direction.
+theorem subsemigroup_eq_transport_predicate_rev[S: Semigroup](
+    p: Subsemigroup[S] -> Bool,
+    a: Subsemigroup[S],
+    b: Subsemigroup[S]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of subsemigroups.
+theorem subsemigroup_eq_of_contains_eq[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: S) {
+            a.contains(x) = b.contains(x)
+        }
+        subsemigroup_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of subsemigroups.
+theorem subsemigroup_eq_of_contains_at_eq[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    (forall(x: S) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: S) { a.contains(x) = b.contains(x) } {
+        subsemigroup_ext(a, b)
+    }
+}
+
 /// The common membership predicate of two subsemigroups.
 define subsemigroup_intersection_contains[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S],
     x: S) -> Bool {

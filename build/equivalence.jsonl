@@ -13,6 +13,10 @@
 {"goal":"QuotientRelation.new[T](srel.rel) = Option.some(srel)","proof":["function[T0](x0: QuotientRelation[T0]) { QuotientRelation.new[T0](x0.rel) = Option.some[QuotientRelation[T0]](x0) }[T](srel)"]}
 {"goal":"Option.some(qrel) = Option.some(srel)","proof":[]}
 {"goal":"quotient_relation_ext","proof":["function[T0](x0: QuotientRelation[T0]) { QuotientRelation.new[T0](x0.rel) = Option.some[QuotientRelation[T0]](x0) }[T](qrel)","function[T0](x0: QuotientRelation[T0]) { QuotientRelation.new[T0](x0.rel) = Option.some[QuotientRelation[T0]](x0) }[T](srel)"]}
+{"goal":"quotient_relation_eq_rel","proof":[]}
+{"goal":"quotient_relation_eq_transport_predicate","proof":[]}
+{"goal":"quotient_relation_eq_transport_predicate_rev","proof":[]}
+{"goal":"quotient_relation_eq_of_rel_eq","proof":[]}
 {"goal":"is_equivalence_class[T](qrel.rel, equivalence_class(qrel.rel, a))","proof":[]}
 {"goal":"exists(k0: QuotientOver[T]) { QuotientOver.new[T](qrel, equivalence_class(qrel.rel, a)) = Option.some(k0) }","proof":["function[T0](x0: QuotientRelation[T0], x1: Set[T0]) { not QuotientOver.constraint[T0](x0, x1) or exists(k0: QuotientOver[T0]) { Option.some[QuotientOver[T0]](k0) = QuotientOver.new[T0](x0, x1) } }[T](qrel, equivalence_class(qrel.rel, a))","function[T0](x0: QuotientRelation[T0], x1: Set[T0]) { is_equivalence_class[T0](x0.rel, x1) = QuotientOver.constraint[T0](x0, x1) }[T](qrel, equivalence_class(qrel.rel, a))"]}
 {"goal":"quotient_over_new_qrel","proof":["function[T0](x0: QuotientOver[T0], x1: QuotientRelation[T0], x2: Set[T0]) { Option.some[QuotientOver[T0]](x0) != QuotientOver.new[T0](x1, x2) or x0.qrel = x1 }[T](q, qrel, c)"]}
@@ -23,6 +27,11 @@
 {"goal":"QuotientOver.new[T](b.qrel, b.carrier) = Option.some(b)","proof":["function[T0](x0: QuotientOver[T0]) { QuotientOver.new[T0](x0.qrel, x0.carrier) = Option.some[QuotientOver[T0]](x0) }[T](b)"]}
 {"goal":"Option.some(a) = Option.some(b)","proof":[]}
 {"goal":"quotient_over_ext","proof":["function[T0](x0: QuotientOver[T0]) { QuotientOver.new[T0](x0.qrel, x0.carrier) = Option.some[QuotientOver[T0]](x0) }[T](a)","function[T0](x0: QuotientOver[T0]) { QuotientOver.new[T0](x0.qrel, x0.carrier) = Option.some[QuotientOver[T0]](x0) }[T](b)"]}
+{"goal":"quotient_over_eq_qrel","proof":[]}
+{"goal":"quotient_over_eq_carrier","proof":[]}
+{"goal":"quotient_over_eq_transport_predicate","proof":[]}
+{"goal":"quotient_over_eq_transport_predicate_rev","proof":[]}
+{"goal":"quotient_over_eq_of_fields_eq","proof":[]}
 {"goal":"QuotientOver.new[T](qrel, equivalence_class(qrel.rel, a)) = Option.some(quotient_over_mk(qrel, a))","proof":["function[T0](x0: QuotientRelation[T0], x1: T0) { QuotientOver.new[T0](x0, equivalence_class[T0](x0.rel, x1)) = Option.some[QuotientOver[T0]](quotient_over_mk[T0](x0, x1)) }[T](qrel, a)"]}
 {"goal":"quotient_over_mk_fields","proof":[]}
 {"goal":"QuotientOver.new[T](q.qrel, q.carrier) = Option.some(q)","proof":["function[T0](x0: QuotientOver[T0]) { QuotientOver.new[T0](x0.qrel, x0.carrier) = Option.some[QuotientOver[T0]](x0) }[T](q)"]}
@@ -73,6 +82,11 @@
 {"goal":"Quotient.new[T](b.rel, b.carrier) = Option.some(b)","proof":["function[T0](x0: Quotient[T0]) { Quotient.new[T0](x0.rel, x0.carrier) = Option.some[Quotient[T0]](x0) }[T](b)"]}
 {"goal":"Option.some(a) = Option.some(b)","proof":[]}
 {"goal":"quotient_ext","proof":["function[T0](x0: Quotient[T0]) { Quotient.new[T0](x0.rel, x0.carrier) = Option.some[Quotient[T0]](x0) }[T](a)","function[T0](x0: Quotient[T0]) { Quotient.new[T0](x0.rel, x0.carrier) = Option.some[Quotient[T0]](x0) }[T](b)"]}
+{"goal":"quotient_eq_rel","proof":[]}
+{"goal":"quotient_eq_carrier","proof":[]}
+{"goal":"quotient_eq_transport_predicate","proof":[]}
+{"goal":"quotient_eq_transport_predicate_rev","proof":[]}
+{"goal":"quotient_eq_of_fields_eq","proof":[]}
 {"goal":"is_equivalence[T](q.qrel.rel)","proof":["function[T0](x0: QuotientRelation[T0]) { is_equivalence[T0](x0.rel) }[T](q.qrel)"]}
 {"goal":"exists(k0: Quotient[T]) { Quotient.new[T](q.qrel.rel, q.carrier) = Option.some(k0) }","proof":["function[T0](x0: (T0, T0) -> Bool, x1: Set[T0]) { not Quotient.constraint[T0](x0, x1) or exists(k0: Quotient[T0]) { Option.some[Quotient[T0]](k0) = Quotient.new[T0](x0, x1) } }[T](q.qrel.rel, q.carrier)","function[T0](x0: (T0, T0) -> Bool, x1: Set[T0]) { (is_equivalence[T0](x0) and is_equivalence_class[T0](x0, x1)) = Quotient.constraint[T0](x0, x1) }[T](q.qrel.rel, q.carrier)","function[T0](x0: QuotientOver[T0]) { is_equivalence_class[T0](x0.qrel.rel, x0.carrier) }[T](q)"]}
 {"goal":"Quotient.new[T](q.qrel.rel, q.carrier) = Option.some(quotient_over_to_quotient[T](q))","proof":["function[T0](x0: QuotientOver[T0]) { Quotient.new[T0](x0.qrel.rel, x0.carrier) = Option.some[Quotient[T0]](quotient_over_to_quotient[T0](x0)) }[T](q)"]}

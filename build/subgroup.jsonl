@@ -11,6 +11,15 @@
 {"goal":"identity_subgroup_constraint","proof":["function[T0: Group](x0: T0 -> Bool) { not inverse_constraint[T0](x0) or not closure_constraint[T0](x0) or not identity_constraint[T0](x0) or subgroup_constraint[T0](x0) }[G](is_identity[G])"]}
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"subgroup_ext","proof":["function[T0: Group](x0: Subgroup[T0]) { Subgroup.new[T0](x0.contains) = Option.some[Subgroup[T0]](x0) }[G](a)","function[T0: Group](x0: Subgroup[T0]) { Subgroup.new[T0](x0.contains) = Option.some[Subgroup[T0]](x0) }[G](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Subgroup[G]](b, a)"]}
+{"goal":"subgroup_eq_contains","proof":[]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"subgroup_eq_contains_at","proof":[]}
+{"goal":"subgroup_eq_transport_predicate","proof":[]}
+{"goal":"subgroup_eq_transport_predicate_rev","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"subgroup_eq_of_contains_eq","proof":["not forall(x0: G) { x0 ∈ a = x0 ∈ b } or b.contains != a.contains","let w0: G satisfy { w0 ∈ a != w0 ∈ b }"]}
+{"goal":"subgroup_eq_of_contains_at_eq","proof":["let w0: G satisfy { w0 ∈ a != w0 ∈ b }"]}
 {"goal":"subgroup_constraint[G](s.contains)","proof":["function[T0: Group](x0: Subgroup[T0]) { subgroup_constraint[T0](x0.contains) }[G](s)"]}
 {"goal":"subgroup_constraint[G](s.contains) = identity_constraint[G](s.contains) and closure_constraint[G](s.contains) and inverse_constraint[G](s.contains)","proof":["function[T0: Group](x0: T0 -> Bool) { (identity_constraint[T0](x0) and closure_constraint[T0](x0) and inverse_constraint[T0](x0)) = subgroup_constraint[T0](x0) }[G](s.contains)"]}
 {"goal":"identity_constraint[G](s.contains)","proof":[]}

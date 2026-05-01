@@ -17,13 +17,19 @@
 {"goal":"exists(k0: FiniteSet[T]) { FiniteSet.new[T](a.underlying_set.difference(b.underlying_set)) = Option.some(k0) }","proof":["function[T0](x0: Set[T0]) { not FiniteSet.constraint[T0](x0) or exists(k0: FiniteSet[T0]) { FiniteSet.new[T0](x0) = Option.some[FiniteSet[T0]](k0) } }[T](a.underlying_set ∖ b.underlying_set)","function[T0](x0: Set[T0], x1: Set[T0]) { not x0.is_finite or (x0 ∖ x1).is_finite }[T](a.underlying_set, b.underlying_set)","function[T0](x0: Set[T0]) { x0.is_finite = FiniteSet.constraint[T0](x0) }[T](a.underlying_set ∖ b.underlying_set)","function[T0](x0: FiniteSet[T0]) { x0.underlying_set.is_finite }[T](a)"]}
 {"goal":"exists(k0: FiniteSet[U]) { FiniteSet.new[U](set_image[T, U](s.underlying_set, f)) = Option.some(k0) }","proof":["function[T0](x0: Set[T0]) { not FiniteSet.constraint[T0](x0) or exists(k0: FiniteSet[T0]) { FiniteSet.new[T0](x0) = Option.some[FiniteSet[T0]](k0) } }[U](set_image[T, U](s.underlying_set, f))","function[T0](x0: Set[T0]) { x0.is_finite = FiniteSet.constraint[T0](x0) }[U](set_image[T, U](s.underlying_set, f))","function[T0](x0: FiniteSet[T0]) { x0.underlying_set.is_finite }[T](s)"]}
 {"goal":"finite_set_ext","proof":["function[T0](x0: FiniteSet[T0]) { FiniteSet.new[T0](x0.underlying_set) = Option.some[FiniteSet[T0]](x0) }[T](a)","function[T0](x0: FiniteSet[T0]) { FiniteSet.new[T0](x0.underlying_set) = Option.some[FiniteSet[T0]](x0) }[T](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[FiniteSet[T]](b, a)"]}
+{"goal":"finite_set_eq_underlying_set","proof":[]}
+{"goal":"a.underlying_set = b.underlying_set","proof":[]}
+{"goal":"a.underlying_set.contains(x) = b.underlying_set.contains(x)","proof":[]}
+{"goal":"finite_set_eq_underlying_contains_at","proof":[]}
+{"goal":"finite_set_eq_transport_predicate","proof":[]}
+{"goal":"finite_set_eq_transport_predicate_rev","proof":[]}
+{"goal":"finite_set_eq_of_underlying_set_eq","proof":[]}
 {"goal":"s.underlying_set.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, x)"]}
 {"goal":"s.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, x)"]}
 {"goal":"finite_set_witness_contains","proof":[]}
 {"goal":"finite_set_witness_property","proof":["function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, x)"]}
 {"goal":"s.underlying_set.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, x)"]}
 {"goal":"finite_set_witness_intro","proof":["function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, x)","function[T0](x0: Set[T0], x1: T0, x2: T0 -> Bool) { (x1 ∈ x0 and x2(x1)) = set_witness_predicate[T0](x0, x2, x1) }[T](s.underlying_set, x, p)","function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, x)"]}
-{"goal":"exists(k0: T) { finite_set_witness_predicate(s, p, k0) }","proof":["function(x0: T) { not finite_set_witness_predicate(s, p, x0) }(x)"]}
 {"goal":"finite_set_witness_exists_of_witness","proof":[]}
 {"goal":"set_witness_predicate(s.underlying_set, p, choose_from_set_or_default(s.underlying_set, p, default))","proof":["let w0: T satisfy { finite_set_witness_predicate(s, p, w0) }","let w1: T satisfy { finite_set_witness_predicate(s, p, w1) }","function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, w0)","not exists(k0: T) { set_witness_predicate(s.underlying_set, p, k0) }","function(x0: T) { not set_witness_predicate(s.underlying_set, p, x0) }(w0)"]}
 {"goal":"choose_from_finite_set_or_default_spec","proof":["let w0: T satisfy { finite_set_witness_predicate(s, p, w0) }","function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { choose_from_set_or_default[T0](x0.underlying_set, x1, x2) = choose_from_finite_set_or_default[T0](x0, x1, x2) }[T](s, p, default)","function[T0](x0: FiniteSet[T0], x1: T0 -> Bool, x2: T0) { set_witness_predicate[T0](x0.underlying_set, x1, x2) = finite_set_witness_predicate[T0](x0, x1, x2) }[T](s, p, choose_from_finite_set_or_default(s, p, default))"]}
@@ -89,6 +95,23 @@
 {"goal":"fs_image[T, U](s, f).underlying_set.cardinality_is(n)","proof":[]}
 {"goal":"fs_image[T, U](s, f).cardinality_is(n)","proof":["function[T0](x0: FiniteSet[T0], x1: Nat) { x0.underlying_set.cardinality_is(x1) = x0.cardinality_is(x1) }[U](fs_image[T, U](s, f), n)"]}
 {"goal":"finite_set_image_cardinality_is_of_injective","proof":[]}
+{"goal":"is_injective_fn[T, U](f)","proof":[]}
+{"goal":"fs_image[T, U](s, f).cardinality_is(n)","proof":[]}
+{"goal":"finite_set_image_cardinality_is_of_bijection","proof":[]}
+{"goal":"fs_image[T, U](s, f).underlying_set = set_image[T, U](s.underlying_set, f)","proof":["function[T0, T1](x0: FiniteSet[T1], x1: T1 -> T0) { FiniteSet.new[T0](set_image[T1, T0](x0.underlying_set, x1)) = Option.some[FiniteSet[T0]](fs_image[T1, T0](x0, x1)) }[U, T](s, f)","function[T0](x0: FiniteSet[T0], x1: Set[T0]) { Option.some[FiniteSet[T0]](x0) != FiniteSet.new[T0](x1) or x0.underlying_set = x1 }[U](fs_image[T, U](s, f), set_image[T, U](s.underlying_set, f))"]}
+{"goal":"set_image[T, U](s.underlying_set, f).contains(y)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[U](fs_image[T, U](s, f), y)"]}
+{"goal":"s.underlying_set.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, inverse_fn[T, U](f, y))"]}
+{"goal":"finite_set_image_contains_inverse_of_bijection","proof":[]}
+{"goal":"fs_image[T, U](s, f).underlying_set = set_image[T, U](s.underlying_set, f)","proof":["function[T0, T1](x0: FiniteSet[T1], x1: T1 -> T0) { FiniteSet.new[T0](set_image[T1, T0](x0.underlying_set, x1)) = Option.some[FiniteSet[T0]](fs_image[T1, T0](x0, x1)) }[U, T](s, f)","function[T0](x0: FiniteSet[T0], x1: Set[T0]) { Option.some[FiniteSet[T0]](x0) != FiniteSet.new[T0](x1) or x0.underlying_set = x1 }[U](fs_image[T, U](s, f), set_image[T, U](s.underlying_set, f))"]}
+{"goal":"s.underlying_set.contains(inverse_fn[T, U](f, y))","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[T](s, inverse_fn[T, U](f, y))"]}
+{"goal":"set_image[T, U](s.underlying_set, f).contains(y)","proof":["function[T0, T1](x0: T0 -> T1) { not is_bijection_fn[T0, T1](x0) or lib(functions).is_surjective_fn[T0, T1](x0) }[T, U](f)"]}
+{"goal":"fs_image[T, U](s, f).contains(y)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[U](fs_image[T, U](s, f), y)"]}
+{"goal":"finite_set_inverse_contains_imp_image_contains","proof":[]}
+{"goal":"s.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"fs_image[T, U](s, f).contains(y)","proof":[]}
+{"goal":"fs_image[T, U](s, f).contains(y) = s.contains(inverse_fn[T, U](f, y))","proof":[]}
+{"goal":"finite_set_image_contains_iff_inverse_of_bijection","proof":[]}
 {"goal":"exists(k0: List[T]) { fs_from_list[T](k0) = s and k0.is_unique and k0.length = n }","proof":[]}
 {"goal":"items.length > targets.length","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](n, targets.length)"]}
 {"goal":"fs_from_list[T](items).underlying_set = list_set[T](items)","proof":["function[T0](x0: List[T0]) { Option.some[FiniteSet[T0]](fs_from_list[T0](x0)) = FiniteSet.new[T0](list_set[T0](x0)) }[T](items)","function[T0](x0: FiniteSet[T0], x1: Set[T0]) { Option.some[FiniteSet[T0]](x0) != FiniteSet.new[T0](x1) or x0.underlying_set = x1 }[T](fs_from_list[T](items), list_set[T](items))"]}

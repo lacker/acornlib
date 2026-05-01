@@ -89,6 +89,38 @@ theorem quotient_relation_ext[T](qrel: QuotientRelation[T], srel: QuotientRelati
     }
 }
 
+/// Equal quotient relations have equal underlying relations.
+theorem quotient_relation_eq_rel[T](qrel: QuotientRelation[T], srel: QuotientRelation[T]) {
+    qrel = srel implies qrel.rel = srel.rel
+}
+
+/// Equality of quotient relations transports predicates on quotient relations.
+theorem quotient_relation_eq_transport_predicate[T](
+    p: QuotientRelation[T] -> Bool,
+    qrel: QuotientRelation[T],
+    srel: QuotientRelation[T]
+) {
+    qrel = srel and p(qrel) implies p(srel)
+}
+
+/// Equality of quotient relations transports predicates on quotient relations in the reverse direction.
+theorem quotient_relation_eq_transport_predicate_rev[T](
+    p: QuotientRelation[T] -> Bool,
+    qrel: QuotientRelation[T],
+    srel: QuotientRelation[T]
+) {
+    qrel = srel and p(srel) implies p(qrel)
+}
+
+/// Equality of underlying relations determines equality of quotient relations.
+theorem quotient_relation_eq_of_rel_eq[T](qrel: QuotientRelation[T], srel: QuotientRelation[T]) {
+    qrel.rel = srel.rel implies qrel = srel
+} by {
+    if qrel.rel = srel.rel {
+        quotient_relation_ext(qrel, srel)
+    }
+}
+
 /// A quotient element whose relation is carried as part of the element.
 structure QuotientOver[T] {
     /// The equivalence relation whose classes form this quotient element.
@@ -137,6 +169,43 @@ theorem quotient_over_ext[T](a: QuotientOver[T], b: QuotientOver[T]) {
         QuotientOver[T].new(b.qrel, b.carrier) = Option.some(b)
         Option.some(a) = Option.some(b)
         quotient_over_some_injective(a, b)
+    }
+}
+
+/// Equal quotient-over elements have equal quotient relations.
+theorem quotient_over_eq_qrel[T](a: QuotientOver[T], b: QuotientOver[T]) {
+    a = b implies a.qrel = b.qrel
+}
+
+/// Equal quotient-over elements have equal carriers.
+theorem quotient_over_eq_carrier[T](a: QuotientOver[T], b: QuotientOver[T]) {
+    a = b implies a.carrier = b.carrier
+}
+
+/// Equality of quotient-over elements transports predicates on quotient-over elements.
+theorem quotient_over_eq_transport_predicate[T](
+    p: QuotientOver[T] -> Bool,
+    a: QuotientOver[T],
+    b: QuotientOver[T]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of quotient-over elements transports predicates on quotient-over elements in the reverse direction.
+theorem quotient_over_eq_transport_predicate_rev[T](
+    p: QuotientOver[T] -> Bool,
+    a: QuotientOver[T],
+    b: QuotientOver[T]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of fields determines equality of quotient-over elements.
+theorem quotient_over_eq_of_fields_eq[T](a: QuotientOver[T], b: QuotientOver[T]) {
+    a.qrel = b.qrel and a.carrier = b.carrier implies a = b
+} by {
+    if a.qrel = b.qrel and a.carrier = b.carrier {
+        quotient_over_ext(a, b)
     }
 }
 
@@ -372,6 +441,35 @@ theorem quotient_ext[T](a: Quotient[T], b: Quotient[T]) {
         Quotient[T].new(b.rel, b.carrier) = Option.some(b)
         Option.some(a) = Option.some(b)
         quotient_some_injective(a, b)
+    }
+}
+
+/// Equal quotient elements have equal underlying relations.
+theorem quotient_eq_rel[T](a: Quotient[T], b: Quotient[T]) {
+    a = b implies a.rel = b.rel
+}
+
+/// Equal quotient elements have equal carriers.
+theorem quotient_eq_carrier[T](a: Quotient[T], b: Quotient[T]) {
+    a = b implies a.carrier = b.carrier
+}
+
+/// Equality of quotient elements transports predicates on quotient elements.
+theorem quotient_eq_transport_predicate[T](p: Quotient[T] -> Bool, a: Quotient[T], b: Quotient[T]) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of quotient elements transports predicates on quotient elements in the reverse direction.
+theorem quotient_eq_transport_predicate_rev[T](p: Quotient[T] -> Bool, a: Quotient[T], b: Quotient[T]) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of fields determines equality of quotient elements.
+theorem quotient_eq_of_fields_eq[T](a: Quotient[T], b: Quotient[T]) {
+    a.rel = b.rel and a.carrier = b.carrier implies a = b
+} by {
+    if a.rel = b.rel and a.carrier = b.carrier {
+        quotient_ext(a, b)
     }
 }
 

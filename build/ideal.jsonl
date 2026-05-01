@@ -16,7 +16,7 @@
 {"goal":"contains(-R.1 * a)","proof":[]}
 {"goal":"-R.1 * a = -a","proof":["function[T0: lib(ring).Ring](x0: T0) { -T0.1 * x0 = -x0 }[R](a)"]}
 {"goal":"contains(-a)","proof":[]}
-{"goal":"is_ideal_neg","proof":["not is_ideal[R](contains) or not contains(a)","contains(a)","is_ideal[R](contains)","not is_ideal[R](contains)"]}
+{"goal":"is_ideal_neg","proof":[]}
 {"goal":"zero_ideal(R.0)","proof":["function[T0: CommRing](x0: T0) { T0.0 = x0 = zero_ideal[T0](x0) }[R](R.0)"]}
 {"goal":"ideal_zero_constraint[R](zero_ideal[R])","proof":["function[T0: CommRing](x0: T0 -> Bool) { x0(T0.0) = ideal_zero_constraint[T0](x0) }[R](zero_ideal[R])"]}
 {"goal":"a = R.0","proof":["function[T0: CommRing](x0: T0) { T0.0 = x0 = zero_ideal[T0](x0) }[R](a)"]}
