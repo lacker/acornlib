@@ -12,7 +12,8 @@ from functions import binary_function_extensionality, binary_function_eq_transpo
 from relation_basic import is_reflexive, is_transitive, is_antisymmetric, is_irreflexive,
     is_asymmetric, is_total, reflexive_self, relation_converse, relation_subset,
     relation_subset_refl, relation_subset_step, relation_converse_is_reflexive,
-    relation_converse_is_transitive, relation_converse_is_total
+    relation_converse_is_transitive, relation_converse_is_total,
+    relation_converse_is_antisymmetric
 from relation_transport import relation_pullback, relation_pullback_is_reflexive,
     relation_pullback_is_irreflexive, relation_pullback_is_asymmetric,
     relation_pullback_is_transitive, relation_pullback_is_total,
@@ -200,20 +201,6 @@ theorem relation_strict_part_is_transitive_of_partial_order_relation[T](r: (T, T
     }
 }
 
-theorem relation_converse_is_antisymmetric_of_antisymmetric[T](r: (T, T) -> Bool) {
-    is_antisymmetric(r) implies is_antisymmetric(relation_converse(r))
-} by {
-    if is_antisymmetric(r) {
-        forall(a: T, b: T) {
-            if relation_converse(r, a, b) and relation_converse(r, b, a) {
-                r(b, a)
-                r(a, b)
-                a = b
-            }
-        }
-    }
-}
-
 theorem relation_converse_is_partial_order_relation[T](r: (T, T) -> Bool) {
     is_partial_order_relation(r) implies is_partial_order_relation(relation_converse(r))
 } by {
@@ -225,7 +212,7 @@ theorem relation_converse_is_partial_order_relation[T](r: (T, T) -> Bool) {
         relation_converse_is_transitive(r)
         is_transitive(relation_converse(r))
         partial_order_relation_is_antisymmetric(r)
-        relation_converse_is_antisymmetric_of_antisymmetric(r)
+        relation_converse_is_antisymmetric(r)
         is_antisymmetric(relation_converse(r))
         is_partial_order_relation(relation_converse(r))
     }
