@@ -14,3 +14,5 @@ Status:
 - The basic comparison audit now includes Mathlib-style implication aliases in `src/order.ac` and linear-order negation aliases in `src/order_cases.ac`.
 - The central `src/order.ac` API now includes strict and non-strict `min`/`max` selector aliases plus lower-bound and upper-bound characterizations; `src/real/real_base.ac` imports its basic `min`/`max` facts from `order.ac`.
 - The `order.ac` naming audit now includes central `le`/`ge` aliases for reflexivity, transitivity, antisymmetry, equality-to-bound lemmas, strict-to-nonstrict lemmas, negation lemmas, strict/equality decompositions, totality disjunctions, and failed-comparison consequences.
+- The central `src/order.ac` API now includes `le`/`ge` aliases for equality substitution, mixed strict/non-strict transitivity, non-strict consequences of strict chains, flipped disequality hypotheses, and `not_eq` names for strict comparisons.
+- `src/order_cases.ac` now has `le`/`ge` aliases for linear-order comparison-vs-negation equivalences.

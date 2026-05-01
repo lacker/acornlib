@@ -434,6 +434,16 @@ theorem ne_of_lt[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Strict comparison gives inequality.
+theorem not_eq_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies a != b
+} by {
+    if a < b {
+        ne_of_lt(a, b)
+        a != b
+    }
+}
+
 /// Strict comparison gives disequality.
 theorem lt_ne[P: PartialOrder](a: P, b: P) {
     a < b implies a != b
@@ -458,6 +468,16 @@ theorem ne_of_gt[P: PartialOrder](a: P, b: P) {
 } by {
     if a > b {
         gt_imp_ne(a, b)
+        a != b
+    }
+}
+
+/// Strict reverse comparison gives inequality.
+theorem not_eq_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies a != b
+} by {
+    if a > b {
+        ne_of_gt(a, b)
         a != b
     }
 }
@@ -491,6 +511,16 @@ theorem ne_symm_of_lt[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Strict comparison gives inequality in the reverse order.
+theorem not_eq_symm_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies b != a
+} by {
+    if a < b {
+        ne_symm_of_lt(a, b)
+        b != a
+    }
+}
+
 theorem gt_imp_ne_symm[P: PartialOrder](a: P, b: P) {
     a > b implies b != a
 } by {
@@ -506,6 +536,16 @@ theorem ne_symm_of_gt[P: PartialOrder](a: P, b: P) {
 } by {
     if a > b {
         gt_imp_ne_symm(a, b)
+        b != a
+    }
+}
+
+/// Strict reverse comparison gives inequality in the reverse order.
+theorem not_eq_symm_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies b != a
+} by {
+    if a > b {
+        ne_symm_of_gt(a, b)
         b != a
     }
 }
@@ -775,6 +815,134 @@ theorem gt_of_gte_of_gt[P: PartialOrder](a: P, b: P, c: P) {
     }
 }
 
+/// A strict lower bound followed by a non-strict lower bound gives a non-strict lower bound.
+theorem lte_of_lt_of_lte[P: PartialOrder](a: P, b: P, c: P) {
+    a < b and b <= c implies a <= c
+} by {
+    if a < b and b <= c {
+        lt_of_lt_of_lte(a, b, c)
+        a < c
+        lt_imp_lte(a, c)
+        a <= c
+    }
+}
+
+/// A non-strict lower bound followed by a strict lower bound gives a non-strict lower bound.
+theorem lte_of_lte_of_lt[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b < c implies a <= c
+} by {
+    if a <= b and b < c {
+        lt_of_lte_of_lt(a, b, c)
+        a < c
+        lt_imp_lte(a, c)
+        a <= c
+    }
+}
+
+/// A strict upper bound followed by a non-strict upper bound gives a non-strict upper bound.
+theorem gte_of_gt_of_gte[P: PartialOrder](a: P, b: P, c: P) {
+    a > b and b >= c implies a >= c
+} by {
+    if a > b and b >= c {
+        gt_of_gt_of_gte(a, b, c)
+        a > c
+        gt_imp_gte(a, c)
+        a >= c
+    }
+}
+
+/// A non-strict upper bound followed by a strict upper bound gives a non-strict upper bound.
+theorem gte_of_gte_of_gt[P: PartialOrder](a: P, b: P, c: P) {
+    a >= b and b > c implies a >= c
+} by {
+    if a >= b and b > c {
+        gt_of_gte_of_gt(a, b, c)
+        a > c
+        gt_imp_gte(a, c)
+        a >= c
+    }
+}
+
+/// A strict lower bound followed by a non-strict lower bound gives a non-strict lower bound.
+theorem le_of_lt_of_lte[P: PartialOrder](a: P, b: P, c: P) {
+    a < b and b <= c implies a <= c
+} by {
+    if a < b and b <= c {
+        lte_of_lt_of_lte(a, b, c)
+        a <= c
+    }
+}
+
+/// A non-strict lower bound followed by a strict lower bound gives a non-strict lower bound.
+theorem le_of_lte_of_lt[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b < c implies a <= c
+} by {
+    if a <= b and b < c {
+        lte_of_lte_of_lt(a, b, c)
+        a <= c
+    }
+}
+
+/// A strict lower bound followed by a non-strict lower bound gives a strict lower bound.
+theorem lt_of_lt_of_le[P: PartialOrder](a: P, b: P, c: P) {
+    a < b and b <= c implies a < c
+} by {
+    if a < b and b <= c {
+        lt_of_lt_of_lte(a, b, c)
+        a < c
+    }
+}
+
+/// A non-strict lower bound followed by a strict lower bound gives a strict lower bound.
+theorem lt_of_le_of_lt[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b < c implies a < c
+} by {
+    if a <= b and b < c {
+        lt_of_lte_of_lt(a, b, c)
+        a < c
+    }
+}
+
+/// A strict upper bound followed by a non-strict upper bound gives a non-strict upper bound.
+theorem ge_of_gt_of_gte[P: PartialOrder](a: P, b: P, c: P) {
+    a > b and b >= c implies a >= c
+} by {
+    if a > b and b >= c {
+        gte_of_gt_of_gte(a, b, c)
+        a >= c
+    }
+}
+
+/// A non-strict upper bound followed by a strict upper bound gives a non-strict upper bound.
+theorem ge_of_gte_of_gt[P: PartialOrder](a: P, b: P, c: P) {
+    a >= b and b > c implies a >= c
+} by {
+    if a >= b and b > c {
+        gte_of_gte_of_gt(a, b, c)
+        a >= c
+    }
+}
+
+/// A strict upper bound followed by a non-strict upper bound gives a strict upper bound.
+theorem gt_of_gt_of_ge[P: PartialOrder](a: P, b: P, c: P) {
+    a > b and b >= c implies a > c
+} by {
+    if a > b and b >= c {
+        gt_of_gt_of_gte(a, b, c)
+        a > c
+    }
+}
+
+/// A non-strict upper bound followed by a strict upper bound gives a strict upper bound.
+theorem gt_of_ge_of_gt[P: PartialOrder](a: P, b: P, c: P) {
+    a >= b and b > c implies a > c
+} by {
+    if a >= b and b > c {
+        gt_of_gte_of_gt(a, b, c)
+        a > c
+    }
+}
+
 /// Strict order is asymmetric: `a < b` rules out `b < a`.
 theorem lt_asymm[P: PartialOrder](a: P, b: P) {
     a < b implies not (b < a)
@@ -819,6 +987,26 @@ theorem lte_of_eq_of_lte[P: PartialOrder](a: P, b: P, c: P) {
     }
 }
 
+/// Replacing the right side of `<=` with an equal element preserves `<=`.
+theorem le_of_le_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b = c implies a <= c
+} by {
+    if a <= b and b = c {
+        lte_of_lte_of_eq(a, b, c)
+        a <= c
+    }
+}
+
+/// Replacing the left side of `<=` with an equal element preserves `<=`.
+theorem le_of_eq_of_le[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b <= c implies a <= c
+} by {
+    if a = b and b <= c {
+        lte_of_eq_of_lte(a, b, c)
+        a <= c
+    }
+}
+
 /// Replacing the right side of `<` with an equal element preserves `<`.
 theorem lt_of_lt_of_eq[P: PartialOrder](a: P, b: P, c: P) {
     a < b and b = c implies a < c
@@ -851,6 +1039,26 @@ theorem gte_of_eq_of_gte[P: PartialOrder](a: P, b: P, c: P) {
     a = b and b >= c implies a >= c
 } by {
     if a = b and b >= c {
+        a >= c
+    }
+}
+
+/// Replacing the right side of `>=` with an equal element preserves `>=`.
+theorem ge_of_ge_of_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a >= b and b = c implies a >= c
+} by {
+    if a >= b and b = c {
+        gte_of_gte_of_eq(a, b, c)
+        a >= c
+    }
+}
+
+/// Replacing the left side of `>=` with an equal element preserves `>=`.
+theorem ge_of_eq_of_ge[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b >= c implies a >= c
+} by {
+    if a = b and b >= c {
+        gte_of_eq_of_gte(a, b, c)
         a >= c
     }
 }
@@ -1100,6 +1308,16 @@ theorem lt_of_lte_of_ne[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// `a != b` together with `a <= b` upgrades to `a < b`.
+theorem lt_of_ne_of_lte[P: PartialOrder](a: P, b: P) {
+    a != b and a <= b implies a < b
+} by {
+    if a != b and a <= b {
+        lt_of_lte_of_ne(a, b)
+        a < b
+    }
+}
+
 /// `a >= b` together with `a != b` upgrades to `a > b`.
 theorem gt_of_gte_of_ne[P: PartialOrder](a: P, b: P) {
     a >= b and a != b implies a > b
@@ -1108,6 +1326,16 @@ theorem gt_of_gte_of_ne[P: PartialOrder](a: P, b: P) {
         b <= a
         b != a
         b < a
+        a > b
+    }
+}
+
+/// `a != b` together with `a >= b` upgrades to `a > b`.
+theorem gt_of_ne_of_gte[P: PartialOrder](a: P, b: P) {
+    a != b and a >= b implies a > b
+} by {
+    if a != b and a >= b {
+        gt_of_gte_of_ne(a, b)
         a > b
     }
 }
@@ -1126,6 +1354,16 @@ theorem lt_of_lte_of_ne_symm[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// `b != a` together with `a <= b` upgrades to `a < b`.
+theorem lt_of_ne_symm_of_lte[P: PartialOrder](a: P, b: P) {
+    b != a and a <= b implies a < b
+} by {
+    if b != a and a <= b {
+        lt_of_lte_of_ne_symm(a, b)
+        a < b
+    }
+}
+
 /// `a >= b` together with `b != a` upgrades to `a > b`.
 theorem gt_of_gte_of_ne_symm[P: PartialOrder](a: P, b: P) {
     a >= b and b != a implies a > b
@@ -1136,6 +1374,16 @@ theorem gt_of_gte_of_ne_symm[P: PartialOrder](a: P, b: P) {
         }
         a != b
         gt_of_gte_of_ne(a, b)
+        a > b
+    }
+}
+
+/// `b != a` together with `a >= b` upgrades to `a > b`.
+theorem gt_of_ne_symm_of_gte[P: PartialOrder](a: P, b: P) {
+    b != a and a >= b implies a > b
+} by {
+    if b != a and a >= b {
+        gt_of_gte_of_ne_symm(a, b)
         a > b
     }
 }
@@ -1315,12 +1563,32 @@ theorem lt_of_le_of_ne[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// `a != b` together with `a <= b` upgrades to `a < b`.
+theorem lt_of_ne_of_le[P: PartialOrder](a: P, b: P) {
+    a != b and a <= b implies a < b
+} by {
+    if a != b and a <= b {
+        lt_of_ne_of_lte(a, b)
+        a < b
+    }
+}
+
 /// `a >= b` together with `a != b` upgrades to `a > b`.
 theorem gt_of_ge_of_ne[P: PartialOrder](a: P, b: P) {
     a >= b and a != b implies a > b
 } by {
     if a >= b and a != b {
         gt_of_gte_of_ne(a, b)
+        a > b
+    }
+}
+
+/// `a != b` together with `a >= b` upgrades to `a > b`.
+theorem gt_of_ne_of_ge[P: PartialOrder](a: P, b: P) {
+    a != b and a >= b implies a > b
+} by {
+    if a != b and a >= b {
+        gt_of_ne_of_gte(a, b)
         a > b
     }
 }
@@ -1335,12 +1603,32 @@ theorem lt_of_le_of_ne_symm[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// `b != a` together with `a <= b` upgrades to `a < b`.
+theorem lt_of_ne_symm_of_le[P: PartialOrder](a: P, b: P) {
+    b != a and a <= b implies a < b
+} by {
+    if b != a and a <= b {
+        lt_of_ne_symm_of_lte(a, b)
+        a < b
+    }
+}
+
 /// `a >= b` together with `b != a` upgrades to `a > b`.
 theorem gt_of_ge_of_ne_symm[P: PartialOrder](a: P, b: P) {
     a >= b and b != a implies a > b
 } by {
     if a >= b and b != a {
         gt_of_gte_of_ne_symm(a, b)
+        a > b
+    }
+}
+
+/// `b != a` together with `a >= b` upgrades to `a > b`.
+theorem gt_of_ne_symm_of_ge[P: PartialOrder](a: P, b: P) {
+    b != a and a >= b implies a > b
+} by {
+    if b != a and a >= b {
+        gt_of_ne_symm_of_gte(a, b)
         a > b
     }
 }
