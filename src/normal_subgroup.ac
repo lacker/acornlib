@@ -115,3 +115,58 @@ theorem normal_subgroup_rel_transitive_statement[G: Group](s: Subgroup[G]) {
         }
     }
 }
+
+/// The product of `a * b` and the inverse of `ap * bp` regroups as a conjugate of `b * bp.inverse` times `a * ap.inverse`.
+theorem normal_mul_inverse_distrib[G: Group](a: G, b: G, ap: G, bp: G) {
+    (a * b) * (ap * bp).inverse = (a * (b * bp.inverse) * a.inverse) * (a * ap.inverse)
+} by {
+    inverse_mul(ap, bp)
+    (ap * bp).inverse = bp.inverse * ap.inverse
+    (a * b) * (ap * bp).inverse = (a * b) * (bp.inverse * ap.inverse)
+    (a * b) * (bp.inverse * ap.inverse) = a * b * bp.inverse * ap.inverse
+    a.inverse * a = G.1
+    a * b * bp.inverse * ap.inverse = a * (b * bp.inverse) * (a.inverse * a) * ap.inverse
+    a * (b * bp.inverse) * (a.inverse * a) * ap.inverse =
+        (a * (b * bp.inverse) * a.inverse) * (a * ap.inverse)
+}
+
+/// Pointwise multiplicative-step helper: the normal-subgroup relation is preserved by pairwise multiplication.
+theorem normal_subgroup_rel_mul_step[G: Group](s: Subgroup[G],
+        a: G, ap: G, b: G, bp: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a, ap) and normal_subgroup_rel(s, b, bp)
+    implies normal_subgroup_rel(s, a * b, ap * bp)
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a, ap) and normal_subgroup_rel(s, b, bp) {
+        s.contains(a * ap.inverse)
+        s.contains(b * bp.inverse)
+        normal_conjugate_mem(s, a, b * bp.inverse)
+        s.contains(a * (b * bp.inverse) * a.inverse)
+        subgroup_mul_mem(s, a * (b * bp.inverse) * a.inverse, a * ap.inverse)
+        s.contains((a * (b * bp.inverse) * a.inverse) * (a * ap.inverse))
+        normal_mul_inverse_distrib(a, b, ap, bp)
+        s.contains((a * b) * (ap * bp).inverse)
+    }
+}
+
+/// Pointwise inverse-step helper: the normal-subgroup relation is preserved by inversion.
+theorem normal_subgroup_rel_inv_step[G: Group](s: Subgroup[G], a: G, b: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a, b)
+    implies normal_subgroup_rel(s, a.inverse, b.inverse)
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a, b) {
+        normal_subgroup_rel_symmetric(s, a, b)
+        s.contains(b * a.inverse)
+        normal_conjugate_mem(s, b.inverse, b * a.inverse)
+        s.contains(b.inverse * (b * a.inverse) * b.inverse.inverse)
+        inverse_inverse(b)
+        b.inverse.inverse = b
+        b.inverse * (b * a.inverse) * b = (b.inverse * b) * a.inverse * b
+        b.inverse * b = G.1
+        (b.inverse * b) * a.inverse * b = a.inverse * b
+        b.inverse * (b * a.inverse) * b.inverse.inverse = a.inverse * b
+        s.contains(a.inverse * b)
+        a.inverse * b = a.inverse * b.inverse.inverse
+        s.contains(a.inverse * b.inverse.inverse)
+    }
+}
+
