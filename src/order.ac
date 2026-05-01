@@ -97,6 +97,26 @@ theorem eq_imp_gte[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Equality gives the corresponding non-strict lower bound.
+theorem lte_of_eq[P: PartialOrder](a: P, b: P) {
+    a = b implies a <= b
+} by {
+    if a = b {
+        eq_imp_lte(a, b)
+        a <= b
+    }
+}
+
+/// Equality gives the corresponding non-strict upper bound.
+theorem gte_of_eq[P: PartialOrder](a: P, b: P) {
+    a = b implies a >= b
+} by {
+    if a = b {
+        eq_imp_gte(a, b)
+        a >= b
+    }
+}
+
 /// Two elements are equal exactly when they bound each other.
 theorem eq_iff_lte_and_gte[P: PartialOrder](a: P, b: P) {
     a = b = (a <= b and a >= b)
@@ -222,10 +242,30 @@ theorem lt_imp_lte[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Strict comparison gives the corresponding non-strict comparison.
+theorem lte_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies a <= b
+} by {
+    if a < b {
+        lt_imp_lte(a, b)
+        a <= b
+    }
+}
+
 theorem gt_imp_gte[P: PartialOrder](a: P, b: P) {
     a > b implies a >= b
 } by {
     if a > b {
+        a >= b
+    }
+}
+
+/// Strict reverse comparison gives the corresponding non-strict reverse comparison.
+theorem gte_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies a >= b
+} by {
+    if a > b {
+        gt_imp_gte(a, b)
         a >= b
     }
 }
@@ -238,10 +278,30 @@ theorem lt_imp_ne[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Strict comparison gives disequality.
+theorem ne_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies a != b
+} by {
+    if a < b {
+        lt_imp_ne(a, b)
+        a != b
+    }
+}
+
 theorem gt_imp_ne[P: PartialOrder](a: P, b: P) {
     a > b implies a != b
 } by {
     if a > b {
+        a != b
+    }
+}
+
+/// Strict reverse comparison gives disequality.
+theorem ne_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies a != b
+} by {
+    if a > b {
+        gt_imp_ne(a, b)
         a != b
     }
 }
@@ -255,11 +315,31 @@ theorem lt_imp_ne_symm[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// Strict comparison gives disequality in the reverse order.
+theorem ne_symm_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies b != a
+} by {
+    if a < b {
+        lt_imp_ne_symm(a, b)
+        b != a
+    }
+}
+
 theorem gt_imp_ne_symm[P: PartialOrder](a: P, b: P) {
     a > b implies b != a
 } by {
     if a > b {
         b < a
+        b != a
+    }
+}
+
+/// Strict reverse comparison gives disequality in the reverse order.
+theorem ne_symm_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies b != a
+} by {
+    if a > b {
+        gt_imp_ne_symm(a, b)
         b != a
     }
 }
@@ -296,6 +376,16 @@ theorem lte_imp_not_gt[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// A non-strict comparison rules out the opposite strict comparison.
+theorem not_gt_of_lte[P: PartialOrder](a: P, b: P) {
+    a <= b implies not (a > b)
+} by {
+    if a <= b {
+        lte_imp_not_gt(a, b)
+        not (a > b)
+    }
+}
+
 theorem gte_imp_not_lt[P: PartialOrder](a: P, b: P) {
     a >= b implies not (a < b)
 } by {
@@ -307,6 +397,16 @@ theorem gte_imp_not_lt[P: PartialOrder](a: P, b: P) {
             a != b
             false
         }
+    }
+}
+
+/// A non-strict reverse comparison rules out the strict comparison.
+theorem not_lt_of_gte[P: PartialOrder](a: P, b: P) {
+    a >= b implies not (a < b)
+} by {
+    if a >= b {
+        gte_imp_not_lt(a, b)
+        not (a < b)
     }
 }
 
@@ -326,6 +426,16 @@ theorem gt_imp_not_lte[P: PartialOrder](a: P, b: P) {
     }
 }
 
+/// A strict reverse comparison rules out the non-strict comparison.
+theorem not_lte_of_gt[P: PartialOrder](a: P, b: P) {
+    a > b implies not (a <= b)
+} by {
+    if a > b {
+        gt_imp_not_lte(a, b)
+        not (a <= b)
+    }
+}
+
 /// `a < b` rules out `a >= b`.
 theorem lt_imp_not_gte[P: PartialOrder](a: P, b: P) {
     a < b implies not (a >= b)
@@ -339,6 +449,16 @@ theorem lt_imp_not_gte[P: PartialOrder](a: P, b: P) {
             a != b
             false
         }
+    }
+}
+
+/// A strict comparison rules out the non-strict reverse comparison.
+theorem not_gte_of_lt[P: PartialOrder](a: P, b: P) {
+    a < b implies not (a >= b)
+} by {
+    if a < b {
+        lt_imp_not_gte(a, b)
+        not (a >= b)
     }
 }
 

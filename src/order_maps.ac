@@ -1,6 +1,6 @@
 /// Order-preserving and order-reversing maps.
 
-from functions import compose, identity_fn
+from functions import compose, identity_fn, is_surjective_fn, compose_surjective_fn
 from order import PartialOrder, LinearOrder, lte_refl, lte_trans, lte_antisymm, lt_trans,
     lt_of_lte_of_lt, lt_of_lt_of_lte
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
@@ -38,6 +38,11 @@ define is_order_embedding[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
     forall(x: A, y: A) {
         f(x) <= f(y) = (x <= y)
     }
+}
+
+/// True if a map is monotone and surjective.
+define is_order_surjection[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    is_monotone(f) and is_surjective_fn(f)
 }
 
 /// A monotone map carries an explicitly ordered pair to an ordered pair.
@@ -126,6 +131,26 @@ theorem order_embedding_is_monotone[A: PartialOrder, B: PartialOrder](f: A -> B)
     }
 }
 
+/// An order-preserving surjection is monotone.
+theorem order_surjection_is_monotone[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    is_order_surjection(f) implies is_monotone(f)
+} by {
+    if is_order_surjection(f) {
+        is_order_surjection(f) = (is_monotone(f) and is_surjective_fn(f))
+        is_monotone(f)
+    }
+}
+
+/// An order-preserving surjection is surjective.
+theorem order_surjection_is_surjective[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    is_order_surjection(f) implies is_surjective_fn(f)
+} by {
+    if is_order_surjection(f) {
+        is_order_surjection(f) = (is_monotone(f) and is_surjective_fn(f))
+        is_surjective_fn(f)
+    }
+}
+
 /// An order embedding is injective.
 theorem order_embedding_is_injective[A: PartialOrder, B: PartialOrder](f: A -> B) {
     is_order_embedding(f) implies forall(x: A, y: A) {
@@ -198,6 +223,28 @@ theorem identity_is_order_embedding[A: PartialOrder] {
     }
 }
 
+/// The identity map is surjective.
+theorem identity_is_surjective_fn[A: PartialOrder] {
+    is_surjective_fn(identity_fn[A])
+} by {
+    forall(y: A) {
+        exists(x: A) {
+            x = y and identity_fn[A](x) = y
+        }
+    }
+}
+
+/// The identity map is an order-preserving surjection.
+theorem identity_is_order_surjection[A: PartialOrder] {
+    is_order_surjection(identity_fn[A])
+} by {
+    identity_is_monotone[A]
+    is_monotone(identity_fn[A])
+    identity_is_surjective_fn[A]
+    is_surjective_fn(identity_fn[A])
+    is_order_surjection(identity_fn[A])
+}
+
 /// The composite of monotone maps is monotone.
 theorem monotone_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
     is_monotone(g) and is_monotone(f) implies is_monotone(compose(f, g))
@@ -214,6 +261,27 @@ theorem monotone_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A
                 compose(f, g)(x) <= compose(f, g)(y)
             }
         }
+    }
+}
+
+/// The composite of order-preserving surjections is an order-preserving surjection.
+theorem order_surjection_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_order_surjection(g) and is_order_surjection(f) implies is_order_surjection(compose(f, g))
+} by {
+    if is_order_surjection(g) and is_order_surjection(f) {
+        order_surjection_is_monotone(g)
+        is_monotone(g)
+        order_surjection_is_monotone(f)
+        is_monotone(f)
+        monotone_compose(g, f)
+        is_monotone(compose(f, g))
+        order_surjection_is_surjective(g)
+        is_surjective_fn(g)
+        order_surjection_is_surjective(f)
+        is_surjective_fn(f)
+        compose_surjective_fn(f, g)
+        is_surjective_fn(compose(f, g))
+        is_order_surjection(compose(f, g))
     }
 }
 
