@@ -1,0 +1,176 @@
+/// Finite meets and joins over non-empty lists.
+
+from list.list_base import List
+from lattice import MeetSemilattice, JoinSemilattice, meet_lte_left, meet_lte_right,
+    lte_meet_of_bounds, lte_join_left, lte_join_right, join_lte_of_bounds
+from order import lte_refl, lte_trans
+
+/// The meet of a non-empty list.
+define list_meet[S: MeetSemilattice](head: S, tail: List[S]) -> S {
+    match tail {
+        List.nil {
+            head
+        }
+        List.cons(next, rest) {
+            head.meet(list_meet(next, rest))
+        }
+    }
+}
+
+/// The join of a non-empty list.
+define list_join[S: JoinSemilattice](head: S, tail: List[S]) -> S {
+    match tail {
+        List.nil {
+            head
+        }
+        List.cons(next, rest) {
+            head.join(list_join(next, rest))
+        }
+    }
+}
+
+/// The meet of a non-empty list is below its head.
+theorem list_meet_lte_head[S: MeetSemilattice](head: S, tail: List[S]) {
+    list_meet(head, tail) <= head
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S) {
+            list_meet(h, t) <= h
+        }
+    }
+    forall(h: S) {
+        list_meet(h, List.nil[S]) = h
+        lte_refl(h)
+        list_meet(h, List.nil[S]) <= h
+    }
+    p(List.nil[S])
+    forall(next: S, rest: List[S]) {
+        if p(rest) {
+            forall(h: S) {
+                list_meet(h, List.cons(next, rest)) = h.meet(list_meet(next, rest))
+                meet_lte_left(h, list_meet(next, rest))
+                list_meet(h, List.cons(next, rest)) <= h
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
+
+/// The meet of a non-empty list is below every element of the list.
+theorem list_meet_lte_contains[S: MeetSemilattice](head: S, tail: List[S], x: S) {
+    List.cons(head, tail).contains(x) implies list_meet(head, tail) <= x
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S, y: S) {
+            List.cons(h, t).contains(y) implies list_meet(h, t) <= y
+        }
+    }
+    forall(h: S, y: S) {
+        if List.cons(h, List.nil[S]).contains(y) {
+            if h = y {
+                list_meet(h, List.nil[S]) = h
+                lte_refl(h)
+                list_meet(h, List.nil[S]) <= y
+            } else {
+                List.nil[S].contains(y)
+                false
+            }
+        }
+    }
+    p(List.nil[S])
+    forall(next: S, rest: List[S]) {
+        if p(rest) {
+            forall(h: S, y: S) {
+                if List.cons(h, List.cons(next, rest)).contains(y) {
+                    list_meet(h, List.cons(next, rest)) = h.meet(list_meet(next, rest))
+                    if h = y {
+                        meet_lte_left(h, list_meet(next, rest))
+                        list_meet(h, List.cons(next, rest)) <= y
+                    } else {
+                        List.cons(next, rest).contains(y)
+                        list_meet(next, rest) <= y
+                        meet_lte_right(h, list_meet(next, rest))
+                        lte_trans(list_meet(h, List.cons(next, rest)), list_meet(next, rest), y)
+                        list_meet(h, List.cons(next, rest)) <= y
+                    }
+                }
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
+
+/// The head is below the join of a non-empty list.
+theorem head_lte_list_join[S: JoinSemilattice](head: S, tail: List[S]) {
+    head <= list_join(head, tail)
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S) {
+            h <= list_join(h, t)
+        }
+    }
+    forall(h: S) {
+        list_join(h, List.nil[S]) = h
+        lte_refl(h)
+        h <= list_join(h, List.nil[S])
+    }
+    p(List.nil[S])
+    forall(next: S, rest: List[S]) {
+        if p(rest) {
+            forall(h: S) {
+                list_join(h, List.cons(next, rest)) = h.join(list_join(next, rest))
+                lte_join_left(h, list_join(next, rest))
+                h <= list_join(h, List.cons(next, rest))
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
+
+/// Every element of a non-empty list is below its join.
+theorem contains_lte_list_join[S: JoinSemilattice](head: S, tail: List[S], x: S) {
+    List.cons(head, tail).contains(x) implies x <= list_join(head, tail)
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S, y: S) {
+            List.cons(h, t).contains(y) implies y <= list_join(h, t)
+        }
+    }
+    forall(h: S, y: S) {
+        if List.cons(h, List.nil[S]).contains(y) {
+            if h = y {
+                list_join(h, List.nil[S]) = h
+                lte_refl(h)
+                y <= list_join(h, List.nil[S])
+            } else {
+                List.nil[S].contains(y)
+                false
+            }
+        }
+    }
+    p(List.nil[S])
+    forall(next: S, rest: List[S]) {
+        if p(rest) {
+            forall(h: S, y: S) {
+                if List.cons(h, List.cons(next, rest)).contains(y) {
+                    list_join(h, List.cons(next, rest)) = h.join(list_join(next, rest))
+                    if h = y {
+                        lte_join_left(h, list_join(next, rest))
+                        y <= list_join(h, List.cons(next, rest))
+                    } else {
+                        List.cons(next, rest).contains(y)
+                        y <= list_join(next, rest)
+                        lte_join_right(h, list_join(next, rest))
+                        lte_trans(y, list_join(next, rest), list_join(h, List.cons(next, rest)))
+                        y <= list_join(h, List.cons(next, rest))
+                    }
+                }
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
