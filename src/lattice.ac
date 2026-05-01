@@ -72,14 +72,38 @@ theorem meet_lte_left[S: MeetSemilattice](a: S, b: S) {
     a.meet(b) <= a
 }
 
+/// A meet is below its left argument.
+theorem meet_le_left[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) <= a
+} by {
+    meet_lte_left(a, b)
+}
+
 /// A meet is below its right argument.
 theorem meet_lte_right[S: MeetSemilattice](a: S, b: S) {
     a.meet(b) <= b
 }
 
+/// A meet is below its right argument.
+theorem meet_le_right[S: MeetSemilattice](a: S, b: S) {
+    a.meet(b) <= b
+} by {
+    meet_lte_right(a, b)
+}
+
 /// Any common lower bound is below the meet.
 theorem lte_meet_of_bounds[S: MeetSemilattice](c: S, a: S, b: S) {
     c <= a and c <= b implies c <= a.meet(b)
+}
+
+/// Any common lower bound is below the meet.
+theorem le_meet_of_le_left_of_le_right[S: MeetSemilattice](c: S, a: S, b: S) {
+    c <= a and c <= b implies c <= a.meet(b)
+} by {
+    if c <= a and c <= b {
+        lte_meet_of_bounds(c, a, b)
+        c <= a.meet(b)
+    }
 }
 
 /// The meet is the greatest lower bound of two elements.
@@ -102,9 +126,23 @@ theorem lte_meet_iff[S: MeetSemilattice](c: S, a: S, b: S) {
     c <= a.meet(b) = (c <= a and c <= b)
 }
 
+/// The meet is the greatest lower bound of two elements.
+theorem le_meet_iff[S: MeetSemilattice](c: S, a: S, b: S) {
+    c <= a.meet(b) = (c <= a and c <= b)
+} by {
+    lte_meet_iff(c, a, b)
+}
+
 /// A join is above its left argument.
 theorem lte_join_left[S: JoinSemilattice](a: S, b: S) {
     a <= a.join(b)
+}
+
+/// A join is above its left argument.
+theorem le_join_left[S: JoinSemilattice](a: S, b: S) {
+    a <= a.join(b)
+} by {
+    lte_join_left(a, b)
 }
 
 /// A join is above its right argument.
@@ -112,9 +150,26 @@ theorem lte_join_right[S: JoinSemilattice](a: S, b: S) {
     b <= a.join(b)
 }
 
+/// A join is above its right argument.
+theorem le_join_right[S: JoinSemilattice](a: S, b: S) {
+    b <= a.join(b)
+} by {
+    lte_join_right(a, b)
+}
+
 /// A join is below any common upper bound.
 theorem join_lte_of_bounds[S: JoinSemilattice](a: S, b: S, c: S) {
     a <= c and b <= c implies a.join(b) <= c
+}
+
+/// A join is below any common upper bound.
+theorem join_le_of_le_left_of_le_right[S: JoinSemilattice](a: S, b: S, c: S) {
+    a <= c and b <= c implies a.join(b) <= c
+} by {
+    if a <= c and b <= c {
+        join_lte_of_bounds(a, b, c)
+        a.join(b) <= c
+    }
 }
 
 /// The join is the least upper bound of two elements.
@@ -135,6 +190,13 @@ theorem join_lte_iff[S: JoinSemilattice](a: S, b: S, c: S) {
         a.join(b) <= c
     }
     a.join(b) <= c = (a <= c and b <= c)
+}
+
+/// The join is the least upper bound of two elements.
+theorem join_le_iff[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b) <= c = (a <= c and b <= c)
+} by {
+    join_lte_iff(a, b, c)
 }
 
 /// Meet distributes over join on the left.
@@ -320,6 +382,16 @@ theorem meet_lte_meet_left[S: MeetSemilattice](a: S, b: S, c: S) {
     }
 }
 
+/// Meet is monotone in the left argument.
+theorem meet_le_meet_left[S: MeetSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.meet(c) <= b.meet(c)
+} by {
+    if a <= b {
+        meet_lte_meet_left(a, b, c)
+        a.meet(c) <= b.meet(c)
+    }
+}
+
 /// Meet is monotone in the right argument.
 theorem meet_lte_meet_right[S: MeetSemilattice](a: S, b: S, c: S) {
     b <= c implies a.meet(b) <= a.meet(c)
@@ -327,6 +399,16 @@ theorem meet_lte_meet_right[S: MeetSemilattice](a: S, b: S, c: S) {
     if b <= c {
         lte_refl(a)
         meet_lte_meet(a, a, b, c)
+        a.meet(b) <= a.meet(c)
+    }
+}
+
+/// Meet is monotone in the right argument.
+theorem meet_le_meet_right[S: MeetSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.meet(b) <= a.meet(c)
+} by {
+    if b <= c {
+        meet_lte_meet_right(a, b, c)
         a.meet(b) <= a.meet(c)
     }
 }
@@ -342,6 +424,16 @@ theorem join_lte_join_left[S: JoinSemilattice](a: S, b: S, c: S) {
     }
 }
 
+/// Join is monotone in the left argument.
+theorem join_le_join_left[S: JoinSemilattice](a: S, b: S, c: S) {
+    a <= b implies a.join(c) <= b.join(c)
+} by {
+    if a <= b {
+        join_lte_join_left(a, b, c)
+        a.join(c) <= b.join(c)
+    }
+}
+
 /// Join is monotone in the right argument.
 theorem join_lte_join_right[S: JoinSemilattice](a: S, b: S, c: S) {
     b <= c implies a.join(b) <= a.join(c)
@@ -349,6 +441,16 @@ theorem join_lte_join_right[S: JoinSemilattice](a: S, b: S, c: S) {
     if b <= c {
         lte_refl(a)
         join_lte_join(a, a, b, c)
+        a.join(b) <= a.join(c)
+    }
+}
+
+/// Join is monotone in the right argument.
+theorem join_le_join_right[S: JoinSemilattice](a: S, b: S, c: S) {
+    b <= c implies a.join(b) <= a.join(c)
+} by {
+    if b <= c {
+        join_lte_join_right(a, b, c)
         a.join(b) <= a.join(c)
     }
 }

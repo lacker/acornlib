@@ -1,21 +1,31 @@
 {"goal":"meet_lte_left","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0) { x0.meet(x1) <= x0 }[S](a, b)"]}
+{"goal":"meet_le_left","proof":[]}
 {"goal":"meet_lte_right","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0) { x0.meet(x1) <= x1 }[S](a, b)"]}
+{"goal":"meet_le_right","proof":[]}
 {"goal":"lte_meet_of_bounds","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x0 <= x2 or x0 <= x1.meet(x2) }[S](c, a, b)"]}
+{"goal":"c <= a.meet(b)","proof":[]}
+{"goal":"le_meet_of_le_left_of_le_right","proof":[]}
 {"goal":"c <= a","proof":[]}
 {"goal":"c <= b","proof":[]}
 {"goal":"c <= a and c <= b","proof":[]}
 {"goal":"c <= a.meet(b)","proof":[]}
 {"goal":"c <= a.meet(b) = (c <= a and c <= b)","proof":[]}
 {"goal":"lte_meet_iff","proof":[]}
+{"goal":"le_meet_iff","proof":[]}
 {"goal":"lte_join_left","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x0.join(x1) }[S](a, b)"]}
+{"goal":"le_join_left","proof":[]}
 {"goal":"lte_join_right","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x1.join(x0) }[S](b, a)"]}
+{"goal":"le_join_right","proof":[]}
 {"goal":"join_lte_of_bounds","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x2 <= x1 or x0.join(x2) <= x1 }[S](a, c, b)"]}
+{"goal":"a.join(b) <= c","proof":[]}
+{"goal":"join_le_of_le_left_of_le_right","proof":[]}
 {"goal":"a <= c","proof":[]}
 {"goal":"b <= c","proof":[]}
 {"goal":"a <= c and b <= c","proof":[]}
 {"goal":"a.join(b) <= c","proof":[]}
 {"goal":"a.join(b) <= c = (a <= c and b <= c)","proof":[]}
 {"goal":"join_lte_iff","proof":[]}
+{"goal":"join_le_iff","proof":[]}
 {"goal":"meet_join_distrib_left","proof":["function[T0: DistribLattice](x0: T0, x1: T0, x2: T0) { x0.meet(x1).join(x0.meet(x2)) = x0.meet(x1.join(x2)) }[S](a, b, c)"]}
 {"goal":"join_meet_distrib_left","proof":["function[T0: DistribLattice](x0: T0, x1: T0, x2: T0) { x0.join(x1).meet(x0.join(x2)) = x0.join(x1.meet(x2)) }[S](a, b, c)"]}
 {"goal":"a.meet(b) <= b.meet(a)","proof":[]}
@@ -71,12 +81,20 @@
 {"goal":"join_lte_join","proof":[]}
 {"goal":"a.meet(c) <= b.meet(c)","proof":[]}
 {"goal":"meet_lte_meet_left","proof":[]}
+{"goal":"a.meet(c) <= b.meet(c)","proof":[]}
+{"goal":"meet_le_meet_left","proof":[]}
 {"goal":"a.meet(b) <= a.meet(c)","proof":[]}
 {"goal":"meet_lte_meet_right","proof":[]}
+{"goal":"a.meet(b) <= a.meet(c)","proof":[]}
+{"goal":"meet_le_meet_right","proof":[]}
 {"goal":"a.join(c) <= b.join(c)","proof":[]}
 {"goal":"join_lte_join_left","proof":[]}
+{"goal":"a.join(c) <= b.join(c)","proof":[]}
+{"goal":"join_le_join_left","proof":[]}
 {"goal":"a.join(b) <= a.join(c)","proof":[]}
 {"goal":"join_lte_join_right","proof":[]}
+{"goal":"a.join(b) <= a.join(c)","proof":[]}
+{"goal":"join_le_join_right","proof":[]}
 {"goal":"a <= b","proof":[]}
 {"goal":"a.meet(b) <= a","proof":[]}
 {"goal":"a <= a.meet(b)","proof":[]}

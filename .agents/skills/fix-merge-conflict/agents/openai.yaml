@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fix Merge Conflict"
+  short_description: "Resolve Acorn build-file merge conflicts"
+  default_prompt: "Use $fix-merge-conflict to resolve build-file merge conflicts on this Acornlib PR, verify with `acorn verify`, and push the fixed branch."

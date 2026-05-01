@@ -734,6 +734,16 @@ theorem lte_imp_not_lt_swap[P: PartialOrder](a: P, b: P) {
 }
 
 /// A non-strict comparison rules out the swapped strict comparison.
+theorem lte_imp_not_lt[P: PartialOrder](a: P, b: P) {
+    a <= b implies not (b < a)
+} by {
+    if a <= b {
+        not_lt_swap_of_lte(a, b)
+        not (b < a)
+    }
+}
+
+/// A non-strict comparison rules out the swapped strict comparison.
 theorem le_imp_not_lt_swap[P: PartialOrder](a: P, b: P) {
     a <= b implies not (b < a)
 } by {
@@ -1223,11 +1233,31 @@ theorem lte_of_lte_of_eq[P: PartialOrder](a: P, b: P, c: P) {
     }
 }
 
+/// Transitivity with equality on the right.
+theorem lte_trans_eq[P: PartialOrder](a: P, b: P, c: P) {
+    a <= b and b = c implies a <= c
+} by {
+    if a <= b and b = c {
+        lte_of_lte_of_eq(a, b, c)
+        a <= c
+    }
+}
+
 /// Replacing the left side of `<=` with an equal element preserves `<=`.
 theorem lte_of_eq_of_lte[P: PartialOrder](a: P, b: P, c: P) {
     a = b and b <= c implies a <= c
 } by {
     if a = b and b <= c {
+        a <= c
+    }
+}
+
+/// Transitivity with equality on the left.
+theorem lte_eq_trans[P: PartialOrder](a: P, b: P, c: P) {
+    a = b and b <= c implies a <= c
+} by {
+    if a = b and b <= c {
+        lte_of_eq_of_lte(a, b, c)
         a <= c
     }
 }
@@ -1967,6 +1997,34 @@ theorem lte_or_gte[L: LinearOrder](a: L, b: L) {
 }
 
 /// Any two elements are comparable.
+theorem lte_or_lte_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_gte(a, b)
+}
+
+/// Any two elements are comparable.
+theorem le_or_le_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
+theorem le_total[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
+theorem linear_order_total[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
 theorem le_or_ge[L: LinearOrder](a: L, b: L) {
     a <= b or a >= b
 } by {
@@ -1984,6 +2042,28 @@ theorem ge_or_le[L: LinearOrder](a: L, b: L) {
         a >= b
         a >= b or a <= b
     }
+}
+
+/// Any two elements are comparable in reverse-order form.
+theorem gte_or_gte_swap[L: LinearOrder](a: L, b: L) {
+    a >= b or b >= a
+} by {
+    lte_or_lte_swap(b, a)
+    if b <= a {
+        a >= b
+        a >= b or b >= a
+    } else {
+        a <= b
+        b >= a
+        a >= b or b >= a
+    }
+}
+
+/// Any two elements are comparable in reverse-order form.
+theorem ge_or_ge_swap[L: LinearOrder](a: L, b: L) {
+    a >= b or b >= a
+} by {
+    gte_or_gte_swap(a, b)
 }
 
 /// Either `a < b` or `b <= a`.
@@ -2006,6 +2086,13 @@ theorem lt_or_lte[L: LinearOrder](a: L, b: L) {
     }
 }
 
+/// Either `a < b` or `b <= a`.
+theorem lt_or_le_swap[L: LinearOrder](a: L, b: L) {
+    a < b or b <= a
+} by {
+    lt_or_lte(a, b)
+}
+
 /// Either `a <= b` or `b < a`.
 theorem lte_or_lt[L: LinearOrder](a: L, b: L) {
     a <= b or b < a
@@ -2023,6 +2110,13 @@ theorem lte_or_lt[L: LinearOrder](a: L, b: L) {
         b < a
         a <= b or b < a
     }
+}
+
+/// Either `a <= b` or `b < a`.
+theorem le_or_lt_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b < a
+} by {
+    lte_or_lt(a, b)
 }
 
 theorem not_lte_imp_gt[L: LinearOrder](a: L, b: L) {
@@ -3960,4 +4054,56 @@ theorem max_absorb_min_right[L: LinearOrder](a: L, b: L) {
 } by {
     min_comm(b, a)
     max_absorb_min(a, b)
+}
+
+/// Minimum distributes over maximum on the left.
+theorem min_max_distrib_left[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b.max(c)) = a.min(b).max(a.min(c))
+} by {
+    if b <= c {
+        max_eq_right_of_lte(b, c)
+        b.max(c) = c
+        min_lte_min_right(a, b, c)
+        a.min(b) <= a.min(c)
+        max_eq_right_of_lte(a.min(b), a.min(c))
+        a.min(b).max(a.min(c)) = a.min(c)
+        a.min(b.max(c)) = a.min(c)
+        a.min(b.max(c)) = a.min(b).max(a.min(c))
+    } else {
+        b >= c
+        max_eq_left_of_gte(b, c)
+        b.max(c) = b
+        min_lte_min_right(a, c, b)
+        a.min(c) <= a.min(b)
+        max_eq_left_of_gte(a.min(b), a.min(c))
+        a.min(b).max(a.min(c)) = a.min(b)
+        a.min(b.max(c)) = a.min(b)
+        a.min(b.max(c)) = a.min(b).max(a.min(c))
+    }
+}
+
+/// Maximum distributes over minimum on the left.
+theorem max_min_distrib_left[L: LinearOrder](a: L, b: L, c: L) {
+    a.max(b.min(c)) = a.max(b).min(a.max(c))
+} by {
+    if b <= c {
+        min_eq_left_of_lte(b, c)
+        b.min(c) = b
+        max_lte_max_right(a, b, c)
+        a.max(b) <= a.max(c)
+        min_eq_left_of_lte(a.max(b), a.max(c))
+        a.max(b).min(a.max(c)) = a.max(b)
+        a.max(b.min(c)) = a.max(b)
+        a.max(b.min(c)) = a.max(b).min(a.max(c))
+    } else {
+        b >= c
+        min_eq_right_of_gte(b, c)
+        b.min(c) = c
+        max_lte_max_right(a, c, b)
+        a.max(c) <= a.max(b)
+        min_eq_right_of_gte(a.max(b), a.max(c))
+        a.max(b).min(a.max(c)) = a.max(c)
+        a.max(b.min(c)) = a.max(c)
+        a.max(b.min(c)) = a.max(b).min(a.max(c))
+    }
 }
