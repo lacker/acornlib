@@ -1,5 +1,6 @@
 from list.list_base import List
 from order import LinearOrder
+from order_interval import closed_interval
 
 /// Theorems about lists of ordered types.
 
@@ -299,6 +300,170 @@ theorem lower_bound_monotone[T: LinearOrder](list: List[T], lb1: T, lb2: T) {
 
 }
 
+/// True if all elements of a list lie in the closed interval from `lower` to `upper`.
+define is_interval_bound[T: LinearOrder](list: List[T], lower: T, upper: T) -> Bool {
+    is_lower_bound(list, lower) and is_upper_bound(list, upper)
+}
+
+/// An interval bound applies to every element contained in the list.
+theorem interval_bound_contains[T: LinearOrder](list: List[T], lower: T, upper: T, item: T) {
+    is_interval_bound(list, lower, upper) and list.contains(item) implies
+    closed_interval(lower, upper, item)
+} by {
+    if is_interval_bound(list, lower, upper) and list.contains(item) {
+        is_interval_bound(list, lower, upper) =
+            (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+        is_lower_bound(list, lower)
+        lower_bound_contains(list, lower, item)
+        lower <= item
+        is_upper_bound(list, upper)
+        upper_bound_contains(list, upper, item)
+        item <= upper
+        closed_interval(lower, upper, item)
+    }
+}
+
+/// Lower and upper list bounds determine an interval bound.
+theorem bounds_imp_interval_bound[T: LinearOrder](list: List[T], lower: T, upper: T) {
+    is_lower_bound(list, lower) and is_upper_bound(list, upper) implies
+    is_interval_bound(list, lower, upper)
+} by {
+    if is_lower_bound(list, lower) and is_upper_bound(list, upper) {
+        is_interval_bound(list, lower, upper)
+    }
+}
+
+/// An interval bound determines a lower bound for the list.
+theorem interval_bound_imp_lower_bound[T: LinearOrder](list: List[T], lower: T, upper: T) {
+    is_interval_bound(list, lower, upper) implies is_lower_bound(list, lower)
+} by {
+    if is_interval_bound(list, lower, upper) {
+        is_interval_bound(list, lower, upper) =
+            (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+        is_lower_bound(list, lower)
+    }
+}
+
+/// An interval bound determines an upper bound for the list.
+theorem interval_bound_imp_upper_bound[T: LinearOrder](list: List[T], lower: T, upper: T) {
+    is_interval_bound(list, lower, upper) implies is_upper_bound(list, upper)
+} by {
+    if is_interval_bound(list, lower, upper) {
+        is_interval_bound(list, lower, upper) =
+            (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+        is_upper_bound(list, upper)
+    }
+}
+
+/// Being interval-bounded is equivalent to having the corresponding lower and upper bounds.
+theorem interval_bound_iff_bounds[T: LinearOrder](list: List[T], lower: T, upper: T) {
+    is_interval_bound(list, lower, upper) =
+    (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+} by {
+    if is_interval_bound(list, lower, upper) {
+        interval_bound_imp_lower_bound(list, lower, upper)
+        is_lower_bound(list, lower)
+        interval_bound_imp_upper_bound(list, lower, upper)
+        is_upper_bound(list, upper)
+        is_lower_bound(list, lower) and is_upper_bound(list, upper)
+    }
+    if is_lower_bound(list, lower) and is_upper_bound(list, upper) {
+        bounds_imp_interval_bound(list, lower, upper)
+        is_interval_bound(list, lower, upper)
+    }
+    is_interval_bound(list, lower, upper) =
+    (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+}
+
+/// A list lower bound is a lower bound for the list membership predicate.
+theorem lower_bound_imp_contains_lower_bound[T: LinearOrder](list: List[T], lower: T) {
+    is_lower_bound(list, lower) implies
+    lib(order_interval).is_lower_bound(list.contains, lower)
+} by {
+    if is_lower_bound(list, lower) {
+        forall(item: T) {
+            if list.contains(item) {
+                lower_bound_contains(list, lower, item)
+                lower <= item
+            }
+        }
+        lib(order_interval).is_lower_bound(list.contains, lower)
+    }
+}
+
+/// A list lower bound gives boundedness below for the list membership predicate.
+theorem lower_bound_imp_contains_bounded_below[T: LinearOrder](list: List[T], lower: T) {
+    is_lower_bound(list, lower) implies
+    lib(order_interval).is_bounded_below(list.contains)
+} by {
+    if is_lower_bound(list, lower) {
+        lower_bound_imp_contains_lower_bound(list, lower)
+        lib(order_interval).is_lower_bound(list.contains, lower)
+        lib(order_interval).lower_bound_imp_bounded_below(list.contains, lower)
+        lib(order_interval).is_bounded_below(list.contains)
+    }
+}
+
+/// A list upper bound is an upper bound for the list membership predicate.
+theorem upper_bound_imp_contains_upper_bound[T: LinearOrder](list: List[T], upper: T) {
+    is_upper_bound(list, upper) implies
+    lib(order_interval).is_upper_bound(list.contains, upper)
+} by {
+    if is_upper_bound(list, upper) {
+        forall(item: T) {
+            if list.contains(item) {
+                upper_bound_contains(list, upper, item)
+                item <= upper
+            }
+        }
+        lib(order_interval).is_upper_bound(list.contains, upper)
+    }
+}
+
+/// A list upper bound gives boundedness above for the list membership predicate.
+theorem upper_bound_imp_contains_bounded_above[T: LinearOrder](list: List[T], upper: T) {
+    is_upper_bound(list, upper) implies
+    lib(order_interval).is_bounded_above(list.contains)
+} by {
+    if is_upper_bound(list, upper) {
+        upper_bound_imp_contains_upper_bound(list, upper)
+        lib(order_interval).is_upper_bound(list.contains, upper)
+        lib(order_interval).upper_bound_imp_bounded_above(list.contains, upper)
+        lib(order_interval).is_bounded_above(list.contains)
+    }
+}
+
+/// An interval bound for a list is an interval bound for its membership predicate.
+theorem interval_bound_imp_contains_bounded_by_interval[T: LinearOrder](list: List[T],
+        lower: T, upper: T) {
+    is_interval_bound(list, lower, upper) implies
+    lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)
+} by {
+    if is_interval_bound(list, lower, upper) {
+        forall(item: T) {
+            if list.contains(item) {
+                interval_bound_contains(list, lower, upper, item)
+                closed_interval(lower, upper, item)
+            }
+        }
+        lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)
+    }
+}
+
+/// An interval bound for a list gives boundedness for its membership predicate.
+theorem interval_bound_imp_contains_bounded[T: LinearOrder](list: List[T],
+        lower: T, upper: T) {
+    is_interval_bound(list, lower, upper) implies
+    lib(order_interval).is_bounded(list.contains)
+} by {
+    if is_interval_bound(list, lower, upper) {
+        interval_bound_imp_contains_bounded_by_interval(list, lower, upper)
+        lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)
+        lib(order_interval).bounded_by_interval_imp_bounded(list.contains, lower, upper)
+        lib(order_interval).is_bounded(list.contains)
+    }
+}
+
 /// The minimum element of a non-empty list.
 define list_min[T: LinearOrder](head: T, tail: List[T]) -> T {
     match tail {
@@ -359,4 +524,92 @@ theorem list_has_lower_bound[T: LinearOrder](head: T, tail: List[T]) {
     }
 } by {
     let lb = list_min(head, tail)
+}
+
+/// The minimum and maximum of a non-empty list bound every element of the list by a closed interval.
+theorem list_min_max_interval_bound[T: LinearOrder](head: T, tail: List[T]) {
+    is_interval_bound(List.cons(head, tail), list_min(head, tail), list_max(head, tail))
+} by {
+    list_min_is_lower_bound(head, tail)
+    list_max_is_upper_bound(head, tail)
+    bounds_imp_interval_bound(List.cons(head, tail), list_min(head, tail), list_max(head, tail))
+}
+
+/// The list membership predicate is interval-bounded by the minimum and maximum.
+theorem list_min_max_contains_bounded_by_interval[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_bounded_by_interval(List.cons(head, tail).contains,
+        list_min(head, tail), list_max(head, tail))
+} by {
+    list_min_max_interval_bound(head, tail)
+    interval_bound_imp_contains_bounded_by_interval(List.cons(head, tail),
+        list_min(head, tail), list_max(head, tail))
+}
+
+/// The list membership predicate is bounded.
+theorem list_min_max_contains_bounded[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_bounded(List.cons(head, tail).contains)
+} by {
+    list_min_max_contains_bounded_by_interval(head, tail)
+    lib(order_interval).bounded_by_interval_imp_bounded(List.cons(head, tail).contains,
+        list_min(head, tail), list_max(head, tail))
+}
+
+/// The list membership predicate is bounded below by the minimum.
+theorem list_min_contains_lower_bound[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_lower_bound(List.cons(head, tail).contains, list_min(head, tail))
+} by {
+    list_min_is_lower_bound(head, tail)
+    lower_bound_imp_contains_lower_bound(List.cons(head, tail), list_min(head, tail))
+}
+
+/// The list membership predicate is bounded below.
+theorem list_min_contains_bounded_below[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_bounded_below(List.cons(head, tail).contains)
+} by {
+    list_min_contains_lower_bound(head, tail)
+    lib(order_interval).lower_bound_imp_bounded_below(List.cons(head, tail).contains,
+        list_min(head, tail))
+}
+
+/// The list membership predicate is bounded above by the maximum.
+theorem list_max_contains_upper_bound[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_upper_bound(List.cons(head, tail).contains, list_max(head, tail))
+} by {
+    list_max_is_upper_bound(head, tail)
+    upper_bound_imp_contains_upper_bound(List.cons(head, tail), list_max(head, tail))
+}
+
+/// The list membership predicate is bounded above.
+theorem list_max_contains_bounded_above[T: LinearOrder](head: T, tail: List[T]) {
+    lib(order_interval).is_bounded_above(List.cons(head, tail).contains)
+} by {
+    list_max_contains_upper_bound(head, tail)
+    lib(order_interval).upper_bound_imp_bounded_above(List.cons(head, tail).contains,
+        list_max(head, tail))
+}
+
+/// Every element of a non-empty list lies between the list minimum and maximum.
+theorem list_contains_closed_interval_min_max[T: LinearOrder](head: T, tail: List[T], item: T) {
+    List.cons(head, tail).contains(item) implies
+    closed_interval(list_min(head, tail), list_max(head, tail), item)
+} by {
+    if List.cons(head, tail).contains(item) {
+        list_min_max_interval_bound(head, tail)
+        interval_bound_contains(List.cons(head, tail), list_min(head, tail), list_max(head, tail), item)
+        closed_interval(list_min(head, tail), list_max(head, tail), item)
+    }
+}
+
+/// A non-empty list is interval-bounded by its minimum and maximum.
+theorem list_has_interval_bound[T: LinearOrder](head: T, tail: List[T]) {
+    exists(lower: T, upper: T) {
+        is_interval_bound(List.cons(head, tail), lower, upper)
+    }
+} by {
+    list_min_max_interval_bound(head, tail)
+    exists(lower: T, upper: T) {
+        lower = list_min(head, tail) and
+        upper = list_max(head, tail) and
+        is_interval_bound(List.cons(head, tail), lower, upper)
+    }
 }

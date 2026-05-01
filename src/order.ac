@@ -3908,6 +3908,146 @@ theorem max_ge_of_ge_right[L: LinearOrder](a: L, b: L, c: L) {
     }
 }
 
+/// Two elements have a common upper bound.
+theorem exists_common_upper_bound[L: LinearOrder](a: L, b: L) {
+    exists(n: L) {
+        a <= n and b <= n
+    }
+} by {
+    let n = a.max(b)
+    lte_max_left(a, b)
+    a <= n
+    lte_max_right(a, b)
+    b <= n
+}
+
+/// Two elements have a common lower bound.
+theorem exists_common_lower_bound[L: LinearOrder](a: L, b: L) {
+    exists(n: L) {
+        n <= a and n <= b
+    }
+} by {
+    let n = a.min(b)
+    min_lte_left(a, b)
+    n <= a
+    min_lte_right(a, b)
+    n <= b
+}
+
+/// Two elements have a common upper bound, written with reverse comparisons.
+theorem exists_common_ge_bound[L: LinearOrder](a: L, b: L) {
+    exists(n: L) {
+        n >= a and n >= b
+    }
+} by {
+    let n = a.max(b)
+    lte_max_left(a, b)
+    n >= a
+    lte_max_right(a, b)
+    n >= b
+}
+
+/// Two elements have a common lower bound, written with reverse comparisons.
+theorem exists_common_le_bound[L: LinearOrder](a: L, b: L) {
+    exists(n: L) {
+        a >= n and b >= n
+    }
+} by {
+    let n = a.min(b)
+    min_lte_left(a, b)
+    a >= n
+    min_lte_right(a, b)
+    b >= n
+}
+
+/// Three elements have a common upper bound.
+theorem exists_common_upper_bound_three[L: LinearOrder](a: L, b: L, c: L) {
+    exists(n: L) {
+        a <= n and b <= n and c <= n
+    }
+} by {
+    let m = a.max(b)
+    let n = m.max(c)
+    lte_max_left(a, b)
+    a <= m
+    lte_max_left(m, c)
+    m <= n
+    lte_trans(a, m, n)
+    a <= n
+    lte_max_right(a, b)
+    b <= m
+    lte_trans(b, m, n)
+    b <= n
+    lte_max_right(m, c)
+    c <= n
+}
+
+/// Three elements have a common lower bound.
+theorem exists_common_lower_bound_three[L: LinearOrder](a: L, b: L, c: L) {
+    exists(n: L) {
+        n <= a and n <= b and n <= c
+    }
+} by {
+    let m = a.min(b)
+    let n = m.min(c)
+    min_lte_left(m, c)
+    n <= m
+    min_lte_left(a, b)
+    m <= a
+    lte_trans(n, m, a)
+    n <= a
+    min_lte_right(a, b)
+    m <= b
+    lte_trans(n, m, b)
+    n <= b
+    min_lte_right(m, c)
+    n <= c
+}
+
+/// Three elements have a common upper bound, written with reverse comparisons.
+theorem exists_common_ge_bound_three[L: LinearOrder](a: L, b: L, c: L) {
+    exists(n: L) {
+        n >= a and n >= b and n >= c
+    }
+} by {
+    let m = a.max(b)
+    let n = m.max(c)
+    lte_max_left(a, b)
+    a <= m
+    lte_max_left(m, c)
+    m <= n
+    lte_trans(a, m, n)
+    n >= a
+    lte_max_right(a, b)
+    b <= m
+    lte_trans(b, m, n)
+    n >= b
+    lte_max_right(m, c)
+    n >= c
+}
+
+/// Three elements have a common lower bound, written with reverse comparisons.
+theorem exists_common_le_bound_three[L: LinearOrder](a: L, b: L, c: L) {
+    exists(n: L) {
+        a >= n and b >= n and c >= n
+    }
+} by {
+    let m = a.min(b)
+    let n = m.min(c)
+    min_lte_left(m, c)
+    n <= m
+    min_lte_left(a, b)
+    m <= a
+    lte_trans(n, m, a)
+    a >= n
+    min_lte_right(a, b)
+    m <= b
+    lte_trans(n, m, b)
+    b >= n
+    min_lte_right(m, c)
+    c >= n
+}
+
 /// The minimum operation is associative.
 theorem min_assoc[L: LinearOrder](a: L, b: L, c: L) {
     a.min(b.min(c)) = a.min(b).min(c)

@@ -33,6 +33,32 @@
 {"goal":"subsemigroup_intersection_subset_left","proof":[]}
 {"goal":"b.contains(x)","proof":[]}
 {"goal":"subsemigroup_intersection_subset_right","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(a).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x) = b.intersection(a).contains(x)","proof":[]}
+{"goal":"subsemigroup_intersection_comm","proof":["let w0: S satisfy { w0 ∈ a ∩ b != w0 ∈ b ∩ a }"]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"rhs.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"lhs.contains(x)","proof":[]}
+{"goal":"lhs.contains(x) = rhs.contains(x)","proof":[]}
+{"goal":"subsemigroup_intersection_assoc","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: Subsemigroup[T0]) { x0.contains != x1.contains or x0 = x1 }[S](rhs, lhs)"]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x) = a.contains(x)","proof":[]}
+{"goal":"subsemigroup_intersection_idempotent","proof":["let w0: S satisfy { w0 ∈ a != w0 ∈ a ∩ a }"]}
 {"goal":"false","proof":["function[T0: Semigroup](x0: T0) { not empty_contains[T0](x0) }[S](a)"]}
 {"goal":"empty_subsemigroup_constraint","proof":["function[T0: Semigroup](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = subsemigroup_closure_constraint[T0](x0) }[S](empty_contains[S])","let w0: S satisfy { exists(k0: S) { empty_contains(w0) and empty_contains(k0) and not empty_contains(w0 * k0) } }","function[T0: Semigroup](x0: T0) { not empty_contains[T0](x0) }[S](w0)","let w1: S satisfy { empty_contains(w0) and empty_contains(w1) and not empty_contains(w0 * w1) }"]}
 {"goal":"exists(k0: Subsemigroup[S]) { Subsemigroup.new[S](empty_contains[S]) = Option.some(k0) }","proof":["function[T0: Semigroup](x0: T0 -> Bool) { not Subsemigroup.constraint[T0](x0) or exists(k0: Subsemigroup[T0]) { Subsemigroup.new[T0](x0) = Option.some[Subsemigroup[T0]](k0) } }[S](empty_contains[S])","function[T0: Semigroup](x0: T0 -> Bool) { Subsemigroup.constraint[T0](x0) = subsemigroup_closure_constraint[T0](x0) }[S](empty_contains[S])","function[T0: Semigroup] { subsemigroup_closure_constraint[T0](empty_contains[T0]) }[S]"]}

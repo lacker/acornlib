@@ -1,7 +1,7 @@
 from nat import Nat
 from ring import Ring
-from add_group import AddGroup, left_cancel
-from monoid import Monoid
+from add_group import AddGroup, AddGroupHom, is_add_group_hom, left_cancel
+from monoid import Monoid, MonoidHom, is_monoid_hom
 from functions import identity_fn, compose, compose_assoc, compose_identity_left, compose_identity_right,
     function_eq_transport_predicate, function_eq_transport_predicate_rev
 
@@ -164,6 +164,76 @@ theorem ring_hom_pow[R: Ring, S: Ring](f: RingHom[R, S], a: R, n: Nat) {
             p(k.suc)
         }
     }
+}
+
+/// A ring homomorphism predicate implies the additive group homomorphism predicate.
+theorem is_ring_hom_imp_is_add_group_hom[R: Ring, S: Ring](f: R -> S) {
+    is_ring_hom(f) implies is_add_group_hom(f)
+} by {
+    is_ring_hom(f) = (f(R.1) = S.1 and forall(x: R, y: R) {
+        f(x + y) = f(x) + f(y) and f(x * y) = f(x) * f(y)
+    })
+    forall(a: R, b: R) {
+        f(a + b) = f(a) + f(b)
+    }
+    is_add_group_hom(f)
+}
+
+/// A ring homomorphism predicate implies the monoid homomorphism predicate.
+theorem is_ring_hom_imp_is_monoid_hom[R: Ring, S: Ring](f: R -> S) {
+    is_ring_hom(f) implies is_monoid_hom(f)
+} by {
+    is_ring_hom(f) = (f(R.1) = S.1 and forall(x: R, y: R) {
+        f(x + y) = f(x) + f(y) and f(x * y) = f(x) * f(y)
+    })
+    f(R.1) = S.1
+    forall(a: R, b: R) {
+        f(a * b) = f(a) * f(b)
+    }
+    f(R.1) = S.1 and forall(a: R, b: R) {
+        f(a * b) = f(a) * f(b)
+    }
+    is_monoid_hom(f)
+}
+
+/// The underlying map of a ring homomorphism preserves the additive group structure.
+theorem ring_hom_is_add_group_hom[R: Ring, S: Ring](f: RingHom[R, S]) {
+    is_add_group_hom(f.hom)
+} by {
+    is_ring_hom(f.hom)
+    is_ring_hom_imp_is_add_group_hom(f.hom)
+}
+
+/// The underlying map of a ring homomorphism preserves the multiplicative monoid structure.
+theorem ring_hom_is_monoid_hom[R: Ring, S: Ring](f: RingHom[R, S]) {
+    is_monoid_hom(f.hom)
+} by {
+    is_ring_hom(f.hom)
+    is_ring_hom_imp_is_monoid_hom(f.hom)
+}
+
+/// A ring homomorphism as an additive group homomorphism.
+let ring_hom_to_add_group_hom[R: Ring, S: Ring](f: RingHom[R, S]) -> result: AddGroupHom[R, S] satisfy {
+    AddGroupHom.new(f.hom) = Option.some(result)
+} by {
+    ring_hom_is_add_group_hom(f)
+}
+
+/// The additive group homomorphism underlying a ring homomorphism has the same function.
+theorem ring_hom_to_add_group_hom_hom[R: Ring, S: Ring](f: RingHom[R, S]) {
+    ring_hom_to_add_group_hom(f).hom = f.hom
+}
+
+/// A ring homomorphism as a multiplicative monoid homomorphism.
+let ring_hom_to_monoid_hom[R: Ring, S: Ring](f: RingHom[R, S]) -> result: MonoidHom[R, S] satisfy {
+    MonoidHom.new(f.hom) = Option.some(result)
+} by {
+    ring_hom_is_monoid_hom(f)
+}
+
+/// The monoid homomorphism underlying a ring homomorphism has the same function.
+theorem ring_hom_to_monoid_hom_hom[R: Ring, S: Ring](f: RingHom[R, S]) {
+    ring_hom_to_monoid_hom(f).hom = f.hom
 }
 
 /// Equality of functions transports the property of being a ring homomorphism.

@@ -1,0 +1,285 @@
+{"goal":"is_order_iso_pair[A, B](f, g) = (forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f) and is_order_embedding[B, A](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](g, f)"]}
+{"goal":"g(f(a)) = a","proof":["(forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f))","(forall(x2: A) { g(f(x2)) = x2 } = true)","function(x0: A) { g(f(x0)) = x0 }(a)"]}
+{"goal":"order_iso_pair_left_inverse","proof":[]}
+{"goal":"is_order_iso_pair[A, B](f, g) = (forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f) and is_order_embedding[B, A](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](g, f)"]}
+{"goal":"f(g(b)) = b","proof":["(forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f))","(forall(x2: B) { f(g(x2)) = x2 } = true)","function(x0: B) { f(g(x0)) = x0 }(b)"]}
+{"goal":"order_iso_pair_right_inverse","proof":[]}
+{"goal":"is_order_iso_pair[A, B](f, g) = (forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f) and is_order_embedding[B, A](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](g, f)"]}
+{"goal":"is_order_embedding[A, B](f)","proof":[]}
+{"goal":"order_iso_pair_map_is_order_embedding","proof":[]}
+{"goal":"is_order_iso_pair[A, B](f, g) = (forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f) and is_order_embedding[B, A](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](g, f)"]}
+{"goal":"is_order_embedding[B, A](g)","proof":[]}
+{"goal":"order_iso_pair_inv_is_order_embedding","proof":[]}
+{"goal":"is_order_iso_pair[A, B](f, g) = (forall(x0: A) { g(f(x0)) = x0 } and forall(x1: B) { f(g(x1)) = x1 } and is_order_embedding[A, B](f) and is_order_embedding[B, A](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](g, f)"]}
+{"goal":"f(g(b)) = b","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[A, B](f, g, b)"]}
+{"goal":"g(f(a)) = a","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T0) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x1(x0(x2)) }[A, B](f, g, a)"]}
+{"goal":"is_order_embedding[B, A](g)","proof":[]}
+{"goal":"is_order_embedding[A, B](f)","proof":[]}
+{"goal":"is_order_iso_pair[B, A](g, f) = (forall(x0: B) { f(g(x0)) = x0 } and forall(x1: A) { g(f(x1)) = x1 } and is_order_embedding[B, A](g) and is_order_embedding[A, B](f))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[B, A](f, g)"]}
+{"goal":"is_order_iso_pair[B, A](g, f)","proof":[]}
+{"goal":"order_iso_pair_swap","proof":[]}
+{"goal":"is_order_iso_pair[B, C](f, g) = (forall(x0: B) { g(f(x0)) = x0 } and forall(x1: C) { f(g(x1)) = x1 } and is_order_embedding[B, C](f) and is_order_embedding[C, B](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[B, C](g, f)"]}
+{"goal":"is_order_iso_pair[A, B](h, k) = (forall(x0: A) { k(h(x0)) = x0 } and forall(x1: B) { h(k(x1)) = x1 } and is_order_embedding[A, B](h) and is_order_embedding[B, A](k))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, B](k, h)"]}
+{"goal":"is_order_embedding[A, C](fg)","proof":[]}
+{"goal":"is_order_embedding[C, A](kg)","proof":[]}
+{"goal":"kg(fg(a)) = compose[C, B, A](k, g, fg(a))","proof":[]}
+{"goal":"compose[C, B, A](k, g, fg(a)) = k(g(fg(a)))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[C, B, A](k, g, fg(a))"]}
+{"goal":"fg(a) = compose[A, B, C](f, h)(a)","proof":[]}
+{"goal":"compose[A, B, C](f, h, a) = f(h(a))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, h, a)"]}
+{"goal":"g(fg(a)) = g(f(h(a)))","proof":[]}
+{"goal":"g(f(h(a))) = h(a)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T0) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x1(x0(x2)) }[B, C](f, g, h(a))"]}
+{"goal":"k(g(fg(a))) = k(h(a))","proof":[]}
+{"goal":"k(h(a)) = a","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T0) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x1(x0(x2)) }[A, B](h, k, a)"]}
+{"goal":"kg(fg(a)) = a","proof":[]}
+{"goal":"fg(kg(c)) = compose[A, B, C](f, h, kg(c))","proof":[]}
+{"goal":"compose[A, B, C](f, h, kg(c)) = f(h(kg(c)))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, h, kg(c))"]}
+{"goal":"kg(c) = compose[C, B, A](k, g)(c)","proof":[]}
+{"goal":"compose[C, B, A](k, g, c) = k(g(c))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[C, B, A](k, g, c)"]}
+{"goal":"h(kg(c)) = h(k(g(c)))","proof":[]}
+{"goal":"h(k(g(c))) = g(c)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[A, B](h, k, g(c))"]}
+{"goal":"f(h(kg(c))) = f(g(c))","proof":[]}
+{"goal":"f(g(c)) = c","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_order_iso_pair[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[B, C](f, g, c)"]}
+{"goal":"fg(kg(c)) = c","proof":[]}
+{"goal":"is_order_iso_pair[A, C](fg, kg) = (forall(x0: A) { kg(fg(x0)) = x0 } and forall(x1: C) { fg(kg(x1)) = x1 } and is_order_embedding[A, C](fg) and is_order_embedding[C, A](kg))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, C](kg, fg)"]}
+{"goal":"kg(fg(x)) = x","proof":["function(x0: A) { kg(fg(x0)) = x0 }(x)"]}
+{"goal":"fg(kg(y)) = y","proof":["function(x0: C) { fg(kg(x0)) = x0 }(y)"]}
+{"goal":"is_order_embedding[A, C](fg) and is_order_embedding[C, A](kg)","proof":[]}
+{"goal":"forall(x0: C) { fg(kg(x0)) = x0 } and is_order_embedding[A, C](fg) and is_order_embedding[C, A](kg)","proof":["let w0: C satisfy { fg(kg(w0)) != w0 }","function(x0: C) { fg(kg(x0)) = x0 }(w0)"]}
+{"goal":"forall(x0: A) { kg(fg(x0)) = x0 } and forall(x1: C) { fg(kg(x1)) = x1 } and is_order_embedding[A, C](fg) and is_order_embedding[C, A](kg)","proof":["(forall(x0: C) { fg(kg(x0)) = x0 } and is_order_embedding[A, C](fg))","let w0: A satisfy { kg(fg(w0)) != w0 }","function(x0: A) { kg(fg(x0)) = x0 }(w0)"]}
+{"goal":"is_order_iso_pair[A, C](fg, kg)","proof":[]}
+{"goal":"fg = compose[A, B, C](f, h)","proof":[]}
+{"goal":"kg = compose[C, B, A](k, g)","proof":[]}
+{"goal":"is_order_iso_pair[A, C](compose[A, B, C](f, h), compose[C, B, A](k, g))","proof":[]}
+{"goal":"order_iso_pair_compose","proof":[]}
+{"goal":"order_iso_new_map","proof":["let w0: A satisfy { f(w0) != e.map(w0) }","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T0 -> T1, x2: T1 -> T0, x3: T0) { Option.some[OrderIso[T0, T1]](x0) != OrderIso.new[T0, T1](x1, x2) or x0.map(x3) = x1(x3) }[A, B](e, f, g, w0)"]}
+{"goal":"order_iso_new_inv","proof":["let w0: B satisfy { g(w0) != e.inv(w0) }","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T0 -> T1, x2: T1 -> T0, x3: T1) { Option.some[OrderIso[T0, T1]](x0) != OrderIso.new[T0, T1](x1, x2) or x0.inv(x3) = x2(x3) }[A, B](e, f, g, w0)"]}
+{"goal":"order_iso_new_self","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[A, B](e)"]}
+{"goal":"order_iso_some_injective","proof":["function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[OrderIso[A, B]](e, h)"]}
+{"goal":"OrderIso.new[A, B](e.map, e.inv) = Option.some(e)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[A, B](e)"]}
+{"goal":"OrderIso.new[A, B](h.map, h.inv) = Option.some(h)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[A, B](h)"]}
+{"goal":"Option.some(e) = Option.some(h)","proof":[]}
+{"goal":"order_iso_ext","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[A, B](e)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[A, B](h)"]}
+{"goal":"order_iso_eq_map","proof":[]}
+{"goal":"order_iso_eq_inv","proof":[]}
+{"goal":"OrderIso.constraint[A, B](e.map, e.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[A, B](e)"]}
+{"goal":"is_order_iso_pair[A, B](e.map, e.inv)","proof":[]}
+{"goal":"order_iso_left_inverse","proof":[]}
+{"goal":"OrderIso.constraint[A, B](e.map, e.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[A, B](e)"]}
+{"goal":"is_order_iso_pair[A, B](e.map, e.inv)","proof":[]}
+{"goal":"order_iso_right_inverse","proof":[]}
+{"goal":"OrderIso.constraint[A, B](e.map, e.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[A, B](e)"]}
+{"goal":"is_order_iso_pair[A, B](e.map, e.inv)","proof":[]}
+{"goal":"order_iso_map_is_order_embedding","proof":[]}
+{"goal":"e.map(e.inv(x)) = x","proof":[]}
+{"goal":"e.map(e.inv(y)) = y","proof":[]}
+{"goal":"e.map(e.inv(x)) <= e.map(e.inv(y))","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"e.map(e.inv(x)) <= e.map(e.inv(y))","proof":[]}
+{"goal":"e.inv(x) <= e.inv(y)","proof":[]}
+{"goal":"e.inv(x) <= e.inv(y) = x <= y","proof":[]}
+{"goal":"order_iso_inv_is_order_embedding","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[B, A](e.inv)","let w0: B satisfy { exists(k0: B) { w0 <= k0 != e.inv(w0) <= e.inv(k0) } }","let w1: B satisfy { w0 <= w1 != e.inv(w0) <= e.inv(w1) }","function(x0: B, x1: B) { e.inv(x0) <= e.inv(x1) = x0 <= x1 }(w0, w1)"]}
+{"goal":"x = y","proof":[]}
+{"goal":"order_iso_map_is_injective","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { not is_order_embedding[T0, T1](x0) or is_injective_fn[T0, T1](x0) }[A, B](identity_fn(e).map)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_embedding[T0, T1](x0.map) }[A, B](identity_fn(e))","function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[OrderIso[A, B]](e)"]}
+{"goal":"exists(k0: A) { k0 = e.inv(y) and e.map(k0) = y }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T1) { x0.map(x0.inv(x1)) = x1 }[A, B](e, y)"]}
+{"goal":"order_iso_map_is_surjective","proof":["function[T0, T1](x0: T1 -> T0) { forall(x1: T0) { exists(k0: T1) { x0(k0) = x1 } } = is_surjective_fn[T1, T0](x0) }[B, A](e.map)","let w0: B satisfy { forall(x0: A) { e.map(x0) != w0 } }","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T1) { x0.map(x0.inv(x1)) = x1 }[A, B](e, w0)","(forall(x1: A) { e.map(x1) != w0 } = true)","function(x0: A) { e.map(x0) != w0 }(e.inv(w0))"]}
+{"goal":"is_injective_fn[A, B](e.map)","proof":[]}
+{"goal":"is_surjective_fn[A, B](e.map)","proof":[]}
+{"goal":"is_bijection_fn[A, B](e.map)","proof":["function[T0, T1](x0: T0 -> T1) { (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_bijection_fn[T0, T1](x0) }[A, B](e.map)"]}
+{"goal":"order_iso_map_is_bijection","proof":[]}
+{"goal":"x = y","proof":[]}
+{"goal":"order_iso_inv_is_injective","proof":["function[T0, T1](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x0(x2) != x0(x1) or x2 = x1 } = is_injective_fn[T0, T1](x0) }[B, A](e.inv)","let w0: B satisfy { exists(k0: B) { e.inv(k0) = e.inv(w0) and k0 != w0 } }","let w1: B satisfy { e.inv(w1) = e.inv(w0) and w1 != w0 }","function(x0: B, x1: B) { e.inv(x0) != e.inv(x1) or x0 = x1 }(w0, w1)"]}
+{"goal":"exists(k0: B) { k0 = e.map(x) and e.inv(k0) = x }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T0) { x0.inv(x0.map(x1)) = x1 }[A, B](e, x)"]}
+{"goal":"order_iso_inv_is_surjective","proof":["function[T0, T1](x0: T1 -> T0) { forall(x1: T0) { exists(k0: T1) { x0(k0) = x1 } } = is_surjective_fn[T1, T0](x0) }[A, B](e.inv)","let w0: A satisfy { forall(x0: B) { e.inv(x0) != w0 } }","function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1], x1: T0) { x0.inv(x0.map(x1)) = x1 }[A, B](e, w0)","(forall(x1: B) { e.inv(x1) != w0 } = true)","function(x0: B) { e.inv(x0) != w0 }(e.map(w0))"]}
+{"goal":"is_injective_fn[B, A](e.inv)","proof":[]}
+{"goal":"is_surjective_fn[B, A](e.inv)","proof":[]}
+{"goal":"is_bijection_fn[B, A](e.inv)","proof":["function[T0, T1](x0: T0 -> T1) { (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_bijection_fn[T0, T1](x0) }[B, A](e.inv)"]}
+{"goal":"order_iso_inv_is_bijection","proof":[]}
+{"goal":"e.map(x) <= e.map(y)","proof":[]}
+{"goal":"order_iso_apply_le","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"order_iso_reflects_le","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"e.map(x) <= e.map(y)","proof":[]}
+{"goal":"e.map(x) <= e.map(y) = x <= y","proof":[]}
+{"goal":"order_iso_le_iff_le","proof":[]}
+{"goal":"e.inv(x) <= e.inv(y)","proof":[]}
+{"goal":"order_iso_inv_apply_le","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"order_iso_inv_reflects_le","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"e.inv(x) <= e.inv(y)","proof":[]}
+{"goal":"e.inv(x) <= e.inv(y) = x <= y","proof":[]}
+{"goal":"order_iso_inv_le_iff_le","proof":[]}
+{"goal":"e.map(x) < e.map(y)","proof":[]}
+{"goal":"order_iso_apply_lt","proof":[]}
+{"goal":"x < y","proof":[]}
+{"goal":"order_iso_reflects_lt","proof":[]}
+{"goal":"x < y","proof":[]}
+{"goal":"e.map(x) < e.map(y)","proof":[]}
+{"goal":"e.map(x) < e.map(y) = x < y","proof":[]}
+{"goal":"order_iso_lt_iff_lt","proof":[]}
+{"goal":"e.map(x) >= e.map(y)","proof":[]}
+{"goal":"order_iso_apply_ge","proof":[]}
+{"goal":"x >= y","proof":[]}
+{"goal":"order_iso_reflects_ge","proof":[]}
+{"goal":"x >= y","proof":[]}
+{"goal":"e.map(x) >= e.map(y)","proof":[]}
+{"goal":"e.map(x) >= e.map(y) = x >= y","proof":[]}
+{"goal":"order_iso_ge_iff_ge","proof":[]}
+{"goal":"e.map(x) > e.map(y)","proof":[]}
+{"goal":"order_iso_apply_gt","proof":[]}
+{"goal":"x > y","proof":[]}
+{"goal":"order_iso_reflects_gt","proof":[]}
+{"goal":"x > y","proof":[]}
+{"goal":"e.map(x) > e.map(y)","proof":[]}
+{"goal":"e.map(x) > e.map(y) = x > y","proof":[]}
+{"goal":"order_iso_gt_iff_gt","proof":[]}
+{"goal":"e.inv(x) < e.inv(y)","proof":[]}
+{"goal":"order_iso_inv_apply_lt","proof":[]}
+{"goal":"x < y","proof":[]}
+{"goal":"order_iso_inv_reflects_lt","proof":[]}
+{"goal":"x < y","proof":[]}
+{"goal":"e.inv(x) < e.inv(y)","proof":[]}
+{"goal":"e.inv(x) < e.inv(y) = x < y","proof":[]}
+{"goal":"order_iso_inv_lt_iff_lt","proof":[]}
+{"goal":"e.inv(x) >= e.inv(y)","proof":[]}
+{"goal":"order_iso_inv_apply_ge","proof":[]}
+{"goal":"x >= y","proof":[]}
+{"goal":"order_iso_inv_reflects_ge","proof":[]}
+{"goal":"x >= y","proof":[]}
+{"goal":"e.inv(x) >= e.inv(y)","proof":[]}
+{"goal":"e.inv(x) >= e.inv(y) = x >= y","proof":[]}
+{"goal":"order_iso_inv_ge_iff_ge","proof":[]}
+{"goal":"e.inv(x) > e.inv(y)","proof":[]}
+{"goal":"order_iso_inv_apply_gt","proof":[]}
+{"goal":"x > y","proof":[]}
+{"goal":"order_iso_inv_reflects_gt","proof":[]}
+{"goal":"x > y","proof":[]}
+{"goal":"e.inv(x) > e.inv(y)","proof":[]}
+{"goal":"e.inv(x) > e.inv(y) = x > y","proof":[]}
+{"goal":"order_iso_inv_gt_iff_gt","proof":[]}
+{"goal":"is_order_embedding[A, A](identity_fn[A])","proof":[]}
+{"goal":"identity_fn(identity_fn(a)) = a","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](a)"]}
+{"goal":"is_order_iso_pair[A, A](identity_fn[A], identity_fn[A])","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1)) = is_order_iso_pair[T0, T1](x1, x0) }[A, A](identity_fn[A], identity_fn[A])","function[T0: PartialOrder] { is_order_embedding[T0, T0](identity_fn[T0]) }[A]","not (forall(x0: A) { identity_fn(identity_fn(x0)) = x0 } and forall(x1: A) { identity_fn(identity_fn(x1)) = x1 } and is_order_embedding[A, A](identity_fn[A]))","not (forall(x2: A) { identity_fn(identity_fn(x2)) = x2 } and forall(x3: A) { identity_fn(identity_fn(x3)) = x3 })","let w0: A satisfy { identity_fn(identity_fn(w0)) != w0 }","function(x0: A) { identity_fn(identity_fn(x0)) = x0 }(w0)"]}
+{"goal":"exists(k0: OrderIso[A, A]) { OrderIso.new[A, A](identity_fn[A], identity_fn[A]) = Option.some(k0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { not OrderIso.constraint[T0, T1](x0, x1) or exists(k0: OrderIso[T0, T1]) { Option.some[OrderIso[T0, T1]](k0) = OrderIso.new[T0, T1](x0, x1) } }[A, A](identity_fn[A], identity_fn[A])"]}
+{"goal":"e.map = identity_fn[A]","proof":[]}
+{"goal":"e.inv = identity_fn[A]","proof":[]}
+{"goal":"exists(k0: OrderIso[A, A]) { k0.map = identity_fn[A] and k0.inv = identity_fn[A] }","proof":["function(x0: OrderIso[A, A]) { not (identity_fn[A] = x0.map and identity_fn[A] = x0.inv) }(e)"]}
+{"goal":"identity_order_iso_map","proof":["function[T0: PartialOrder](x0: T0) { identity_fn[T0] = identity_order_iso[T0](x0).map and identity_fn[T0] = identity_order_iso[T0](x0).inv }[A](anchor)"]}
+{"goal":"identity_order_iso_inv","proof":["function[T0: PartialOrder](x0: T0) { identity_fn[T0] = identity_order_iso[T0](x0).map and identity_fn[T0] = identity_order_iso[T0](x0).inv }[A](anchor)"]}
+{"goal":"is_order_embedding[B, A](e.inv)","proof":[]}
+{"goal":"is_order_embedding[A, B](e.map)","proof":[]}
+{"goal":"e.map(e.inv(b)) = b","proof":[]}
+{"goal":"e.inv(e.map(a)) = a","proof":[]}
+{"goal":"OrderIso.constraint[A, B](e.map, e.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[A, B](e)"]}
+{"goal":"is_order_iso_pair[A, B](e.map, e.inv)","proof":[]}
+{"goal":"is_order_iso_pair[B, A](e.inv, e.map)","proof":[]}
+{"goal":"exists(k0: OrderIso[B, A]) { OrderIso.new[B, A](e.inv, e.map) = Option.some(k0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { not OrderIso.constraint[T0, T1](x0, x1) or exists(k0: OrderIso[T0, T1]) { Option.some[OrderIso[T0, T1]](k0) = OrderIso.new[T0, T1](x0, x1) } }[B, A](e.inv, e.map)"]}
+{"goal":"h.map = e.inv","proof":[]}
+{"goal":"h.inv = e.map","proof":[]}
+{"goal":"exists(k0: OrderIso[B, A]) { k0.map = e.inv and k0.inv = e.map }","proof":["function(x0: OrderIso[B, A]) { not (x0.map = e.inv and e.map = x0.inv) }(h)"]}
+{"goal":"inverse_order_iso_map","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T1, T0]) { inverse_order_iso[T1, T0](x0).map = x0.inv and x0.map = inverse_order_iso[T1, T0](x0).inv }[B, A](e)"]}
+{"goal":"inverse_order_iso_inv","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T1, T0]) { inverse_order_iso[T1, T0](x0).map = x0.inv and x0.map = inverse_order_iso[T1, T0](x0).inv }[B, A](e)"]}
+{"goal":"is_order_embedding[B, C](e.map)","proof":[]}
+{"goal":"is_order_embedding[A, B](h.map)","proof":[]}
+{"goal":"is_order_embedding[A, C](compose[A, B, C](e.map, h.map))","proof":[]}
+{"goal":"is_order_embedding[C, B](e.inv)","proof":[]}
+{"goal":"is_order_embedding[B, A](h.inv)","proof":[]}
+{"goal":"is_order_embedding[C, A](compose[C, B, A](h.inv, e.inv))","proof":[]}
+{"goal":"compose[C, B, A](h.inv, e.inv, compose[A, B, C](e.map, h.map)(a)) = h.inv(e.inv(compose[A, B, C](e.map, h.map)(a)))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[C, B, A](h.inv, e.inv, compose[A, B, C](e.map, h.map, a))"]}
+{"goal":"compose[A, B, C](e.map, h.map, a) = e.map(h.map(a))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](e.map, h.map, a)"]}
+{"goal":"e.inv(compose[A, B, C](e.map, h.map)(a)) = e.inv(e.map(h.map(a)))","proof":[]}
+{"goal":"e.inv(e.map(h.map(a))) = h.map(a)","proof":[]}
+{"goal":"h.inv(e.inv(compose[A, B, C](e.map, h.map)(a))) = h.inv(h.map(a))","proof":[]}
+{"goal":"h.inv(h.map(a)) = a","proof":[]}
+{"goal":"compose[C, B, A](h.inv, e.inv)(compose[A, B, C](e.map, h.map)(a)) = a","proof":[]}
+{"goal":"compose[A, B, C](e.map, h.map, compose[C, B, A](h.inv, e.inv)(c)) = e.map(h.map(compose[C, B, A](h.inv, e.inv)(c)))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](e.map, h.map, compose[C, B, A](h.inv, e.inv, c))"]}
+{"goal":"compose[C, B, A](h.inv, e.inv, c) = h.inv(e.inv(c))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[C, B, A](h.inv, e.inv, c)"]}
+{"goal":"h.map(compose[C, B, A](h.inv, e.inv)(c)) = h.map(h.inv(e.inv(c)))","proof":[]}
+{"goal":"h.map(h.inv(e.inv(c))) = e.inv(c)","proof":[]}
+{"goal":"e.map(h.map(compose[C, B, A](h.inv, e.inv)(c))) = e.map(e.inv(c))","proof":[]}
+{"goal":"e.map(e.inv(c)) = c","proof":[]}
+{"goal":"compose[A, B, C](e.map, h.map)(compose[C, B, A](h.inv, e.inv)(c)) = c","proof":[]}
+{"goal":"OrderIso.constraint[B, C](e.map, e.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[B, C](e)"]}
+{"goal":"is_order_iso_pair[B, C](e.map, e.inv)","proof":[]}
+{"goal":"OrderIso.constraint[A, B](h.map, h.inv)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { is_order_iso_pair[T0, T1](x0.map, x0.inv) }[A, B](h)"]}
+{"goal":"is_order_iso_pair[A, B](h.map, h.inv)","proof":[]}
+{"goal":"is_order_iso_pair[A, C](compose[A, B, C](e.map, h.map), compose[C, B, A](h.inv, e.inv))","proof":[]}
+{"goal":"exists(k0: OrderIso[A, C]) { OrderIso.new[A, C](compose[A, B, C](e.map, h.map), compose[C, B, A](h.inv, e.inv)) = Option.some(k0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { not OrderIso.constraint[T0, T1](x0, x1) or exists(k0: OrderIso[T0, T1]) { Option.some[OrderIso[T0, T1]](k0) = OrderIso.new[T0, T1](x0, x1) } }[A, C](compose[A, B, C](e.map, h.map), compose[C, B, A](h.inv, e.inv))"]}
+{"goal":"k.map = compose[A, B, C](e.map, h.map)","proof":[]}
+{"goal":"k.inv = compose[C, B, A](h.inv, e.inv)","proof":[]}
+{"goal":"exists(k0: OrderIso[A, C]) { k0.map = compose[A, B, C](e.map, h.map) and k0.inv = compose[C, B, A](h.inv, e.inv) }","proof":["function(x0: OrderIso[A, C]) { not (x0.map = compose[A, B, C](e.map, h.map) and x0.inv = compose[C, B, A](h.inv, e.inv)) }(k)"]}
+{"goal":"compose_order_iso_map","proof":["function[T0: PartialOrder, T1: PartialOrder, T2: PartialOrder](x0: OrderIso[T2, T1], x1: OrderIso[T0, T2]) { compose_order_iso[T0, T2, T1](x0, x1).map = compose[T0, T2, T1](x0.map, x1.map) and compose_order_iso[T0, T2, T1](x0, x1).inv = compose[T1, T2, T0](x1.inv, x0.inv) }[A, C, B](e, h)"]}
+{"goal":"compose_order_iso_inv","proof":["function[T0: PartialOrder, T1: PartialOrder, T2: PartialOrder](x0: OrderIso[T2, T1], x1: OrderIso[T0, T2]) { compose_order_iso[T0, T2, T1](x0, x1).map = compose[T0, T2, T1](x0.map, x1.map) and compose_order_iso[T0, T2, T1](x0, x1).inv = compose[T1, T2, T0](x1.inv, x0.inv) }[A, C, B](e, h)"]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"e.map(a) <= e.map(x)","proof":[]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"e.map(x) <= e.map(b)","proof":[]}
+{"goal":"closed_interval(e.map(a), e.map(b), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))"]}
+{"goal":"order_iso_closed_interval_image","proof":[]}
+{"goal":"e.map(a) <= e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"e.map(x) <= e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_iso_closed_interval_preimage","proof":[]}
+{"goal":"closed_interval(a, b, x)","proof":[]}
+{"goal":"closed_interval(e.map(a), e.map(b), e.map(x))","proof":[]}
+{"goal":"closed_interval(e.map(a), e.map(b), e.map(x)) = closed_interval(a, b, x)","proof":[]}
+{"goal":"order_iso_closed_interval_iff","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"e.map(a) < e.map(x)","proof":[]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"e.map(x) < e.map(b)","proof":[]}
+{"goal":"open_interval(e.map(a), e.map(b), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))"]}
+{"goal":"order_iso_open_interval_image","proof":[]}
+{"goal":"e.map(a) < e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"a < x","proof":[]}
+{"goal":"e.map(x) < e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"x < b","proof":[]}
+{"goal":"open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_iso_open_interval_preimage","proof":[]}
+{"goal":"open_interval(a, b, x)","proof":[]}
+{"goal":"open_interval(e.map(a), e.map(b), e.map(x))","proof":[]}
+{"goal":"open_interval(e.map(a), e.map(b), e.map(x)) = open_interval(a, b, x)","proof":[]}
+{"goal":"order_iso_open_interval_iff","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"e.map(a) < e.map(x)","proof":[]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"e.map(x) <= e.map(b)","proof":[]}
+{"goal":"left_open_interval(e.map(a), e.map(b), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))"]}
+{"goal":"order_iso_left_open_interval_image","proof":[]}
+{"goal":"e.map(a) < e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"a < x","proof":[]}
+{"goal":"e.map(x) <= e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_iso_left_open_interval_preimage","proof":[]}
+{"goal":"left_open_interval(a, b, x)","proof":[]}
+{"goal":"left_open_interval(e.map(a), e.map(b), e.map(x))","proof":[]}
+{"goal":"left_open_interval(e.map(a), e.map(b), e.map(x)) = left_open_interval(a, b, x)","proof":[]}
+{"goal":"order_iso_left_open_interval_iff","proof":[]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"e.map(a) <= e.map(x)","proof":[]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"e.map(x) < e.map(b)","proof":[]}
+{"goal":"right_open_interval(e.map(a), e.map(b), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))"]}
+{"goal":"order_iso_right_open_interval_image","proof":[]}
+{"goal":"e.map(a) <= e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"e.map(x) < e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[B](e.map(a), e.map(b), e.map(x))"]}
+{"goal":"x < b","proof":[]}
+{"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[B](e.map(a), e.map(x), e.map(b))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_iso_right_open_interval_preimage","proof":[]}
+{"goal":"right_open_interval(a, b, x)","proof":[]}
+{"goal":"right_open_interval(e.map(a), e.map(b), e.map(x))","proof":[]}
+{"goal":"right_open_interval(e.map(a), e.map(b), e.map(x)) = right_open_interval(a, b, x)","proof":[]}
+{"goal":"order_iso_right_open_interval_iff","proof":[]}
+{"goal":"e.map(a.min(b)) = e.map(a).min(e.map(b))","proof":[]}
+{"goal":"order_iso_min_image","proof":[]}
+{"goal":"e.map(a.max(b)) = e.map(a).max(e.map(b))","proof":[]}
+{"goal":"order_iso_max_image","proof":[]}
+{"goal":"e.inv(a.min(b)) = e.inv(a).min(e.inv(b))","proof":[]}
+{"goal":"order_iso_inv_min_image","proof":[]}
+{"goal":"e.inv(a.max(b)) = e.inv(a).max(e.inv(b))","proof":[]}
+{"goal":"order_iso_inv_max_image","proof":[]}

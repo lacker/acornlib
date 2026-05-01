@@ -1,7 +1,10 @@
 from int import Int
+from int.int_base import add_assoc, add_zero_right
 from list import List
 from nat import Nat
-from zmod import int_mod_rel, int_read_mod3_compatible
+from relation_basic import is_transitive
+from zmod import int_mod_rel, int_mod_rel_add_compatible, int_mod_rel_is_equivalence,
+    int_read_mod3_compatible, int_read_mod3_step
 
 /// Reads a list of base-10 integer digits from left to right, starting with an accumulator.
 define int_read_digits_acc(digits: List[Int], acc: Int) -> Int {
@@ -11,6 +14,18 @@ define int_read_digits_acc(digits: List[Int], acc: Int) -> Int {
         }
         List.cons(head, tail) {
             int_read_digits_acc(tail, acc.read(head))
+        }
+    }
+}
+
+/// The sum of a list of integer digits.
+define int_digit_sum(digits: List[Int]) -> Int {
+    match digits {
+        List.nil {
+            Int.0
+        }
+        List.cons(head, tail) {
+            head + int_digit_sum(tail)
         }
     }
 }
@@ -42,6 +57,92 @@ theorem int_read_digits_acc_mod3_compatible(digits: List[Int], x: Int, y: Int) {
             p(List.cons(head, tail))
         }
     }
+    List.induction(function(ds: List[Int]) { p(ds) })
+    p(digits)
+}
+
+/// A decimal digit-list read is congruent modulo 3 to the accumulator plus the digit sum.
+theorem int_read_digits_acc_mod3_digit_sum(digits: List[Int], acc: Int) {
+    int_mod_rel(Nat.3, int_read_digits_acc(digits, acc), acc + int_digit_sum(digits))
+} by {
+    define p(ds: List[Int]) -> Bool {
+        forall(a: Int) {
+            int_mod_rel(Nat.3, int_read_digits_acc(ds, a), a + int_digit_sum(ds))
+        }
+    }
+
+    forall(a: Int) {
+        add_zero_right(a)
+        int_mod_rel_is_equivalence(Nat.3)
+        int_mod_rel(Nat.3, a, a)
+        int_mod_rel(Nat.3, int_read_digits_acc(List.nil[Int], a), a + int_digit_sum(List.nil[Int]))
+    }
+    p(List.nil[Int])
+
+    forall(head: Int, tail: List[Int]) {
+        if p(tail) {
+            forall(a: Int) {
+                int_read_digits_acc(List.cons(head, tail), a) = int_read_digits_acc(tail, a.read(head))
+                int_digit_sum(List.cons(head, tail)) = head + int_digit_sum(tail)
+                let left = int_read_digits_acc(tail, a.read(head))
+                let mid = a.read(head) + int_digit_sum(tail)
+                let right = (a + head) + int_digit_sum(tail)
+
+                p(tail)
+                p(tail) = forall(x: Int) {
+                    int_mod_rel(Nat.3, int_read_digits_acc(tail, x), x + int_digit_sum(tail))
+                }
+                function(x: Int) {
+                    int_mod_rel(Nat.3, int_read_digits_acc(tail, x), x + int_digit_sum(tail))
+                }(a.read(head))
+                int_mod_rel(Nat.3, left, mid)
+
+                int_read_mod3_step(a, head)
+                int_mod_rel(Nat.3, a.read(head), a + head)
+
+                int_mod_rel_is_equivalence(Nat.3)
+                int_mod_rel(Nat.3, int_digit_sum(tail), int_digit_sum(tail))
+                is_transitive(int_mod_rel(Nat.3))
+                int_mod_rel_add_compatible(Nat.3,
+                    a.read(head), a + head,
+                    int_digit_sum(tail), int_digit_sum(tail))
+                int_mod_rel(Nat.3, mid, right)
+
+                is_transitive(int_mod_rel(Nat.3)) = forall(x: Int, y: Int, z: Int) {
+                    int_mod_rel(Nat.3, x, y) and int_mod_rel(Nat.3, y, z) implies
+                    int_mod_rel(Nat.3, x, z)
+                }
+                (forall(x: Int, y: Int, z: Int) {
+                    not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                    int_mod_rel(Nat.3, x, z)
+                } = true)
+                function(x: Int) {
+                    forall(y: Int, z: Int) {
+                        not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                        int_mod_rel(Nat.3, x, z)
+                    } = true
+                }(left)
+                function(x: Int, y: Int) {
+                    forall(z: Int) {
+                        not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                        int_mod_rel(Nat.3, x, z)
+                    } = true
+                }(left, mid)
+                function(x: Int, y: Int, z: Int) {
+                    not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                    int_mod_rel(Nat.3, x, z)
+                }(left, mid, right)
+                int_mod_rel(Nat.3, left, right)
+
+                add_assoc(a, head, int_digit_sum(tail))
+                int_mod_rel(Nat.3,
+                    int_read_digits_acc(List.cons(head, tail), a),
+                    a + int_digit_sum(List.cons(head, tail)))
+            }
+            p(List.cons(head, tail))
+        }
+    }
+
     List.induction(function(ds: List[Int]) { p(ds) })
     p(digits)
 }

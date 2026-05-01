@@ -61,5 +61,31 @@
 {"goal":"subgroup_intersection_subset_left","proof":[]}
 {"goal":"b.contains(x)","proof":[]}
 {"goal":"subgroup_intersection_subset_right","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(a).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x) = b.intersection(a).contains(x)","proof":[]}
+{"goal":"subgroup_intersection_comm","proof":["let w0: G satisfy { w0 ∈ a ∩ b != w0 ∈ b ∩ a }"]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"rhs.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"lhs.contains(x)","proof":[]}
+{"goal":"lhs.contains(x) = rhs.contains(x)","proof":[]}
+{"goal":"subgroup_intersection_assoc","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { x0.contains != x1.contains or x0 = x1 }[G](rhs, lhs)"]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x) = a.contains(x)","proof":[]}
+{"goal":"subgroup_intersection_idempotent","proof":["let w0: G satisfy { w0 ∈ a != w0 ∈ a ∩ a }"]}
 {"goal":"exists(k0: Subgroup[G]) { Subgroup.new[G](is_identity[G]) = Option.some(k0) }","proof":["function[T0: Group](x0: T0 -> Bool) { not Subgroup.constraint[T0](x0) or exists(k0: Subgroup[T0]) { Subgroup.new[T0](x0) = Option.some[Subgroup[T0]](k0) } }[G](is_identity[G])","function[T0: Group](x0: T0 -> Bool) { Subgroup.constraint[T0](x0) = subgroup_constraint[T0](x0) }[G](is_identity[G])","function[T0: Group] { subgroup_constraint[T0](is_identity[T0]) }[G]"]}
 {"goal":"identity_subgroup_only_has_identity","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0 -> Bool, x2: T0) { Option.some[Subgroup[T0]](x0) != Subgroup.new[T0](x1) or x2 ∈ x0 = x1(x2) }[G](identity_subgroup[G], is_identity[G], g)","function[T0: Group] { Option.some[Subgroup[T0]](identity_subgroup[T0]) = Subgroup.new[T0](is_identity[T0]) }[G]","function[T0: Group](x0: T0) { not is_identity[T0](x0) or T0.1 = x0 }[G](g)"]}

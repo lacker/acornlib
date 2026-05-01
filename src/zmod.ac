@@ -1,6 +1,7 @@
 from nat import Nat
 from int import Int
 from int.int_arith import ten_sub_one_eq_nine, three_mul_three_eq_nine
+from int.int_base import sub_zero_right
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import is_unary_congruence, is_binary_congruence
 from set import Set, equivalence_class, equivalence_class_eq_of_equiv
@@ -485,6 +486,25 @@ theorem int_read_mod3_compatible(x: Int, y: Int, d: Int) {
     int_mod_rel(Nat.3, y.read(d), y + d)
     int_mod_rel(Nat.3, x + d, y.read(d))
     int_mod_rel(Nat.3, x.read(d), y.read(d))
+}
+
+/// Congruence to zero modulo `n` is divisibility by `n`.
+theorem int_mod_rel_zero_iff_divides(n: Nat, a: Int) {
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)
+} by {
+    sub_zero_right(a)
+    a - Int.0 = a
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a - Int.0)
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)
+}
+
+/// Congruence to zero modulo 3 is divisibility by the integer 3.
+theorem int_mod_rel_zero_iff_int_three_divides(a: Int) {
+    int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)
+} by {
+    int_mod_rel_zero_iff_divides(Nat.3, a)
+    Int.from_nat(Nat.3) = Int.3
+    int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)
 }
 
 /// Congruence modulo `n` respects integer multiplication as a binary operation.

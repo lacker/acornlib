@@ -541,7 +541,7 @@
 {"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[L](a, b)"]}
 {"goal":"a < b or b <= a","proof":[]}
 {"goal":"lt_or_lte","proof":[]}
-{"goal":"lt_or_le_swap","proof":["not b <= a","not a < b","a < b"]}
+{"goal":"lt_or_le_swap","proof":[]}
 {"goal":"a <= b or b < a","proof":[]}
 {"goal":"a <= b or b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, a)"]}
 {"goal":"b <= a","proof":[]}
@@ -551,7 +551,7 @@
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[L](b, a)"]}
 {"goal":"a <= b or b < a","proof":[]}
 {"goal":"lte_or_lt","proof":[]}
-{"goal":"le_or_lt_swap","proof":["not b < a","not a <= b","a <= b"]}
+{"goal":"le_or_lt_swap","proof":[]}
 {"goal":"a <= b or b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, a)"]}
 {"goal":"b <= a","proof":[]}
 {"goal":"a <= b","proof":[]}
@@ -987,6 +987,46 @@
 {"goal":"max_ge_of_ge_left","proof":[]}
 {"goal":"a.max(b) >= c","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 >= x1 and not x2 >= x1 or x0.max(x2) >= x1 }[L](a, c, b)"]}
 {"goal":"max_ge_of_ge_right","proof":[]}
+{"goal":"a <= n","proof":[]}
+{"goal":"b <= n","proof":[]}
+{"goal":"exists_common_upper_bound","proof":["function(x0: L) { not (a <= x0 and b <= x0) }(a.max(b))"]}
+{"goal":"n <= a","proof":[]}
+{"goal":"n <= b","proof":[]}
+{"goal":"exists_common_lower_bound","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) <= x0 and x0.min(x1) <= x1 }[L](a, b)","function(x0: L) { not (x0 <= a and x0 <= b) }(a.min(b))"]}
+{"goal":"n >= a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), a)"]}
+{"goal":"n >= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), b)"]}
+{"goal":"exists_common_ge_bound","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) >= x0 and x0.max(x1) >= x1 }[L](a, b)","function(x0: L) { not (x0 >= a and x0 >= b) }(a.max(b))"]}
+{"goal":"a >= n","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, a.min(b))"]}
+{"goal":"b >= n","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](b, a.min(b))"]}
+{"goal":"exists_common_le_bound","proof":["function(x0: L) { not (a >= x0 and b >= x0) }(n)"]}
+{"goal":"a <= m","proof":[]}
+{"goal":"m <= n","proof":[]}
+{"goal":"a <= n","proof":[]}
+{"goal":"b <= m","proof":[]}
+{"goal":"b <= n","proof":[]}
+{"goal":"c <= n","proof":[]}
+{"goal":"exists_common_upper_bound_three","proof":["b <= n","a <= n","function(x0: L) { not (a <= x0 and b <= x0 and c <= x0) }(n)"]}
+{"goal":"n <= m","proof":[]}
+{"goal":"m <= a","proof":[]}
+{"goal":"n <= a","proof":[]}
+{"goal":"m <= b","proof":[]}
+{"goal":"n <= b","proof":[]}
+{"goal":"n <= c","proof":[]}
+{"goal":"exists_common_lower_bound_three","proof":["n <= a","n <= b","function(x0: L) { not (x0 <= a and x0 <= b and x0 <= c) }(n)"]}
+{"goal":"a <= m","proof":[]}
+{"goal":"m <= n","proof":[]}
+{"goal":"n >= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](n, a)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[L](n, a)"]}
+{"goal":"b <= m","proof":[]}
+{"goal":"n >= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](n, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[L](n, b)"]}
+{"goal":"n >= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](m.max(c), c)"]}
+{"goal":"exists_common_ge_bound_three","proof":["function(x0: L) { not (x0 >= a and x0 >= b and x0 >= c) }(n)"]}
+{"goal":"n <= m","proof":[]}
+{"goal":"m <= a","proof":[]}
+{"goal":"a >= n","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](a, n)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[L](a, n)"]}
+{"goal":"m <= b","proof":[]}
+{"goal":"b >= n","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](b, n)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[L](b, n)"]}
+{"goal":"c >= n","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](c, m.min(c))"]}
+{"goal":"exists_common_le_bound_three","proof":["function(x0: L) { not (a >= x0 and b >= x0 and c >= x0) }(n)"]}
 {"goal":"left <= a","proof":[]}
 {"goal":"left <= b.min(c)","proof":[]}
 {"goal":"b.min(c) <= b","proof":[]}
