@@ -4,10 +4,14 @@ from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equival
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
     add_congruence_eq_binary_congruence
-from equivalence import QuotientRelation, quotient_relation_new_round_trip,
-    quotient_unary_respects, quotient_binary_respects,
+from equivalence import QuotientRelation, QuotientOver, quotient_over_mk,
+    quotient_relation_new_round_trip, quotient_unary_respects, quotient_binary_respects,
     quotient_unary_respects_eq_respects_unary_op,
-    quotient_binary_respects_eq_respects_binary_op
+    quotient_binary_respects_eq_respects_binary_op,
+    quotient_over_binary_op, quotient_over_unary_op,
+    quotient_over_binary_op_projection, quotient_over_binary_op_projection_left,
+    quotient_over_binary_op_projection_right,
+    quotient_over_unary_op_projection, quotient_over_unary_op_projection_compatible
 
 /// True if a subset contains the additive identity.
 define add_zero_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
@@ -332,4 +336,90 @@ theorem add_subgroup_quotient_relation_respects_add[G: AddCommGroup](h: AddSubgr
     add_subgroup_quotient_relation_rel(h)
     add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
     respects_binary_op(add_subgroup_quotient_relation(h).rel, G.add)
+}
+
+/// Addition on the relation-indexed quotient by an additive subgroup.
+define add_subgroup_quotient_add[G: AddCommGroup](h: AddSubgroup[G]) ->
+    (QuotientOver[G], QuotientOver[G]) -> QuotientOver[G] {
+    quotient_over_binary_op(G.add)
+}
+
+/// Addition in the additive-subgroup quotient agrees with addition of representatives.
+theorem add_subgroup_quotient_add_projection[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    ) = quotient_over_mk(add_subgroup_quotient_relation(h), a + b)
+} by {
+    add_subgroup_quotient_relation_respects_add(h)
+    quotient_over_binary_op_projection(add_subgroup_quotient_relation(h), G.add, a, b)
+    G.add(a, b) = a + b
+}
+
+/// Addition in the additive-subgroup quotient respects related left representatives.
+theorem add_subgroup_quotient_add_projection_left[G: AddCommGroup](h: AddSubgroup[G], a1: G, a2: G, b: G) {
+    add_subgroup_rel(h, a1, a2) implies
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a1),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    ) = add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a2),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    )
+} by {
+    if add_subgroup_rel(h, a1, a2) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(a1, a2)
+        add_subgroup_quotient_relation_respects_add(h)
+        quotient_over_binary_op_projection_left(add_subgroup_quotient_relation(h), G.add, a1, a2, b)
+    }
+}
+
+/// Addition in the additive-subgroup quotient respects related right representatives.
+theorem add_subgroup_quotient_add_projection_right[G: AddCommGroup](h: AddSubgroup[G], a: G, b1: G, b2: G) {
+    add_subgroup_rel(h, b1, b2) implies
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b1)
+    ) = add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b2)
+    )
+} by {
+    if add_subgroup_rel(h, b1, b2) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(b1, b2)
+        add_subgroup_quotient_relation_respects_add(h)
+        quotient_over_binary_op_projection_right(add_subgroup_quotient_relation(h), G.add, a, b1, b2)
+    }
+}
+
+/// Negation on the relation-indexed quotient by an additive subgroup.
+define add_subgroup_quotient_neg[G: AddCommGroup](h: AddSubgroup[G]) ->
+    QuotientOver[G] -> QuotientOver[G] {
+    quotient_over_unary_op(add_subgroup_quotient_relation(h), G.neg)
+}
+
+/// Negation in the additive-subgroup quotient agrees with negation of representatives.
+theorem add_subgroup_quotient_neg_projection[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a)
+} by {
+    add_subgroup_quotient_relation_respects_neg(h)
+    quotient_over_unary_op_projection(add_subgroup_quotient_relation(h), G.neg, a)
+    G.neg(a) = -a
+}
+
+/// Negation in the additive-subgroup quotient respects related representatives.
+theorem add_subgroup_quotient_neg_projection_compatible[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_rel(h, a, b) implies
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), b))
+} by {
+    if add_subgroup_rel(h, a, b) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(a, b)
+        add_subgroup_quotient_relation_respects_neg(h)
+        quotient_over_unary_op_projection_compatible(add_subgroup_quotient_relation(h), G.neg, a, b)
+    }
 }
