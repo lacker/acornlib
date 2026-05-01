@@ -525,6 +525,24 @@
 {"goal":"gt_both_imp_gt_max","proof":[]}
 {"goal":"gt_max_imp_gt_left","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 < x1 or not x2 <= x0 or x2 < x1 }(b.max(c), a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](a, b.max(c))","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](a, b)","not b < a","function[T0: PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](b.max(c), b)","function[T0: LinearOrder](x0: T0, x1: T0) { T0.max(x0, x1) >= x0 }[Real](b, c)"]}
 {"goal":"gt_max_imp_gt_right","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 > x1.max(x2) or x0 > x1 }(a, c, b)","function[T0: LinearOrder](x0: T0, x1: T0) { T0.max(x0, x1) = T0.max(x1, x0) }[Real](c, b)"]}
+{"goal":"real_meet_lte_left","proof":[]}
+{"goal":"real_meet_lte_right","proof":[]}
+{"goal":"c <= a.meet(b)","proof":[]}
+{"goal":"real_lte_meet_of_bounds","proof":[]}
+{"goal":"forall(x0: Real, x1: Real, x2: Real) { x0 <= x1 and x0 <= x2 implies x0 <= x1.meet(x2) }","proof":["let w0: Real satisfy { exists(k0: Real, k1: Real) { w0 <= k0 and w0 <= k1 and not w0 <= k0.meet(k1) } }","let w1: Real satisfy { exists(k2: Real) { w0 <= w1 and w0 <= k2 and not w0 <= w1.meet(k2) } }","let w2: Real satisfy { w0 <= w1 and w0 <= w2 and not w0 <= w1.meet(w2) }","function(x0: Real, x1: Real, x2: Real) { not x0 <= x1 or not x0 <= x2 or x0 <= x1.meet(x2) }(w0, w1, w2)"]}
+{"goal":"forall(x0: Real, x1: Real) { x0.meet(x1) <= x0 }","proof":["let w0: Real satisfy { exists(k0: Real) { not w0.meet(k0) <= w0 } }","let w1: Real satisfy { not w0.meet(w1) <= w0 }","function(x0: Real, x1: Real) { x0.min(x1) = x0.meet(x1) }(w0, w1)","function(x0: Real, x1: Real) { x0.min(x1) <= x0 }(w0, w1)"]}
+{"goal":"forall(x0: Real, x1: Real) { x0.meet(x1) <= x1 }","proof":["let w0: Real satisfy { exists(k0: Real) { not w0.meet(k0) <= k0 } }","let w1: Real satisfy { not w0.meet(w1) <= w1 }","function(x0: Real, x1: Real) { x0.min(x1) = x0.meet(x1) }(w0, w1)","function(x0: Real, x1: Real) { x0.min(x1) <= x1 }(w0, w1)"]}
+{"goal":"real_lte_join_left","proof":[]}
+{"goal":"real_lte_join_right","proof":[]}
+{"goal":"a.join(b) <= c","proof":[]}
+{"goal":"real_join_lte_of_bounds","proof":[]}
+{"goal":"forall(x0: Real, x1: Real, x2: Real) { x0 <= x2 and x1 <= x2 implies x0.join(x1) <= x2 }","proof":["let w0: Real satisfy { exists(k0: Real, k1: Real) { w0 <= k1 and k0 <= k1 and not w0.join(k0) <= k1 } }","let w1: Real satisfy { exists(k2: Real) { w0 <= k2 and w1 <= k2 and not w0.join(w1) <= k2 } }","let w2: Real satisfy { w0 <= w2 and w1 <= w2 and not w0.join(w1) <= w2 }","function(x0: Real, x1: Real, x2: Real) { not x0 <= x1 or not x2 <= x1 or x0.join(x2) <= x1 }(w0, w2, w1)"]}
+{"goal":"forall(x0: Real, x1: Real) { x0 <= x0.join(x1) }","proof":["let w0: Real satisfy { exists(k0: Real) { not w0 <= w0.join(k0) } }","let w1: Real satisfy { not w0 <= w0.join(w1) }","function(x0: Real, x1: Real) { x0 <= x0.join(x1) }(w0, w1)"]}
+{"goal":"forall(x0: Real, x1: Real) { x1 <= x0.join(x1) }","proof":["let w0: Real satisfy { exists(k0: Real) { not k0 <= w0.join(k0) } }","let w1: Real satisfy { not w1 <= w0.join(w1) }","function(x0: Real, x1: Real) { x0 <= x1.join(x0) }(w1, w0)"]}
+{"goal":"real_meet_join_distrib_left","proof":[]}
+{"goal":"real_join_meet_distrib_left","proof":[]}
+{"goal":"forall(x0: Real, x1: Real, x2: Real) { x0.join(x1.meet(x2)) = x0.join(x1).meet(x0.join(x2)) }","proof":["let w0: Real satisfy { exists(k0: Real, k1: Real) { w0.join(k0.meet(k1)) != w0.join(k0).meet(w0.join(k1)) } }","let w1: Real satisfy { exists(k2: Real) { w0.join(w1.meet(k2)) != w0.join(w1).meet(w0.join(k2)) } }","let w2: Real satisfy { w0.join(w1.meet(w2)) != w0.join(w1).meet(w0.join(w2)) }","function(x0: Real, x1: Real, x2: Real) { x0.join(x1).meet(x0.join(x2)) = x0.join(x1.meet(x2)) }(w0, w1, w2)"]}
+{"goal":"forall(x0: Real, x1: Real, x2: Real) { x0.meet(x1.join(x2)) = x0.meet(x1).join(x0.meet(x2)) }","proof":["let w0: Real satisfy { exists(k0: Real, k1: Real) { w0.meet(k0.join(k1)) != w0.meet(k0).join(w0.meet(k1)) } }","let w1: Real satisfy { exists(k2: Real) { w0.meet(w1.join(k2)) != w0.meet(w1).join(w0.meet(k2)) } }","let w2: Real satisfy { w0.meet(w1.join(w2)) != w0.meet(w1).join(w0.meet(w2)) }","function(x0: Real, x1: Real, x2: Real) { x0.meet(x1).join(x0.meet(x2)) = x0.meet(x1.join(x2)) }(w0, w1, w2)"]}
 {"goal":"exists(k0: Rat) { b < real_from_rat(k0) }","proof":["function(x0: Real) { exists(k0: Rat) { x0 < real_from_rat(k0) } }(b)"]}
 {"goal":"a < real_from_rat(r)","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or x0 < x2 }[Real](a, b, real_from_rat(r))"]}
 {"goal":"a < real_from_rat(r) and b < real_from_rat(r)","proof":[]}
