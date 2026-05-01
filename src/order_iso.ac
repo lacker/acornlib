@@ -1,9 +1,13 @@
 /// Order isomorphisms between partially ordered types.
 
-from functions import identity_fn, is_injective_fn, is_surjective_fn, is_bijection_fn
-from order import PartialOrder
+from functions import compose, identity_fn, is_injective_fn, is_surjective_fn, is_bijection_fn
+from order import PartialOrder, LinearOrder
+from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
 from order_maps import is_order_embedding, order_embedding_apply_le,
-    order_embedding_reflects_lte, identity_is_order_embedding
+    order_embedding_apply_lt, order_embedding_apply_ge, order_embedding_apply_gt,
+    order_embedding_reflects_lte, order_embedding_reflects_lt, order_embedding_reflects_ge,
+    order_embedding_reflects_gt, identity_is_order_embedding, order_embedding_compose,
+    order_embedding_min_image, order_embedding_max_image
 
 /// True if two maps are inverse order-preserving maps.
 define is_order_iso_pair[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) -> Bool {
@@ -67,6 +71,109 @@ theorem order_iso_pair_inv_is_order_embedding[A: PartialOrder, B: PartialOrder](
             f(g(y)) = y
         } and is_order_embedding(f) and is_order_embedding(g))
         is_order_embedding(g)
+    }
+}
+
+/// Reversing an order isomorphism pair gives an order isomorphism pair.
+theorem order_iso_pair_swap[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_iso_pair(f, g) implies is_order_iso_pair(g, f)
+} by {
+    if is_order_iso_pair(f, g) {
+        is_order_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_order_embedding(f) and is_order_embedding(g))
+        forall(b: B) {
+            f(g(b)) = b
+        }
+        forall(a: A) {
+            g(f(a)) = a
+        }
+        is_order_embedding(g)
+        is_order_embedding(f)
+        is_order_iso_pair(g, f) = (forall(x: B) {
+            f(g(x)) = x
+        } and forall(y: A) {
+            g(f(y)) = y
+        } and is_order_embedding(g) and is_order_embedding(f))
+        is_order_iso_pair(g, f)
+    }
+}
+
+/// Composing order isomorphism pairs gives an order isomorphism pair.
+theorem order_iso_pair_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    f: B -> C,
+    g: C -> B,
+    h: A -> B,
+    k: B -> A
+) {
+    is_order_iso_pair(f, g) and is_order_iso_pair(h, k) implies
+    is_order_iso_pair(compose(f, h), compose(k, g))
+} by {
+    if is_order_iso_pair(f, g) and is_order_iso_pair(h, k) {
+        let fg = compose(f, h)
+        let kg = compose(k, g)
+        is_order_iso_pair(f, g) = (forall(b: B) {
+            g(f(b)) = b
+        } and forall(c: C) {
+            f(g(c)) = c
+        } and is_order_embedding(f) and is_order_embedding(g))
+        is_order_iso_pair(h, k) = (forall(a: A) {
+            k(h(a)) = a
+        } and forall(b: B) {
+            h(k(b)) = b
+        } and is_order_embedding(h) and is_order_embedding(k))
+        order_embedding_compose(h, f)
+        is_order_embedding(fg)
+        order_embedding_compose(g, k)
+        is_order_embedding(kg)
+        forall(a: A) {
+            kg(fg(a)) = compose(k, g, fg(a))
+            compose(k, g, fg(a)) = k(g(fg(a)))
+            fg(a) = compose(f, h)(a)
+            compose(f, h, a) = f(h(a))
+            g(fg(a)) = g(f(h(a)))
+            g(f(h(a))) = h(a)
+            k(g(fg(a))) = k(h(a))
+            k(h(a)) = a
+            kg(fg(a)) = a
+        }
+        forall(c: C) {
+            fg(kg(c)) = compose(f, h, kg(c))
+            compose(f, h, kg(c)) = f(h(kg(c)))
+            kg(c) = compose(k, g)(c)
+            compose(k, g, c) = k(g(c))
+            h(kg(c)) = h(k(g(c)))
+            h(k(g(c))) = g(c)
+            f(h(kg(c))) = f(g(c))
+            f(g(c)) = c
+            fg(kg(c)) = c
+        }
+        is_order_iso_pair(fg, kg) = (forall(a: A) {
+            kg(fg(a)) = a
+        } and forall(c: C) {
+            fg(kg(c)) = c
+        } and is_order_embedding(fg) and is_order_embedding(kg))
+        forall(x: A) {
+            kg(fg(x)) = x
+        }
+        forall(y: C) {
+            fg(kg(y)) = y
+        }
+        is_order_embedding(fg) and is_order_embedding(kg)
+        (forall(y: C) {
+            fg(kg(y)) = y
+        } and is_order_embedding(fg) and is_order_embedding(kg))
+        (forall(x: A) {
+            kg(fg(x)) = x
+        } and forall(y: C) {
+            fg(kg(y)) = y
+        } and is_order_embedding(fg) and is_order_embedding(kg))
+        is_order_iso_pair(fg, kg)
+        fg = compose(f, h)
+        kg = compose(k, g)
+        is_order_iso_pair(compose(f, h), compose(k, g))
     }
 }
 
@@ -318,6 +425,228 @@ theorem order_iso_inv_le_iff_le[A: PartialOrder, B: PartialOrder](e: OrderIso[A,
     e.inv(x) <= e.inv(y) = (x <= y)
 }
 
+/// An order isomorphism preserves strict order.
+theorem order_iso_apply_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    x < y implies e.map(x) < e.map(y)
+} by {
+    if x < y {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_apply_lt(e.map, x, y)
+        e.map(x) < e.map(y)
+    }
+}
+
+/// An order isomorphism reflects strict order.
+theorem order_iso_reflects_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) < e.map(y) implies x < y
+} by {
+    if e.map(x) < e.map(y) {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_reflects_lt(e.map, x, y)
+        x < y
+    }
+}
+
+/// An order isomorphism preserves and reflects strict order.
+theorem order_iso_lt_iff_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) < e.map(y) = (x < y)
+} by {
+    if e.map(x) < e.map(y) {
+        order_iso_reflects_lt(e, x, y)
+        x < y
+    }
+    if x < y {
+        order_iso_apply_lt(e, x, y)
+        e.map(x) < e.map(y)
+    }
+    e.map(x) < e.map(y) = (x < y)
+}
+
+/// An order isomorphism preserves reverse non-strict order.
+theorem order_iso_apply_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    x >= y implies e.map(x) >= e.map(y)
+} by {
+    if x >= y {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_apply_ge(e.map, x, y)
+        e.map(x) >= e.map(y)
+    }
+}
+
+/// An order isomorphism reflects reverse non-strict order.
+theorem order_iso_reflects_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) >= e.map(y) implies x >= y
+} by {
+    if e.map(x) >= e.map(y) {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_reflects_ge(e.map, x, y)
+        x >= y
+    }
+}
+
+/// An order isomorphism preserves and reflects reverse non-strict order.
+theorem order_iso_ge_iff_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) >= e.map(y) = (x >= y)
+} by {
+    if e.map(x) >= e.map(y) {
+        order_iso_reflects_ge(e, x, y)
+        x >= y
+    }
+    if x >= y {
+        order_iso_apply_ge(e, x, y)
+        e.map(x) >= e.map(y)
+    }
+    e.map(x) >= e.map(y) = (x >= y)
+}
+
+/// An order isomorphism preserves strict reverse order.
+theorem order_iso_apply_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    x > y implies e.map(x) > e.map(y)
+} by {
+    if x > y {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_apply_gt(e.map, x, y)
+        e.map(x) > e.map(y)
+    }
+}
+
+/// An order isomorphism reflects strict reverse order.
+theorem order_iso_reflects_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) > e.map(y) implies x > y
+} by {
+    if e.map(x) > e.map(y) {
+        order_iso_map_is_order_embedding(e)
+        order_embedding_reflects_gt(e.map, x, y)
+        x > y
+    }
+}
+
+/// An order isomorphism preserves and reflects strict reverse order.
+theorem order_iso_gt_iff_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: A, y: A) {
+    e.map(x) > e.map(y) = (x > y)
+} by {
+    if e.map(x) > e.map(y) {
+        order_iso_reflects_gt(e, x, y)
+        x > y
+    }
+    if x > y {
+        order_iso_apply_gt(e, x, y)
+        e.map(x) > e.map(y)
+    }
+    e.map(x) > e.map(y) = (x > y)
+}
+
+/// An inverse order isomorphism preserves strict order.
+theorem order_iso_inv_apply_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    x < y implies e.inv(x) < e.inv(y)
+} by {
+    if x < y {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_apply_lt(e.inv, x, y)
+        e.inv(x) < e.inv(y)
+    }
+}
+
+/// An inverse order isomorphism reflects strict order.
+theorem order_iso_inv_reflects_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) < e.inv(y) implies x < y
+} by {
+    if e.inv(x) < e.inv(y) {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_reflects_lt(e.inv, x, y)
+        x < y
+    }
+}
+
+/// An inverse order isomorphism preserves and reflects strict order.
+theorem order_iso_inv_lt_iff_lt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) < e.inv(y) = (x < y)
+} by {
+    if e.inv(x) < e.inv(y) {
+        order_iso_inv_reflects_lt(e, x, y)
+        x < y
+    }
+    if x < y {
+        order_iso_inv_apply_lt(e, x, y)
+        e.inv(x) < e.inv(y)
+    }
+    e.inv(x) < e.inv(y) = (x < y)
+}
+
+/// An inverse order isomorphism preserves reverse non-strict order.
+theorem order_iso_inv_apply_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    x >= y implies e.inv(x) >= e.inv(y)
+} by {
+    if x >= y {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_apply_ge(e.inv, x, y)
+        e.inv(x) >= e.inv(y)
+    }
+}
+
+/// An inverse order isomorphism reflects reverse non-strict order.
+theorem order_iso_inv_reflects_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) >= e.inv(y) implies x >= y
+} by {
+    if e.inv(x) >= e.inv(y) {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_reflects_ge(e.inv, x, y)
+        x >= y
+    }
+}
+
+/// An inverse order isomorphism preserves and reflects reverse non-strict order.
+theorem order_iso_inv_ge_iff_ge[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) >= e.inv(y) = (x >= y)
+} by {
+    if e.inv(x) >= e.inv(y) {
+        order_iso_inv_reflects_ge(e, x, y)
+        x >= y
+    }
+    if x >= y {
+        order_iso_inv_apply_ge(e, x, y)
+        e.inv(x) >= e.inv(y)
+    }
+    e.inv(x) >= e.inv(y) = (x >= y)
+}
+
+/// An inverse order isomorphism preserves strict reverse order.
+theorem order_iso_inv_apply_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    x > y implies e.inv(x) > e.inv(y)
+} by {
+    if x > y {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_apply_gt(e.inv, x, y)
+        e.inv(x) > e.inv(y)
+    }
+}
+
+/// An inverse order isomorphism reflects strict reverse order.
+theorem order_iso_inv_reflects_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) > e.inv(y) implies x > y
+} by {
+    if e.inv(x) > e.inv(y) {
+        order_iso_inv_is_order_embedding(e)
+        order_embedding_reflects_gt(e.inv, x, y)
+        x > y
+    }
+}
+
+/// An inverse order isomorphism preserves and reflects strict reverse order.
+theorem order_iso_inv_gt_iff_gt[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], x: B, y: B) {
+    e.inv(x) > e.inv(y) = (x > y)
+} by {
+    if e.inv(x) > e.inv(y) {
+        order_iso_inv_reflects_gt(e, x, y)
+        x > y
+    }
+    if x > y {
+        order_iso_inv_apply_gt(e, x, y)
+        e.inv(x) > e.inv(y)
+    }
+    e.inv(x) > e.inv(y) = (x > y)
+}
+
 /// The identity map as an order isomorphism.
 let identity_order_iso[A: PartialOrder](anchor: A) -> result: OrderIso[A, A] satisfy {
     result.map = identity_fn[A] and result.inv = identity_fn[A]
@@ -345,4 +674,330 @@ theorem identity_order_iso_map[A: PartialOrder](anchor: A) {
 /// The identity order isomorphism has the identity inverse map.
 theorem identity_order_iso_inv[A: PartialOrder](anchor: A) {
     identity_order_iso(anchor).inv = identity_fn[A]
+}
+
+/// The inverse order isomorphism.
+let inverse_order_iso[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) -> result: OrderIso[B, A] satisfy {
+    result.map = e.inv and result.inv = e.map
+} by {
+    order_iso_inv_is_order_embedding(e)
+    is_order_embedding(e.inv)
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    forall(b: B) {
+        order_iso_right_inverse(e, b)
+        e.map(e.inv(b)) = b
+    }
+    forall(a: A) {
+        order_iso_left_inverse(e, a)
+        e.inv(e.map(a)) = a
+    }
+    OrderIso[A, B].constraint(e.map, e.inv)
+    is_order_iso_pair(e.map, e.inv)
+    order_iso_pair_swap(e.map, e.inv)
+    is_order_iso_pair(e.inv, e.map)
+    let h: OrderIso[B, A] satisfy {
+        OrderIso[B, A].new(e.inv, e.map) = Option.some(h)
+    }
+    order_iso_new_map(e.inv, e.map, h)
+    h.map = e.inv
+    order_iso_new_inv(e.inv, e.map, h)
+    h.inv = e.map
+}
+
+/// The inverse order isomorphism has the inverse map as its map.
+theorem inverse_order_iso_map[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    inverse_order_iso(e).map = e.inv
+}
+
+/// The inverse order isomorphism has the original map as its inverse map.
+theorem inverse_order_iso_inv[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B]) {
+    inverse_order_iso(e).inv = e.map
+}
+
+/// The composite of order isomorphisms.
+let compose_order_iso[A: PartialOrder, B: PartialOrder, C: PartialOrder](e: OrderIso[B, C], h: OrderIso[A, B]) -> result: OrderIso[A, C] satisfy {
+    result.map = compose(e.map, h.map) and result.inv = compose(h.inv, e.inv)
+} by {
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    order_iso_map_is_order_embedding(h)
+    is_order_embedding(h.map)
+    order_embedding_compose(h.map, e.map)
+    is_order_embedding(compose(e.map, h.map))
+    order_iso_inv_is_order_embedding(e)
+    is_order_embedding(e.inv)
+    order_iso_inv_is_order_embedding(h)
+    is_order_embedding(h.inv)
+    order_embedding_compose(e.inv, h.inv)
+    is_order_embedding(compose(h.inv, e.inv))
+    forall(a: A) {
+        compose(h.inv, e.inv, compose(e.map, h.map)(a)) =
+            h.inv(e.inv(compose(e.map, h.map)(a)))
+        compose(e.map, h.map, a) = e.map(h.map(a))
+        e.inv(compose(e.map, h.map)(a)) = e.inv(e.map(h.map(a)))
+        order_iso_left_inverse(e, h.map(a))
+        e.inv(e.map(h.map(a))) = h.map(a)
+        h.inv(e.inv(compose(e.map, h.map)(a))) = h.inv(h.map(a))
+        order_iso_left_inverse(h, a)
+        h.inv(h.map(a)) = a
+        compose(h.inv, e.inv)(compose(e.map, h.map)(a)) = a
+    }
+    forall(c: C) {
+        compose(e.map, h.map, compose(h.inv, e.inv)(c)) =
+            e.map(h.map(compose(h.inv, e.inv)(c)))
+        compose(h.inv, e.inv, c) = h.inv(e.inv(c))
+        h.map(compose(h.inv, e.inv)(c)) = h.map(h.inv(e.inv(c)))
+        order_iso_right_inverse(h, e.inv(c))
+        h.map(h.inv(e.inv(c))) = e.inv(c)
+        e.map(h.map(compose(h.inv, e.inv)(c))) = e.map(e.inv(c))
+        order_iso_right_inverse(e, c)
+        e.map(e.inv(c)) = c
+        compose(e.map, h.map)(compose(h.inv, e.inv)(c)) = c
+    }
+    OrderIso[B, C].constraint(e.map, e.inv)
+    is_order_iso_pair(e.map, e.inv)
+    OrderIso[A, B].constraint(h.map, h.inv)
+    is_order_iso_pair(h.map, h.inv)
+    order_iso_pair_compose(e.map, e.inv, h.map, h.inv)
+    is_order_iso_pair(compose(e.map, h.map), compose(h.inv, e.inv))
+    let k: OrderIso[A, C] satisfy {
+        OrderIso[A, C].new(compose(e.map, h.map), compose(h.inv, e.inv)) = Option.some(k)
+    }
+    order_iso_new_map(compose(e.map, h.map), compose(h.inv, e.inv), k)
+    k.map = compose(e.map, h.map)
+    order_iso_new_inv(compose(e.map, h.map), compose(h.inv, e.inv), k)
+    k.inv = compose(h.inv, e.inv)
+}
+
+/// The composite order isomorphism has the composite map.
+theorem compose_order_iso_map[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    e: OrderIso[B, C],
+    h: OrderIso[A, B]
+) {
+    compose_order_iso(e, h).map = compose(e.map, h.map)
+}
+
+/// The composite order isomorphism has the composite inverse map.
+theorem compose_order_iso_inv[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    e: OrderIso[B, C],
+    h: OrderIso[A, B]
+) {
+    compose_order_iso(e, h).inv = compose(h.inv, e.inv)
+}
+
+/// An order isomorphism sends closed-interval membership to closed-interval membership.
+theorem order_iso_closed_interval_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    closed_interval(a, b, x) implies closed_interval(e.map(a), e.map(b), e.map(x))
+} by {
+    if closed_interval(a, b, x) {
+        a <= x
+        order_iso_apply_le(e, a, x)
+        e.map(a) <= e.map(x)
+        x <= b
+        order_iso_apply_le(e, x, b)
+        e.map(x) <= e.map(b)
+        closed_interval(e.map(a), e.map(b), e.map(x))
+    }
+}
+
+/// An order isomorphism reflects closed-interval membership.
+theorem order_iso_closed_interval_preimage[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    closed_interval(e.map(a), e.map(b), e.map(x)) implies closed_interval(a, b, x)
+} by {
+    if closed_interval(e.map(a), e.map(b), e.map(x)) {
+        e.map(a) <= e.map(x)
+        order_iso_reflects_le(e, a, x)
+        a <= x
+        e.map(x) <= e.map(b)
+        order_iso_reflects_le(e, x, b)
+        x <= b
+        closed_interval(a, b, x)
+    }
+}
+
+/// An order isomorphism preserves and reflects closed-interval membership.
+theorem order_iso_closed_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    closed_interval(e.map(a), e.map(b), e.map(x)) = closed_interval(a, b, x)
+} by {
+    if closed_interval(e.map(a), e.map(b), e.map(x)) {
+        order_iso_closed_interval_preimage(e, a, b, x)
+        closed_interval(a, b, x)
+    }
+    if closed_interval(a, b, x) {
+        order_iso_closed_interval_image(e, a, b, x)
+        closed_interval(e.map(a), e.map(b), e.map(x))
+    }
+    closed_interval(e.map(a), e.map(b), e.map(x)) = closed_interval(a, b, x)
+}
+
+/// An order isomorphism sends open-interval membership to open-interval membership.
+theorem order_iso_open_interval_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    open_interval(a, b, x) implies open_interval(e.map(a), e.map(b), e.map(x))
+} by {
+    if open_interval(a, b, x) {
+        a < x
+        order_iso_apply_lt(e, a, x)
+        e.map(a) < e.map(x)
+        x < b
+        order_iso_apply_lt(e, x, b)
+        e.map(x) < e.map(b)
+        open_interval(e.map(a), e.map(b), e.map(x))
+    }
+}
+
+/// An order isomorphism reflects open-interval membership.
+theorem order_iso_open_interval_preimage[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    open_interval(e.map(a), e.map(b), e.map(x)) implies open_interval(a, b, x)
+} by {
+    if open_interval(e.map(a), e.map(b), e.map(x)) {
+        e.map(a) < e.map(x)
+        order_iso_reflects_lt(e, a, x)
+        a < x
+        e.map(x) < e.map(b)
+        order_iso_reflects_lt(e, x, b)
+        x < b
+        open_interval(a, b, x)
+    }
+}
+
+/// An order isomorphism preserves and reflects open-interval membership.
+theorem order_iso_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    open_interval(e.map(a), e.map(b), e.map(x)) = open_interval(a, b, x)
+} by {
+    if open_interval(e.map(a), e.map(b), e.map(x)) {
+        order_iso_open_interval_preimage(e, a, b, x)
+        open_interval(a, b, x)
+    }
+    if open_interval(a, b, x) {
+        order_iso_open_interval_image(e, a, b, x)
+        open_interval(e.map(a), e.map(b), e.map(x))
+    }
+    open_interval(e.map(a), e.map(b), e.map(x)) = open_interval(a, b, x)
+}
+
+/// An order isomorphism sends left-open interval membership to left-open interval membership.
+theorem order_iso_left_open_interval_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    left_open_interval(a, b, x) implies left_open_interval(e.map(a), e.map(b), e.map(x))
+} by {
+    if left_open_interval(a, b, x) {
+        a < x
+        order_iso_apply_lt(e, a, x)
+        e.map(a) < e.map(x)
+        x <= b
+        order_iso_apply_le(e, x, b)
+        e.map(x) <= e.map(b)
+        left_open_interval(e.map(a), e.map(b), e.map(x))
+    }
+}
+
+/// An order isomorphism reflects left-open interval membership.
+theorem order_iso_left_open_interval_preimage[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    left_open_interval(e.map(a), e.map(b), e.map(x)) implies left_open_interval(a, b, x)
+} by {
+    if left_open_interval(e.map(a), e.map(b), e.map(x)) {
+        e.map(a) < e.map(x)
+        order_iso_reflects_lt(e, a, x)
+        a < x
+        e.map(x) <= e.map(b)
+        order_iso_reflects_le(e, x, b)
+        x <= b
+        left_open_interval(a, b, x)
+    }
+}
+
+/// An order isomorphism preserves and reflects left-open interval membership.
+theorem order_iso_left_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    left_open_interval(e.map(a), e.map(b), e.map(x)) = left_open_interval(a, b, x)
+} by {
+    if left_open_interval(e.map(a), e.map(b), e.map(x)) {
+        order_iso_left_open_interval_preimage(e, a, b, x)
+        left_open_interval(a, b, x)
+    }
+    if left_open_interval(a, b, x) {
+        order_iso_left_open_interval_image(e, a, b, x)
+        left_open_interval(e.map(a), e.map(b), e.map(x))
+    }
+    left_open_interval(e.map(a), e.map(b), e.map(x)) = left_open_interval(a, b, x)
+}
+
+/// An order isomorphism sends right-open interval membership to right-open interval membership.
+theorem order_iso_right_open_interval_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    right_open_interval(a, b, x) implies right_open_interval(e.map(a), e.map(b), e.map(x))
+} by {
+    if right_open_interval(a, b, x) {
+        a <= x
+        order_iso_apply_le(e, a, x)
+        e.map(a) <= e.map(x)
+        x < b
+        order_iso_apply_lt(e, x, b)
+        e.map(x) < e.map(b)
+        right_open_interval(e.map(a), e.map(b), e.map(x))
+    }
+}
+
+/// An order isomorphism reflects right-open interval membership.
+theorem order_iso_right_open_interval_preimage[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    right_open_interval(e.map(a), e.map(b), e.map(x)) implies right_open_interval(a, b, x)
+} by {
+    if right_open_interval(e.map(a), e.map(b), e.map(x)) {
+        e.map(a) <= e.map(x)
+        order_iso_reflects_le(e, a, x)
+        a <= x
+        e.map(x) < e.map(b)
+        order_iso_reflects_lt(e, x, b)
+        x < b
+        right_open_interval(a, b, x)
+    }
+}
+
+/// An order isomorphism preserves and reflects right-open interval membership.
+theorem order_iso_right_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
+    right_open_interval(e.map(a), e.map(b), e.map(x)) = right_open_interval(a, b, x)
+} by {
+    if right_open_interval(e.map(a), e.map(b), e.map(x)) {
+        order_iso_right_open_interval_preimage(e, a, b, x)
+        right_open_interval(a, b, x)
+    }
+    if right_open_interval(a, b, x) {
+        order_iso_right_open_interval_image(e, a, b, x)
+        right_open_interval(e.map(a), e.map(b), e.map(x))
+    }
+    right_open_interval(e.map(a), e.map(b), e.map(x)) = right_open_interval(a, b, x)
+}
+
+/// An order isomorphism preserves binary minima.
+theorem order_iso_min_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A) {
+    e.map(a.min(b)) = e.map(a).min(e.map(b))
+} by {
+    order_iso_map_is_order_embedding(e)
+    order_embedding_min_image(e.map, a, b)
+    e.map(a.min(b)) = e.map(a).min(e.map(b))
+}
+
+/// An order isomorphism preserves binary maxima.
+theorem order_iso_max_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A) {
+    e.map(a.max(b)) = e.map(a).max(e.map(b))
+} by {
+    order_iso_map_is_order_embedding(e)
+    order_embedding_max_image(e.map, a, b)
+    e.map(a.max(b)) = e.map(a).max(e.map(b))
+}
+
+/// The inverse of an order isomorphism preserves binary minima.
+theorem order_iso_inv_min_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: B, b: B) {
+    e.inv(a.min(b)) = e.inv(a).min(e.inv(b))
+} by {
+    order_iso_inv_is_order_embedding(e)
+    order_embedding_min_image(e.inv, a, b)
+    e.inv(a.min(b)) = e.inv(a).min(e.inv(b))
+}
+
+/// The inverse of an order isomorphism preserves binary maxima.
+theorem order_iso_inv_max_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: B, b: B) {
+    e.inv(a.max(b)) = e.inv(a).max(e.inv(b))
+} by {
+    order_iso_inv_is_order_embedding(e)
+    order_embedding_max_image(e.inv, a, b)
+    e.inv(a.max(b)) = e.inv(a).max(e.inv(b))
 }
