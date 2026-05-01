@@ -1,0 +1,415 @@
+/// Interval predicates for linear orders.
+
+from order import LinearOrder, lte_trans, lt_trans, lt_of_lte_of_lt, lt_of_lt_of_lte
+
+/// True if an element lies in the closed interval with endpoints `a` and `b`.
+define closed_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
+    a <= x and x <= b
+}
+
+/// True if an element lies in the open interval with endpoints `a` and `b`.
+define open_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
+    a < x and x < b
+}
+
+/// True if an element lies in the interval open on the left and closed on the right.
+define left_open_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
+    a < x and x <= b
+}
+
+/// True if an element lies in the interval closed on the left and open on the right.
+define right_open_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
+    a <= x and x < b
+}
+
+/// Membership in a closed interval is the conjunction of the endpoint inequalities.
+theorem closed_interval_at[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) = (a <= x and x <= b)
+}
+
+/// Membership in an open interval is the conjunction of the strict endpoint inequalities.
+theorem open_interval_at[L: LinearOrder](a: L, b: L, x: L) {
+    open_interval(a, b, x) = (a < x and x < b)
+}
+
+/// Membership in a left-open interval is the conjunction of the endpoint inequalities.
+theorem left_open_interval_at[L: LinearOrder](a: L, b: L, x: L) {
+    left_open_interval(a, b, x) = (a < x and x <= b)
+}
+
+/// Membership in a right-open interval is the conjunction of the endpoint inequalities.
+theorem right_open_interval_at[L: LinearOrder](a: L, b: L, x: L) {
+    right_open_interval(a, b, x) = (a <= x and x < b)
+}
+
+/// The endpoint inequalities determine membership in a closed interval.
+theorem closed_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
+    a <= x and x <= b implies closed_interval(a, b, x)
+} by {
+    if a <= x and x <= b {
+        closed_interval(a, b, x)
+    }
+}
+
+/// The lower endpoint inequality follows from membership in a closed interval.
+theorem closed_interval_left[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) implies a <= x
+} by {
+    if closed_interval(a, b, x) {
+        a <= x
+    }
+}
+
+/// The upper endpoint inequality follows from membership in a closed interval.
+theorem closed_interval_right[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) implies x <= b
+} by {
+    if closed_interval(a, b, x) {
+        x <= b
+    }
+}
+
+/// The endpoint inequalities determine membership in an open interval.
+theorem open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
+    a < x and x < b implies open_interval(a, b, x)
+} by {
+    if a < x and x < b {
+        open_interval(a, b, x)
+    }
+}
+
+/// The lower strict endpoint inequality follows from membership in an open interval.
+theorem open_interval_left[L: LinearOrder](a: L, b: L, x: L) {
+    open_interval(a, b, x) implies a < x
+} by {
+    if open_interval(a, b, x) {
+        a < x
+    }
+}
+
+/// The upper strict endpoint inequality follows from membership in an open interval.
+theorem open_interval_right[L: LinearOrder](a: L, b: L, x: L) {
+    open_interval(a, b, x) implies x < b
+} by {
+    if open_interval(a, b, x) {
+        x < b
+    }
+}
+
+/// The endpoint inequalities determine membership in a left-open interval.
+theorem left_open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
+    a < x and x <= b implies left_open_interval(a, b, x)
+} by {
+    if a < x and x <= b {
+        left_open_interval(a, b, x)
+    }
+}
+
+/// The lower strict endpoint inequality follows from membership in a left-open interval.
+theorem left_open_interval_left[L: LinearOrder](a: L, b: L, x: L) {
+    left_open_interval(a, b, x) implies a < x
+} by {
+    if left_open_interval(a, b, x) {
+        a < x
+    }
+}
+
+/// The upper endpoint inequality follows from membership in a left-open interval.
+theorem left_open_interval_right[L: LinearOrder](a: L, b: L, x: L) {
+    left_open_interval(a, b, x) implies x <= b
+} by {
+    if left_open_interval(a, b, x) {
+        x <= b
+    }
+}
+
+/// The endpoint inequalities determine membership in a right-open interval.
+theorem right_open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
+    a <= x and x < b implies right_open_interval(a, b, x)
+} by {
+    if a <= x and x < b {
+        right_open_interval(a, b, x)
+    }
+}
+
+/// The lower endpoint inequality follows from membership in a right-open interval.
+theorem right_open_interval_left[L: LinearOrder](a: L, b: L, x: L) {
+    right_open_interval(a, b, x) implies a <= x
+} by {
+    if right_open_interval(a, b, x) {
+        a <= x
+    }
+}
+
+/// The upper strict endpoint inequality follows from membership in a right-open interval.
+theorem right_open_interval_right[L: LinearOrder](a: L, b: L, x: L) {
+    right_open_interval(a, b, x) implies x < b
+} by {
+    if right_open_interval(a, b, x) {
+        x < b
+    }
+}
+
+/// An open interval is contained in the corresponding closed interval.
+theorem open_interval_subset_closed_interval[L: LinearOrder](a: L, b: L, x: L) {
+    open_interval(a, b, x) implies closed_interval(a, b, x)
+} by {
+    if open_interval(a, b, x) {
+        a < x
+        a <= x
+        x < b
+        x <= b
+        closed_interval(a, b, x)
+    }
+}
+
+/// A left-open interval is contained in the corresponding closed interval.
+theorem left_open_interval_subset_closed_interval[L: LinearOrder](a: L, b: L, x: L) {
+    left_open_interval(a, b, x) implies closed_interval(a, b, x)
+} by {
+    if left_open_interval(a, b, x) {
+        a < x
+        a <= x
+        x <= b
+        closed_interval(a, b, x)
+    }
+}
+
+/// A right-open interval is contained in the corresponding closed interval.
+theorem right_open_interval_subset_closed_interval[L: LinearOrder](a: L, b: L, x: L) {
+    right_open_interval(a, b, x) implies closed_interval(a, b, x)
+} by {
+    if right_open_interval(a, b, x) {
+        a <= x
+        x < b
+        x <= b
+        closed_interval(a, b, x)
+    }
+}
+
+/// Enlarging the endpoints preserves membership in a closed interval.
+theorem closed_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
+    a1 <= a2 and b2 <= b1 and closed_interval(a2, b2, x) implies closed_interval(a1, b1, x)
+} by {
+    if a1 <= a2 and b2 <= b1 and closed_interval(a2, b2, x) {
+        a2 <= x
+        lte_trans(a1, a2, x)
+        a1 <= x
+        x <= b2
+        lte_trans(x, b2, b1)
+        x <= b1
+        closed_interval(a1, b1, x)
+    }
+}
+
+/// Enlarging the endpoints preserves membership in an open interval.
+theorem open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
+    a1 <= a2 and b2 <= b1 and open_interval(a2, b2, x) implies open_interval(a1, b1, x)
+} by {
+    if a1 <= a2 and b2 <= b1 and open_interval(a2, b2, x) {
+        a2 < x
+        lt_of_lte_of_lt(a1, a2, x)
+        a1 < x
+        x < b2
+        lt_of_lt_of_lte(x, b2, b1)
+        x < b1
+        open_interval(a1, b1, x)
+    }
+}
+
+/// Enlarging the endpoints preserves membership in a left-open interval.
+theorem left_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
+    a1 <= a2 and b2 <= b1 and left_open_interval(a2, b2, x) implies left_open_interval(a1, b1, x)
+} by {
+    if a1 <= a2 and b2 <= b1 and left_open_interval(a2, b2, x) {
+        a2 < x
+        lt_of_lte_of_lt(a1, a2, x)
+        a1 < x
+        x <= b2
+        lte_trans(x, b2, b1)
+        x <= b1
+        left_open_interval(a1, b1, x)
+    }
+}
+
+/// Enlarging the endpoints preserves membership in a right-open interval.
+theorem right_open_interval_mono[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L) {
+    a1 <= a2 and b2 <= b1 and right_open_interval(a2, b2, x) implies right_open_interval(a1, b1, x)
+} by {
+    if a1 <= a2 and b2 <= b1 and right_open_interval(a2, b2, x) {
+        a2 <= x
+        lte_trans(a1, a2, x)
+        a1 <= x
+        x < b2
+        lt_of_lt_of_lte(x, b2, b1)
+        x < b1
+        right_open_interval(a1, b1, x)
+    }
+}
+
+/// True if `a` is a lower bound for the elements satisfying `p`.
+define is_lower_bound[L: LinearOrder](p: L -> Bool, a: L) -> Bool {
+    forall(x: L) {
+        p(x) implies a <= x
+    }
+}
+
+/// True if `b` is an upper bound for the elements satisfying `p`.
+define is_upper_bound[L: LinearOrder](p: L -> Bool, b: L) -> Bool {
+    forall(x: L) {
+        p(x) implies x <= b
+    }
+}
+
+/// True if the elements satisfying `p` lie in the closed interval from `a` to `b`.
+define is_bounded_by_interval[L: LinearOrder](p: L -> Bool, a: L, b: L) -> Bool {
+    forall(x: L) {
+        p(x) implies closed_interval(a, b, x)
+    }
+}
+
+/// True if the elements satisfying `p` have a lower bound.
+define is_bounded_below[L: LinearOrder](p: L -> Bool) -> Bool {
+    exists(a: L) {
+        is_lower_bound(p, a)
+    }
+}
+
+/// True if the elements satisfying `p` have an upper bound.
+define is_bounded_above[L: LinearOrder](p: L -> Bool) -> Bool {
+    exists(b: L) {
+        is_upper_bound(p, b)
+    }
+}
+
+/// True if the elements satisfying `p` have both a lower and an upper bound.
+define is_bounded[L: LinearOrder](p: L -> Bool) -> Bool {
+    exists(a: L, b: L) {
+        is_bounded_by_interval(p, a, b)
+    }
+}
+
+/// A lower bound applies to any element satisfying the predicate.
+theorem lower_bound_step[L: LinearOrder](p: L -> Bool, a: L, x: L) {
+    is_lower_bound(p, a) and p(x) implies a <= x
+} by {
+    if is_lower_bound(p, a) and p(x) {
+        is_lower_bound(p, a) = forall(y: L) {
+            p(y) implies a <= y
+        }
+        a <= x
+    }
+}
+
+/// An upper bound applies to any element satisfying the predicate.
+theorem upper_bound_step[L: LinearOrder](p: L -> Bool, b: L, x: L) {
+    is_upper_bound(p, b) and p(x) implies x <= b
+} by {
+    if is_upper_bound(p, b) and p(x) {
+        is_upper_bound(p, b) = forall(y: L) {
+            p(y) implies y <= b
+        }
+        x <= b
+    }
+}
+
+/// An interval bound applies to any element satisfying the predicate.
+theorem bounded_by_interval_step[L: LinearOrder](p: L -> Bool, a: L, b: L, x: L) {
+    is_bounded_by_interval(p, a, b) and p(x) implies closed_interval(a, b, x)
+} by {
+    if is_bounded_by_interval(p, a, b) and p(x) {
+        is_bounded_by_interval(p, a, b) = forall(y: L) {
+            p(y) implies closed_interval(a, b, y)
+        }
+        closed_interval(a, b, x)
+    }
+}
+
+/// Lower and upper bounds determine an interval bound.
+theorem bounds_imp_bounded_by_interval[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_lower_bound(p, a) and is_upper_bound(p, b) implies is_bounded_by_interval(p, a, b)
+} by {
+    if is_lower_bound(p, a) and is_upper_bound(p, b) {
+        forall(x: L) {
+            if p(x) {
+                lower_bound_step(p, a, x)
+                a <= x
+                upper_bound_step(p, b, x)
+                x <= b
+                closed_interval(a, b, x)
+            }
+        }
+    }
+}
+
+/// An interval bound determines a lower bound.
+theorem bounded_by_interval_imp_lower_bound[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_bounded_by_interval(p, a, b) implies is_lower_bound(p, a)
+} by {
+    if is_bounded_by_interval(p, a, b) {
+        forall(x: L) {
+            if p(x) {
+                bounded_by_interval_step(p, a, b, x)
+                closed_interval(a, b, x)
+                a <= x
+            }
+        }
+    }
+}
+
+/// An interval bound determines an upper bound.
+theorem bounded_by_interval_imp_upper_bound[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_bounded_by_interval(p, a, b) implies is_upper_bound(p, b)
+} by {
+    if is_bounded_by_interval(p, a, b) {
+        forall(x: L) {
+            if p(x) {
+                bounded_by_interval_step(p, a, b, x)
+                closed_interval(a, b, x)
+                x <= b
+            }
+        }
+    }
+}
+
+/// Being bounded by an interval is equivalent to having the corresponding lower and upper bounds.
+theorem bounded_by_interval_iff_bounds[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_bounded_by_interval(p, a, b) = (is_lower_bound(p, a) and is_upper_bound(p, b))
+} by {
+    if is_bounded_by_interval(p, a, b) {
+        bounded_by_interval_imp_lower_bound(p, a, b)
+        is_lower_bound(p, a)
+        bounded_by_interval_imp_upper_bound(p, a, b)
+        is_upper_bound(p, b)
+        is_lower_bound(p, a) and is_upper_bound(p, b)
+    }
+    if is_lower_bound(p, a) and is_upper_bound(p, b) {
+        bounds_imp_bounded_by_interval(p, a, b)
+        is_bounded_by_interval(p, a, b)
+    }
+    is_bounded_by_interval(p, a, b) = (is_lower_bound(p, a) and is_upper_bound(p, b))
+}
+
+/// An interval bound gives boundedness.
+theorem bounded_by_interval_imp_bounded[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_bounded_by_interval(p, a, b) implies is_bounded(p)
+} by {
+    if is_bounded_by_interval(p, a, b) {
+        exists(x: L, y: L) {
+            x = a and y = b and is_bounded_by_interval(p, x, y)
+        }
+        is_bounded(p)
+    }
+}
+
+/// Lower and upper bounds give boundedness.
+theorem bounds_imp_bounded[L: LinearOrder](p: L -> Bool, a: L, b: L) {
+    is_lower_bound(p, a) and is_upper_bound(p, b) implies is_bounded(p)
+} by {
+    if is_lower_bound(p, a) and is_upper_bound(p, b) {
+        bounds_imp_bounded_by_interval(p, a, b)
+        is_bounded_by_interval(p, a, b)
+        bounded_by_interval_imp_bounded(p, a, b)
+        is_bounded(p)
+    }
+}

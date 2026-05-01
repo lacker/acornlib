@@ -1,0 +1,170 @@
+{"goal":"is_monotone[A, B](f) = forall(x0: A, x1: A) { x0 <= x1 implies f(x0) <= f(x1) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(x) <= f(y)","proof":["x <= y","is_monotone[A, B](f)","(forall(x0: A, x1: A) { not x0 <= x1 or f(x0) <= f(x1) } = true)","function(x0: A) { forall(x1: A) { not x0 <= x1 or f(x0) <= f(x1) } = true }(x)","function(x0: A, x1: A) { not (x0 <= x1 and not f(x0) <= f(x1)) }(x, y)"]}
+{"goal":"monotone_step","proof":[]}
+{"goal":"is_antitone[A, B](f) = forall(x0: A, x1: A) { x0 <= x1 implies f(x1) <= f(x0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x2) <= x0(x1) } = is_antitone[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(y) <= f(x)","proof":["x <= y","is_antitone[A, B](f)","(forall(x0: A, x1: A) { not x0 <= x1 or f(x1) <= f(x0) } = true)","function(x0: A) { forall(x1: A) { not x0 <= x1 or f(x1) <= f(x0) } = true }(x)","function(x0: A, x1: A) { not (x0 <= x1 and not f(x1) <= f(x0)) }(x, y)"]}
+{"goal":"antitone_step","proof":[]}
+{"goal":"is_strict_monotone[A, B](f) = forall(x0: A, x1: A) { x0 < x1 implies f(x0) < f(x1) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 < x2 or x0(x1) < x0(x2) } = is_strict_monotone[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(x) < f(y)","proof":["x < y","is_strict_monotone[A, B](f)","(forall(x0: A, x1: A) { not x0 < x1 or f(x0) < f(x1) } = true)","function(x0: A) { forall(x1: A) { not x0 < x1 or f(x0) < f(x1) } = true }(x)","function(x0: A, x1: A) { not (x0 < x1 and not f(x0) < f(x1)) }(x, y)"]}
+{"goal":"strict_monotone_step","proof":[]}
+{"goal":"is_strict_antitone[A, B](f) = forall(x0: A, x1: A) { x0 < x1 implies f(x1) < f(x0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 < x2 or x0(x2) < x0(x1) } = is_strict_antitone[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(y) < f(x)","proof":["x < y","is_strict_antitone[A, B](f)","(forall(x0: A, x1: A) { not x0 < x1 or f(x1) < f(x0) } = true)","function(x0: A) { forall(x1: A) { not x0 < x1 or f(x1) < f(x0) } = true }(x)","function(x0: A, x1: A) { not (x0 < x1 and not f(x1) < f(x0)) }(x, y)"]}
+{"goal":"strict_antitone_step","proof":[]}
+{"goal":"is_order_embedding[A, B](f) = forall(x0: A, x1: A) { f(x0) <= f(x1) = x0 <= x1 }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, B](f)"]}
+{"goal":"f(x) <= f(y)","proof":["x <= y","is_order_embedding[A, B](f)","(forall(x0: A, x1: A) { x0 <= x1 = f(x0) <= f(x1) } = true)","function(x0: A) { forall(x1: A) { x0 <= x1 = f(x0) <= f(x1) } = true }(x)","function(x0: A, x1: A) { f(x0) <= f(x1) = x0 <= x1 }(x, y)"]}
+{"goal":"order_embedding_monotone_step","proof":[]}
+{"goal":"is_order_embedding[A, B](f) = forall(x0: A, x1: A) { f(x0) <= f(x1) = x0 <= x1 }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, B](f)"]}
+{"goal":"x <= y","proof":["is_order_embedding[A, B](f)","f(x) <= f(y)","(forall(x0: A, x1: A) { x0 <= x1 = f(x0) <= f(x1) } = true)","function(x0: A) { forall(x1: A) { x0 <= x1 = f(x0) <= f(x1) } = true }(x)","function(x0: A, x1: A) { f(x0) <= f(x1) = x0 <= x1 }(x, y)"]}
+{"goal":"order_embedding_reflects_lte","proof":[]}
+{"goal":"f(x) <= f(y)","proof":[]}
+{"goal":"order_embedding_is_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_order_surjection[A, B](f) = (is_monotone[A, B](f) and is_surjective_fn[A, B](f))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { (is_monotone[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_order_surjection[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_monotone[A, B](f)","proof":[]}
+{"goal":"order_surjection_is_monotone","proof":[]}
+{"goal":"is_order_surjection[A, B](f) = (is_monotone[A, B](f) and is_surjective_fn[A, B](f))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { (is_monotone[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_order_surjection[T0, T1](x0) }[A, B](f)"]}
+{"goal":"is_surjective_fn[A, B](f)","proof":[]}
+{"goal":"order_surjection_is_surjective","proof":[]}
+{"goal":"f(x) <= f(y)","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"f(y) <= f(x)","proof":[]}
+{"goal":"y <= x","proof":[]}
+{"goal":"x = y","proof":[]}
+{"goal":"order_embedding_is_injective","proof":[]}
+{"goal":"identity_fn(x) = x","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](x)"]}
+{"goal":"identity_fn(y) = y","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](y)"]}
+{"goal":"identity_fn(x) <= identity_fn(y)","proof":[]}
+{"goal":"identity_is_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[A, A](identity_fn[A])","let w0: A satisfy { exists(k0: A) { w0 <= k0 and not identity_fn(w0) <= identity_fn(k0) } }","let w1: A satisfy { w0 <= w1 and not identity_fn(w0) <= identity_fn(w1) }","function(x0: A, x1: A) { not x0 <= x1 or identity_fn(x0) <= identity_fn(x1) }(w0, w1)"]}
+{"goal":"identity_fn(y) = y","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](y)"]}
+{"goal":"identity_fn(x) = x","proof":[]}
+{"goal":"identity_fn(y) <= identity_fn(x)","proof":[]}
+{"goal":"identity_antitone_step_of_eq","proof":[]}
+{"goal":"identity_fn(x) = x","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](x)"]}
+{"goal":"identity_fn(y) = y","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](y)"]}
+{"goal":"identity_fn(x) < identity_fn(y)","proof":[]}
+{"goal":"identity_is_strict_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 < x2 or x0(x1) < x0(x2) } = is_strict_monotone[T0, T1](x0) }[A, A](identity_fn[A])","let w0: A satisfy { exists(k0: A) { w0 < k0 and not identity_fn(w0) < identity_fn(k0) } }","let w1: A satisfy { w0 < w1 and not identity_fn(w0) < identity_fn(w1) }","function(x0: A, x1: A) { not x0 < x1 or identity_fn(x0) < identity_fn(x1) }(w0, w1)"]}
+{"goal":"identity_fn(x) = x","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](x)"]}
+{"goal":"identity_fn(y) = y","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](y)"]}
+{"goal":"identity_fn(x) <= identity_fn(y) = x <= y","proof":[]}
+{"goal":"identity_is_order_embedding","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, A](identity_fn[A])","let w0: A satisfy { exists(k0: A) { w0 <= k0 != identity_fn(w0) <= identity_fn(k0) } }","let w1: A satisfy { w0 <= w1 != identity_fn(w0) <= identity_fn(w1) }","function(x0: A, x1: A) { identity_fn(x0) <= identity_fn(x1) = x0 <= x1 }(w0, w1)"]}
+{"goal":"exists(k0: A) { k0 = y and identity_fn(k0) = y }","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](y)"]}
+{"goal":"identity_is_surjective_fn","proof":["function[T0, T1](x0: T1 -> T0) { forall(x1: T0) { exists(k0: T1) { x0(k0) = x1 } } = is_surjective_fn[T1, T0](x0) }[A, A](identity_fn[A])","let w0: A satisfy { forall(x0: A) { identity_fn(x0) != w0 } }","function(x0: A) { exists(k0: A) { x0 = k0 and identity_fn(k0) = x0 } }(w0)","let w1: A satisfy { w1 = w0 and identity_fn(w1) = w0 }","let w2(arg0: A) -> w2_result: A satisfy { arg0 = w2_result and identity_fn(w2_result) = arg0 }","function(x0: A) { w2(x0) = x0 and identity_fn(w2(x0)) = x0 }(w0)","function(x0: A) { identity_fn(w2(x0)) = x0 }(w0)","(forall(x1: A) { identity_fn(x1) != w0 } = true)","function(x0: A) { identity_fn(x0) != w0 }(w2(w0))"]}
+{"goal":"is_monotone[A, A](identity_fn[A])","proof":[]}
+{"goal":"is_surjective_fn[A, A](identity_fn[A])","proof":[]}
+{"goal":"is_order_surjection[A, A](identity_fn[A])","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { (is_monotone[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_order_surjection[T0, T1](x0) }[A, A](identity_fn[A])"]}
+{"goal":"identity_is_order_surjection","proof":[]}
+{"goal":"g(x) <= g(y)","proof":[]}
+{"goal":"f(g(x)) <= f(g(y))","proof":[]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"compose[A, B, C](f, g)(x) <= compose[A, B, C](f, g)(y)","proof":[]}
+{"goal":"monotone_compose","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"is_monotone[A, B](g)","proof":[]}
+{"goal":"is_monotone[B, C](f)","proof":[]}
+{"goal":"is_monotone[A, C](compose[A, B, C](f, g))","proof":[]}
+{"goal":"is_surjective_fn[A, B](g)","proof":[]}
+{"goal":"is_surjective_fn[B, C](f)","proof":[]}
+{"goal":"is_surjective_fn[A, C](compose[A, B, C](f, g))","proof":[]}
+{"goal":"is_order_surjection[A, C](compose[A, B, C](f, g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { (is_monotone[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_order_surjection[T0, T1](x0) }[B, C](f)","function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { (is_monotone[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_order_surjection[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"order_surjection_compose","proof":[]}
+{"goal":"g(y) <= g(x)","proof":[]}
+{"goal":"f(g(x)) <= f(g(y))","proof":[]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"compose[A, B, C](f, g)(x) <= compose[A, B, C](f, g)(y)","proof":[]}
+{"goal":"antitone_compose_antitone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"g(x) <= g(y)","proof":[]}
+{"goal":"f(g(y)) <= f(g(x))","proof":[]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"compose[A, B, C](f, g)(y) <= compose[A, B, C](f, g)(x)","proof":[]}
+{"goal":"monotone_compose_antitone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x2) <= x0(x1) } = is_antitone[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"g(y) <= g(x)","proof":[]}
+{"goal":"f(g(y)) <= f(g(x))","proof":[]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"compose[A, B, C](f, g)(y) <= compose[A, B, C](f, g)(x)","proof":[]}
+{"goal":"antitone_compose_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x2) <= x0(x1) } = is_antitone[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"g(x) < g(y)","proof":[]}
+{"goal":"f(g(x)) < f(g(y))","proof":[]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"compose[A, B, C](f, g)(x) < compose[A, B, C](f, g)(y)","proof":[]}
+{"goal":"strict_monotone_compose","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 < x2 or x0(x1) < x0(x2) } = is_strict_monotone[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"compose[A, B, C](f, g, x) = f(g(x))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, x)"]}
+{"goal":"compose[A, B, C](f, g, y) = f(g(y))","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[A, B, C](f, g, y)"]}
+{"goal":"f(g(x)) <= f(g(y))","proof":[]}
+{"goal":"g(x) <= g(y)","proof":[]}
+{"goal":"x <= y","proof":[]}
+{"goal":"g(x) <= g(y)","proof":[]}
+{"goal":"f(g(x)) <= f(g(y))","proof":[]}
+{"goal":"compose[A, B, C](f, g)(x) <= compose[A, B, C](f, g)(y)","proof":[]}
+{"goal":"compose[A, B, C](f, g)(x) <= compose[A, B, C](f, g)(y) = x <= y","proof":[]}
+{"goal":"order_embedding_compose","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, C](compose[A, B, C](f, g))"]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"f(a) <= f(x)","proof":[]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"f(x) <= f(b)","proof":[]}
+{"goal":"closed_interval(f(a), f(b), f(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[B](f(a), f(x), f(b))"]}
+{"goal":"monotone_closed_interval_image","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"f(a) < f(x)","proof":[]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"f(x) < f(b)","proof":[]}
+{"goal":"open_interval(f(a), f(b), f(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or open_interval[T0](x0, x2, x1) }[B](f(a), f(x), f(b))"]}
+{"goal":"strict_monotone_open_interval_image","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"f(a) < f(x)","proof":[]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"f(x) <= f(b)","proof":[]}
+{"goal":"left_open_interval(f(a), f(b), f(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 <= x2 or left_open_interval[T0](x0, x2, x1) }[B](f(a), f(x), f(b))"]}
+{"goal":"monotone_left_open_interval_image","proof":[]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"f(a) <= f(x)","proof":[]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"f(x) < f(b)","proof":[]}
+{"goal":"right_open_interval(f(a), f(b), f(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x2 <= x0 or right_open_interval[T0](x2, x1, x0) }[B](f(x), f(b), f(a))"]}
+{"goal":"monotone_right_open_interval_image","proof":[]}
+{"goal":"f(a) <= f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[B](f(a), f(b), f(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"f(x) <= f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[B](f(a), f(b), f(x))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or closed_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_embedding_closed_interval_preimage","proof":[]}
+{"goal":"f(a) < f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[B](f(a), f(b), f(x))"]}
+{"goal":"f(a) <= f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[B](f(a), f(x))","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[B](f(a), f(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"f(a) != f(x)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[B](f(x), f(a))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[B](f(x), f(a))"]}
+{"goal":"f(a) = f(x)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"a < x","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[A](a, x)"]}
+{"goal":"f(x) < f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[B](f(a), f(b), f(x))"]}
+{"goal":"f(x) <= f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[B](f(x), f(b))","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[B](f(x), f(b))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"f(x) != f(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[B](f(b), f(x))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[B](f(b), f(x))"]}
+{"goal":"f(x) = f(b)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"x < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[A](x, b)"]}
+{"goal":"open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_embedding_open_interval_preimage","proof":[]}
+{"goal":"f(a) < f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[B](f(a), f(b), f(x))"]}
+{"goal":"f(a) <= f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[B](f(a), f(x))","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[B](f(a), f(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"f(a) != f(x)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[B](f(x), f(a))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[B](f(x), f(a))"]}
+{"goal":"f(a) = f(x)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"a < x","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[A](a, x)"]}
+{"goal":"f(x) <= f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[B](f(a), f(b), f(x))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 <= x2 or left_open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_embedding_left_open_interval_preimage","proof":[]}
+{"goal":"f(a) <= f(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[B](f(a), f(b), f(x))"]}
+{"goal":"a <= x","proof":[]}
+{"goal":"f(x) < f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[B](f(a), f(b), f(x))"]}
+{"goal":"f(x) <= f(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[B](f(x), f(b))","function[T0: LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[B](f(x), f(b))"]}
+{"goal":"x <= b","proof":[]}
+{"goal":"f(x) != f(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[B](f(b), f(x))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[B](f(b), f(x))"]}
+{"goal":"f(x) = f(b)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"x < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[A](x, b)"]}
+{"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x2 <= x0 or right_open_interval[T0](x2, x1, x0) }[A](x, b, a)"]}
+{"goal":"order_embedding_right_open_interval_preimage","proof":[]}

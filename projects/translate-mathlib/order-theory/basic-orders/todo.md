@@ -2,12 +2,15 @@
 
 Goal: stabilize the base order hierarchy so later order-theoretic and ordered-algebraic code can depend on one standard API.
 
-- [ ] Add a `Preorder` layer if Acornlib needs one below `PartialOrder`
-- [ ] Complete the `LinearOrder` case-split API for trichotomy-style arguments
-  - Note: asymmetric characterizations `lt_iff_lte_not_lte_swap` and `gt_iff_lte_swap_not_lte` (PartialOrder analogues of Mathlib's `lt_iff_le_not_le`) are added in `order.ac`. Conjunction order is `(not (...) and ...)` rather than `(... and not (...))` to dodge an `acorn check` printer ambiguity where `not P != q` parses incorrectly when regenerated.
-- [ ] Add extensionality-style lemmas for order structures whose data is only `<=`
-  - Note: `lte_and_gte_imp_eq`, `eq_of_forall_lte_iff`, and `eq_of_forall_lte_iff_swap` added in `order.ac` for PartialOrder. The biconditional `(a = b) = (a <= b and a >= b)` was attempted but triggered a "shallow explosion" in the prover; left as the implication-form lemma. Remaining: a LinearOrder variant determined by `<` profile rather than `<=`.
-- [ ] Add transport lemmas for inheriting order structure across definitional equalities
 - [ ] Unify the order APIs for `Nat`, `Int`, `Rat`, and `Real`
-- [ ] Audit theorems in `order.ac` for gaps, naming inconsistencies, and missing symmetric variants
-- [ ] Refactor one downstream file to use only the central basic-order API
+- [ ] Continue the `order.ac` audit for remaining linear-order naming gaps outside the centralized `min`/`max` bound API
+- [ ] Decide whether Acornlib needs a `Preorder` layer below `PartialOrder`
+
+Status:
+
+- `src/order.ac` now has central partial-order equivalences for two-sided bounds, disequality as failure of a comparison, strict comparisons as non-equal non-strict comparisons, and equality/strict disjunction variants.
+- Linear-order trichotomy-style case splits are expanded in `src/order_cases.ac`, including equality-first trichotomy variants, reordered strict/non-strict disjunctions, and equality as the case where neither strict comparison holds.
+- Asymmetric characterizations `lt_iff_lte_not_lte_swap` and `gt_iff_lte_swap_not_lte` are in `src/order.ac`. Their conjunction order is `(not (...) and ...)` to avoid an `acorn check` printer ambiguity where `not P != q` parses incorrectly when regenerated.
+- Unbundled order-data predicates and equality transport/extensionality lemmas now live in `src/order_relation.ac`, including strict-part and converse transport for partial-order and linear-order relations.
+- The basic comparison audit now includes Mathlib-style implication aliases in `src/order.ac` and linear-order negation aliases in `src/order_cases.ac`.
+- The central `src/order.ac` API now includes strict and non-strict `min`/`max` selector aliases plus lower-bound and upper-bound characterizations; `src/real/real_base.ac` imports its basic `min`/`max` facts from `order.ac`.

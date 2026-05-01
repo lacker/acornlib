@@ -1,0 +1,306 @@
+name: Autofix Build Conflicts
+
+on:
+  pull_request_target:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to autofix.
+        required: true
+        type: number
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: autofix-build-conflicts-${{ github.event.pull_request.number || inputs.pr || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  autofix:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'autofix'
+    runs-on: ubuntu-latest
+
+    env:
+      AUTOFIX_LABEL: autofix
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+      RESULT_PATH: /tmp/autofix-result.md
+
+    steps:
+      - name: Prepare result state
+        run: rm -f "$RESULT_PATH"
+
+      - name: Validate pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HAS_AUTOFIX_TOKEN: ${{ secrets.AUTOFIX_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+
+          fail() {
+            printf '%s\n' "$*" > "$RESULT_PATH"
+            exit 1
+          }
+
+          if [[ -z "${PR_NUMBER:-}" ]]; then
+            fail "No pull request number was supplied."
+          fi
+
+          pr_json="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")"
+
+          state="$(jq -r '.state' <<<"$pr_json")"
+          head_ref="$(jq -r '.head.ref' <<<"$pr_json")"
+          head_sha="$(jq -r '.head.sha' <<<"$pr_json")"
+          head_repo="$(jq -r '.head.repo.full_name // ""' <<<"$pr_json")"
+          base_ref="$(jq -r '.base.ref' <<<"$pr_json")"
+          base_repo="$(jq -r '.base.repo.full_name // ""' <<<"$pr_json")"
+          maintainer_can_modify="$(jq -r '.maintainer_can_modify' <<<"$pr_json")"
+          pr_url="$(jq -r '.html_url' <<<"$pr_json")"
+
+          if [[ "$state" != "open" ]]; then
+            fail "Pull request #$PR_NUMBER is not open."
+          fi
+
+          if [[ "$head_repo" != "$GITHUB_REPOSITORY" ]]; then
+            if [[ "$maintainer_can_modify" != "true" ]]; then
+              fail "Autofix can only update fork pull requests when maintainer edits are enabled."
+            fi
+
+            if [[ "$HAS_AUTOFIX_TOKEN" != "true" ]]; then
+              fail "Autofix needs the \`AUTOFIX_TOKEN\` repository secret to update fork pull request branches."
+            fi
+          fi
+
+          if [[ "$base_repo" != "$GITHUB_REPOSITORY" ]]; then
+            fail "Autofix only supports pull requests whose base repository is \`$GITHUB_REPOSITORY\`."
+          fi
+
+          if [[ "$base_ref" != "$DEFAULT_BRANCH" ]]; then
+            fail "Autofix only supports pull requests targeting \`$DEFAULT_BRANCH\`. This PR targets \`$base_ref\`."
+          fi
+
+          mapfile -t changed_files < <(gh api --paginate \
+            "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
+            --jq '.[].filename')
+
+          bad_files=()
+          for file in "${changed_files[@]}"; do
+            if [[ "$file" != src/* && "$file" != build/* && "$file" != projects/* ]]; then
+              bad_files+=("$file")
+            fi
+          done
+
+          if (( ${#bad_files[@]} > 0 )); then
+            {
+              echo "Autofix only runs when every PR-changed file is under \`src/\`, \`build/\`, or \`projects/\`."
+              echo
+              echo "Files outside those directories:"
+              printf -- '- `%s`\n' "${bad_files[@]}"
+            } > "$RESULT_PATH"
+            exit 1
+          fi
+
+          {
+            echo "HEAD_REF=$head_ref"
+            echo "HEAD_SHA=$head_sha"
+            echo "HEAD_REPO=$head_repo"
+            echo "BASE_REF=$base_ref"
+            echo "PR_URL=$pr_url"
+          } >> "$GITHUB_ENV"
+
+      - name: Checkout base repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ env.DEFAULT_BRANCH }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Acorn CLI
+        run: npm install -g @acornprover/cli
+
+      - name: Resolve build conflicts and verify
+        run: |
+          set -euo pipefail
+
+          fail() {
+            printf '%s\n' "$*" > "$RESULT_PATH"
+            exit 1
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch --no-tags "https://github.com/$GITHUB_REPOSITORY.git" "+refs/heads/$BASE_REF:refs/remotes/origin/$BASE_REF"
+          git fetch --no-tags "https://github.com/$HEAD_REPO.git" "+refs/heads/$HEAD_REF:refs/remotes/pr-head/autofix-pr-$PR_NUMBER"
+
+          fetched_head="$(git rev-parse "refs/remotes/pr-head/autofix-pr-$PR_NUMBER")"
+          if [[ "$fetched_head" != "$HEAD_SHA" ]]; then
+            fail "The PR branch changed while autofix was starting. Re-add the \`$AUTOFIX_LABEL\` label to try again."
+          fi
+
+          git checkout -B "autofix-pr-$PR_NUMBER" "$HEAD_SHA"
+
+          set +e
+          merge_output="$(git merge --no-commit --no-ff "refs/remotes/origin/$BASE_REF" 2>&1)"
+          merge_status=$?
+          set -e
+          printf '%s\n' "$merge_output"
+
+          if (( merge_status != 0 )); then
+            mapfile -d '' conflicted_files < <(git diff --name-only -z --diff-filter=U)
+
+            if (( ${#conflicted_files[@]} == 0 )); then
+              {
+                echo "Merging \`$BASE_REF\` into this PR failed, but Git did not report file conflicts."
+                echo
+                echo '```text'
+                printf '%s\n' "$merge_output" | tail -n 80
+                echo '```'
+              } > "$RESULT_PATH"
+              exit 1
+            fi
+
+            bad_conflicts=()
+            for file in "${conflicted_files[@]}"; do
+              if [[ "$file" != build/* ]]; then
+                bad_conflicts+=("$file")
+              fi
+            done
+
+            if (( ${#bad_conflicts[@]} > 0 )); then
+              {
+                echo "Autofix only resolves merge conflicts under \`build/\`."
+                echo
+                echo "Conflicted files outside \`build/\`:"
+                printf -- '- `%s`\n' "${bad_conflicts[@]}"
+              } > "$RESULT_PATH"
+              exit 1
+            fi
+
+            for file in "${conflicted_files[@]}"; do
+              if git cat-file -e "refs/remotes/origin/$BASE_REF:$file" 2>/dev/null; then
+                git checkout "refs/remotes/origin/$BASE_REF" -- "$file"
+                git add -- "$file"
+              else
+                git rm -f -- "$file"
+              fi
+            done
+          fi
+
+          if git diff --name-only --diff-filter=U | grep -q .; then
+            fail "Git still reports unresolved conflicts after resolving \`build/\` paths from \`$BASE_REF\`."
+          fi
+
+          verify_log="$RUNNER_TEMP/acorn-verify.log"
+          if ! acorn verify 2>&1 | tee "$verify_log"; then
+            {
+              echo "\`acorn verify\` failed, so autofix could not update the generated build files."
+              echo
+              echo '```text'
+              tail -n 80 "$verify_log"
+              echo '```'
+            } > "$RESULT_PATH"
+            exit 1
+          fi
+
+          mapfile -d '' verify_changes < <(
+            {
+              git diff --name-only -z
+              git ls-files --others --exclude-standard -z
+            } | sort -zu
+          )
+
+          if (( ${#verify_changes[@]} == 0 )); then
+            fail "\`acorn verify\` succeeded, but it did not update any files under \`build/\`."
+          fi
+
+          bad_verify_changes=()
+          for file in "${verify_changes[@]}"; do
+            if [[ "$file" != build/* ]]; then
+              bad_verify_changes+=("$file")
+            fi
+          done
+
+          if (( ${#bad_verify_changes[@]} > 0 )); then
+            {
+              echo "\`acorn verify\` changed files outside \`build/\`, so autofix stopped before committing."
+              echo
+              echo "Files outside \`build/\`:"
+              printf -- '- `%s`\n' "${bad_verify_changes[@]}"
+            } > "$RESULT_PATH"
+            exit 1
+          fi
+
+          git add -- "${verify_changes[@]}"
+
+          if git diff --cached --quiet; then
+            fail "There were no staged changes to commit after \`acorn verify\`."
+          fi
+
+          git commit -m "Autofix build conflicts for PR #$PR_NUMBER"
+
+      - name: Push update to PR branch
+        env:
+          PUSH_TOKEN: ${{ secrets.AUTOFIX_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          push_log="$RUNNER_TEMP/autofix-push.log"
+          if ! git push "https://x-access-token:$PUSH_TOKEN@github.com/$HEAD_REPO.git" \
+            "HEAD:refs/heads/$HEAD_REF" 2>&1 | tee "$push_log"; then
+            {
+              echo "Autofix created a commit, but pushing it to \`$HEAD_REF\` failed."
+              echo
+              echo '```text'
+              tail -n 80 "$push_log"
+              echo '```'
+            } > "$RESULT_PATH"
+            exit 1
+          fi
+
+      - name: Comment on failed autofix
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.AUTOFIX_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          comment_file="$RUNNER_TEMP/autofix-comment.md"
+          {
+            echo "Autofix could not update this PR."
+            echo
+            if [[ -f "$RESULT_PATH" ]]; then
+              cat "$RESULT_PATH"
+            else
+              echo "The workflow failed before it could record a specific reason. Check the workflow logs for details."
+            fi
+          } > "$comment_file"
+
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$comment_file"
+
+      - name: Remove autofix label
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.AUTOFIX_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${PR_NUMBER:-}" ]]; then
+            if gh issue view "$PR_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json labels \
+              --jq '.labels[].name' | grep -Fxq "$AUTOFIX_LABEL"; then
+              gh issue edit "$PR_NUMBER" \
+                --repo "$GITHUB_REPOSITORY" \
+                --remove-label "$AUTOFIX_LABEL"
+            fi
+          fi

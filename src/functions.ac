@@ -62,6 +62,71 @@ theorem binary_function_extensionality[T, U, V](f: (T, U) -> V, g: (T, U) -> V) 
     }
 }
 
+/// Equal functions have equal values at each input.
+theorem function_eq_apply[T, U](f: T -> U, g: T -> U, x: T) {
+    f = g implies f(x) = g(x)
+}
+
+/// Equal binary functions have equal values at each pair of inputs.
+theorem binary_function_eq_apply[T, U, V](f: (T, U) -> V, g: (T, U) -> V, x: T, y: U) {
+    f = g implies f(x, y) = g(x, y)
+}
+
+/// Equal predicates have equal truth values at each input.
+theorem predicate_eq_apply[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q implies p(x) = q(x)
+}
+
+/// Equality of functions transports predicates on functions.
+theorem function_eq_transport_predicate[T, U](p: (T -> U) -> Bool, f: T -> U, g: T -> U) {
+    f = g and p(f) implies p(g)
+}
+
+/// Equality of functions transports predicates on functions in the reverse direction.
+theorem function_eq_transport_predicate_rev[T, U](p: (T -> U) -> Bool, f: T -> U, g: T -> U) {
+    f = g and p(g) implies p(f)
+}
+
+/// Equality of predicates transports predicates on predicates.
+theorem predicate_eq_transport_predicate[T](p: (T -> Bool) -> Bool, q: T -> Bool, r: T -> Bool) {
+    q = r and p(q) implies p(r)
+}
+
+/// Equality of predicates transports predicates on predicates in the reverse direction.
+theorem predicate_eq_transport_predicate_rev[T](p: (T -> Bool) -> Bool, q: T -> Bool, r: T -> Bool) {
+    q = r and p(r) implies p(q)
+}
+
+/// Equality of binary functions transports predicates on binary functions.
+theorem binary_function_eq_transport_predicate[T, U, V](p: ((T, U) -> V) -> Bool, f: (T, U) -> V, g: (T, U) -> V) {
+    f = g and p(f) implies p(g)
+}
+
+/// Equality of binary functions transports predicates on binary functions in the reverse direction.
+theorem binary_function_eq_transport_predicate_rev[T, U, V](p: ((T, U) -> V) -> Bool, f: (T, U) -> V, g: (T, U) -> V) {
+    f = g and p(g) implies p(f)
+}
+
+/// Predicate equality transports truth forward.
+theorem predicate_eq_forward[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q and p(x) implies q(x)
+}
+
+/// Predicate equality transports truth backward.
+theorem predicate_eq_backward[T](p: T -> Bool, q: T -> Bool, x: T) {
+    p = q and q(x) implies p(x)
+}
+
+/// Equality of elements transports predicates.
+theorem eq_transport_predicate[T](p: T -> Bool, x: T, y: T) {
+    x = y and p(x) implies p(y)
+}
+
+/// Equality of elements transports predicates in the reverse direction.
+theorem eq_transport_predicate_rev[T](p: T -> Bool, x: T, y: T) {
+    x = y and p(y) implies p(x)
+}
+
 /// Left identity for composition.
 theorem compose_identity_left[T, U](f: T -> U) {
     compose(identity_fn[U], f) = f
@@ -101,6 +166,50 @@ theorem compose_assoc[A, B, C, D](f: C -> D, g: B -> C, h: A -> B) {
     function_extensionality(compose(f, compose(g, h)), compose(compose(f, g), h))
 }
 
+/// Equal left factors give equal composites.
+theorem compose_eq_left[T, U, V](f: U -> V, g: U -> V, h: T -> U) {
+    f = g implies compose(f, h) = compose(g, h)
+} by {
+    if f = g {
+        forall(x: T) {
+            compose(f, h, x) = f(h(x))
+            compose(g, h, x) = g(h(x))
+            f(h(x)) = g(h(x))
+            compose(f, h, x) = compose(g, h, x)
+        }
+        function_extensionality(compose(f, h), compose(g, h))
+    }
+}
+
+/// Equal right factors give equal composites.
+theorem compose_eq_right[T, U, V](f: U -> V, g: T -> U, h: T -> U) {
+    g = h implies compose(f, g) = compose(f, h)
+} by {
+    if g = h {
+        forall(x: T) {
+            compose(f, g, x) = f(g(x))
+            compose(f, h, x) = f(h(x))
+            g(x) = h(x)
+            f(g(x)) = f(h(x))
+            compose(f, g, x) = compose(f, h, x)
+        }
+        function_extensionality(compose(f, g), compose(f, h))
+    }
+}
+
+/// Equal factors give equal composites.
+theorem compose_eq[T, U, V](f: U -> V, g: U -> V, h: T -> U, k: T -> U) {
+    f = g and h = k implies compose(f, h) = compose(g, k)
+} by {
+    if f = g and h = k {
+        compose_eq_left(f, g, h)
+        compose(f, h) = compose(g, h)
+        compose_eq_right(g, h, k)
+        compose(g, h) = compose(g, k)
+        compose(f, h) = compose(g, k)
+    }
+}
+
 /// Composing with a constant function yields a constant function.
 theorem compose_constant[T, U, V](f: U -> V, u: U) {
     compose(f, constant[T, U](u)) = constant[T, V](f(u))
@@ -118,6 +227,26 @@ theorem compose_constant[T, U, V](f: U -> V, u: U) {
 /// Every constant function is constant.
 theorem constant_is_constant[T, U](u: U) {
     is_constant(constant[T, U](u))
+}
+
+/// Equality of functions transports constancy.
+theorem function_eq_transport_constant[T, U](f: T -> U, g: T -> U) {
+    f = g and is_constant(f) implies is_constant(g)
+} by {
+    if f = g and is_constant(f) {
+        function_eq_transport_predicate(is_constant[T, U], f, g)
+        is_constant(g)
+    }
+}
+
+/// Equality of functions transports constancy in the reverse direction.
+theorem function_eq_transport_constant_rev[T, U](f: T -> U, g: T -> U) {
+    f = g and is_constant(g) implies is_constant(f)
+} by {
+    if f = g and is_constant(g) {
+        function_eq_transport_predicate_rev(is_constant[T, U], f, g)
+        is_constant(f)
+    }
 }
 
 /// A type with a distinguished default element.
@@ -172,6 +301,66 @@ theorem bijection_fn_is_surjective[T, U](f: T -> U) {
     is_bijection_fn(f) implies is_surjective_fn(f)
 }
 
+/// Equality of functions transports injectivity.
+theorem function_eq_transport_injective_fn[T, U](f: T -> U, g: T -> U) {
+    f = g and is_injective_fn(f) implies is_injective_fn(g)
+} by {
+    if f = g and is_injective_fn(f) {
+        function_eq_transport_predicate(is_injective_fn[T, U], f, g)
+        is_injective_fn(g)
+    }
+}
+
+/// Equality of functions transports injectivity in the reverse direction.
+theorem function_eq_transport_injective_fn_rev[T, U](f: T -> U, g: T -> U) {
+    f = g and is_injective_fn(g) implies is_injective_fn(f)
+} by {
+    if f = g and is_injective_fn(g) {
+        function_eq_transport_predicate_rev(is_injective_fn[T, U], f, g)
+        is_injective_fn(f)
+    }
+}
+
+/// Equality of functions transports surjectivity.
+theorem function_eq_transport_surjective_fn[T, U](f: T -> U, g: T -> U) {
+    f = g and is_surjective_fn(f) implies is_surjective_fn(g)
+} by {
+    if f = g and is_surjective_fn(f) {
+        function_eq_transport_predicate(is_surjective_fn[T, U], f, g)
+        is_surjective_fn(g)
+    }
+}
+
+/// Equality of functions transports surjectivity in the reverse direction.
+theorem function_eq_transport_surjective_fn_rev[T, U](f: T -> U, g: T -> U) {
+    f = g and is_surjective_fn(g) implies is_surjective_fn(f)
+} by {
+    if f = g and is_surjective_fn(g) {
+        function_eq_transport_predicate_rev(is_surjective_fn[T, U], f, g)
+        is_surjective_fn(f)
+    }
+}
+
+/// Equality of functions transports bijectivity.
+theorem function_eq_transport_bijection_fn[T, U](f: T -> U, g: T -> U) {
+    f = g and is_bijection_fn(f) implies is_bijection_fn(g)
+} by {
+    if f = g and is_bijection_fn(f) {
+        function_eq_transport_predicate(is_bijection_fn[T, U], f, g)
+        is_bijection_fn(g)
+    }
+}
+
+/// Equality of functions transports bijectivity in the reverse direction.
+theorem function_eq_transport_bijection_fn_rev[T, U](f: T -> U, g: T -> U) {
+    f = g and is_bijection_fn(g) implies is_bijection_fn(f)
+} by {
+    if f = g and is_bijection_fn(g) {
+        function_eq_transport_predicate_rev(is_bijection_fn[T, U], f, g)
+        is_bijection_fn(f)
+    }
+}
+
 /// Injectivity turns equal outputs into equal inputs.
 theorem injective_fn_eq[T, U](f: T -> U, x1: T, x2: T) {
     is_injective_fn(f) and f(x1) = f(x2) implies x1 = x2
@@ -213,6 +402,95 @@ theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
     }
 }
 
+/// A chosen preimage of a point under a surjective function.
+let inverse_fn_at[T: Inhabited, U](f: T -> U, y: U) -> result: T satisfy {
+    is_surjective_fn(f) implies f(result) = y
+} by {
+    if is_surjective_fn(f) {
+        surjective_fn_has_preimage(f, y)
+        let x: T satisfy {
+            f(x) = y
+        }
+        f(x) = y
+    }
+}
+
+/// A chosen inverse for a surjective function.
+define inverse_fn[T: Inhabited, U](f: T -> U, y: U) -> T {
+    inverse_fn_at(f, y)
+}
+
+/// A chosen inverse is a right inverse for a surjective function.
+theorem inverse_fn_apply_of_surjective[T: Inhabited, U](f: T -> U, y: U) {
+    is_surjective_fn(f) implies f(inverse_fn(f, y)) = y
+} by {
+    if is_surjective_fn(f) {
+        inverse_fn(f, y) = inverse_fn_at(f, y)
+        f(inverse_fn(f, y)) = y
+    }
+}
+
+/// A chosen inverse gives back the original point for a bijective function.
+theorem inverse_fn_apply_image_of_bijection[T: Inhabited, U](f: T -> U, x: T) {
+    is_bijection_fn(f) implies inverse_fn(f, f(x)) = x
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        inverse_fn_apply_of_surjective(f, f(x))
+        f(inverse_fn(f, f(x))) = f(x)
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        injective_fn_eq(f, inverse_fn(f, f(x)), x)
+        inverse_fn(f, f(x)) = x
+    }
+}
+
+/// The chosen inverse of a bijection is injective.
+theorem inverse_fn_is_injective_of_bijection[T: Inhabited, U](f: T -> U) {
+    is_bijection_fn(f) implies is_injective_fn(inverse_fn(f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(y1: U, y2: U) {
+            if inverse_fn(f, y1) = inverse_fn(f, y2) {
+                inverse_fn_apply_of_surjective(f, y1)
+                inverse_fn_apply_of_surjective(f, y2)
+                f(inverse_fn(f, y1)) = y1
+                f(inverse_fn(f, y2)) = y2
+                y1 = y2
+            }
+        }
+    }
+}
+
+/// The chosen inverse of a bijection is surjective.
+theorem inverse_fn_is_surjective_of_bijection[T: Inhabited, U](f: T -> U) {
+    is_bijection_fn(f) implies is_surjective_fn(inverse_fn(f))
+} by {
+    if is_bijection_fn(f) {
+        forall(x: T) {
+            exists(y: U) {
+                y = f(x) and inverse_fn(f, y) = x
+            }
+        }
+    }
+}
+
+/// The chosen inverse of a bijection is bijective.
+theorem inverse_fn_is_bijection_of_bijection[T: Inhabited, U](f: T -> U) {
+    is_bijection_fn(f) implies is_bijection_fn(inverse_fn(f))
+} by {
+    if is_bijection_fn(f) {
+        inverse_fn_is_injective_of_bijection(f)
+        is_injective_fn(inverse_fn(f))
+        inverse_fn_is_surjective_of_bijection(f)
+        is_surjective_fn(inverse_fn(f))
+        is_bijection_fn(inverse_fn(f))
+    }
+}
+
 /// Composition preserves surjectivity.
 theorem compose_surjective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_surjective_fn(f) and is_surjective_fn(g) implies is_surjective_fn(compose(f, g))
@@ -251,6 +529,145 @@ theorem compose_bijection_fn[T, U, V](f: U -> V, g: T -> U) {
     }
 }
 
+/// A bijection between two types.
+structure Bijection[T, U] {
+    /// The underlying map.
+    map: T -> U
+} constraint {
+    is_bijection_fn(map)
+}
+
+/// Construction of a bijection remembers the underlying map.
+theorem bijection_new_map[T, U](f: T -> U, e: Bijection[T, U]) {
+    Bijection[T, U].new(f) = Option.some(e) implies e.map = f
+}
+
+/// Every bijection is reconstructed from its underlying map.
+theorem bijection_new_self[T, U](e: Bijection[T, U]) {
+    Bijection[T, U].new(e.map) = Option.some(e)
+}
+
+/// Equality of options containing bijections is equality of bijections.
+theorem bijection_some_injective[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    Option.some(e) = Option.some(h) implies e = h
+}
+
+/// Bijections are equal when their underlying maps are equal.
+theorem bijection_ext[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    e.map = h.map implies e = h
+} by {
+    if e.map = h.map {
+        Bijection[T, U].new(e.map) = Option.some(e)
+        Bijection[T, U].new(h.map) = Option.some(h)
+        Option.some(e) = Option.some(h)
+        bijection_some_injective(e, h)
+    }
+}
+
+/// Equal bijections have equal underlying maps.
+theorem bijection_eq_map[T, U](e: Bijection[T, U], h: Bijection[T, U]) {
+    e = h implies e.map = h.map
+}
+
+/// The underlying map of a bijection is bijective.
+theorem bijection_map_is_bijection[T, U](e: Bijection[T, U]) {
+    is_bijection_fn(e.map)
+}
+
+/// The underlying map of a bijection is injective.
+theorem bijection_map_is_injective[T, U](e: Bijection[T, U]) {
+    is_injective_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_fn_is_injective(e.map)
+}
+
+/// The underlying map of a bijection is surjective.
+theorem bijection_map_is_surjective[T, U](e: Bijection[T, U]) {
+    is_surjective_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_fn_is_surjective(e.map)
+}
+
+/// The identity map as a bijection.
+let identity_bijection[T](anchor: T) -> result: Bijection[T, T] satisfy {
+    result.map = identity_fn[T]
+} by {
+    is_injective_fn(identity_fn[T])
+    is_surjective_fn(identity_fn[T])
+    is_bijection_fn(identity_fn[T])
+    let e: Bijection[T, T] satisfy {
+        Bijection[T, T].new(identity_fn[T]) = Option.some(e)
+    }
+    bijection_new_map(identity_fn[T], e)
+    e.map = identity_fn[T]
+}
+
+/// The identity bijection has the identity map.
+theorem identity_bijection_map[T](anchor: T) {
+    identity_bijection(anchor).map = identity_fn[T]
+}
+
+/// The inverse map of a bijection as a bijection.
+let inverse_bijection[T: Inhabited, U](e: Bijection[T, U]) -> result: Bijection[U, T] satisfy {
+    result.map = inverse_fn(e.map)
+} by {
+    bijection_map_is_bijection(e)
+    inverse_fn_is_bijection_of_bijection(e.map)
+    is_bijection_fn(inverse_fn(e.map))
+    let h: Bijection[U, T] satisfy {
+        Bijection[U, T].new(inverse_fn(e.map)) = Option.some(h)
+    }
+    bijection_new_map(inverse_fn(e.map), h)
+    h.map = inverse_fn(e.map)
+}
+
+/// The inverse bijection has the chosen inverse map.
+theorem inverse_bijection_map[T: Inhabited, U](e: Bijection[T, U]) {
+    inverse_bijection(e).map = inverse_fn(e.map)
+}
+
+/// A bijection followed by its inverse is the identity on the source.
+theorem inverse_bijection_apply_image[T: Inhabited, U](e: Bijection[T, U], x: T) {
+    inverse_bijection(e).map(e.map(x)) = x
+} by {
+    inverse_bijection_map(e)
+    inverse_bijection(e).map = inverse_fn(e.map)
+    bijection_map_is_bijection(e)
+    inverse_fn_apply_image_of_bijection(e.map, x)
+}
+
+/// The inverse of a bijection followed by the bijection is the identity on the target.
+theorem bijection_apply_inverse[T: Inhabited, U](e: Bijection[T, U], y: U) {
+    e.map(inverse_bijection(e).map(y)) = y
+} by {
+    inverse_bijection_map(e)
+    inverse_bijection(e).map = inverse_fn(e.map)
+    bijection_map_is_surjective(e)
+    inverse_fn_apply_of_surjective(e.map, y)
+}
+
+/// The composite of two bijections.
+let compose_bijection[T, U, V](e: Bijection[U, V], h: Bijection[T, U]) -> result: Bijection[T, V] satisfy {
+    result.map = compose(e.map, h.map)
+} by {
+    bijection_map_is_bijection(e)
+    bijection_map_is_bijection(h)
+    compose_bijection_fn(e.map, h.map)
+    is_bijection_fn(compose(e.map, h.map))
+    let k: Bijection[T, V] satisfy {
+        Bijection[T, V].new(compose(e.map, h.map)) = Option.some(k)
+    }
+    bijection_new_map(compose(e.map, h.map), k)
+    k.map = compose(e.map, h.map)
+}
+
+/// The composite bijection has the composite map.
+theorem compose_bijection_map[T, U, V](e: Bijection[U, V], h: Bijection[T, U]) {
+    compose_bijection(e, h).map = compose(e.map, h.map)
+}
+
 /// True if `f` is injective.
 define is_injective[T](f: T -> T) -> Bool {
     forall(x: T, y: T) {
@@ -270,4 +687,137 @@ define is_surjective[T](f: T -> T) -> Bool {
 /// True if `f` is bijective.
 define is_bijection[T](f: T -> T) -> Bool {
     is_injective(f) and is_surjective(f)
+}
+
+/// Endomorphic injectivity is the same as general injectivity.
+theorem is_injective_eq_is_injective_fn[T](f: T -> T) {
+    is_injective(f) = is_injective_fn(f)
+} by {
+    if is_injective(f) {
+        forall(x: T, y: T) {
+            if f(x) = f(y) {
+                x = y
+            }
+        }
+        is_injective_fn(f)
+    }
+    if is_injective_fn(f) {
+        forall(x: T, y: T) {
+            if f(x) = f(y) {
+                injective_fn_eq(f, x, y)
+                x = y
+            }
+        }
+        is_injective(f)
+    }
+    is_injective(f) = is_injective_fn(f)
+}
+
+/// Endomorphic surjectivity is the same as general surjectivity.
+theorem is_surjective_eq_is_surjective_fn[T](f: T -> T) {
+    is_surjective(f) = is_surjective_fn(f)
+} by {
+    if is_surjective(f) {
+        forall(y: T) {
+            exists(x: T) {
+                f(x) = y
+            }
+        }
+        is_surjective_fn(f)
+    }
+    if is_surjective_fn(f) {
+        forall(y: T) {
+            surjective_fn_has_preimage(f, y)
+            exists(x: T) {
+                f(x) = y
+            }
+        }
+        is_surjective(f)
+    }
+    is_surjective(f) = is_surjective_fn(f)
+}
+
+/// Endomorphic bijectivity is the same as general bijectivity.
+theorem is_bijection_eq_is_bijection_fn[T](f: T -> T) {
+    is_bijection(f) = is_bijection_fn(f)
+} by {
+    is_injective_eq_is_injective_fn(f)
+    is_surjective_eq_is_surjective_fn(f)
+    if is_bijection(f) {
+        is_injective(f)
+        is_injective_fn(f)
+        is_surjective(f)
+        is_surjective_fn(f)
+        is_bijection_fn(f)
+    }
+    if is_bijection_fn(f) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        is_injective(f)
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        is_surjective(f)
+        is_bijection(f)
+    }
+    is_bijection(f) = is_bijection_fn(f)
+}
+
+/// Equality of endofunctions transports injectivity.
+theorem function_eq_transport_injective[T](f: T -> T, g: T -> T) {
+    f = g and is_injective(f) implies is_injective(g)
+} by {
+    if f = g and is_injective(f) {
+        function_eq_transport_predicate(is_injective[T], f, g)
+        is_injective(g)
+    }
+}
+
+/// Equality of endofunctions transports injectivity in the reverse direction.
+theorem function_eq_transport_injective_rev[T](f: T -> T, g: T -> T) {
+    f = g and is_injective(g) implies is_injective(f)
+} by {
+    if f = g and is_injective(g) {
+        function_eq_transport_predicate_rev(is_injective[T], f, g)
+        is_injective(f)
+    }
+}
+
+/// Equality of endofunctions transports surjectivity.
+theorem function_eq_transport_surjective[T](f: T -> T, g: T -> T) {
+    f = g and is_surjective(f) implies is_surjective(g)
+} by {
+    if f = g and is_surjective(f) {
+        function_eq_transport_predicate(is_surjective[T], f, g)
+        is_surjective(g)
+    }
+}
+
+/// Equality of endofunctions transports surjectivity in the reverse direction.
+theorem function_eq_transport_surjective_rev[T](f: T -> T, g: T -> T) {
+    f = g and is_surjective(g) implies is_surjective(f)
+} by {
+    if f = g and is_surjective(g) {
+        function_eq_transport_predicate_rev(is_surjective[T], f, g)
+        is_surjective(f)
+    }
+}
+
+/// Equality of endofunctions transports bijectivity.
+theorem function_eq_transport_bijection[T](f: T -> T, g: T -> T) {
+    f = g and is_bijection(f) implies is_bijection(g)
+} by {
+    if f = g and is_bijection(f) {
+        function_eq_transport_predicate(is_bijection[T], f, g)
+        is_bijection(g)
+    }
+}
+
+/// Equality of endofunctions transports bijectivity in the reverse direction.
+theorem function_eq_transport_bijection_rev[T](f: T -> T, g: T -> T) {
+    f = g and is_bijection(g) implies is_bijection(f)
+} by {
+    if f = g and is_bijection(g) {
+        function_eq_transport_predicate_rev(is_bijection[T], f, g)
+        is_bijection(f)
+    }
 }

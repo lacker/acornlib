@@ -184,6 +184,17 @@ theorem false_elim(a: Bool) {
     }
 }
 
+/// A proposition that implies contradiction is false.
+theorem not_intro(a: Bool) {
+    (a implies false) implies not a
+} by {
+    if a implies false {
+        if a {
+            false
+        }
+    }
+}
+
 /// A proposition and its negation cannot both hold.
 theorem not_and_self(a: Bool) {
     not (a and not a)
@@ -900,6 +911,19 @@ theorem exists_or_distrib[T](p: T -> Bool, q: T -> Bool) {
 } by {
     exists_or_forward(p, q)
     exists_or_backward(p, q)
+}
+
+/// A satisfying element gives existence.
+theorem exists_intro[T](p: T -> Bool, x: T) {
+    p(x) implies exists(y: T) {
+        p(y)
+    }
+} by {
+    if p(x) {
+        exists(y: T) {
+            y = x and p(y)
+        }
+    }
 }
 
 /// Nonexistence gives universal negation.

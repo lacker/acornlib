@@ -38,6 +38,60 @@ theorem submonoid_ext[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
     }
 }
 
+/// Equal submonoids have equal membership predicates.
+theorem submonoid_eq_contains[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal submonoids have equal membership at every element.
+theorem submonoid_eq_contains_at[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of submonoids transports predicates on submonoids.
+theorem submonoid_eq_transport_predicate[M: Monoid](
+    p: Submonoid[M] -> Bool,
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of submonoids transports predicates on submonoids in the reverse direction.
+theorem submonoid_eq_transport_predicate_rev[M: Monoid](
+    p: Submonoid[M] -> Bool,
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of submonoids.
+theorem submonoid_eq_of_contains_eq[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: M) {
+            a.contains(x) = b.contains(x)
+        }
+        submonoid_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of submonoids.
+theorem submonoid_eq_of_contains_at_eq[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    (forall(x: M) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: M) { a.contains(x) = b.contains(x) } {
+        submonoid_ext(a, b)
+    }
+}
+
 /// The common membership predicate of two submonoids.
 define submonoid_intersection_contains[M: Monoid](a: Submonoid[M], b: Submonoid[M], x: M) -> Bool {
     a.contains(x) and b.contains(x)

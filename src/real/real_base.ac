@@ -255,8 +255,7 @@ theorem real_is_antisymmetric {
     is_antisymmetric(Real.lte)
 }
 
-from order import PartialOrder, LinearOrder
-from order_cases import min_eq_left_of_lt, min_eq_right_of_not_lt, max_eq_left_of_gt, max_eq_right_of_not_gt, lt_min_iff, max_lt_iff
+from order import PartialOrder, LinearOrder, min_eq_left_of_lt, min_eq_right_of_not_lt, max_eq_left_of_gt, max_eq_right_of_not_gt, lt_min_iff, max_lt_iff
 
 instance Real: PartialOrder
 
