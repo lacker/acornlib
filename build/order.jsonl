@@ -104,31 +104,31 @@
 {"goal":"a != b","proof":[]}
 {"goal":"ne_of_lt","proof":[]}
 {"goal":"a != b","proof":[]}
-{"goal":"not_eq_of_lt","proof":["not a < b"]}
+{"goal":"not_eq_of_lt","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"lt_ne","proof":[]}
-{"goal":"a != b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[P](b, a)","b < a","not b < a"]}
+{"goal":"a != b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[P](b, a)"]}
 {"goal":"gt_imp_ne","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"ne_of_gt","proof":[]}
 {"goal":"a != b","proof":[]}
-{"goal":"not_eq_of_gt","proof":["not a > b"]}
+{"goal":"not_eq_of_gt","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"gt_ne","proof":[]}
-{"goal":"a != b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[P](b, a)","b > a","not b > a"]}
+{"goal":"a != b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[P](b, a)"]}
 {"goal":"b != a","proof":[]}
 {"goal":"lt_imp_ne_symm","proof":[]}
 {"goal":"b != a","proof":[]}
 {"goal":"ne_symm_of_lt","proof":[]}
 {"goal":"b != a","proof":[]}
-{"goal":"not_eq_symm_of_lt","proof":["not a < b"]}
+{"goal":"not_eq_symm_of_lt","proof":[]}
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[P](a, b)"]}
 {"goal":"b != a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[P](b, a)"]}
 {"goal":"gt_imp_ne_symm","proof":[]}
 {"goal":"b != a","proof":[]}
 {"goal":"ne_symm_of_gt","proof":[]}
 {"goal":"b != a","proof":[]}
-{"goal":"not_eq_symm_of_gt","proof":["not a > b"]}
+{"goal":"not_eq_symm_of_gt","proof":[]}
 {"goal":"a != a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[P](a, a)"]}
 {"goal":"false","proof":[]}
 {"goal":"not_lt_ref","proof":[]}
@@ -369,26 +369,26 @@
 {"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[P](a, b)"]}
 {"goal":"lt_of_lte_of_ne","proof":[]}
 {"goal":"a < b","proof":[]}
-{"goal":"lt_of_ne_of_lte","proof":["not a <= b or b = a","b != a","a <= b","not a <= b"]}
+{"goal":"lt_of_ne_of_lte","proof":[]}
 {"goal":"b <= a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[P](a, b)"]}
 {"goal":"b != a","proof":[]}
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[P](b, a)"]}
 {"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[P](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[P](a, b)"]}
 {"goal":"gt_of_gte_of_ne","proof":[]}
 {"goal":"a > b","proof":[]}
-{"goal":"gt_of_ne_of_gte","proof":["not a >= b or b = a","b != a","a >= b","not a >= b"]}
+{"goal":"gt_of_ne_of_gte","proof":[]}
 {"goal":"false","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"a < b","proof":[]}
 {"goal":"lt_of_lte_of_ne_symm","proof":[]}
 {"goal":"a < b","proof":[]}
-{"goal":"lt_of_ne_symm_of_lte","proof":["not a <= b or a = b","a != b","a <= b","not a <= b"]}
+{"goal":"lt_of_ne_symm_of_lte","proof":[]}
 {"goal":"false","proof":[]}
 {"goal":"a != b","proof":[]}
 {"goal":"a > b","proof":[]}
 {"goal":"gt_of_gte_of_ne_symm","proof":[]}
 {"goal":"a > b","proof":[]}
-{"goal":"gt_of_ne_symm_of_gte","proof":["not a >= b or a = b","a != b","a >= b","not a >= b"]}
+{"goal":"gt_of_ne_symm_of_gte","proof":[]}
 {"goal":"a = b or a < b","proof":[]}
 {"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[P](a, b)"]}
 {"goal":"a = b or a < b","proof":[]}
@@ -401,7 +401,7 @@
 {"goal":"b <= a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[P](a, b)"]}
 {"goal":"b != a","proof":[]}
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[P](b, a)"]}
-{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[P](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[P](a, b)","not (not a <= b and b <= a)","not a <= b and b <= a"]}
+{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[P](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[P](a, b)"]}
 {"goal":"a = b or a > b","proof":[]}
 {"goal":"eq_or_gt_of_gte","proof":[]}
 {"goal":"a > b or a = b","proof":[]}
@@ -433,19 +433,19 @@
 {"goal":"a < b","proof":[]}
 {"goal":"lt_of_le_of_ne","proof":[]}
 {"goal":"a < b","proof":[]}
-{"goal":"lt_of_ne_of_le","proof":["not a <= b or b = a","b != a","a <= b","not a <= b"]}
+{"goal":"lt_of_ne_of_le","proof":[]}
 {"goal":"a > b","proof":[]}
 {"goal":"gt_of_ge_of_ne","proof":[]}
 {"goal":"a > b","proof":[]}
-{"goal":"gt_of_ne_of_ge","proof":["not a >= b or b = a","b != a","a >= b","not a >= b"]}
+{"goal":"gt_of_ne_of_ge","proof":[]}
 {"goal":"a < b","proof":[]}
 {"goal":"lt_of_le_of_ne_symm","proof":[]}
 {"goal":"a < b","proof":[]}
-{"goal":"lt_of_ne_symm_of_le","proof":["not a <= b or a = b","a != b","a <= b","not a <= b"]}
+{"goal":"lt_of_ne_symm_of_le","proof":[]}
 {"goal":"a > b","proof":[]}
 {"goal":"gt_of_ge_of_ne_symm","proof":[]}
 {"goal":"a > b","proof":[]}
-{"goal":"gt_of_ne_symm_of_ge","proof":["not a >= b or a = b","a != b","a >= b","not a >= b"]}
+{"goal":"gt_of_ne_symm_of_ge","proof":[]}
 {"goal":"a = b or a < b","proof":[]}
 {"goal":"eq_or_lt_of_le","proof":[]}
 {"goal":"a < b or a = b","proof":[]}
@@ -468,7 +468,7 @@
 {"goal":"a <= b","proof":[]}
 {"goal":"false","proof":[]}
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[L](b, a)"]}
-{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[L](a, b)","not (not a <= b and b <= a)","not a <= b and b <= a"]}
+{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)"]}
 {"goal":"not_lte_imp_gt","proof":[]}
 {"goal":"a > b","proof":[]}
 {"goal":"gt_of_not_le","proof":[]}
@@ -477,7 +477,7 @@
 {"goal":"b <= a","proof":[]}
 {"goal":"a >= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, b)"]}
 {"goal":"false","proof":[]}
-{"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[L](a, b)","b != a"]}
+{"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[L](a, b)"]}
 {"goal":"not_gte_imp_lt","proof":[]}
 {"goal":"a < b","proof":[]}
 {"goal":"lt_of_not_ge","proof":[]}
@@ -496,7 +496,7 @@
 {"goal":"b <= a","proof":[]}
 {"goal":"a <= b","proof":[]}
 {"goal":"b < a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](a, b)"]}
-{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[L](a, b)","not (not a <= b and b <= a)","not a <= b and b <= a"]}
+{"goal":"a > b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[L](a, b)"]}
 {"goal":"false","proof":[]}
 {"goal":"not_gt_imp_lte","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](a, b)"]}
 {"goal":"a <= b","proof":[]}
@@ -515,11 +515,11 @@
 {"goal":"lte_or_gt","proof":[]}
 {"goal":"le_or_gt","proof":[]}
 {"goal":"a > b or a <= b","proof":[]}
-{"goal":"a > b","proof":["a <= b"]}
+{"goal":"a > b","proof":[]}
 {"goal":"a > b or a <= b","proof":[]}
 {"goal":"gt_or_le","proof":[]}
 {"goal":"a >= b or a < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[L](a, b)"]}
-{"goal":"a < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[L](b, a)","b > a","not b > a"]}
+{"goal":"a < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 <= x1 }[L](b, a)","function[T0: PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[L](b, a)"]}
 {"goal":"a >= b or a < b","proof":[]}
 {"goal":"gte_or_lt","proof":[]}
 {"goal":"ge_or_lt","proof":[]}
@@ -558,14 +558,30 @@
 {"goal":"max_comm","proof":[]}
 {"goal":"a.min(b) <= a","proof":[]}
 {"goal":"min_lte_left","proof":[]}
+{"goal":"min_le_left","proof":[]}
 {"goal":"a.min(b) <= b","proof":[]}
 {"goal":"min_lte_right","proof":[]}
+{"goal":"min_le_right","proof":[]}
 {"goal":"a.max(b) >= a","proof":[]}
 {"goal":"a <= a.max(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), a)"]}
 {"goal":"lte_max_left","proof":[]}
+{"goal":"le_max_left","proof":[]}
 {"goal":"a.max(b) >= b","proof":[]}
 {"goal":"b <= a.max(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), b)"]}
 {"goal":"lte_max_right","proof":[]}
+{"goal":"le_max_right","proof":[]}
+{"goal":"a >= a.min(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, a.min(b))"]}
+{"goal":"min_gte_left","proof":[]}
+{"goal":"b >= a.min(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](b, a.min(b))"]}
+{"goal":"min_gte_right","proof":[]}
+{"goal":"a.max(b) >= a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), a)"]}
+{"goal":"max_gte_left","proof":[]}
+{"goal":"a.max(b) >= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), b)"]}
+{"goal":"max_gte_right","proof":[]}
+{"goal":"min_le_of_left","proof":[]}
+{"goal":"min_le_of_right","proof":[]}
+{"goal":"le_max_of_left","proof":[]}
+{"goal":"le_max_of_right","proof":[]}
 {"goal":"a <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
 {"goal":"min_idem","proof":[]}
 {"goal":"a >= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 <= x1 }[L](a, a)","function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, a)"]}
@@ -616,21 +632,25 @@
 {"goal":"a.min(b) = a","proof":[]}
 {"goal":"a.min(b) = a = a <= b","proof":[]}
 {"goal":"min_eq_left_iff_lte","proof":[]}
+{"goal":"min_eq_left_iff_le","proof":[]}
 {"goal":"a.min(b) <= a","proof":[]}
 {"goal":"a >= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, a.min(b))"]}
 {"goal":"a.min(b) = b","proof":[]}
 {"goal":"a.min(b) = b = a >= b","proof":[]}
 {"goal":"min_eq_right_iff_gte","proof":[]}
+{"goal":"min_eq_right_iff_ge","proof":[]}
 {"goal":"a.max(b) >= a","proof":[]}
 {"goal":"a <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](b, a)"]}
 {"goal":"a.max(b) = b","proof":[]}
 {"goal":"a.max(b) = b = a <= b","proof":[]}
 {"goal":"max_eq_right_iff_lte","proof":[]}
+{"goal":"max_eq_right_iff_le","proof":[]}
 {"goal":"a.max(b) >= b","proof":[]}
 {"goal":"a >= b","proof":[]}
 {"goal":"a.max(b) = a","proof":[]}
 {"goal":"a.max(b) = a = a >= b","proof":[]}
 {"goal":"max_eq_left_iff_gte","proof":[]}
+{"goal":"max_eq_left_iff_ge","proof":[]}
 {"goal":"c < a","proof":[]}
 {"goal":"c < b","proof":[]}
 {"goal":"lt_min_imp","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) <= x0 and x0.min(x1) <= x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 < x2 or x0 < x2 }[L](c, a.min(b), a)","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[L](a.min(b), a)"]}
@@ -658,6 +678,14 @@
 {"goal":"a.min(b) < c","proof":[]}
 {"goal":"a.min(b) < c = (a < c or b < c)","proof":[]}
 {"goal":"min_lt_iff","proof":[]}
+{"goal":"a.min(b) < c","proof":["not a.min(b) <= a or not a < c","not a.min(b) <= a"]}
+{"goal":"min_lt_of_left","proof":["not a < c"]}
+{"goal":"a.min(b) < c","proof":["not a.min(b) <= b or not b < c","not a.min(b) <= b"]}
+{"goal":"min_lt_of_right","proof":["not b < c"]}
+{"goal":"a < c or b < c","proof":[]}
+{"goal":"min_lt_imp_left_or_right","proof":["not b < c","not a < c","not a.min(b) < c"]}
+{"goal":"a.min(b) < c","proof":["not a < c and not b < c","a < c"]}
+{"goal":"min_lt_of_left_or_right","proof":["not a < c and not b < c","a < c"]}
 {"goal":"c < a","proof":[]}
 {"goal":"c < a or c < b","proof":[]}
 {"goal":"a.max(b) = b","proof":[]}
@@ -667,6 +695,14 @@
 {"goal":"c < a.max(b)","proof":[]}
 {"goal":"c < a.max(b) = (c < a or c < b)","proof":[]}
 {"goal":"lt_max_iff","proof":[]}
+{"goal":"c < a.max(b)","proof":["not a <= a.max(b) or not c < a","not a <= a.max(b)"]}
+{"goal":"lt_max_of_left","proof":["not c < a"]}
+{"goal":"c < a.max(b)","proof":["not b <= a.max(b) or not c < b","not b <= a.max(b)"]}
+{"goal":"lt_max_of_right","proof":["not c < b"]}
+{"goal":"c < a or c < b","proof":[]}
+{"goal":"lt_max_imp_left_or_right","proof":["not c < b","not c < a","not c < a.max(b)"]}
+{"goal":"c < a.max(b)","proof":["not c < a and not c < b","c < a"]}
+{"goal":"lt_max_of_left_or_right","proof":["not c < a and not c < b","c < a"]}
 {"goal":"c <= a","proof":[]}
 {"goal":"c <= b","proof":[]}
 {"goal":"lte_min_imp","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.min(x1) <= x0 and x0.min(x1) <= x1 }[L](a, b)","function[T0: PartialOrder](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x1 <= x2 or x0 <= x2 }[L](c, a.min(b), a)"]}
@@ -676,6 +712,23 @@
 {"goal":"lte_min_of_bounds","proof":[]}
 {"goal":"c <= a.min(b) = (c <= a and c <= b)","proof":[]}
 {"goal":"lte_min_iff","proof":[]}
+{"goal":"le_min_iff","proof":[]}
+{"goal":"c <= a.min(b)","proof":[]}
+{"goal":"le_min_of_le_left_of_le_right","proof":[]}
+{"goal":"c <= a","proof":[]}
+{"goal":"le_left_of_le_min","proof":[]}
+{"goal":"c <= b","proof":[]}
+{"goal":"le_right_of_le_min","proof":[]}
+{"goal":"a.min(b) <= c","proof":[]}
+{"goal":"min_lte_of_left","proof":["not a <= c"]}
+{"goal":"a.min(b) <= c","proof":[]}
+{"goal":"min_lte_of_right","proof":["not b <= c"]}
+{"goal":"a <= c","proof":[]}
+{"goal":"a <= c or b <= c","proof":[]}
+{"goal":"a.min(b) = b","proof":[]}
+{"goal":"b <= c","proof":[]}
+{"goal":"a <= c or b <= c","proof":[]}
+{"goal":"min_lte_imp_left_or_right","proof":["not b <= c","not a <= c","not a.min(b) <= c"]}
 {"goal":"c <= a and c <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.min(b), c)"]}
 {"goal":"a >= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, c)"]}
 {"goal":"b >= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](b, c)"]}
@@ -686,6 +739,13 @@
 {"goal":"min_gte_of_bounds","proof":[]}
 {"goal":"a.min(b) >= c = (a >= c and b >= c)","proof":[]}
 {"goal":"min_gte_iff","proof":[]}
+{"goal":"min_ge_iff","proof":[]}
+{"goal":"a.min(b) >= c","proof":[]}
+{"goal":"min_ge_of_ge_left_of_ge_right","proof":[]}
+{"goal":"a >= c","proof":[]}
+{"goal":"ge_left_of_min_ge","proof":[]}
+{"goal":"b >= c","proof":[]}
+{"goal":"ge_right_of_min_ge","proof":[]}
 {"goal":"a.max(b) >= a","proof":[]}
 {"goal":"a <= a.max(b)","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), a)"]}
 {"goal":"a <= c","proof":[]}
@@ -699,6 +759,23 @@
 {"goal":"max_lte_of_upper_bounds","proof":[]}
 {"goal":"a.max(b) <= c = (a <= c and b <= c)","proof":[]}
 {"goal":"max_lte_iff","proof":[]}
+{"goal":"max_le_iff","proof":[]}
+{"goal":"a.max(b) <= c","proof":[]}
+{"goal":"max_le_of_le_left_of_le_right","proof":[]}
+{"goal":"a <= c","proof":[]}
+{"goal":"le_left_of_max_le","proof":[]}
+{"goal":"b <= c","proof":[]}
+{"goal":"le_right_of_max_le","proof":[]}
+{"goal":"c <= a.max(b)","proof":[]}
+{"goal":"lte_max_of_left","proof":["not c <= a"]}
+{"goal":"c <= a.max(b)","proof":[]}
+{"goal":"lte_max_of_right","proof":["not c <= b"]}
+{"goal":"c <= a","proof":[]}
+{"goal":"c <= a or c <= b","proof":[]}
+{"goal":"a.max(b) = b","proof":[]}
+{"goal":"c <= b","proof":[]}
+{"goal":"c <= a or c <= b","proof":[]}
+{"goal":"lte_max_imp_left_or_right","proof":["not c <= b","not c <= a","not c <= a.max(b)"]}
 {"goal":"a.min(c) <= a","proof":[]}
 {"goal":"a.min(c) <= b","proof":[]}
 {"goal":"a.min(c) <= c","proof":[]}
@@ -719,34 +796,39 @@
 {"goal":"max_lte_max_left","proof":[]}
 {"goal":"a.max(b) <= a.max(c)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](a, a)"]}
 {"goal":"max_lte_max_right","proof":[]}
-{"goal":"a <= c","proof":[]}
-{"goal":"a <= c or b <= c","proof":[]}
-{"goal":"a.min(b) = b","proof":[]}
-{"goal":"b <= c","proof":[]}
-{"goal":"a <= c or b <= c","proof":[]}
+{"goal":"a <= c","proof":["not a.min(b) <= c"]}
+{"goal":"a <= c or b <= c","proof":["not a <= c"]}
+{"goal":"a.min(b) = b","proof":["a.min(b) = a"]}
+{"goal":"b <= c","proof":["not a.min(b) <= c"]}
+{"goal":"a <= c or b <= c","proof":["not b <= c"]}
 {"goal":"min_lte_imp","proof":[]}
 {"goal":"a.min(b) <= a","proof":[]}
-{"goal":"a.min(b) <= c","proof":[]}
+{"goal":"a.min(b) <= c","proof":["not a.min(b) <= a or not a <= c","not a.min(b) <= a"]}
 {"goal":"a.min(b) <= b","proof":[]}
-{"goal":"a.min(b) <= c","proof":[]}
+{"goal":"a.min(b) <= c","proof":["not a <= c","b <= c","not a.min(b) <= b"]}
 {"goal":"min_lte_of_left_or_right","proof":[]}
 {"goal":"a.min(b) <= c = (a <= c or b <= c)","proof":[]}
 {"goal":"min_lte_iff","proof":[]}
-{"goal":"c <= a","proof":[]}
+{"goal":"c <= a","proof":["not c <= a.max(b)"]}
 {"goal":"c <= a or c <= b","proof":[]}
-{"goal":"a.max(b) = b","proof":[]}
+{"goal":"a.max(b) = b","proof":["a.max(b) = a"]}
 {"goal":"c <= b","proof":[]}
-{"goal":"c <= a or c <= b","proof":[]}
+{"goal":"c <= a or c <= b","proof":["not c <= b"]}
 {"goal":"lte_max_imp","proof":[]}
 {"goal":"c <= a.max(b)","proof":[]}
 {"goal":"c <= a.max(b)","proof":[]}
 {"goal":"lte_max_of_left_or_right","proof":[]}
 {"goal":"c <= a.max(b) = (c <= a or c <= b)","proof":[]}
 {"goal":"lte_max_iff","proof":[]}
-{"goal":"c <= a or c <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), c)"]}
+{"goal":"le_max_iff","proof":[]}
+{"goal":"c <= a.max(b)","proof":["not a <= a.max(b) or not c <= a","not a <= a.max(b)"]}
+{"goal":"le_max_of_le_left","proof":[]}
+{"goal":"c <= a.max(b)","proof":["not b <= a.max(b) or not c <= b","not b <= a.max(b)"]}
+{"goal":"le_max_of_le_right","proof":[]}
+{"goal":"c <= a or c <= b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a.max(b), c)","not c <= b","not c <= a","not c <= a.max(b)"]}
 {"goal":"a >= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](a, c)"]}
 {"goal":"a >= c or b >= c","proof":[]}
-{"goal":"c <= b","proof":[]}
+{"goal":"c <= b","proof":["c <= a"]}
 {"goal":"b >= c","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[L](b, c)"]}
 {"goal":"a >= c or b >= c","proof":[]}
 {"goal":"max_gte_imp","proof":[]}
@@ -756,6 +838,11 @@
 {"goal":"max_gte_of_left_or_right","proof":[]}
 {"goal":"a.max(b) >= c = (a >= c or b >= c)","proof":[]}
 {"goal":"max_gte_iff","proof":[]}
+{"goal":"max_ge_iff","proof":[]}
+{"goal":"a.max(b) >= c","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 >= x1 and not x2 >= x1 or x0.max(x2) >= x1 }[L](a, c, b)"]}
+{"goal":"max_ge_of_ge_left","proof":[]}
+{"goal":"a.max(b) >= c","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 >= x1 and not x2 >= x1 or x0.max(x2) >= x1 }[L](a, c, b)"]}
+{"goal":"max_ge_of_ge_right","proof":[]}
 {"goal":"left <= a","proof":[]}
 {"goal":"left <= b.min(c)","proof":[]}
 {"goal":"b.min(c) <= b","proof":[]}

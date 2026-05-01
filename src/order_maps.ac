@@ -1,8 +1,10 @@
 /// Order-preserving and order-reversing maps.
 
-from functions import compose, identity_fn, is_surjective_fn, compose_surjective_fn
+from functions import compose, identity_fn, is_injective_fn, is_surjective_fn, compose_surjective_fn
 from order import PartialOrder, LinearOrder, lte_refl, lte_trans, lte_antisymm, lt_trans,
-    lt_of_lte_of_lt, lt_of_lt_of_lte
+    lt_of_lte_of_lt, lt_of_lt_of_lte, lte_min_of_bounds, max_lte_of_upper_bounds,
+    min_lte_left, min_lte_right, lte_max_left, lte_max_right, min_eq_left_of_lte,
+    min_eq_right_of_gte, max_eq_left_of_gte, max_eq_right_of_lte
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
 
 /// True if a map preserves the non-strict order.
@@ -117,6 +119,18 @@ theorem order_embedding_reflects_lte[A: PartialOrder, B: PartialOrder](f: A -> B
     }
 }
 
+/// An order embedding reflects an explicitly reversed ordered image pair.
+theorem order_embedding_reflects_gte[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_order_embedding(f) and f(x) >= f(y) implies x >= y
+} by {
+    if is_order_embedding(f) and f(x) >= f(y) {
+        f(y) <= f(x)
+        order_embedding_reflects_lte(f, y, x)
+        y <= x
+        x >= y
+    }
+}
+
 /// An order embedding preserves an explicitly strict ordered pair.
 theorem order_embedding_strict_monotone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
     is_order_embedding(f) and x < y implies f(x) < f(y)
@@ -139,6 +153,18 @@ theorem order_embedding_strict_monotone_step[A: PartialOrder, B: PartialOrder](f
     }
 }
 
+/// An order embedding preserves an explicitly reversed strict ordered pair.
+theorem order_embedding_strict_antitone_step_swap[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_order_embedding(f) and x > y implies f(x) > f(y)
+} by {
+    if is_order_embedding(f) and x > y {
+        y < x
+        order_embedding_strict_monotone_step(f, y, x)
+        f(y) < f(x)
+        f(x) > f(y)
+    }
+}
+
 /// An order embedding reflects an explicitly strict image pair.
 theorem order_embedding_reflects_lt[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
     is_order_embedding(f) and f(x) < f(y) implies x < y
@@ -154,6 +180,18 @@ theorem order_embedding_reflects_lt[A: PartialOrder, B: PartialOrder](f: A -> B,
         }
         x != y
         x < y
+    }
+}
+
+/// An order embedding reflects an explicitly reversed strict image pair.
+theorem order_embedding_reflects_gt[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_order_embedding(f) and f(x) > f(y) implies x > y
+} by {
+    if is_order_embedding(f) and f(x) > f(y) {
+        f(y) < f(x)
+        order_embedding_reflects_lt(f, y, x)
+        y < x
+        x > y
     }
 }
 
@@ -228,6 +266,20 @@ theorem order_embedding_is_injective[A: PartialOrder, B: PartialOrder](f: A -> B
     }
 }
 
+/// An order embedding is injective as a function.
+theorem order_embedding_is_injective_fn[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    is_order_embedding(f) implies is_injective_fn(f)
+} by {
+    if is_order_embedding(f) {
+        forall(x: A, y: A) {
+            if f(x) = f(y) {
+                order_embedding_is_injective(f)
+                x = y
+            }
+        }
+    }
+}
+
 /// The identity map is monotone.
 theorem identity_is_monotone[A: PartialOrder] {
     is_monotone(identity_fn[A])
@@ -275,6 +327,14 @@ theorem identity_is_order_embedding[A: PartialOrder] {
         identity_fn[A](y) = y
         identity_fn[A](x) <= identity_fn[A](y) = (x <= y)
     }
+}
+
+/// The identity map is injective as a function.
+theorem identity_is_injective_fn[A: PartialOrder] {
+    is_injective_fn(identity_fn[A])
+} by {
+    identity_is_order_embedding[A]
+    order_embedding_is_injective_fn(identity_fn[A])
 }
 
 /// The identity map is surjective.
@@ -415,6 +475,63 @@ theorem strict_monotone_compose[A: PartialOrder, B: PartialOrder, C: PartialOrde
     }
 }
 
+/// The composite of strict antitone maps is strict monotone.
+theorem strict_antitone_compose_strict_antitone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_strict_antitone(g) and is_strict_antitone(f) implies is_strict_monotone(compose(f, g))
+} by {
+    if is_strict_antitone(g) and is_strict_antitone(f) {
+        forall(x: A, y: A) {
+            if x < y {
+                strict_antitone_step(g, x, y)
+                g(y) < g(x)
+                strict_antitone_step(f, g(y), g(x))
+                f(g(x)) < f(g(y))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(x) < compose(f, g)(y)
+            }
+        }
+    }
+}
+
+/// A strict monotone map followed by a strict antitone map is strict antitone.
+theorem strict_monotone_compose_strict_antitone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_strict_monotone(g) and is_strict_antitone(f) implies is_strict_antitone(compose(f, g))
+} by {
+    if is_strict_monotone(g) and is_strict_antitone(f) {
+        forall(x: A, y: A) {
+            if x < y {
+                strict_monotone_step(g, x, y)
+                g(x) < g(y)
+                strict_antitone_step(f, g(x), g(y))
+                f(g(y)) < f(g(x))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(y) < compose(f, g)(x)
+            }
+        }
+    }
+}
+
+/// A strict antitone map followed by a strict monotone map is strict antitone.
+theorem strict_antitone_compose_strict_monotone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_strict_antitone(g) and is_strict_monotone(f) implies is_strict_antitone(compose(f, g))
+} by {
+    if is_strict_antitone(g) and is_strict_monotone(f) {
+        forall(x: A, y: A) {
+            if x < y {
+                strict_antitone_step(g, x, y)
+                g(y) < g(x)
+                strict_monotone_step(f, g(y), g(x))
+                f(g(y)) < f(g(x))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(y) < compose(f, g)(x)
+            }
+        }
+    }
+}
+
 /// The composite of order embeddings is an order embedding.
 theorem order_embedding_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
     is_order_embedding(g) and is_order_embedding(f) implies is_order_embedding(compose(f, g))
@@ -438,6 +555,130 @@ theorem order_embedding_compose[A: PartialOrder, B: PartialOrder, C: PartialOrde
                 compose(f, g)(x) <= compose(f, g)(y)
             }
             compose(f, g)(x) <= compose(f, g)(y) = (x <= y)
+        }
+    }
+}
+
+/// A monotone map sends a minimum below the minimum of the images.
+theorem monotone_min_image_lte[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_monotone(f) implies f(a.min(b)) <= f(a).min(f(b))
+} by {
+    if is_monotone(f) {
+        min_lte_left(a, b)
+        monotone_step(f, a.min(b), a)
+        f(a.min(b)) <= f(a)
+        min_lte_right(a, b)
+        monotone_step(f, a.min(b), b)
+        f(a.min(b)) <= f(b)
+        lte_min_of_bounds(f(a.min(b)), f(a), f(b))
+        f(a.min(b)) <= f(a).min(f(b))
+    }
+}
+
+/// The maximum of the images of a monotone map is below the image of the maximum.
+theorem monotone_max_image_lte[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_monotone(f) implies f(a).max(f(b)) <= f(a.max(b))
+} by {
+    if is_monotone(f) {
+        lte_max_left(a, b)
+        monotone_step(f, a, a.max(b))
+        f(a) <= f(a.max(b))
+        lte_max_right(a, b)
+        monotone_step(f, b, a.max(b))
+        f(b) <= f(a.max(b))
+        max_lte_of_upper_bounds(f(a), f(b), f(a.max(b)))
+        f(a).max(f(b)) <= f(a.max(b))
+    }
+}
+
+/// An antitone map sends a maximum below the minimum of the images.
+theorem antitone_max_image_lte_min[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_antitone(f) implies f(a.max(b)) <= f(a).min(f(b))
+} by {
+    if is_antitone(f) {
+        lte_max_left(a, b)
+        antitone_step(f, a, a.max(b))
+        f(a.max(b)) <= f(a)
+        lte_max_right(a, b)
+        antitone_step(f, b, a.max(b))
+        f(a.max(b)) <= f(b)
+        lte_min_of_bounds(f(a.max(b)), f(a), f(b))
+        f(a.max(b)) <= f(a).min(f(b))
+    }
+}
+
+/// The maximum of the images of an antitone map is below the image of the minimum.
+theorem antitone_min_image_lte_max[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_antitone(f) implies f(a).max(f(b)) <= f(a.min(b))
+} by {
+    if is_antitone(f) {
+        min_lte_left(a, b)
+        antitone_step(f, a.min(b), a)
+        f(a) <= f(a.min(b))
+        min_lte_right(a, b)
+        antitone_step(f, a.min(b), b)
+        f(b) <= f(a.min(b))
+        max_lte_of_upper_bounds(f(a), f(b), f(a.min(b)))
+        f(a).max(f(b)) <= f(a.min(b))
+    }
+}
+
+/// An order embedding preserves binary minima.
+theorem order_embedding_min_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_order_embedding(f) implies f(a.min(b)) = f(a).min(f(b))
+} by {
+    if is_order_embedding(f) {
+        order_embedding_is_monotone(f)
+        is_monotone(f)
+        if a <= b {
+            min_eq_left_of_lte(a, b)
+            a.min(b) = a
+            order_embedding_monotone_step(f, a, b)
+            f(a) <= f(b)
+            min_eq_left_of_lte(f(a), f(b))
+            f(a).min(f(b)) = f(a)
+            f(a.min(b)) = f(a).min(f(b))
+        } else {
+            b <= a
+            a >= b
+            min_eq_right_of_gte(a, b)
+            a.min(b) = b
+            order_embedding_monotone_step(f, b, a)
+            f(b) <= f(a)
+            f(a) >= f(b)
+            min_eq_right_of_gte(f(a), f(b))
+            f(a).min(f(b)) = f(b)
+            f(a.min(b)) = f(a).min(f(b))
+        }
+    }
+}
+
+/// An order embedding preserves binary maxima.
+theorem order_embedding_max_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A) {
+    is_order_embedding(f) implies f(a.max(b)) = f(a).max(f(b))
+} by {
+    if is_order_embedding(f) {
+        order_embedding_is_monotone(f)
+        is_monotone(f)
+        if a <= b {
+            max_eq_right_of_lte(a, b)
+            a.max(b) = b
+            order_embedding_monotone_step(f, a, b)
+            f(a) <= f(b)
+            max_eq_right_of_lte(f(a), f(b))
+            f(a).max(f(b)) = f(b)
+            f(a.max(b)) = f(a).max(f(b))
+        } else {
+            b <= a
+            a >= b
+            max_eq_left_of_gte(a, b)
+            a.max(b) = a
+            order_embedding_monotone_step(f, b, a)
+            f(b) <= f(a)
+            f(a) >= f(b)
+            max_eq_left_of_gte(f(a), f(b))
+            f(a).max(f(b)) = f(a)
+            f(a.max(b)) = f(a).max(f(b))
         }
     }
 }

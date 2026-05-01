@@ -2118,11 +2118,25 @@ theorem min_lte_left[L: LinearOrder](a: L, b: L) {
     a.min(b) <= a
 }
 
+/// A minimum is below its left argument.
+theorem min_le_left[L: LinearOrder](a: L, b: L) {
+    a.min(b) <= a
+} by {
+    min_lte_left(a, b)
+}
+
 theorem min_lte_right[L: LinearOrder](a: L, b: L) {
     a.min(b) <= b
 } by {
     min_imp_lte(a, b)
     a.min(b) <= b
+}
+
+/// A minimum is below its right argument.
+theorem min_le_right[L: LinearOrder](a: L, b: L) {
+    a.min(b) <= b
+} by {
+    min_lte_right(a, b)
 }
 
 theorem lte_max_left[L: LinearOrder](a: L, b: L) {
@@ -2133,12 +2147,86 @@ theorem lte_max_left[L: LinearOrder](a: L, b: L) {
     a <= a.max(b)
 }
 
+/// The left argument is below the maximum.
+theorem le_max_left[L: LinearOrder](a: L, b: L) {
+    a <= a.max(b)
+} by {
+    lte_max_left(a, b)
+}
+
 theorem lte_max_right[L: LinearOrder](a: L, b: L) {
     b <= a.max(b)
 } by {
     max_imp_gte(a, b)
     a.max(b) >= b
     b <= a.max(b)
+}
+
+/// The right argument is below the maximum.
+theorem le_max_right[L: LinearOrder](a: L, b: L) {
+    b <= a.max(b)
+} by {
+    lte_max_right(a, b)
+}
+
+/// A minimum is below its left argument, in reverse-order form.
+theorem min_gte_left[L: LinearOrder](a: L, b: L) {
+    a >= a.min(b)
+} by {
+    min_lte_left(a, b)
+    a >= a.min(b)
+}
+
+/// A minimum is below its right argument, in reverse-order form.
+theorem min_gte_right[L: LinearOrder](a: L, b: L) {
+    b >= a.min(b)
+} by {
+    min_lte_right(a, b)
+    b >= a.min(b)
+}
+
+/// A maximum is above its left argument, in reverse-order form.
+theorem max_gte_left[L: LinearOrder](a: L, b: L) {
+    a.max(b) >= a
+} by {
+    lte_max_left(a, b)
+    a.max(b) >= a
+}
+
+/// A maximum is above its right argument, in reverse-order form.
+theorem max_gte_right[L: LinearOrder](a: L, b: L) {
+    a.max(b) >= b
+} by {
+    lte_max_right(a, b)
+    a.max(b) >= b
+}
+
+/// A minimum is below its left argument.
+theorem min_le_of_left[L: LinearOrder](a: L, b: L) {
+    a.min(b) <= a
+} by {
+    min_lte_left(a, b)
+}
+
+/// A minimum is below its right argument.
+theorem min_le_of_right[L: LinearOrder](a: L, b: L) {
+    a.min(b) <= b
+} by {
+    min_lte_right(a, b)
+}
+
+/// The left argument is below the maximum.
+theorem le_max_of_left[L: LinearOrder](a: L, b: L) {
+    a <= a.max(b)
+} by {
+    lte_max_left(a, b)
+}
+
+/// The right argument is below the maximum.
+theorem le_max_of_right[L: LinearOrder](a: L, b: L) {
+    b <= a.max(b)
+} by {
+    lte_max_right(a, b)
 }
 
 theorem min_idem[L: LinearOrder](a: L) {
@@ -2356,6 +2444,13 @@ theorem min_eq_left_iff_lte[L: LinearOrder](a: L, b: L) {
     a.min(b) = a = (a <= b)
 }
 
+/// The minimum is the left argument exactly when the left argument is below the right.
+theorem min_eq_left_iff_le[L: LinearOrder](a: L, b: L) {
+    a.min(b) = a = (a <= b)
+} by {
+    min_eq_left_iff_lte(a, b)
+}
+
 theorem min_eq_right_iff_gte[L: LinearOrder](a: L, b: L) {
     a.min(b) = b = (a >= b)
 } by {
@@ -2369,6 +2464,13 @@ theorem min_eq_right_iff_gte[L: LinearOrder](a: L, b: L) {
         a.min(b) = b
     }
     a.min(b) = b = (a >= b)
+}
+
+/// The minimum is the right argument exactly when the left argument is above the right.
+theorem min_eq_right_iff_ge[L: LinearOrder](a: L, b: L) {
+    a.min(b) = b = (a >= b)
+} by {
+    min_eq_right_iff_gte(a, b)
 }
 
 theorem max_eq_right_iff_lte[L: LinearOrder](a: L, b: L) {
@@ -2386,6 +2488,13 @@ theorem max_eq_right_iff_lte[L: LinearOrder](a: L, b: L) {
     a.max(b) = b = (a <= b)
 }
 
+/// The maximum is the right argument exactly when the left argument is below the right.
+theorem max_eq_right_iff_le[L: LinearOrder](a: L, b: L) {
+    a.max(b) = b = (a <= b)
+} by {
+    max_eq_right_iff_lte(a, b)
+}
+
 theorem max_eq_left_iff_gte[L: LinearOrder](a: L, b: L) {
     a.max(b) = a = (a >= b)
 } by {
@@ -2399,6 +2508,13 @@ theorem max_eq_left_iff_gte[L: LinearOrder](a: L, b: L) {
         a.max(b) = a
     }
     a.max(b) = a = (a >= b)
+}
+
+/// The maximum is the left argument exactly when the left argument is above the right.
+theorem max_eq_left_iff_ge[L: LinearOrder](a: L, b: L) {
+    a.max(b) = a = (a >= b)
+} by {
+    max_eq_left_iff_gte(a, b)
 }
 
 /// A value is below a minimum exactly when it is below both arguments.
@@ -2508,6 +2624,48 @@ theorem min_lt_iff[L: LinearOrder](a: L, b: L, c: L) {
     a.min(b) < c = (a < c or b < c)
 }
 
+/// If the left argument is below a value, then the minimum is below that value.
+theorem min_lt_of_left[L: LinearOrder](a: L, b: L, c: L) {
+    a < c implies a.min(b) < c
+} by {
+    if a < c {
+        min_lte_left(a, b)
+        lt_of_lte_of_lt(a.min(b), a, c)
+        a.min(b) < c
+    }
+}
+
+/// If the right argument is below a value, then the minimum is below that value.
+theorem min_lt_of_right[L: LinearOrder](a: L, b: L, c: L) {
+    b < c implies a.min(b) < c
+} by {
+    if b < c {
+        min_lte_right(a, b)
+        lt_of_lte_of_lt(a.min(b), b, c)
+        a.min(b) < c
+    }
+}
+
+/// If a minimum is below a value, then one argument is below that value.
+theorem min_lt_imp_left_or_right[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b) < c implies a < c or b < c
+} by {
+    if a.min(b) < c {
+        min_lt_iff(a, b, c)
+        a < c or b < c
+    }
+}
+
+/// If one argument is below a value, then the minimum is below that value.
+theorem min_lt_of_left_or_right[L: LinearOrder](a: L, b: L, c: L) {
+    a < c or b < c implies a.min(b) < c
+} by {
+    if a < c or b < c {
+        min_lt_iff(a, b, c)
+        a.min(b) < c
+    }
+}
+
 /// A value is below a maximum exactly when it is below at least one argument.
 theorem lt_max_iff[L: LinearOrder](c: L, a: L, b: L) {
     c < a.max(b) = (c < a or c < b)
@@ -2535,6 +2693,48 @@ theorem lt_max_iff[L: LinearOrder](c: L, a: L, b: L) {
         }
     }
     c < a.max(b) = (c < a or c < b)
+}
+
+/// If a value is below the left argument, then it is below the maximum.
+theorem lt_max_of_left[L: LinearOrder](c: L, a: L, b: L) {
+    c < a implies c < a.max(b)
+} by {
+    if c < a {
+        lte_max_left(a, b)
+        lt_of_lt_of_lte(c, a, a.max(b))
+        c < a.max(b)
+    }
+}
+
+/// If a value is below the right argument, then it is below the maximum.
+theorem lt_max_of_right[L: LinearOrder](c: L, a: L, b: L) {
+    c < b implies c < a.max(b)
+} by {
+    if c < b {
+        lte_max_right(a, b)
+        lt_of_lt_of_lte(c, b, a.max(b))
+        c < a.max(b)
+    }
+}
+
+/// If a value is below a maximum, then it is below one argument.
+theorem lt_max_imp_left_or_right[L: LinearOrder](c: L, a: L, b: L) {
+    c < a.max(b) implies c < a or c < b
+} by {
+    if c < a.max(b) {
+        lt_max_iff(c, a, b)
+        c < a or c < b
+    }
+}
+
+/// If a value is below one argument, then it is below the maximum.
+theorem lt_max_of_left_or_right[L: LinearOrder](c: L, a: L, b: L) {
+    c < a or c < b implies c < a.max(b)
+} by {
+    if c < a or c < b {
+        lt_max_iff(c, a, b)
+        c < a.max(b)
+    }
 }
 
 /// A value is below a minimum only if it is below both arguments.
@@ -2576,6 +2776,82 @@ theorem lte_min_iff[L: LinearOrder](c: L, a: L, b: L) {
     c <= a.min(b) = (c <= a and c <= b)
 }
 
+/// A value is below a minimum exactly when it is below both arguments.
+theorem le_min_iff[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a.min(b) = (c <= a and c <= b)
+} by {
+    lte_min_iff(c, a, b)
+}
+
+/// A lower bound of both arguments is a lower bound of their minimum.
+theorem le_min_of_le_left_of_le_right[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a and c <= b implies c <= a.min(b)
+} by {
+    if c <= a and c <= b {
+        lte_min_of_bounds(c, a, b)
+        c <= a.min(b)
+    }
+}
+
+/// A lower bound of a minimum is a lower bound of the left argument.
+theorem le_left_of_le_min[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a.min(b) implies c <= a
+} by {
+    if c <= a.min(b) {
+        lte_min_imp(c, a, b)
+        c <= a
+    }
+}
+
+/// A lower bound of a minimum is a lower bound of the right argument.
+theorem le_right_of_le_min[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a.min(b) implies c <= b
+} by {
+    if c <= a.min(b) {
+        lte_min_imp(c, a, b)
+        c <= b
+    }
+}
+
+/// If the left argument is below a value, then the minimum is below that value.
+theorem min_lte_of_left[L: LinearOrder](a: L, b: L, c: L) {
+    a <= c implies a.min(b) <= c
+} by {
+    if a <= c {
+        min_lte_left(a, b)
+        lte_trans(a.min(b), a, c)
+        a.min(b) <= c
+    }
+}
+
+/// If the right argument is below a value, then the minimum is below that value.
+theorem min_lte_of_right[L: LinearOrder](a: L, b: L, c: L) {
+    b <= c implies a.min(b) <= c
+} by {
+    if b <= c {
+        min_lte_right(a, b)
+        lte_trans(a.min(b), b, c)
+        a.min(b) <= c
+    }
+}
+
+/// If a minimum is below a value, then one argument is below that value.
+theorem min_lte_imp_left_or_right[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b) <= c implies a <= c or b <= c
+} by {
+    if a.min(b) <= c {
+        min_is_one(a, b)
+        if a.min(b) = a {
+            a <= c
+            a <= c or b <= c
+        } else {
+            a.min(b) = b
+            b <= c
+            a <= c or b <= c
+        }
+    }
+}
+
 /// A minimum is above a value only if both arguments are above that value.
 theorem min_gte_imp[L: LinearOrder](a: L, b: L, c: L) {
     a.min(b) >= c implies a >= c and b >= c
@@ -2607,6 +2883,43 @@ theorem min_gte_iff[L: LinearOrder](a: L, b: L, c: L) {
     min_gte_imp(a, b, c)
     min_gte_of_bounds(a, b, c)
     a.min(b) >= c = (a >= c and b >= c)
+}
+
+/// A minimum is above a value exactly when both arguments are above that value.
+theorem min_ge_iff[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b) >= c = (a >= c and b >= c)
+} by {
+    min_gte_iff(a, b, c)
+}
+
+/// Two upper bounds of a value give an upper bound by their minimum.
+theorem min_ge_of_ge_left_of_ge_right[L: LinearOrder](a: L, b: L, c: L) {
+    a >= c and b >= c implies a.min(b) >= c
+} by {
+    if a >= c and b >= c {
+        min_gte_of_bounds(a, b, c)
+        a.min(b) >= c
+    }
+}
+
+/// If a minimum is above a value, then the left argument is above that value.
+theorem ge_left_of_min_ge[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b) >= c implies a >= c
+} by {
+    if a.min(b) >= c {
+        min_gte_imp(a, b, c)
+        a >= c
+    }
+}
+
+/// If a minimum is above a value, then the right argument is above that value.
+theorem ge_right_of_min_ge[L: LinearOrder](a: L, b: L, c: L) {
+    a.min(b) >= c implies b >= c
+} by {
+    if a.min(b) >= c {
+        min_gte_imp(a, b, c)
+        b >= c
+    }
 }
 
 /// A maximum is below a value only if both arguments are below that value.
@@ -2649,6 +2962,82 @@ theorem max_lte_iff[L: LinearOrder](a: L, b: L, c: L) {
     max_lte_imp(a, b, c)
     max_lte_of_upper_bounds(a, b, c)
     a.max(b) <= c = (a <= c and b <= c)
+}
+
+/// A maximum is below a value exactly when both arguments are below that value.
+theorem max_le_iff[L: LinearOrder](a: L, b: L, c: L) {
+    a.max(b) <= c = (a <= c and b <= c)
+} by {
+    max_lte_iff(a, b, c)
+}
+
+/// Two upper bounds give an upper bound of the maximum.
+theorem max_le_of_le_left_of_le_right[L: LinearOrder](a: L, b: L, c: L) {
+    a <= c and b <= c implies a.max(b) <= c
+} by {
+    if a <= c and b <= c {
+        max_lte_of_upper_bounds(a, b, c)
+        a.max(b) <= c
+    }
+}
+
+/// If a maximum is below a value, then the left argument is below that value.
+theorem le_left_of_max_le[L: LinearOrder](a: L, b: L, c: L) {
+    a.max(b) <= c implies a <= c
+} by {
+    if a.max(b) <= c {
+        max_lte_imp(a, b, c)
+        a <= c
+    }
+}
+
+/// If a maximum is below a value, then the right argument is below that value.
+theorem le_right_of_max_le[L: LinearOrder](a: L, b: L, c: L) {
+    a.max(b) <= c implies b <= c
+} by {
+    if a.max(b) <= c {
+        max_lte_imp(a, b, c)
+        b <= c
+    }
+}
+
+/// If a value is below the left argument, then it is below the maximum.
+theorem lte_max_of_left[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a implies c <= a.max(b)
+} by {
+    if c <= a {
+        lte_max_left(a, b)
+        lte_trans(c, a, a.max(b))
+        c <= a.max(b)
+    }
+}
+
+/// If a value is below the right argument, then it is below the maximum.
+theorem lte_max_of_right[L: LinearOrder](c: L, a: L, b: L) {
+    c <= b implies c <= a.max(b)
+} by {
+    if c <= b {
+        lte_max_right(a, b)
+        lte_trans(c, b, a.max(b))
+        c <= a.max(b)
+    }
+}
+
+/// If a value is below a maximum, then it is below one argument.
+theorem lte_max_imp_left_or_right[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a.max(b) implies c <= a or c <= b
+} by {
+    if c <= a.max(b) {
+        max_is_one(a, b)
+        if a.max(b) = a {
+            c <= a
+            c <= a or c <= b
+        } else {
+            a.max(b) = b
+            c <= b
+            c <= a or c <= b
+        }
+    }
 }
 
 /// The minimum operation is monotone in both arguments.
@@ -2815,6 +3204,35 @@ theorem lte_max_iff[L: LinearOrder](c: L, a: L, b: L) {
     c <= a.max(b) = (c <= a or c <= b)
 }
 
+/// A value is below a maximum exactly when it is below at least one argument.
+theorem le_max_iff[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a.max(b) = (c <= a or c <= b)
+} by {
+    lte_max_iff(c, a, b)
+}
+
+/// A lower bound of one argument gives a lower bound of the maximum.
+theorem le_max_of_le_left[L: LinearOrder](c: L, a: L, b: L) {
+    c <= a implies c <= a.max(b)
+} by {
+    if c <= a {
+        lte_max_left(a, b)
+        lte_trans(c, a, a.max(b))
+        c <= a.max(b)
+    }
+}
+
+/// A lower bound of one argument gives a lower bound of the maximum.
+theorem le_max_of_le_right[L: LinearOrder](c: L, a: L, b: L) {
+    c <= b implies c <= a.max(b)
+} by {
+    if c <= b {
+        lte_max_right(a, b)
+        lte_trans(c, b, a.max(b))
+        c <= a.max(b)
+    }
+}
+
 /// A maximum is above a value only if at least one argument is above that value.
 theorem max_gte_imp[L: LinearOrder](a: L, b: L, c: L) {
     a.max(b) >= c implies a >= c or b >= c
@@ -2856,6 +3274,33 @@ theorem max_gte_iff[L: LinearOrder](a: L, b: L, c: L) {
     max_gte_imp(a, b, c)
     max_gte_of_left_or_right(a, b, c)
     a.max(b) >= c = (a >= c or b >= c)
+}
+
+/// A maximum is above a value exactly when one argument is above that value.
+theorem max_ge_iff[L: LinearOrder](a: L, b: L, c: L) {
+    a.max(b) >= c = (a >= c or b >= c)
+} by {
+    max_gte_iff(a, b, c)
+}
+
+/// A lower bound of the left argument is a lower bound of the maximum.
+theorem max_ge_of_ge_left[L: LinearOrder](a: L, b: L, c: L) {
+    a >= c implies a.max(b) >= c
+} by {
+    if a >= c {
+        le_max_of_le_left(c, a, b)
+        a.max(b) >= c
+    }
+}
+
+/// A lower bound of the right argument is a lower bound of the maximum.
+theorem max_ge_of_ge_right[L: LinearOrder](a: L, b: L, c: L) {
+    b >= c implies a.max(b) >= c
+} by {
+    if b >= c {
+        le_max_of_le_right(c, a, b)
+        a.max(b) >= c
+    }
 }
 
 /// The minimum operation is associative.
