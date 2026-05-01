@@ -793,6 +793,174 @@ theorem relation_compose_monotone[A, B, C](
     }
 }
 
+/// Relation composition distributes over union on the left.
+theorem relation_compose_union_left[A, B, C](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_compose(relation_union(r, s), t) =
+        relation_union(relation_compose(r, t), relation_compose(s, t))
+} by {
+    let u = relation_compose(relation_union(r, s), t)
+    let v = relation_union(relation_compose(r, t), relation_compose(s, t))
+    forall(x: A, z: C) {
+        if u(x, z) {
+            relation_compose_has_witness(relation_union(r, s), t, x, z)
+            let y: B satisfy {
+                relation_union(r, s, x, y) and t(y, z)
+            }
+            relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+            if r(x, y) {
+                relation_compose_intro(r, t, x, y, z)
+                relation_compose(r, t, x, z)
+                v(x, z)
+            }
+            if s(x, y) {
+                relation_compose_intro(s, t, x, y, z)
+                relation_compose(s, t, x, z)
+                v(x, z)
+            }
+            v(x, z)
+        }
+        if v(x, z) {
+            v(x, z) = (relation_compose(r, t, x, z) or relation_compose(s, t, x, z))
+            if relation_compose(r, t, x, z) {
+                relation_compose_has_witness(r, t, x, z)
+                let y: B satisfy {
+                    r(x, y) and t(y, z)
+                }
+                relation_union(r, s, x, y)
+                relation_compose_intro(relation_union(r, s), t, x, y, z)
+                u(x, z)
+            }
+            if relation_compose(s, t, x, z) {
+                relation_compose_has_witness(s, t, x, z)
+                let y: B satisfy {
+                    s(x, y) and t(y, z)
+                }
+                relation_union(r, s, x, y)
+                relation_compose_intro(relation_union(r, s), t, x, y, z)
+                u(x, z)
+            }
+            u(x, z)
+        }
+        u(x, z) = v(x, z)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Relation composition distributes over union on the right.
+theorem relation_compose_union_right[A, B, C](
+    r: (A, B) -> Bool,
+    s: (B, C) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_compose(r, relation_union(s, t)) =
+        relation_union(relation_compose(r, s), relation_compose(r, t))
+} by {
+    let u = relation_compose(r, relation_union(s, t))
+    let v = relation_union(relation_compose(r, s), relation_compose(r, t))
+    forall(x: A, z: C) {
+        if u(x, z) {
+            relation_compose_has_witness(r, relation_union(s, t), x, z)
+            let y: B satisfy {
+                r(x, y) and relation_union(s, t, y, z)
+            }
+            relation_union(s, t, y, z) = (s(y, z) or t(y, z))
+            if s(y, z) {
+                relation_compose_intro(r, s, x, y, z)
+                relation_compose(r, s, x, z)
+                v(x, z)
+            }
+            if t(y, z) {
+                relation_compose_intro(r, t, x, y, z)
+                relation_compose(r, t, x, z)
+                v(x, z)
+            }
+            v(x, z)
+        }
+        if v(x, z) {
+            v(x, z) = (relation_compose(r, s, x, z) or relation_compose(r, t, x, z))
+            if relation_compose(r, s, x, z) {
+                relation_compose_has_witness(r, s, x, z)
+                let y: B satisfy {
+                    r(x, y) and s(y, z)
+                }
+                relation_union(s, t, y, z)
+                relation_compose_intro(r, relation_union(s, t), x, y, z)
+                u(x, z)
+            }
+            if relation_compose(r, t, x, z) {
+                relation_compose_has_witness(r, t, x, z)
+                let y: B satisfy {
+                    r(x, y) and t(y, z)
+                }
+                relation_union(s, t, y, z)
+                relation_compose_intro(r, relation_union(s, t), x, y, z)
+                u(x, z)
+            }
+            u(x, z)
+        }
+        u(x, z) = v(x, z)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Composition with an intersection on the left lies in the intersection of the compositions.
+theorem relation_compose_intersection_left_subset[A, B, C](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_subset(
+        relation_compose(relation_intersection(r, s), t),
+        relation_intersection(relation_compose(r, t), relation_compose(s, t))
+    )
+} by {
+    forall(x: A, z: C) {
+        if relation_compose(relation_intersection(r, s), t, x, z) {
+            relation_compose_has_witness(relation_intersection(r, s), t, x, z)
+            let y: B satisfy {
+                relation_intersection(r, s, x, y) and t(y, z)
+            }
+            relation_intersection(r, s, x, y) = (r(x, y) and s(x, y))
+            relation_compose_intro(r, t, x, y, z)
+            relation_compose(r, t, x, z)
+            relation_compose_intro(s, t, x, y, z)
+            relation_compose(s, t, x, z)
+            relation_intersection(relation_compose(r, t), relation_compose(s, t), x, z)
+        }
+    }
+}
+
+/// Composition with an intersection on the right lies in the intersection of the compositions.
+theorem relation_compose_intersection_right_subset[A, B, C](
+    r: (A, B) -> Bool,
+    s: (B, C) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_subset(
+        relation_compose(r, relation_intersection(s, t)),
+        relation_intersection(relation_compose(r, s), relation_compose(r, t))
+    )
+} by {
+    forall(x: A, z: C) {
+        if relation_compose(r, relation_intersection(s, t), x, z) {
+            relation_compose_has_witness(r, relation_intersection(s, t), x, z)
+            let y: B satisfy {
+                r(x, y) and relation_intersection(s, t, y, z)
+            }
+            relation_intersection(s, t, y, z) = (s(y, z) and t(y, z))
+            relation_compose_intro(r, s, x, y, z)
+            relation_compose(r, s, x, z)
+            relation_compose_intro(r, t, x, y, z)
+            relation_compose(r, t, x, z)
+            relation_intersection(relation_compose(r, s), relation_compose(r, t), x, z)
+        }
+    }
+}
+
 /// The converse of a relation swaps its arguments.
 define relation_converse[A, B](r: (A, B) -> Bool, y: B, x: A) -> Bool {
     r(x, y)

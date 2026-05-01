@@ -27,4 +27,3 @@ theorem top100_069_greatest_common_divisor_algorithm(a: Nat, b: Nat) {
         }
     }
 }
-

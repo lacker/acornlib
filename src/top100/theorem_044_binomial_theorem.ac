@@ -9,4 +9,3 @@ theorem top100_044_binomial_theorem[R: CommRing](a: R, b: R, n: Nat) {
 } by {
     binomial[R](a, b, n)
 }
-

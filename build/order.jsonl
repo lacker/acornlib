@@ -541,7 +541,7 @@
 {"goal":"a < b","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[L](a, b)"]}
 {"goal":"a < b or b <= a","proof":[]}
 {"goal":"lt_or_lte","proof":[]}
-{"goal":"lt_or_le_swap","proof":["not b <= a","not a < b","a < b"]}
+{"goal":"lt_or_le_swap","proof":[]}
 {"goal":"a <= b or b < a","proof":[]}
 {"goal":"a <= b or b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, a)"]}
 {"goal":"b <= a","proof":[]}
@@ -551,7 +551,7 @@
 {"goal":"b < a","proof":["function[T0: PartialOrder](x0: T0, x1: T0) { (x0 <= x1 and x0 != x1) = x0 < x1 }[L](b, a)"]}
 {"goal":"a <= b or b < a","proof":[]}
 {"goal":"lte_or_lt","proof":[]}
-{"goal":"le_or_lt_swap","proof":["not b < a","not a <= b","a <= b"]}
+{"goal":"le_or_lt_swap","proof":[]}
 {"goal":"a <= b or b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[L](b, a)"]}
 {"goal":"b <= a","proof":[]}
 {"goal":"a <= b","proof":[]}

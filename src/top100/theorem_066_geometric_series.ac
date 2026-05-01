@@ -9,4 +9,3 @@ theorem top100_066_geometric_series[R: Ring](a: R, n: Nat) {
 } by {
     geometric_sum[R](a, n)
 }
-

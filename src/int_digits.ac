@@ -2,6 +2,7 @@ from int import Int
 from int.int_base import add_assoc, add_zero_right
 from list import List
 from nat import Nat
+from relation_basic import is_transitive
 from zmod import int_mod_rel, int_mod_rel_add_compatible, int_mod_rel_is_equivalence,
     int_read_mod3_compatible, int_read_mod3_step
 
@@ -83,27 +84,55 @@ theorem int_read_digits_acc_mod3_digit_sum(digits: List[Int], acc: Int) {
             forall(a: Int) {
                 int_read_digits_acc(List.cons(head, tail), a) = int_read_digits_acc(tail, a.read(head))
                 int_digit_sum(List.cons(head, tail)) = head + int_digit_sum(tail)
+                let left = int_read_digits_acc(tail, a.read(head))
+                let mid = a.read(head) + int_digit_sum(tail)
+                let right = (a + head) + int_digit_sum(tail)
 
                 p(tail)
-                int_mod_rel(Nat.3,
-                    int_read_digits_acc(tail, a.read(head)),
-                    a.read(head) + int_digit_sum(tail))
+                p(tail) = forall(x: Int) {
+                    int_mod_rel(Nat.3, int_read_digits_acc(tail, x), x + int_digit_sum(tail))
+                }
+                function(x: Int) {
+                    int_mod_rel(Nat.3, int_read_digits_acc(tail, x), x + int_digit_sum(tail))
+                }(a.read(head))
+                int_mod_rel(Nat.3, left, mid)
 
                 int_read_mod3_step(a, head)
                 int_mod_rel(Nat.3, a.read(head), a + head)
 
                 int_mod_rel_is_equivalence(Nat.3)
                 int_mod_rel(Nat.3, int_digit_sum(tail), int_digit_sum(tail))
+                is_transitive(int_mod_rel(Nat.3))
                 int_mod_rel_add_compatible(Nat.3,
                     a.read(head), a + head,
                     int_digit_sum(tail), int_digit_sum(tail))
-                int_mod_rel(Nat.3,
-                    a.read(head) + int_digit_sum(tail),
-                    (a + head) + int_digit_sum(tail))
+                int_mod_rel(Nat.3, mid, right)
 
-                int_mod_rel(Nat.3,
-                    int_read_digits_acc(tail, a.read(head)),
-                    (a + head) + int_digit_sum(tail))
+                is_transitive(int_mod_rel(Nat.3)) = forall(x: Int, y: Int, z: Int) {
+                    int_mod_rel(Nat.3, x, y) and int_mod_rel(Nat.3, y, z) implies
+                    int_mod_rel(Nat.3, x, z)
+                }
+                (forall(x: Int, y: Int, z: Int) {
+                    not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                    int_mod_rel(Nat.3, x, z)
+                } = true)
+                function(x: Int) {
+                    forall(y: Int, z: Int) {
+                        not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                        int_mod_rel(Nat.3, x, z)
+                    } = true
+                }(left)
+                function(x: Int, y: Int) {
+                    forall(z: Int) {
+                        not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                        int_mod_rel(Nat.3, x, z)
+                    } = true
+                }(left, mid)
+                function(x: Int, y: Int, z: Int) {
+                    not int_mod_rel(Nat.3, x, y) or not int_mod_rel(Nat.3, y, z) or
+                    int_mod_rel(Nat.3, x, z)
+                }(left, mid, right)
+                int_mod_rel(Nat.3, left, right)
 
                 add_assoc(a, head, int_digit_sum(tail))
                 int_mod_rel(Nat.3,

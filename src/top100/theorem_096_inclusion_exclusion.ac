@@ -11,4 +11,3 @@ theorem top100_096_inclusion_exclusion[T](s: FiniteSet[T], t: FiniteSet[T],
 } by {
     finite_set_inclusion_exclusion[T](s, t, n_s, n_t, n_inter)
 }
-

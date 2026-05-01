@@ -1,7 +1,7 @@
 {"goal":"int_mod_rel(Nat.3, n, s)","proof":[]}
-{"goal":"int_mod_rel(Nat.3, s, n)","proof":["not lib(relation_basic).is_equivalence[Int](int_mod_rel(Nat.3)) or not int_mod_rel(Nat.3, n, s)","not int_mod_rel(Nat.3, n, s)"]}
-{"goal":"int_mod_rel(Nat.3, s, Int.0)","proof":["not lib(relation_basic).is_equivalence[Int](int_mod_rel(Nat.3)) or not int_mod_rel(Nat.3, n, Int.0) or not int_mod_rel(Nat.3, s, n)","not lib(relation_basic).is_equivalence[Int](int_mod_rel(Nat.3))"]}
-{"goal":"int_mod_rel(Nat.3, n, Int.0)","proof":["not lib(relation_basic).is_equivalence[Int](int_mod_rel(Nat.3)) or not int_mod_rel(Nat.3, s, Int.0) or not int_mod_rel(Nat.3, n, s)","not int_mod_rel(Nat.3, n, s)"]}
-{"goal":"int_mod_rel(Nat.3, n, Int.0) = int_mod_rel(Nat.3, s, Int.0)","proof":["int_mod_rel(Nat.3, s, Int.0) or int_mod_rel(Nat.3, n, Int.0)","int_mod_rel(Nat.3, s, Int.0)","int_mod_rel(Nat.3, n, Int.0)","not int_mod_rel(Nat.3, n, Int.0)"]}
-{"goal":"Int.3.divides(n) = Int.3.divides(s)","proof":["int_mod_rel(Nat.3, s, Int.0) != Int.3.divides(n)","int_mod_rel(Nat.3, s, Int.0) = Int.3.divides(n)"]}
-{"goal":"top100_085_divisibility_by_3_rule","proof":["Int.3.divides(int_read_digits_acc(digits, Int.0)) != Int.3.divides(s)","Int.3.divides(int_read_digits_acc(digits, Int.0)) = Int.3.divides(s)"]}
+{"goal":"int_mod_rel(Nat.3, s, n)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, s, Int.0)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, n, Int.0)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, n, Int.0) = int_mod_rel(Nat.3, s, Int.0)","proof":[]}
+{"goal":"Int.3.divides(n) = Int.3.divides(s)","proof":[]}
+{"goal":"top100_085_divisibility_by_3_rule","proof":[]}

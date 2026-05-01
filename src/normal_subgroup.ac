@@ -1,0 +1,103 @@
+from group import Group, inverse_inverse, inverse_mul, inverse_left, left_cancel
+from subgroup import Subgroup, subgroup_contains_identity, subgroup_mul_mem, subgroup_inv_mem
+from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
+from relation_transport import respects_mul, is_mul_congruence, respects_binary_op,
+    is_binary_congruence, respects_mul_eq_respects_binary_op, mul_congruence_eq_binary_congruence
+from equivalence import QuotientRelation, quotient_relation_new_round_trip,
+    quotient_binary_respects, quotient_binary_respects_eq_respects_binary_op
+
+/// True if a subgroup is normal: it is invariant under conjugation.
+define is_normal_subgroup[G: Group](s: Subgroup[G]) -> Bool {
+    forall(g: G, n: G) {
+        s.contains(n) implies s.contains(g * n * g.inverse)
+    }
+}
+
+/// Normality applied to a specific conjugating element.
+theorem normal_conjugate_mem[G: Group](s: Subgroup[G], g: G, n: G) {
+    is_normal_subgroup(s) and s.contains(n) implies s.contains(g * n * g.inverse)
+} by {
+    if is_normal_subgroup(s) and s.contains(n) {
+        is_normal_subgroup(s) = forall(x: G, y: G) {
+            s.contains(y) implies s.contains(x * y * x.inverse)
+        }
+        s.contains(g * n * g.inverse)
+    }
+}
+
+/// The equivalence relation on `G` defined by a subgroup: `a ~ b` iff `a * b.inverse` lies in the subgroup.
+define normal_subgroup_rel[G: Group](s: Subgroup[G], a: G, b: G) -> Bool {
+    s.contains(a * b.inverse)
+}
+
+/// The relation defined by a subgroup is reflexive.
+theorem normal_subgroup_rel_reflexive[G: Group](s: Subgroup[G], a: G) {
+    normal_subgroup_rel(s, a, a)
+} by {
+    a * a.inverse = G.1
+    subgroup_contains_identity(s)
+    s.contains(G.1)
+    s.contains(a * a.inverse)
+}
+
+/// The relation defined by a subgroup is symmetric.
+theorem normal_subgroup_rel_symmetric[G: Group](s: Subgroup[G], a: G, b: G) {
+    normal_subgroup_rel(s, a, b) implies normal_subgroup_rel(s, b, a)
+} by {
+    if normal_subgroup_rel(s, a, b) {
+        s.contains(a * b.inverse)
+        subgroup_inv_mem(s, a * b.inverse)
+        s.contains((a * b.inverse).inverse)
+        inverse_mul(a, b.inverse)
+        (a * b.inverse).inverse = b.inverse.inverse * a.inverse
+        inverse_inverse(b)
+        b.inverse.inverse = b
+        (a * b.inverse).inverse = b * a.inverse
+        s.contains(b * a.inverse)
+    }
+}
+
+/// Inverse multiplication chains through an intermediate point.
+theorem normal_subgroup_inv_chain[G: Group](a: G, b: G, c: G) {
+    (a * b.inverse) * (b * c.inverse) = a * c.inverse
+} by {
+    (a * b.inverse) * (b * c.inverse) = a * (b.inverse * b) * c.inverse
+    b.inverse * b = G.1
+    a * G.1 * c.inverse = a * c.inverse
+}
+
+/// Pointwise transitivity helper for the subgroup relation.
+theorem normal_subgroup_rel_trans_at[G: Group](s: Subgroup[G], a: G, b: G, c: G) {
+    normal_subgroup_rel(s, a, b) and normal_subgroup_rel(s, b, c)
+    implies normal_subgroup_rel(s, a, c)
+} by {
+    if normal_subgroup_rel(s, a, b) and normal_subgroup_rel(s, b, c) {
+        s.contains(a * b.inverse)
+        s.contains(b * c.inverse)
+        subgroup_mul_mem(s, a * b.inverse, b * c.inverse)
+        s.contains((a * b.inverse) * (b * c.inverse))
+        normal_subgroup_inv_chain(a, b, c)
+        s.contains(a * c.inverse)
+    }
+}
+
+/// The relation defined by a subgroup is reflexive.
+theorem normal_subgroup_rel_is_reflexive[G: Group](s: Subgroup[G]) {
+    is_reflexive(normal_subgroup_rel(s))
+} by {
+    forall(a: G) {
+        normal_subgroup_rel_reflexive(s, a)
+    }
+}
+
+/// The relation defined by a subgroup is symmetric.
+theorem normal_subgroup_rel_is_symmetric[G: Group](s: Subgroup[G]) {
+    is_symmetric(normal_subgroup_rel(s))
+} by {
+    forall(a: G, b: G) {
+        if normal_subgroup_rel(s, a, b) {
+            normal_subgroup_rel_symmetric(s, a, b)
+        }
+    }
+}
+

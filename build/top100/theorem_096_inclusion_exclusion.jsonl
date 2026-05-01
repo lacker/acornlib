@@ -1,1 +1,1 @@
-{"goal":"top100_096_inclusion_exclusion","proof":["not fs_intersection[T](s, t).cardinality_is(n_inter) or not t.cardinality_is(n_t) or not s.cardinality_is(n_s)","fs_intersection[T](s, t).cardinality_is(n_inter)","not t.cardinality_is(n_t) or not s.cardinality_is(n_s)","s.cardinality_is(n_s) and t.cardinality_is(n_t)","not s.cardinality_is(n_s)"]}
+{"goal":"top100_096_inclusion_exclusion","proof":[]}

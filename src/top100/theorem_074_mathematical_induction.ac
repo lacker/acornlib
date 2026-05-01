@@ -8,4 +8,3 @@ theorem top100_074_mathematical_induction(p: Nat -> Bool) {
 } by {
     alt_induction(p)
 }
-

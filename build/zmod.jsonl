@@ -159,10 +159,10 @@
 {"goal":"int_read_mod3_compatible","proof":[]}
 {"goal":"a - Int.0 = a","proof":[]}
 {"goal":"int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a - Int.0)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, a, Int.0)"]}
-{"goal":"int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)","proof":[]}
+{"goal":"int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)","proof":["Int.from_nat(n).divides(a - Int.0) != int_mod_rel(n, a, Int.0)"]}
 {"goal":"int_mod_rel_zero_iff_divides","proof":[]}
 {"goal":"Int.from_nat(Nat.3) = Int.3","proof":[]}
-{"goal":"int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)","proof":["int_mod_rel(Nat.3, a, Int.0) != Int.from_nat(Nat.3).divides(a)"]}
 {"goal":"int_mod_rel_zero_iff_int_three_divides","proof":[]}
 {"goal":"int_mod_rel(n, a1, a2)","proof":[]}
 {"goal":"int_mod_rel(n, b1, b2)","proof":[]}
