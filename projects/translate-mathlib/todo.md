@@ -4,7 +4,13 @@ Goal: over time, give Acornlib a reasonable analogue of each major area of mathe
 
 ## Blockers
 
-No current blockers.
+- [ ] acorn-bug: linear-algebra/modules-and-vector-spaces - structures with 3 typeclass
+      parameters (e.g. `ModuleHom[R: Ring, M: AddCommGroup, N: AddCommGroup]`) generate
+      certificates that fail strict `acorn check` ("generated invalid code: Argument 0
+      has type ModuleHom[AddCommGroup, Ring, Ring], but expected ModuleHom[Ring,
+      AddCommGroup, AddCommGroup]"). Reproducible via field accessors `.src`/`.dst`/`.hom`
+      on such a struct. Next action: report upstream with a minimal repro, then revisit
+      bundled `ModuleHom` once fixed.
 
 ## Foundational And Core Infrastructure
 

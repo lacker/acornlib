@@ -1,0 +1,128 @@
+from ring import Ring
+from add_comm_group import AddCommGroup
+from module import Module, module_smul_zero_right
+from functions import identity_fn, compose
+
+/// True if a function from M to N preserves addition.
+define preserves_add[M: AddCommGroup, N: AddCommGroup](f: M -> N) -> Bool {
+    forall(x: M, y: M) {
+        f(x + y) = f(x) + f(y)
+    }
+}
+
+/// True if a function from M to N preserves the scalar action of R.
+define preserves_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N) -> Bool {
+    forall(r: R, x: M) {
+        f(src.smul(r, x)) = dst.smul(r, f(x))
+    }
+}
+
+/// True if f is an R-linear map from the source R-module to the destination R-module.
+define is_linear_map[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N) -> Bool {
+    preserves_add(f) and preserves_smul(src, dst, f)
+}
+
+/// The trivial linear map sends every element to the zero of the destination module.
+let trivial_linear_map[M: AddCommGroup, N: AddCommGroup]: M -> N = function(a: M) {
+    N.0
+}
+
+/// The trivial linear map preserves addition.
+theorem trivial_linear_map_preserves_add[M: AddCommGroup, N: AddCommGroup] {
+    preserves_add(trivial_linear_map[M, N])
+} by {
+    forall(a: M, b: M) {
+        trivial_linear_map[M, N](a + b) = N.0
+        trivial_linear_map[M, N](a) = N.0
+        trivial_linear_map[M, N](b) = N.0
+        N.0 + N.0 = N.0
+        trivial_linear_map[M, N](a + b) = trivial_linear_map[M, N](a) + trivial_linear_map[M, N](b)
+    }
+}
+
+/// The trivial linear map preserves the scalar action.
+theorem trivial_linear_map_preserves_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N]) {
+    preserves_smul(src, dst, trivial_linear_map[M, N])
+} by {
+    forall(r: R, a: M) {
+        trivial_linear_map[M, N](src.smul(r, a)) = N.0
+        module_smul_zero_right(dst, r)
+        dst.smul(r, N.0) = N.0
+        trivial_linear_map[M, N](a) = N.0
+        dst.smul(r, trivial_linear_map[M, N](a)) = N.0
+        trivial_linear_map[M, N](src.smul(r, a)) = dst.smul(r, trivial_linear_map[M, N](a))
+    }
+}
+
+/// The trivial linear map is a linear map.
+theorem trivial_linear_map_is_linear_map[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N]) {
+    is_linear_map(src, dst, trivial_linear_map[M, N])
+} by {
+    trivial_linear_map_preserves_add[M, N]
+    trivial_linear_map_preserves_smul(src, dst)
+}
+
+/// The identity function on a module is a linear map from the module to itself.
+theorem identity_fn_is_linear_map[R: Ring, M: AddCommGroup](src: Module[R, M]) {
+    is_linear_map(src, src, identity_fn[M])
+} by {
+    forall(a: M, b: M) {
+        identity_fn[M](a + b) = a + b
+        identity_fn[M](a) + identity_fn[M](b) = a + b
+        identity_fn[M](a + b) = identity_fn[M](a) + identity_fn[M](b)
+    }
+    preserves_add[M, M](identity_fn[M])
+    forall(r: R, a: M) {
+        identity_fn[M](src.smul(r, a)) = src.smul(r, a)
+        identity_fn[M](a) = a
+        src.smul(r, identity_fn[M](a)) = src.smul(r, a)
+        identity_fn[M](src.smul(r, a)) = src.smul(r, identity_fn[M](a))
+    }
+    preserves_smul(src, src, identity_fn[M])
+}
+
+/// Composition of two functions preserves addition when each does.
+theorem compose_preserves_add[M: AddCommGroup, N: AddCommGroup, K: AddCommGroup](
+    f: N -> K, g: M -> N) {
+    preserves_add(f) and preserves_add(g) implies preserves_add(compose(f, g))
+} by {
+    if preserves_add(f) and preserves_add(g) {
+        forall(a: M, b: M) {
+            compose(f, g)(a + b) = f(g(a + b))
+            g(a + b) = g(a) + g(b)
+            f(g(a) + g(b)) = f(g(a)) + f(g(b))
+            compose(f, g)(a) = f(g(a))
+            compose(f, g)(b) = f(g(b))
+            compose(f, g)(a + b) = compose(f, g)(a) + compose(f, g)(b)
+        }
+    }
+}
+
+/// Composition of two functions preserves the scalar action when each does.
+theorem compose_preserves_smul[R: Ring, M: AddCommGroup, N: AddCommGroup, K: AddCommGroup](
+    a: Module[R, M], b: Module[R, N], c: Module[R, K], f: N -> K, g: M -> N) {
+    preserves_smul(a, b, g) and preserves_smul(b, c, f)
+        implies preserves_smul(a, c, compose(f, g))
+} by {
+    if preserves_smul(a, b, g) and preserves_smul(b, c, f) {
+        preserves_smul(a, b, g) = forall(r: R, x: M) {
+            g(a.smul(r, x)) = b.smul(r, g(x))
+        }
+        preserves_smul(b, c, f) = forall(r: R, y: N) {
+            f(b.smul(r, y)) = c.smul(r, f(y))
+        }
+        forall(r: R, x: M) {
+            compose(f, g)(a.smul(r, x)) = f(g(a.smul(r, x)))
+            g(a.smul(r, x)) = b.smul(r, g(x))
+            f(g(a.smul(r, x))) = f(b.smul(r, g(x)))
+            f(b.smul(r, g(x))) = c.smul(r, f(g(x)))
+            compose(f, g)(x) = f(g(x))
+            c.smul(r, compose(f, g)(x)) = c.smul(r, f(g(x)))
+            compose(f, g)(a.smul(r, x)) = c.smul(r, compose(f, g)(x))
+        }
+    }
+}

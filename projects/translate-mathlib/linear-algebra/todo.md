@@ -2,8 +2,7 @@
 
 Goal: support the standard finite-dimensional and abstract linear algebra used throughout modern mathematics.
 
-- [ ] Add modules and vector spaces over semirings, rings, and fields
-- [ ] Support submodules, spans, and generated subspaces
+- [ ] [Modules and vector spaces](modules-and-vector-spaces/todo.md)
 - [ ] Build a complete API for linear maps, kernels, ranges, and quotients
 - [ ] Add linear equivalences and change-of-coordinates lemmas
 - [ ] Develop bases, coordinates, and finite-dimensionality
