@@ -1,0 +1,109 @@
+{"goal":"add_subgroup_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0]) { add_subgroup_constraint[T0](x0.contains) }[G](h)"]}
+{"goal":"add_subgroup_constraint[G](h.contains) = add_zero_constraint[G](h.contains) and add_closure_constraint[G](h.contains) and neg_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: T0 -> Bool) { (add_zero_constraint[T0](x0) and add_closure_constraint[T0](x0) and neg_constraint[T0](x0)) = add_subgroup_constraint[T0](x0) }[G](h.contains)"]}
+{"goal":"add_zero_constraint[G](h.contains)","proof":[]}
+{"goal":"add_zero_constraint[G](h.contains) = h.contains(G.0)","proof":["function[T0: AddGroup](x0: T0 -> Bool) { x0(T0.0) = add_zero_constraint[T0](x0) }[G](h.contains)"]}
+{"goal":"add_subgroup_contains_zero","proof":[]}
+{"goal":"add_subgroup_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0]) { add_subgroup_constraint[T0](x0.contains) }[G](h)"]}
+{"goal":"add_subgroup_constraint[G](h.contains) = add_zero_constraint[G](h.contains) and add_closure_constraint[G](h.contains) and neg_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: T0 -> Bool) { (add_zero_constraint[T0](x0) and add_closure_constraint[T0](x0) and neg_constraint[T0](x0)) = add_subgroup_constraint[T0](x0) }[G](h.contains)"]}
+{"goal":"add_closure_constraint[G](h.contains)","proof":[]}
+{"goal":"add_closure_constraint[G](h.contains) = forall(x0: G, x1: G) { h.contains(x0) and h.contains(x1) implies h.contains(x0 + x1) }","proof":["function[T0: AddGroup](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 + x2) } = add_closure_constraint[T0](x0) }[G](h.contains)"]}
+{"goal":"h.contains(a + b)","proof":["(forall(x0: G, x1: G) { not x0 ∈ h or not x1 ∈ h or x0 + x1 ∈ h } = true)","function(x0: G) { forall(x1: G) { not x0 ∈ h or not x1 ∈ h or x0 + x1 ∈ h } = true }(a)","function(x0: G, x1: G) { not (x0 ∈ h and x1 ∈ h and not x0 + x1 ∈ h) }(a, b)"]}
+{"goal":"add_subgroup_contains_add","proof":[]}
+{"goal":"add_subgroup_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0]) { add_subgroup_constraint[T0](x0.contains) }[G](h)"]}
+{"goal":"add_subgroup_constraint[G](h.contains) = add_zero_constraint[G](h.contains) and add_closure_constraint[G](h.contains) and neg_constraint[G](h.contains)","proof":["function[T0: AddGroup](x0: T0 -> Bool) { (add_zero_constraint[T0](x0) and add_closure_constraint[T0](x0) and neg_constraint[T0](x0)) = add_subgroup_constraint[T0](x0) }[G](h.contains)","not neg_constraint[G](h.contains) or not add_closure_constraint[G](h.contains) or not add_zero_constraint[G](h.contains)","function[T0: AddGroup](x0: T0 -> Bool) { not add_subgroup_constraint[T0](x0) or (add_zero_constraint[T0](x0) and add_closure_constraint[T0](x0) and neg_constraint[T0](x0)) }[G](h.contains)","function[T0: AddGroup](x0: T0 -> Bool) { not add_subgroup_constraint[T0](x0) or neg_constraint[T0](x0) }[G](h.contains)","neg_constraint[G](h.contains)","not add_closure_constraint[G](h.contains) or not add_zero_constraint[G](h.contains)","add_zero_constraint[G](h.contains) and add_closure_constraint[G](h.contains) and neg_constraint[G](h.contains)","add_closure_constraint[G](h.contains)","add_zero_constraint[G](h.contains)","not add_zero_constraint[G](h.contains)"]}
+{"goal":"neg_constraint[G](h.contains)","proof":[]}
+{"goal":"neg_constraint[G](h.contains) = forall(x0: G) { h.contains(x0) implies h.contains(-x0) }","proof":["function[T0: AddGroup](x0: T0 -> Bool) { forall(x1: T0) { not x0(x1) or x0(-x1) } = neg_constraint[T0](x0) }[G](h.contains)"]}
+{"goal":"h.contains(-a)","proof":["(forall(x0: G) { not x0 ∈ h or -x0 ∈ h } = true)","function(x0: G) { not (x0 ∈ h and not -x0 ∈ h) }(a)"]}
+{"goal":"add_subgroup_contains_neg","proof":[]}
+{"goal":"h.contains(-b)","proof":[]}
+{"goal":"h.contains(a + -b)","proof":[]}
+{"goal":"a - b = a + -b","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, b)"]}
+{"goal":"add_subgroup_contains_sub","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { not x1 ∈ x0 or not x2 ∈ x0 or x1 + x2 ∈ x0 }[G](h, a, -b)","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0) { not x1 ∈ x0 or -x1 ∈ x0 }[G](h, b)"]}
+{"goal":"a - a = G.0","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, a)","function[T0: AddGroup](x0: T0) { x0 + -x0 = T0.0 }[G](a)"]}
+{"goal":"h.contains(G.0)","proof":[]}
+{"goal":"h.contains(a - a)","proof":[]}
+{"goal":"add_subgroup_rel_reflexive","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, a)"]}
+{"goal":"h.contains(a - b)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, b)"]}
+{"goal":"h.contains(-(a - b))","proof":[]}
+{"goal":"a - b = a + -b","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, b)"]}
+{"goal":"-(a + -b) = --b + -a","proof":["function[T0: AddGroup](x0: T0, x1: T0) { -x0 + -x1 = -(x1 + x0) }[G](-b, a)"]}
+{"goal":"--b = b","proof":["function[T0: AddGroup](x0: T0) { --x0 = x0 }[G](b)"]}
+{"goal":"-(a - b) = b + -a","proof":[]}
+{"goal":"b + -a = b - a","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](b, a)"]}
+{"goal":"h.contains(b - a)","proof":[]}
+{"goal":"add_subgroup_rel_symmetric","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, b, a)"]}
+{"goal":"add_subgroup_rel_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[G](add_subgroup_rel[G](h))","let w0: G satisfy { not add_subgroup_rel(h, w0, w0) }","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0) { add_subgroup_rel[T0](x0, x1, x1) }[G](h, w0)"]}
+{"goal":"add_subgroup_rel_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[G](add_subgroup_rel[G](h))","let w0: G satisfy { exists(k0: G) { add_subgroup_rel(h, w0, k0) and not add_subgroup_rel(h, k0, w0) } }","let w1: G satisfy { add_subgroup_rel(h, w0, w1) and not add_subgroup_rel(h, w1, w0) }","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { not add_subgroup_rel[T0](x0, x1, x2) or add_subgroup_rel[T0](x0, x2, x1) }[G](h, w0, w1)"]}
+{"goal":"a - b = a + -b","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, b)"]}
+{"goal":"b - c = b + -c","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](b, c)"]}
+{"goal":"a + -b + (b + -c) = a + (-b + b) + -c","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](a + -b, b, -c)","function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](a, -b, b)"]}
+{"goal":"-b + b = G.0","proof":["function[T0: AddGroup](x0: T0) { -x0 + x0 = T0.0 }[G](b)"]}
+{"goal":"a + G.0 + -c = a + -c","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](a, G.0, -c)","function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.0 + x0 = x0 }[G](-c)"]}
+{"goal":"a + -c = a - c","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, c)"]}
+{"goal":"add_subgroup_sub_chain","proof":[]}
+{"goal":"h.contains(a - b)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, b)"]}
+{"goal":"h.contains(b - c)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, b, c)"]}
+{"goal":"h.contains(a - b + (b - c))","proof":[]}
+{"goal":"h.contains(a - c)","proof":[]}
+{"goal":"add_subgroup_rel_trans_at","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, c)"]}
+{"goal":"is_transitive[G](add_subgroup_rel[G](h)) = forall(x0: G, x1: G, x2: G) { add_subgroup_rel(h, x0, x1) and add_subgroup_rel(h, x1, x2) implies add_subgroup_rel(h, x0, x2) }","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[G](add_subgroup_rel[G](h))"]}
+{"goal":"add_subgroup_rel(h, a, c)","proof":[]}
+{"goal":"add_subgroup_rel_is_transitive","proof":["let w0: G satisfy { exists(k0: G, k1: G) { add_subgroup_rel(h, w0, k0) and add_subgroup_rel(h, k0, k1) and not add_subgroup_rel(h, w0, k1) } }","let w1: G satisfy { exists(k2: G) { add_subgroup_rel(h, w0, w1) and add_subgroup_rel(h, w1, k2) and not add_subgroup_rel(h, w0, k2) } }","let w2: G satisfy { add_subgroup_rel(h, w0, w1) and add_subgroup_rel(h, w1, w2) and not add_subgroup_rel(h, w0, w2) }","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0, x3: T0) { not add_subgroup_rel[T0](x0, x1, x2) or not add_subgroup_rel[T0](x0, x2, x3) or add_subgroup_rel[T0](x0, x1, x3) }[G](h, w0, lib(functions).identity_fn(w1), w2)","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[G](w1)"]}
+{"goal":"add_subgroup_rel_is_equivalence","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_transitive[T0](x0) or not is_symmetric[T0](x0) or not is_reflexive[T0](x0) or is_equivalence[T0](x0) }[G](add_subgroup_rel[G](h))"]}
+{"goal":"exists(k0: QuotientRelation[G]) { QuotientRelation.new[G](add_subgroup_rel[G](h)) = Option.some(k0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { not QuotientRelation.constraint[T0](x0) or exists(k0: QuotientRelation[T0]) { QuotientRelation.new[T0](x0) = Option.some[QuotientRelation[T0]](k0) } }[G](add_subgroup_rel[G](h))"]}
+{"goal":"QuotientRelation.new[G](add_subgroup_rel[G](h)) = Option.some(add_subgroup_quotient_relation[G](h))","proof":["function[T0: AddGroup](x0: AddSubgroup[T0]) { Option.some[QuotientRelation[T0]](add_subgroup_quotient_relation[T0](x0)) = QuotientRelation.new[T0](add_subgroup_rel[T0](x0)) }[G](h)"]}
+{"goal":"add_subgroup_quotient_relation_rel","proof":[]}
+{"goal":"a + b - (ap + bp) = a + b + -(ap + bp)","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a + b, ap + bp)"]}
+{"goal":"-(ap + bp) = -ap + -bp","proof":["function[T0: AddGroup](x0: T0, x1: T0) { -x0 + -x1 = -(x1 + x0) }[G](bp, ap)","function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[G](-ap, -bp)"]}
+{"goal":"a + b + (-ap + -bp) = a + b + -ap + -bp","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](a + b, -ap, -bp)"]}
+{"goal":"a + b + -ap = a + -ap + b","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](b, a, -ap)","function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[G](a + -ap, b)","function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[G](b, a)"]}
+{"goal":"a + b + -ap + -bp = a + -ap + b + -bp","proof":[]}
+{"goal":"a + -ap = a - ap","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, ap)"]}
+{"goal":"b + -bp = b - bp","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](b, bp)"]}
+{"goal":"a + -ap + b + -bp = a - ap + (b - bp)","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[G](a + -ap, b, -bp)"]}
+{"goal":"add_sub_distrib","proof":[]}
+{"goal":"h.contains(a - ap)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, ap)"]}
+{"goal":"h.contains(b - bp)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, b, bp)"]}
+{"goal":"h.contains(a - ap + (b - bp))","proof":[]}
+{"goal":"h.contains(a + b - (ap + bp))","proof":[]}
+{"goal":"add_subgroup_rel_add_step","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a + b, ap + bp)"]}
+{"goal":"respects_add[G](add_subgroup_rel[G](h)) = respects_binary_op[G](add_subgroup_rel[G](h), G.add)","proof":[]}
+{"goal":"add_subgroup_rel(h, a + b, ap + bp)","proof":[]}
+{"goal":"add_subgroup_rel(h, a + b, ap + bp)","proof":[]}
+{"goal":"respects_binary_op[G](add_subgroup_rel[G](h), G.add)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { forall(x2: T0, x3: T0, x4: T0, x5: T0) { not x0(x2, x3) or not x0(x4, x5) or x0(x1(x2, x4), x1(x3, x5)) } = respects_binary_op[T0](x0, x1) }[G](add_subgroup_rel[G](h), G.add)","let w0: G satisfy { exists(k0: G, k1: G, k2: G) { add_subgroup_rel(h, w0, k0) and add_subgroup_rel(h, k1, k2) and not add_subgroup_rel(h, w0 + k1, k0 + k2) } }","let w1: G satisfy { exists(k3: G, k4: G) { add_subgroup_rel(h, w0, w1) and add_subgroup_rel(h, k3, k4) and not add_subgroup_rel(h, w0 + k3, w1 + k4) } }","let w2: G satisfy { exists(k5: G) { add_subgroup_rel(h, w0, w1) and add_subgroup_rel(h, w2, k5) and not add_subgroup_rel(h, w0 + w2, w1 + k5) } }","let w3: G satisfy { add_subgroup_rel(h, w0, w1) and add_subgroup_rel(h, w2, w3) and not add_subgroup_rel(h, w0 + w2, w1 + w3) }","function[T0: AddCommGroup](x0: AddSubgroup[T0], x1: T0, x2: T0, x3: T0, x4: T0) { not add_subgroup_rel[T0](x0, x1, x2) or not add_subgroup_rel[T0](x0, x3, x4) or add_subgroup_rel[T0](x0, x1 + x3, x2 + x4) }[G](h, w0, w1, w2, w3)"]}
+{"goal":"add_subgroup_rel_respects_add","proof":[]}
+{"goal":"is_binary_congruence[G](add_subgroup_rel[G](h), G.add)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: (T0, T0) -> T0) { (is_equivalence[T0](x0) and respects_binary_op[T0](x0, x1)) = is_binary_congruence[T0](x0, x1) }[G](add_subgroup_rel[G](h), G.add)"]}
+{"goal":"add_subgroup_rel_is_add_congruence","proof":[]}
+{"goal":"a - b = a + -b","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, b)"]}
+{"goal":"-(a + -b) = --b + -a","proof":["function[T0: AddGroup](x0: T0, x1: T0) { -x0 + -x1 = -(x1 + x0) }[G](-b, a)"]}
+{"goal":"--b = b","proof":["function[T0: AddGroup](x0: T0) { --x0 = x0 }[G](b)"]}
+{"goal":"-(a - b) = b + -a","proof":[]}
+{"goal":"-a - -b = -a + --b","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](-a, -b)"]}
+{"goal":"-a + --b = -a + b","proof":[]}
+{"goal":"-a + b = b + -a","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[G](b, -a)"]}
+{"goal":"-a - -b = -(a - b)","proof":[]}
+{"goal":"add_neg_sub","proof":[]}
+{"goal":"h.contains(a - b)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, b)"]}
+{"goal":"h.contains(-(a - b))","proof":[]}
+{"goal":"h.contains(-a - -b)","proof":[]}
+{"goal":"add_subgroup_rel_neg_step","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { x1 - x2 ∈ x0 = add_subgroup_rel[T0](x0, x1, x2) }[G](h, -a, -b)"]}
+{"goal":"add_subgroup_rel(h, -a, -b)","proof":[]}
+{"goal":"add_subgroup_rel(h, -a, -b)","proof":[]}
+{"goal":"add_subgroup_rel_respects_neg","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0 -> T0) { forall(x2: T0, x3: T0) { not x0(x2, x3) or x0(x1(x2), x1(x3)) } = respects_unary_op[T0](x0, x1) }[G](add_subgroup_rel[G](h), G.neg)","let w0: G satisfy { exists(k0: G) { add_subgroup_rel(h, w0, k0) and not add_subgroup_rel(h, -w0, -k0) } }","let w1: G satisfy { add_subgroup_rel(h, w0, w1) and not add_subgroup_rel(h, -w0, -w1) }","function[T0: AddCommGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { not add_subgroup_rel[T0](x0, x1, x2) or add_subgroup_rel[T0](x0, -x1, -x2) }[G](h, w0, w1)"]}
+{"goal":"add_subgroup_quotient_relation[G](h).rel = add_subgroup_rel[G](h)","proof":[]}
+{"goal":"respects_unary_op[G](add_subgroup_quotient_relation[G](h).rel, G.neg)","proof":[]}
+{"goal":"add_subgroup_quotient_relation_respects_neg","proof":[]}
+{"goal":"respects_binary_op[G](add_subgroup_rel[G](h), G.add)","proof":[]}
+{"goal":"add_subgroup_quotient_relation[G](h).rel = add_subgroup_rel[G](h)","proof":[]}
+{"goal":"respects_binary_op[G](add_subgroup_quotient_relation[G](h).rel, G.add)","proof":[]}
+{"goal":"add_subgroup_quotient_relation_respects_add","proof":[]}
+{"goal":"a + b = a + b","proof":[]}
+{"goal":"add_subgroup_quotient_add_projection","proof":["function[T0: AddCommGroup](x0: QuotientOver[T0], x1: QuotientOver[T0], x2: AddSubgroup[T0]) { quotient_over_binary_op[T0](T0.add, x0, x1) = add_subgroup_quotient_add[T0](x2, x0, x1) }[G](quotient_over_mk(add_subgroup_quotient_relation[G](h), a), quotient_over_mk(add_subgroup_quotient_relation[G](h), b), h)"]}
+{"goal":"add_subgroup_quotient_relation[G](h).rel(a1, a2)","proof":[]}
+{"goal":"add_subgroup_quotient_add_projection_left","proof":["function[T0](x0: QuotientRelation[T0], x1: T0, x2: T0) { not x0.rel(x1, x2) or quotient_over_mk[T0](x0, x1) = quotient_over_mk[T0](x0, x2) }[G](add_subgroup_quotient_relation[G](h), a1, a2)","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { add_subgroup_quotient_relation[T0](x0).rel(x1, x2) = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a1, a2)"]}
+{"goal":"add_subgroup_quotient_relation[G](h).rel(b1, b2)","proof":[]}
+{"goal":"add_subgroup_quotient_add_projection_right","proof":["function[T0](x0: QuotientRelation[T0], x1: T0, x2: T0) { not x0.rel(x1, x2) or quotient_over_mk[T0](x0, x1) = quotient_over_mk[T0](x0, x2) }[G](add_subgroup_quotient_relation[G](h), b1, b2)","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { add_subgroup_quotient_relation[T0](x0).rel(x1, x2) = add_subgroup_rel[T0](x0, x1, x2) }[G](h, b1, b2)"]}
+{"goal":"-a = -a","proof":[]}
+{"goal":"add_subgroup_quotient_neg_projection","proof":["function[T0: AddCommGroup](x0: AddSubgroup[T0], x1: QuotientOver[T0]) { quotient_over_unary_op[T0](add_subgroup_quotient_relation[T0](x0), T0.neg, x1) = add_subgroup_quotient_neg[T0](x0, x1) }[G](h, quotient_over_mk(add_subgroup_quotient_relation[G](h), a))"]}
+{"goal":"add_subgroup_quotient_relation[G](h).rel(a, b)","proof":[]}
+{"goal":"add_subgroup_quotient_neg_projection_compatible","proof":["function[T0](x0: QuotientRelation[T0], x1: T0, x2: T0) { not x0.rel(x1, x2) or quotient_over_mk[T0](x0, x1) = quotient_over_mk[T0](x0, x2) }[G](add_subgroup_quotient_relation[G](h), a, b)","function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0, x2: T0) { add_subgroup_quotient_relation[T0](x0).rel(x1, x2) = add_subgroup_rel[T0](x0, x1, x2) }[G](h, a, b)"]}
