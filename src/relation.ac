@@ -5,7 +5,10 @@ from relation_basic import eq_relation, relation_compose, relation_compose_intro
     relation_compose_has_witness, relation_compose_assoc, relation_compose_eq_relation_left,
     relation_compose_eq_relation_right, relation_converse, relation_converse_compose,
     relation_converse_eq_relation, relation_subset, relation_subset_step, reflexive_self,
-    transitive_step, is_reflexive, is_transitive, relation_eq_iff_subset_both
+    transitive_step, is_reflexive, is_transitive, relation_eq_iff_subset_both,
+    is_symmetric, is_equivalence, relation_symmetric_closure, relation_subset_symmetric_closure,
+    relation_symmetric_closure_subset_of_symmetric, relation_symmetric_closure_monotone,
+    relation_symmetric_closure_is_symmetric, symmetric_imp_relation_converse_eq
 from relation_transport import relation_pullback, relation_pullback_eq_relation_of_injective
 
 /// General constructions on homogeneous relations indexed by natural numbers.
@@ -1082,4 +1085,172 @@ theorem relation_refl_trans_closure_idempotent[T](r: (T, T) -> Bool) {
     relation_refl_trans_closure_is_reflexive(r)
     relation_refl_trans_closure_is_transitive(r)
     relation_refl_trans_closure_eq_self_of_reflexive_transitive(relation_refl_trans_closure(r))
+}
+
+/// Reflexive-transitive closure of a symmetric relation is symmetric.
+theorem relation_refl_trans_closure_is_symmetric[T](r: (T, T) -> Bool) {
+    is_symmetric(r) implies is_symmetric(relation_refl_trans_closure(r))
+} by {
+    if is_symmetric(r) {
+        symmetric_imp_relation_converse_eq(r)
+        relation_converse(r) = r
+        forall(x: T, y: T) {
+            if relation_refl_trans_closure(r, x, y) {
+                relation_refl_trans_closure_converse(r, y, x)
+                relation_refl_trans_closure(relation_converse(r), y, x) = relation_refl_trans_closure(r, x, y)
+                relation_refl_trans_closure(relation_converse(r), y, x)
+                relation_refl_trans_closure(r, y, x)
+            }
+        }
+    }
+}
+
+/// The equivalence closure of a homogeneous relation: the smallest equivalence relation containing it.
+define relation_equivalence_closure[T](r: (T, T) -> Bool, x: T, y: T) -> Bool {
+    relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+}
+
+/// Every relation is contained in its equivalence closure.
+theorem relation_subset_equivalence_closure[T](r: (T, T) -> Bool) {
+    relation_subset(r, relation_equivalence_closure(r))
+} by {
+    relation_subset_symmetric_closure(r)
+    relation_subset_refl_trans_closure(relation_symmetric_closure(r))
+    forall(x: T, y: T) {
+        if r(x, y) {
+            relation_subset_step(r, relation_symmetric_closure(r), x, y)
+            relation_symmetric_closure(r, x, y)
+            relation_subset_step(relation_symmetric_closure(r), relation_refl_trans_closure(relation_symmetric_closure(r)), x, y)
+            relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+            relation_equivalence_closure(r, x, y)
+        }
+    }
+}
+
+/// Equivalence closure is reflexive.
+theorem relation_equivalence_closure_is_reflexive[T](r: (T, T) -> Bool) {
+    is_reflexive(relation_equivalence_closure(r))
+} by {
+    relation_refl_trans_closure_is_reflexive(relation_symmetric_closure(r))
+    forall(x: T) {
+        relation_refl_trans_closure(relation_symmetric_closure(r), x, x)
+        relation_equivalence_closure(r, x, x)
+    }
+}
+
+/// Equivalence closure is symmetric.
+theorem relation_equivalence_closure_is_symmetric[T](r: (T, T) -> Bool) {
+    is_symmetric(relation_equivalence_closure(r))
+} by {
+    relation_symmetric_closure_is_symmetric(r)
+    relation_refl_trans_closure_is_symmetric(relation_symmetric_closure(r))
+    forall(x: T, y: T) {
+        if relation_equivalence_closure(r, x, y) {
+            relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+            relation_refl_trans_closure(relation_symmetric_closure(r), y, x)
+            relation_equivalence_closure(r, y, x)
+        }
+    }
+}
+
+/// Equivalence closure is transitive.
+theorem relation_equivalence_closure_is_transitive[T](r: (T, T) -> Bool) {
+    is_transitive(relation_equivalence_closure(r))
+} by {
+    relation_refl_trans_closure_is_transitive(relation_symmetric_closure(r))
+    forall(x: T, y: T, z: T) {
+        if relation_equivalence_closure(r, x, y) and relation_equivalence_closure(r, y, z) {
+            relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+            relation_refl_trans_closure(relation_symmetric_closure(r), y, z)
+            transitive_step(relation_refl_trans_closure(relation_symmetric_closure(r)), x, y, z)
+            relation_refl_trans_closure(relation_symmetric_closure(r), x, z)
+            relation_equivalence_closure(r, x, z)
+        }
+    }
+}
+
+/// Equivalence closure is an equivalence relation.
+theorem relation_equivalence_closure_is_equivalence[T](r: (T, T) -> Bool) {
+    is_equivalence(relation_equivalence_closure(r))
+} by {
+    relation_equivalence_closure_is_reflexive(r)
+    relation_equivalence_closure_is_symmetric(r)
+    relation_equivalence_closure_is_transitive(r)
+}
+
+/// Equivalence closure is the smallest equivalence relation containing the original relation.
+theorem relation_equivalence_closure_subset_of_equivalence[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    is_equivalence(s) and relation_subset(r, s) implies relation_subset(relation_equivalence_closure(r), s)
+} by {
+    if is_equivalence(s) and relation_subset(r, s) {
+        is_equivalence(s) = is_reflexive(s) and is_symmetric(s) and is_transitive(s)
+        relation_symmetric_closure_subset_of_symmetric(r, s)
+        relation_subset(relation_symmetric_closure(r), s)
+        relation_refl_trans_closure_subset_of_reflexive_transitive(relation_symmetric_closure(r), s)
+        relation_subset(relation_refl_trans_closure(relation_symmetric_closure(r)), s)
+        forall(x: T, y: T) {
+            if relation_equivalence_closure(r, x, y) {
+                relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+                relation_subset_step(
+                    relation_refl_trans_closure(relation_symmetric_closure(r)),
+                    s,
+                    x,
+                    y
+                )
+                s(x, y)
+            }
+        }
+    }
+}
+
+/// Equivalence closure is monotone in the base relation.
+theorem relation_equivalence_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies
+        relation_subset(relation_equivalence_closure(r), relation_equivalence_closure(s))
+} by {
+    if relation_subset(r, s) {
+        relation_symmetric_closure_monotone(r, s)
+        relation_subset(relation_symmetric_closure(r), relation_symmetric_closure(s))
+        relation_refl_trans_closure_monotone(relation_symmetric_closure(r), relation_symmetric_closure(s))
+        relation_subset(
+            relation_refl_trans_closure(relation_symmetric_closure(r)),
+            relation_refl_trans_closure(relation_symmetric_closure(s))
+        )
+        forall(x: T, y: T) {
+            if relation_equivalence_closure(r, x, y) {
+                relation_refl_trans_closure(relation_symmetric_closure(r), x, y)
+                relation_subset_step(
+                    relation_refl_trans_closure(relation_symmetric_closure(r)),
+                    relation_refl_trans_closure(relation_symmetric_closure(s)),
+                    x,
+                    y
+                )
+                relation_refl_trans_closure(relation_symmetric_closure(s), x, y)
+                relation_equivalence_closure(s, x, y)
+            }
+        }
+    }
+}
+
+/// Equivalence closure of an equivalence relation equals itself.
+theorem relation_equivalence_closure_eq_self_of_equivalence[T](r: (T, T) -> Bool) {
+    is_equivalence(r) implies relation_equivalence_closure(r) = r
+} by {
+    if is_equivalence(r) {
+        relation_subset(r, r)
+        relation_equivalence_closure_subset_of_equivalence(r, r)
+        relation_subset(relation_equivalence_closure(r), r)
+        relation_subset_equivalence_closure(r)
+        relation_subset(r, relation_equivalence_closure(r))
+        relation_eq_iff_subset_both(relation_equivalence_closure(r), r)
+        relation_equivalence_closure(r) = r
+    }
+}
+
+/// Equivalence closure is idempotent.
+theorem relation_equivalence_closure_idempotent[T](r: (T, T) -> Bool) {
+    relation_equivalence_closure(relation_equivalence_closure(r)) = relation_equivalence_closure(r)
+} by {
+    relation_equivalence_closure_is_equivalence(r)
+    relation_equivalence_closure_eq_self_of_equivalence(relation_equivalence_closure(r))
 }
