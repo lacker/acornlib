@@ -1,0 +1,471 @@
+/// Order-preserving and order-reversing maps.
+
+from functions import compose, identity_fn
+from order import PartialOrder, LinearOrder, lte_refl, lte_trans, lte_antisymm, lt_trans,
+    lt_of_lte_of_lt, lt_of_lt_of_lte
+from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
+
+/// True if a map preserves the non-strict order.
+define is_monotone[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    forall(x: A, y: A) {
+        x <= y implies f(x) <= f(y)
+    }
+}
+
+/// True if a map reverses the non-strict order.
+define is_antitone[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    forall(x: A, y: A) {
+        x <= y implies f(y) <= f(x)
+    }
+}
+
+/// True if a map preserves strict order.
+define is_strict_monotone[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    forall(x: A, y: A) {
+        x < y implies f(x) < f(y)
+    }
+}
+
+/// True if a map reverses strict order.
+define is_strict_antitone[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    forall(x: A, y: A) {
+        x < y implies f(y) < f(x)
+    }
+}
+
+/// True if a map reflects and preserves the non-strict order.
+define is_order_embedding[A: PartialOrder, B: PartialOrder](f: A -> B) -> Bool {
+    forall(x: A, y: A) {
+        f(x) <= f(y) = (x <= y)
+    }
+}
+
+/// A monotone map carries an explicitly ordered pair to an ordered pair.
+theorem monotone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_monotone(f) and x <= y implies f(x) <= f(y)
+} by {
+    if is_monotone(f) and x <= y {
+        is_monotone(f) = forall(a: A, b: A) {
+            a <= b implies f(a) <= f(b)
+        }
+        f(x) <= f(y)
+    }
+}
+
+/// An antitone map reverses an explicitly ordered pair.
+theorem antitone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_antitone(f) and x <= y implies f(y) <= f(x)
+} by {
+    if is_antitone(f) and x <= y {
+        is_antitone(f) = forall(a: A, b: A) {
+            a <= b implies f(b) <= f(a)
+        }
+        f(y) <= f(x)
+    }
+}
+
+/// A strict monotone map carries an explicitly strictly ordered pair to a strictly ordered pair.
+theorem strict_monotone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_strict_monotone(f) and x < y implies f(x) < f(y)
+} by {
+    if is_strict_monotone(f) and x < y {
+        is_strict_monotone(f) = forall(a: A, b: A) {
+            a < b implies f(a) < f(b)
+        }
+        f(x) < f(y)
+    }
+}
+
+/// A strict antitone map reverses an explicitly strictly ordered pair.
+theorem strict_antitone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_strict_antitone(f) and x < y implies f(y) < f(x)
+} by {
+    if is_strict_antitone(f) and x < y {
+        is_strict_antitone(f) = forall(a: A, b: A) {
+            a < b implies f(b) < f(a)
+        }
+        f(y) < f(x)
+    }
+}
+
+/// An order embedding preserves an explicitly ordered pair.
+theorem order_embedding_monotone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_order_embedding(f) and x <= y implies f(x) <= f(y)
+} by {
+    if is_order_embedding(f) and x <= y {
+        is_order_embedding(f) = forall(a: A, b: A) {
+            f(a) <= f(b) = (a <= b)
+        }
+        f(x) <= f(y)
+    }
+}
+
+/// An order embedding reflects an explicitly ordered image pair.
+theorem order_embedding_reflects_lte[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
+    is_order_embedding(f) and f(x) <= f(y) implies x <= y
+} by {
+    if is_order_embedding(f) and f(x) <= f(y) {
+        is_order_embedding(f) = forall(a: A, b: A) {
+            f(a) <= f(b) = (a <= b)
+        }
+        x <= y
+    }
+}
+
+/// An order embedding is monotone.
+theorem order_embedding_is_monotone[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    is_order_embedding(f) implies is_monotone(f)
+} by {
+    if is_order_embedding(f) {
+        forall(x: A, y: A) {
+            if x <= y {
+                order_embedding_monotone_step(f, x, y)
+                f(x) <= f(y)
+            }
+        }
+    }
+}
+
+/// An order embedding is injective.
+theorem order_embedding_is_injective[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    is_order_embedding(f) implies forall(x: A, y: A) {
+        f(x) = f(y) implies x = y
+    }
+} by {
+    if is_order_embedding(f) {
+        forall(x: A, y: A) {
+            if f(x) = f(y) {
+                lte_refl(f(x))
+                f(x) <= f(y)
+                order_embedding_reflects_lte(f, x, y)
+                x <= y
+                f(y) <= f(x)
+                order_embedding_reflects_lte(f, y, x)
+                y <= x
+                lte_antisymm(x, y)
+                x = y
+            }
+        }
+    }
+}
+
+/// The identity map is monotone.
+theorem identity_is_monotone[A: PartialOrder] {
+    is_monotone(identity_fn[A])
+} by {
+    forall(x: A, y: A) {
+        if x <= y {
+            identity_fn[A](x) = x
+            identity_fn[A](y) = y
+            identity_fn[A](x) <= identity_fn[A](y)
+        }
+    }
+}
+
+/// The identity map is antitone only on explicitly comparable equal pairs.
+theorem identity_antitone_step_of_eq[A: PartialOrder](x: A, y: A) {
+    x = y implies identity_fn[A](y) <= identity_fn[A](x)
+} by {
+    if x = y {
+        identity_fn[A](y) = y
+        identity_fn[A](x) = x
+        lte_refl(x)
+        identity_fn[A](y) <= identity_fn[A](x)
+    }
+}
+
+/// The identity map is strict monotone.
+theorem identity_is_strict_monotone[A: PartialOrder] {
+    is_strict_monotone(identity_fn[A])
+} by {
+    forall(x: A, y: A) {
+        if x < y {
+            identity_fn[A](x) = x
+            identity_fn[A](y) = y
+            identity_fn[A](x) < identity_fn[A](y)
+        }
+    }
+}
+
+/// The identity map is an order embedding.
+theorem identity_is_order_embedding[A: PartialOrder] {
+    is_order_embedding(identity_fn[A])
+} by {
+    forall(x: A, y: A) {
+        identity_fn[A](x) = x
+        identity_fn[A](y) = y
+        identity_fn[A](x) <= identity_fn[A](y) = (x <= y)
+    }
+}
+
+/// The composite of monotone maps is monotone.
+theorem monotone_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_monotone(g) and is_monotone(f) implies is_monotone(compose(f, g))
+} by {
+    if is_monotone(g) and is_monotone(f) {
+        forall(x: A, y: A) {
+            if x <= y {
+                monotone_step(g, x, y)
+                g(x) <= g(y)
+                monotone_step(f, g(x), g(y))
+                f(g(x)) <= f(g(y))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(x) <= compose(f, g)(y)
+            }
+        }
+    }
+}
+
+/// The composite of two antitone maps is monotone.
+theorem antitone_compose_antitone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_antitone(g) and is_antitone(f) implies is_monotone(compose(f, g))
+} by {
+    if is_antitone(g) and is_antitone(f) {
+        forall(x: A, y: A) {
+            if x <= y {
+                antitone_step(g, x, y)
+                g(y) <= g(x)
+                antitone_step(f, g(y), g(x))
+                f(g(x)) <= f(g(y))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(x) <= compose(f, g)(y)
+            }
+        }
+    }
+}
+
+/// A monotone map followed by an antitone map is antitone.
+theorem monotone_compose_antitone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_monotone(g) and is_antitone(f) implies is_antitone(compose(f, g))
+} by {
+    if is_monotone(g) and is_antitone(f) {
+        forall(x: A, y: A) {
+            if x <= y {
+                monotone_step(g, x, y)
+                g(x) <= g(y)
+                antitone_step(f, g(x), g(y))
+                f(g(y)) <= f(g(x))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(y) <= compose(f, g)(x)
+            }
+        }
+    }
+}
+
+/// An antitone map followed by a monotone map is antitone.
+theorem antitone_compose_monotone[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_antitone(g) and is_monotone(f) implies is_antitone(compose(f, g))
+} by {
+    if is_antitone(g) and is_monotone(f) {
+        forall(x: A, y: A) {
+            if x <= y {
+                antitone_step(g, x, y)
+                g(y) <= g(x)
+                monotone_step(f, g(y), g(x))
+                f(g(y)) <= f(g(x))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(y) <= compose(f, g)(x)
+            }
+        }
+    }
+}
+
+/// The composite of strict monotone maps is strict monotone.
+theorem strict_monotone_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_strict_monotone(g) and is_strict_monotone(f) implies is_strict_monotone(compose(f, g))
+} by {
+    if is_strict_monotone(g) and is_strict_monotone(f) {
+        forall(x: A, y: A) {
+            if x < y {
+                strict_monotone_step(g, x, y)
+                g(x) < g(y)
+                strict_monotone_step(f, g(x), g(y))
+                f(g(x)) < f(g(y))
+                compose(f, g, x) = f(g(x))
+                compose(f, g, y) = f(g(y))
+                compose(f, g)(x) < compose(f, g)(y)
+            }
+        }
+    }
+}
+
+/// The composite of order embeddings is an order embedding.
+theorem order_embedding_compose[A: PartialOrder, B: PartialOrder, C: PartialOrder](g: A -> B, f: B -> C) {
+    is_order_embedding(g) and is_order_embedding(f) implies is_order_embedding(compose(f, g))
+} by {
+    if is_order_embedding(g) and is_order_embedding(f) {
+        forall(x: A, y: A) {
+            compose(f, g, x) = f(g(x))
+            compose(f, g, y) = f(g(y))
+            if compose(f, g)(x) <= compose(f, g)(y) {
+                f(g(x)) <= f(g(y))
+                order_embedding_reflects_lte(f, g(x), g(y))
+                g(x) <= g(y)
+                order_embedding_reflects_lte(g, x, y)
+                x <= y
+            }
+            if x <= y {
+                order_embedding_monotone_step(g, x, y)
+                g(x) <= g(y)
+                order_embedding_monotone_step(f, g(x), g(y))
+                f(g(x)) <= f(g(y))
+                compose(f, g)(x) <= compose(f, g)(y)
+            }
+            compose(f, g)(x) <= compose(f, g)(y) = (x <= y)
+        }
+    }
+}
+
+/// A monotone map sends closed intervals into closed intervals between the image endpoints.
+theorem monotone_closed_interval_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_monotone(f) and closed_interval(a, b, x) implies closed_interval(f(a), f(b), f(x))
+} by {
+    if is_monotone(f) and closed_interval(a, b, x) {
+        a <= x
+        monotone_step(f, a, x)
+        f(a) <= f(x)
+        x <= b
+        monotone_step(f, x, b)
+        f(x) <= f(b)
+        closed_interval(f(a), f(b), f(x))
+    }
+}
+
+/// A strict monotone map sends open intervals into open intervals between the image endpoints.
+theorem strict_monotone_open_interval_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_strict_monotone(f) and open_interval(a, b, x) implies open_interval(f(a), f(b), f(x))
+} by {
+    if is_strict_monotone(f) and open_interval(a, b, x) {
+        a < x
+        strict_monotone_step(f, a, x)
+        f(a) < f(x)
+        x < b
+        strict_monotone_step(f, x, b)
+        f(x) < f(b)
+        open_interval(f(a), f(b), f(x))
+    }
+}
+
+/// A monotone and strict monotone map sends left-open intervals into left-open intervals.
+theorem monotone_left_open_interval_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_monotone(f) and is_strict_monotone(f) and left_open_interval(a, b, x)
+    implies left_open_interval(f(a), f(b), f(x))
+} by {
+    if is_monotone(f) and is_strict_monotone(f) and left_open_interval(a, b, x) {
+        a < x
+        strict_monotone_step(f, a, x)
+        f(a) < f(x)
+        x <= b
+        monotone_step(f, x, b)
+        f(x) <= f(b)
+        left_open_interval(f(a), f(b), f(x))
+    }
+}
+
+/// A monotone and strict monotone map sends right-open intervals into right-open intervals.
+theorem monotone_right_open_interval_image[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_monotone(f) and is_strict_monotone(f) and right_open_interval(a, b, x)
+    implies right_open_interval(f(a), f(b), f(x))
+} by {
+    if is_monotone(f) and is_strict_monotone(f) and right_open_interval(a, b, x) {
+        a <= x
+        monotone_step(f, a, x)
+        f(a) <= f(x)
+        x < b
+        strict_monotone_step(f, x, b)
+        f(x) < f(b)
+        right_open_interval(f(a), f(b), f(x))
+    }
+}
+
+/// An order embedding reflects membership in a closed interval between image endpoints.
+theorem order_embedding_closed_interval_preimage[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) and closed_interval(f(a), f(b), f(x)) implies closed_interval(a, b, x)
+} by {
+    if is_order_embedding(f) and closed_interval(f(a), f(b), f(x)) {
+        f(a) <= f(x)
+        order_embedding_reflects_lte(f, a, x)
+        a <= x
+        f(x) <= f(b)
+        order_embedding_reflects_lte(f, x, b)
+        x <= b
+        closed_interval(a, b, x)
+    }
+}
+
+/// An order embedding reflects membership in an open interval between image endpoints.
+theorem order_embedding_open_interval_preimage[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) and open_interval(f(a), f(b), f(x)) implies open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) and open_interval(f(a), f(b), f(x)) {
+        f(a) < f(x)
+        f(a) <= f(x)
+        order_embedding_reflects_lte(f, a, x)
+        a <= x
+        f(a) != f(x)
+        if a = x {
+            f(a) = f(x)
+            false
+        }
+        a < x
+        f(x) < f(b)
+        f(x) <= f(b)
+        order_embedding_reflects_lte(f, x, b)
+        x <= b
+        f(x) != f(b)
+        if x = b {
+            f(x) = f(b)
+            false
+        }
+        x < b
+        open_interval(a, b, x)
+    }
+}
+
+/// An order embedding reflects membership in a left-open interval between image endpoints.
+theorem order_embedding_left_open_interval_preimage[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) and left_open_interval(f(a), f(b), f(x)) implies left_open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) and left_open_interval(f(a), f(b), f(x)) {
+        f(a) < f(x)
+        f(a) <= f(x)
+        order_embedding_reflects_lte(f, a, x)
+        a <= x
+        f(a) != f(x)
+        if a = x {
+            f(a) = f(x)
+            false
+        }
+        a < x
+        f(x) <= f(b)
+        order_embedding_reflects_lte(f, x, b)
+        x <= b
+        left_open_interval(a, b, x)
+    }
+}
+
+/// An order embedding reflects membership in a right-open interval between image endpoints.
+theorem order_embedding_right_open_interval_preimage[A: LinearOrder, B: LinearOrder](f: A -> B, a: A, b: A, x: A) {
+    is_order_embedding(f) and right_open_interval(f(a), f(b), f(x)) implies right_open_interval(a, b, x)
+} by {
+    if is_order_embedding(f) and right_open_interval(f(a), f(b), f(x)) {
+        f(a) <= f(x)
+        order_embedding_reflects_lte(f, a, x)
+        a <= x
+        f(x) < f(b)
+        f(x) <= f(b)
+        order_embedding_reflects_lte(f, x, b)
+        x <= b
+        f(x) != f(b)
+        if x = b {
+            f(x) = f(b)
+            false
+        }
+        x < b
+        right_open_interval(a, b, x)
+    }
+}
