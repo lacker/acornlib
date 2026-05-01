@@ -9,7 +9,7 @@ from functions import Inhabited, compose, identity_fn, inverse_fn, inverse_fn_ap
 from add import Add
 from mul import Mul
 from lte import LTE
-from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, eq_relation_is_equivalence, relation_intersection_is_equivalence, relation_converse_is_equivalence, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
+from relation_basic import eq_relation, is_reflexive, is_irreflexive, is_symmetric, is_asymmetric, is_transitive, is_total, is_antisymmetric, is_equivalence, is_partial_equivalence, relation_intersection, relation_union, relation_subset, relation_subset_refl, relation_subset_step, relation_subset_trans, relation_converse, relation_reflexive_closure, relation_symmetric_closure, eq_relation_is_equivalence, relation_intersection_is_equivalence, relation_converse_is_equivalence, equivalence_is_reflexive, equivalence_is_symmetric, equivalence_is_transitive, partial_equivalence_is_symmetric, partial_equivalence_is_transitive, reflexive_self, symmetric_flip, transitive_step, antisymmetric_eq
 
 /// The pullback of a homogeneous relation along a function.
 define relation_pullback[A, B](f: A -> B, r: (B, B) -> Bool, x: A, y: A) -> Bool {
@@ -1625,6 +1625,163 @@ theorem relation_pullback_intersection[A, B](f: A -> B, r: (B, B) -> Bool, s: (B
         u(x, y) = v(x, y)
     }
     binary_function_extensionality(u, v)
+}
+
+/// Pullback distributes over union.
+theorem relation_pullback_union[A, B](f: A -> B, r: (B, B) -> Bool, s: (B, B) -> Bool) {
+    relation_pullback(f, relation_union(r, s)) =
+    relation_union(relation_pullback(f, r), relation_pullback(f, s))
+} by {
+    let u = relation_pullback(f, relation_union(r, s))
+    let v = relation_union(relation_pullback(f, r), relation_pullback(f, s))
+    forall(x: A, y: A) {
+        u(x, y) = relation_union(r, s, f(x), f(y))
+        relation_union(r, s, f(x), f(y)) = (r(f(x), f(y)) or s(f(x), f(y)))
+        relation_pullback(f, r, x, y) = r(f(x), f(y))
+        relation_pullback(f, s, x, y) = s(f(x), f(y))
+        v(x, y) = (relation_pullback(f, r, x, y) or relation_pullback(f, s, x, y))
+        u(x, y) = v(x, y)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pushforward commutes with converse.
+theorem relation_pushforward_converse[A, B](f: A -> B, r: (A, A) -> Bool) {
+    relation_pushforward(f, relation_converse(r)) = relation_converse(relation_pushforward(f, r))
+} by {
+    let u = relation_pushforward(f, relation_converse(r))
+    let v = relation_converse(relation_pushforward(f, r))
+    forall(a: B, b: B) {
+        if u(a, b) {
+            relation_pushforward_has_preimages(f, relation_converse(r), a, b)
+            let x: A satisfy {
+                exists(y0: A) {
+                    f(x) = a and f(y0) = b and relation_converse(r, x, y0)
+                }
+            }
+            let y: A satisfy {
+                f(x) = a and f(y) = b and relation_converse(r, x, y)
+            }
+            r(y, x)
+            relation_pushforward_intro(f, r, y, x)
+            relation_pushforward(f, r, b, a)
+            v(a, b)
+        }
+        if v(a, b) {
+            relation_pushforward(f, r, b, a)
+            relation_pushforward_has_preimages(f, r, b, a)
+            let y: A satisfy {
+                exists(x0: A) {
+                    f(y) = b and f(x0) = a and r(y, x0)
+                }
+            }
+            let x: A satisfy {
+                f(y) = b and f(x) = a and r(y, x)
+            }
+            relation_converse(r, x, y)
+            relation_pushforward_intro(f, relation_converse(r), x, y)
+            relation_pushforward(f, relation_converse(r), a, b)
+            u(a, b)
+        }
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pushforward distributes over union.
+theorem relation_pushforward_union[A, B](f: A -> B, r: (A, A) -> Bool, s: (A, A) -> Bool) {
+    relation_pushforward(f, relation_union(r, s)) =
+    relation_union(relation_pushforward(f, r), relation_pushforward(f, s))
+} by {
+    let u = relation_pushforward(f, relation_union(r, s))
+    let v = relation_union(relation_pushforward(f, r), relation_pushforward(f, s))
+    forall(a: B, b: B) {
+        if u(a, b) {
+            relation_pushforward_has_preimages(f, relation_union(r, s), a, b)
+            let x: A satisfy {
+                exists(y0: A) {
+                    f(x) = a and f(y0) = b and relation_union(r, s, x, y0)
+                }
+            }
+            let y: A satisfy {
+                f(x) = a and f(y) = b and relation_union(r, s, x, y)
+            }
+            relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+            if r(x, y) {
+                relation_pushforward_intro(f, r, x, y)
+                relation_pushforward(f, r, a, b)
+                v(a, b)
+            }
+            if s(x, y) {
+                relation_pushforward_intro(f, s, x, y)
+                relation_pushforward(f, s, a, b)
+                v(a, b)
+            }
+            v(a, b)
+        }
+        if v(a, b) {
+            v(a, b) = (relation_pushforward(f, r, a, b) or relation_pushforward(f, s, a, b))
+            if relation_pushforward(f, r, a, b) {
+                relation_pushforward_has_preimages(f, r, a, b)
+                let x: A satisfy {
+                    exists(y0: A) {
+                        f(x) = a and f(y0) = b and r(x, y0)
+                    }
+                }
+                let y: A satisfy {
+                    f(x) = a and f(y) = b and r(x, y)
+                }
+                relation_union(r, s, x, y)
+                relation_pushforward_intro(f, relation_union(r, s), x, y)
+                u(a, b)
+            }
+            if relation_pushforward(f, s, a, b) {
+                relation_pushforward_has_preimages(f, s, a, b)
+                let x: A satisfy {
+                    exists(y0: A) {
+                        f(x) = a and f(y0) = b and s(x, y0)
+                    }
+                }
+                let y: A satisfy {
+                    f(x) = a and f(y) = b and s(x, y)
+                }
+                relation_union(r, s, x, y)
+                relation_pushforward_intro(f, relation_union(r, s), x, y)
+                u(a, b)
+            }
+            u(a, b)
+        }
+        u(a, b) = v(a, b)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Pushforward of an intersection lies in the intersection of the pushforwards.
+theorem relation_pushforward_intersection_subset[A, B](f: A -> B, r: (A, A) -> Bool, s: (A, A) -> Bool) {
+    relation_subset(
+        relation_pushforward(f, relation_intersection(r, s)),
+        relation_intersection(relation_pushforward(f, r), relation_pushforward(f, s))
+    )
+} by {
+    forall(a: B, b: B) {
+        if relation_pushforward(f, relation_intersection(r, s), a, b) {
+            relation_pushforward_has_preimages(f, relation_intersection(r, s), a, b)
+            let x: A satisfy {
+                exists(y0: A) {
+                    f(x) = a and f(y0) = b and relation_intersection(r, s, x, y0)
+                }
+            }
+            let y: A satisfy {
+                f(x) = a and f(y) = b and relation_intersection(r, s, x, y)
+            }
+            relation_intersection(r, s, x, y) = (r(x, y) and s(x, y))
+            relation_pushforward_intro(f, r, x, y)
+            relation_pushforward(f, r, a, b)
+            relation_pushforward_intro(f, s, x, y)
+            relation_pushforward(f, s, a, b)
+            relation_intersection(relation_pushforward(f, r), relation_pushforward(f, s), a, b)
+        }
+    }
 }
 
 /// Pullback is monotone with respect to relation inclusion.

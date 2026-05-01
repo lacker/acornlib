@@ -438,6 +438,53 @@
 {"goal":"u(x, y)","proof":["function(x0: A, x1: A) { relation_pullback[A, B](f, relation_intersection[B, B](r, s), x0, x1) = u(x0, x1) }(x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_intersection[B, B](r, s), x, y)"]}
 {"goal":"u(x, y) = v(x, y)","proof":[]}
 {"goal":"relation_pullback_intersection","proof":[]}
+{"goal":"u(x, y) = relation_union(r, s, f(x), f(y))","proof":["function(x0: A, x1: A) { relation_pullback[A, B](f, relation_union[B, B](r, s), x0, x1) = u(x0, x1) }(x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, relation_union[B, B](r, s), x, y)"]}
+{"goal":"relation_union(r, s, f(x), f(y)) = (r(f(x), f(y)) or s(f(x), f(y)))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[B, B](r, s, f(x), f(y))"]}
+{"goal":"relation_pullback[A, B](f, r, x, y) = r(f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)"]}
+{"goal":"relation_pullback[A, B](f, s, x, y) = s(f(x), f(y))","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, s, x, y)"]}
+{"goal":"v(x, y) = (relation_pullback[A, B](f, r, x, y) or relation_pullback[A, B](f, s, x, y))","proof":["function(x0: A, x1: A) { relation_union(relation_pullback[A, B](f, r), relation_pullback[A, B](f, s), x0, x1) = v(x0, x1) }(x, y)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s), x, y)"]}
+{"goal":"u(x, y) = v(x, y)","proof":[]}
+{"goal":"relation_pullback_union","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = a and f(k1) = b and relation_converse(r, k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = a and f(k0) = b and relation_converse(r, x, k0) }","proof":[]}
+{"goal":"r(y, x)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, A](r, x, y)"]}
+{"goal":"relation_pushforward[A, B](f, r, b, a)","proof":[]}
+{"goal":"v(a, b)","proof":["function(x0: B, x1: B) { relation_converse(relation_pushforward[A, B](f, r), x0, x1) = v(x0, x1) }(a, b)","function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[B, B](relation_pushforward[A, B](f, r), a, b)"]}
+{"goal":"relation_pushforward[A, B](f, r, b, a)","proof":["function(x0: B, x1: B) { relation_converse(relation_pushforward[A, B](f, r), x0, x1) = v(x0, x1) }(a, b)","function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[B, B](relation_pushforward[A, B](f, r), a, b)"]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = b and f(k1) = a and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(y) = b and f(k0) = a and r(y, k0) }","proof":[]}
+{"goal":"relation_converse(r, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: T1, x2: T0) { relation_converse[T0, T1](x0, x1, x2) = x0(x2, x1) }[A, A](r, x, y)"]}
+{"goal":"relation_pushforward[A, B](f, relation_converse[A, A](r), a, b)","proof":[]}
+{"goal":"u(a, b)","proof":[]}
+{"goal":"u(a, b) = v(a, b)","proof":[]}
+{"goal":"relation_pushforward_converse","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = a and f(k1) = b and relation_union(r, s, k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = a and f(k0) = b and relation_union(r, s, x, k0) }","proof":[]}
+{"goal":"relation_union(r, s, x, y) = (r(x, y) or s(x, y))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[A, A](r, s, x, y)"]}
+{"goal":"relation_pushforward[A, B](f, r, a, b)","proof":[]}
+{"goal":"v(a, b)","proof":["function(x0: B, x1: B) { relation_union(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), x0, x1) = v(x0, x1) }(a, b)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[B, B](relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), a, b)"]}
+{"goal":"relation_pushforward[A, B](f, s, a, b)","proof":[]}
+{"goal":"v(a, b)","proof":["function(x0: B, x1: B) { relation_union(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), x0, x1) = v(x0, x1) }(a, b)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[B, B](relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), a, b)"]}
+{"goal":"v(a, b)","proof":[]}
+{"goal":"v(a, b) = (relation_pushforward[A, B](f, r, a, b) or relation_pushforward[A, B](f, s, a, b))","proof":["function(x0: B, x1: B) { relation_union(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), x0, x1) = v(x0, x1) }(a, b)","function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[B, B](relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), a, b)"]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = a and f(k1) = b and r(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = a and f(k0) = b and r(x, k0) }","proof":[]}
+{"goal":"relation_union(r, s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[A, A](r, s, x, y)"]}
+{"goal":"u(a, b)","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = a and f(k1) = b and s(k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = a and f(k0) = b and s(x, k0) }","proof":[]}
+{"goal":"relation_union(r, s, x, y)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_union[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) or x1(x2, x3)) }[A, A](r, s, x, y)"]}
+{"goal":"u(a, b)","proof":[]}
+{"goal":"u(a, b)","proof":[]}
+{"goal":"u(a, b) = v(a, b)","proof":[]}
+{"goal":"relation_pushforward_union","proof":[]}
+{"goal":"exists(k0: A) { exists(k1: A) { f(k0) = a and f(k1) = b and relation_intersection(r, s, k0, k1) } }","proof":[]}
+{"goal":"exists(k0: A) { f(x) = a and f(k0) = b and relation_intersection(r, s, x, k0) }","proof":[]}
+{"goal":"relation_intersection(r, s, x, y) = (r(x, y) and s(x, y))","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[A, A](r, s, x, y)"]}
+{"goal":"relation_pushforward[A, B](f, r, a, b)","proof":[]}
+{"goal":"relation_pushforward[A, B](f, s, a, b)","proof":[]}
+{"goal":"relation_intersection(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), a, b)","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool, x2: T0, x3: T1) { relation_intersection[T0, T1](x0, x1, x2, x3) = (x0(x2, x3) and x1(x2, x3)) }[B, B](relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), a, b)"]}
+{"goal":"relation_pushforward_intersection_subset","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[B, B](relation_pushforward[A, B](f, relation_intersection[A, A](r, s)), relation_intersection[B, B](relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s)))","let w0: B satisfy { exists(k0: B) { relation_pushforward[A, B](f, relation_intersection[A, A](r, s), w0, k0) and not relation_intersection(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), w0, k0) } }","let w1: B satisfy { relation_pushforward[A, B](f, relation_intersection[A, A](r, s), w0, w1) and not relation_intersection(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), w0, w1) }","function(x0: B, x1: B) { not relation_pushforward[A, B](f, relation_intersection[A, A](r, s), x0, x1) or relation_intersection(relation_pushforward[A, B](f, r), relation_pushforward[A, B](f, s), x0, x1) }(w0, w1)"]}
 {"goal":"relation_pullback[A, B](f, s, x, y)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, y)","function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, s, x, y)"]}
 {"goal":"relation_pullback_monotone","proof":["function[T0, T1](x0: (T0, T1) -> Bool, x1: (T0, T1) -> Bool) { forall(x2: T0, x3: T1) { not x0(x2, x3) or x1(x2, x3) } = relation_subset[T0, T1](x0, x1) }[A, A](relation_pullback[A, B](f, r), relation_pullback[A, B](f, s))"]}
 {"goal":"relation_pullback[A, B](f, r, x, x)","proof":["function[T0, T1](x0: T0 -> T1, x1: (T1, T1) -> Bool, x2: T0, x3: T0) { relation_pullback[T0, T1](x0, x1, x2, x3) = x1(x0(x2), x0(x3)) }[A, B](f, r, x, x)"]}

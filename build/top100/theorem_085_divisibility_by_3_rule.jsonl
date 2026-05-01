@@ -1,0 +1,7 @@
+{"goal":"int_mod_rel(Nat.3, n, s)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, s, n)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, s, Int.0)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, n, Int.0)","proof":[]}
+{"goal":"int_mod_rel(Nat.3, n, Int.0) = int_mod_rel(Nat.3, s, Int.0)","proof":[]}
+{"goal":"Int.3.divides(n) = Int.3.divides(s)","proof":[]}
+{"goal":"top100_085_divisibility_by_3_rule","proof":[]}

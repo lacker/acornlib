@@ -1,5 +1,7 @@
 from nat import Nat
 from int import Int
+from int.int_arith import ten_sub_one_eq_nine, three_mul_three_eq_nine
+from int.int_base import sub_zero_right
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import is_unary_congruence, is_binary_congruence
 from set import Set, equivalence_class, equivalence_class_eq_of_equiv
@@ -426,6 +428,83 @@ theorem int_mod_rel_mul_compatible(n: Nat, a1: Int, a2: Int, b1: Int, b2: Int) {
         m.divides(a1 * b1 - a2 * b2)
         int_mod_rel(n, a1 * b1, a2 * b2)
     }
+}
+
+/// Multiplying on the right preserves the congruence from 10 to 1 modulo 3.
+theorem int_mod_rel_mul_right_self_mod3(x: Int) {
+    int_mod_rel(Nat.3, Int.10, Int.1) implies int_mod_rel(Nat.3, Int.10 * x, Int.1 * x)
+} by {
+    int_mod_rel_mul_compatible(Nat.3, Int.10, Int.1, x, x)
+}
+
+/// One decimal-read step is congruent to adding the read digit modulo 3,
+/// assuming 10 is congruent to 1 modulo 3.
+theorem int_read_mod3_step_if_ten_mod_one(x: Int, d: Int) {
+    int_mod_rel(Nat.3, Int.10, Int.1) implies int_mod_rel(Nat.3, x.read(d), x + d)
+} by {
+    x.read(d) = Int.10 * x + d
+    int_mod_rel(Nat.3, Int.10 * x, Int.1 * x)
+    int_mod_rel(Nat.3, d, d)
+    int_mod_rel_add_compatible(Nat.3, Int.10 * x, Int.1 * x, d, d)
+    Int.1 * x = x
+    int_mod_rel(Nat.3, x.read(d), x + d)
+}
+
+/// Ten is congruent to one modulo three.
+theorem int_mod_rel_ten_one_mod3 {
+    int_mod_rel(Nat.3, Int.10, Int.1)
+} by {
+    ten_sub_one_eq_nine
+    three_mul_three_eq_nine
+    Int.3.divides(Int.3)
+    (Int.3 * Int.1).divides(Int.3 * Int.3)
+    Int.3 * Int.1 = Int.3
+    Int.3.divides(Int.9)
+    Int.from_nat(Nat.3) = Int.3
+    Int.from_nat(Nat.3).divides(Int.10 - Int.1)
+}
+
+/// One decimal-read step is congruent to adding the read digit modulo 3.
+theorem int_read_mod3_step(x: Int, d: Int) {
+    int_mod_rel(Nat.3, x.read(d), x + d)
+} by {
+    int_mod_rel_ten_one_mod3
+    int_read_mod3_step_if_ten_mod_one(x, d)
+}
+
+/// Reading the same decimal digit preserves congruence modulo 3.
+theorem int_read_mod3_compatible(x: Int, y: Int, d: Int) {
+    int_mod_rel(Nat.3, x, y) implies int_mod_rel(Nat.3, x.read(d), y.read(d))
+} by {
+    int_read_mod3_step(x, d)
+    int_read_mod3_step(y, d)
+    int_mod_rel(Nat.3, d, d)
+    int_mod_rel_add_compatible(Nat.3, x, y, d, d)
+    int_mod_rel(Nat.3, x + d, y + d)
+    int_mod_rel_is_equivalence(Nat.3)
+    int_mod_rel(Nat.3, x.read(d), x + d)
+    int_mod_rel(Nat.3, y.read(d), y + d)
+    int_mod_rel(Nat.3, x + d, y.read(d))
+    int_mod_rel(Nat.3, x.read(d), y.read(d))
+}
+
+/// Congruence to zero modulo `n` is divisibility by `n`.
+theorem int_mod_rel_zero_iff_divides(n: Nat, a: Int) {
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)
+} by {
+    sub_zero_right(a)
+    a - Int.0 = a
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a - Int.0)
+    int_mod_rel(n, a, Int.0) = Int.from_nat(n).divides(a)
+}
+
+/// Congruence to zero modulo 3 is divisibility by the integer 3.
+theorem int_mod_rel_zero_iff_int_three_divides(a: Int) {
+    int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)
+} by {
+    int_mod_rel_zero_iff_divides(Nat.3, a)
+    Int.from_nat(Nat.3) = Int.3
+    int_mod_rel(Nat.3, a, Int.0) = Int.3.divides(a)
 }
 
 /// Congruence modulo `n` respects integer multiplication as a binary operation.
