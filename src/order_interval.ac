@@ -1,7 +1,8 @@
 /// Interval predicates for linear orders.
 
 from order import LinearOrder, lte_trans, lte_antisymm, lt_trans, lt_imp_lte, not_lt_ref,
-    gt_imp_not_lte, lt_of_lte_of_lt, lt_of_lt_of_lte
+    gt_imp_not_lte, lt_of_lte_of_lt, lt_of_lt_of_lte, lte_min_of_bounds, lte_max_left,
+    max_eq_left_of_gte, max_eq_right_of_lte, min_eq_left_of_lte, min_eq_right_of_gte
 
 /// True if an element lies in the closed interval with endpoints `a` and `b`.
 define closed_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
@@ -23,6 +24,11 @@ define right_open_interval[L: LinearOrder](a: L, b: L, x: L) -> Bool {
     a <= x and x < b
 }
 
+/// The point obtained by forcing an element into the closed interval with the given endpoints.
+define clamp[L: LinearOrder](a: L, b: L, x: L) -> L {
+    a.max(x).min(b)
+}
+
 /// Membership in a closed interval is the conjunction of the endpoint inequalities.
 theorem closed_interval_at[L: LinearOrder](a: L, b: L, x: L) {
     closed_interval(a, b, x) = (a <= x and x <= b)
@@ -41,6 +47,11 @@ theorem left_open_interval_at[L: LinearOrder](a: L, b: L, x: L) {
 /// Membership in a right-open interval is the conjunction of the endpoint inequalities.
 theorem right_open_interval_at[L: LinearOrder](a: L, b: L, x: L) {
     right_open_interval(a, b, x) = (a <= x and x < b)
+}
+
+/// Clamping is defined as the minimum of the upper endpoint and the maximum of the lower endpoint and the element.
+theorem clamp_at[L: LinearOrder](a: L, b: L, x: L) {
+    clamp(a, b, x) = a.max(x).min(b)
 }
 
 /// The endpoint inequalities determine membership in a closed interval.
@@ -67,6 +78,95 @@ theorem closed_interval_right[L: LinearOrder](a: L, b: L, x: L) {
 } by {
     if closed_interval(a, b, x) {
         x <= b
+    }
+}
+
+/// A clamp is above the lower endpoint when the endpoints are ordered.
+theorem lte_clamp_of_lte_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b implies a <= clamp(a, b, x)
+} by {
+    if a <= b {
+        lte_max_left(a, x)
+        a <= a.max(x)
+        lte_min_of_bounds(a, a.max(x), b)
+        a <= a.max(x).min(b)
+        a <= clamp(a, b, x)
+    }
+}
+
+/// A clamp is below the upper endpoint.
+theorem clamp_lte_right[L: LinearOrder](a: L, b: L, x: L) {
+    clamp(a, b, x) <= b
+} by {
+    min_eq_left_of_lte(a.max(x), b)
+    if a.max(x) <= b {
+        clamp(a, b, x) = a.max(x)
+        a.max(x) <= b
+        clamp(a, b, x) <= b
+    } else {
+        min_eq_right_of_gte(a.max(x), b)
+        clamp(a, b, x) = b
+        clamp(a, b, x) <= b
+    }
+}
+
+/// A clamp belongs to the closed interval when the endpoints are ordered.
+theorem clamp_in_closed_interval[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b implies closed_interval(a, b, clamp(a, b, x))
+} by {
+    if a <= b {
+        lte_clamp_of_lte_endpoints(a, b, x)
+        a <= clamp(a, b, x)
+        clamp_lte_right(a, b, x)
+        clamp(a, b, x) <= b
+        closed_interval(a, b, clamp(a, b, x))
+    }
+}
+
+/// Clamping fixes elements already in the closed interval.
+theorem clamp_eq_self_of_closed_interval[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) implies clamp(a, b, x) = x
+} by {
+    if closed_interval(a, b, x) {
+        closed_interval_left(a, b, x)
+        a <= x
+        max_eq_right_of_lte(a, x)
+        a.max(x) = x
+        closed_interval_right(a, b, x)
+        x <= b
+        min_eq_left_of_lte(x, b)
+        x.min(b) = x
+        clamp(a, b, x) = x
+    }
+}
+
+/// Clamping an element below the lower endpoint gives the lower endpoint when the endpoints are ordered.
+theorem clamp_eq_left_of_lte_of_lte[L: LinearOrder](a: L, b: L, x: L) {
+    x <= a and a <= b implies clamp(a, b, x) = a
+} by {
+    if x <= a and a <= b {
+        a >= x
+        max_eq_left_of_gte(a, x)
+        a.max(x) = a
+        min_eq_left_of_lte(a, b)
+        a.min(b) = a
+        clamp(a, b, x) = a
+    }
+}
+
+/// Clamping an element above the upper endpoint gives the upper endpoint when the endpoints are ordered.
+theorem clamp_eq_right_of_lte_of_lte[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b and b <= x implies clamp(a, b, x) = b
+} by {
+    if a <= b and b <= x {
+        lte_trans(a, b, x)
+        a <= x
+        max_eq_right_of_lte(a, x)
+        a.max(x) = x
+        x >= b
+        min_eq_right_of_gte(x, b)
+        x.min(b) = b
+        clamp(a, b, x) = b
     }
 }
 

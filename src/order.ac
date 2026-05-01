@@ -50,6 +50,27 @@ theorem gte_refl[P: PartialOrder](a: P) {
 }
 
 /// Every element is below itself.
+theorem lte_ref[P: PartialOrder](a: P) {
+    a <= a
+} by {
+    lte_refl(a)
+}
+
+/// Every element is below itself.
+theorem lte_self[P: PartialOrder](a: P) {
+    a <= a
+} by {
+    lte_refl(a)
+}
+
+/// Every element is above itself.
+theorem gte_self[P: PartialOrder](a: P) {
+    a >= a
+} by {
+    gte_refl(a)
+}
+
+/// Every element is below itself.
 theorem le_refl[P: PartialOrder](a: P) {
     a <= a
 } by {
@@ -109,6 +130,16 @@ theorem lte_antisymm[P: PartialOrder](a: P, b: P) {
 } by {
     if a <= b and b <= a {
         antisymmetric_eq(P.lte, a, b)
+        a = b
+    }
+}
+
+/// Mutual non-strict bounds force equality.
+theorem lte_both_ways_imp_eq[P: PartialOrder](a: P, b: P) {
+    a <= b and b <= a implies a = b
+} by {
+    if a <= b and b <= a {
+        lte_antisymm(a, b)
         a = b
     }
 }
@@ -560,6 +591,13 @@ theorem not_lt_ref[P: PartialOrder](a: P) {
 }
 
 /// No element is strictly below itself.
+theorem lt_not_ref[P: PartialOrder](a: P) {
+    not (a < a)
+} by {
+    not_lt_ref(a)
+}
+
+/// No element is strictly below itself.
 theorem lt_irrefl[P: PartialOrder](a: P) {
     not (a < a)
 } by {
@@ -790,6 +828,16 @@ theorem not_lt_both_ways[P: PartialOrder](a: P, b: P) {
             a != b
             false
         }
+    }
+}
+
+/// A strict comparison rules out the swapped strict comparison.
+theorem lt_not_symm[P: PartialOrder](a: P, b: P) {
+    a < b implies not (b < a)
+} by {
+    if a < b {
+        not_lt_both_ways(a, b)
+        not (b < a)
     }
 }
 

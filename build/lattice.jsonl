@@ -1,0 +1,79 @@
+{"goal":"meet_lte_left","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0) { x0.meet(x1) <= x0 }[S](a, b)"]}
+{"goal":"meet_lte_right","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0) { x0.meet(x1) <= x1 }[S](a, b)"]}
+{"goal":"lte_meet_of_bounds","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x0 <= x2 or x0 <= x1.meet(x2) }[S](c, a, b)","c <= b","c <= a","not c <= a"]}
+{"goal":"c <= a","proof":["not a.meet(b) <= a or not c <= a.meet(b)","not c <= a.meet(b)"]}
+{"goal":"c <= b","proof":["not a.meet(b) <= b or not c <= a.meet(b)","not c <= a.meet(b)"]}
+{"goal":"c <= a and c <= b","proof":["not c <= a"]}
+{"goal":"c <= a.meet(b)","proof":["not c <= b or not c <= a","c <= b","c <= a","not c <= a"]}
+{"goal":"c <= a.meet(b) = (c <= a and c <= b)","proof":["c <= a and c <= b or c <= a.meet(b)","not (c <= a and c <= b) or not c <= a.meet(b)","c <= a and c <= b","not c <= a.meet(b)","c <= a.meet(b)"]}
+{"goal":"lte_meet_iff","proof":[]}
+{"goal":"lte_join_left","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x0.join(x1) }[S](a, b)"]}
+{"goal":"lte_join_right","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x1.join(x0) }[S](b, a)"]}
+{"goal":"join_lte_of_bounds","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or not x2 <= x1 or x0.join(x2) <= x1 }[S](a, c, b)","b <= c","a <= c","not a <= c"]}
+{"goal":"a <= c","proof":["not a.join(b) <= c or not a <= a.join(b)","not a.join(b) <= c"]}
+{"goal":"b <= c","proof":["not a.join(b) <= c or not b <= a.join(b)","not a.join(b) <= c"]}
+{"goal":"a <= c and b <= c","proof":["not a <= c"]}
+{"goal":"a.join(b) <= c","proof":["not b <= c or not a <= c","b <= c","a <= c","not a <= c"]}
+{"goal":"a.join(b) <= c = (a <= c and b <= c)","proof":["a <= c and b <= c or a.join(b) <= c","not (a <= c and b <= c) or not a.join(b) <= c","a <= c and b <= c","not a.join(b) <= c","a.join(b) <= c"]}
+{"goal":"join_lte_iff","proof":[]}
+{"goal":"a.meet(b) <= b.meet(a)","proof":["not a.meet(b) <= b or not a.meet(b) <= a","not a.meet(b) <= b"]}
+{"goal":"b.meet(a) <= a.meet(b)","proof":["not b.meet(a) <= b or not b.meet(a) <= a","not b.meet(a) <= a"]}
+{"goal":"a.meet(b) = b.meet(a)","proof":["not b.meet(a) <= a.meet(b) or not a.meet(b) <= b.meet(a)","a.meet(b) <= b.meet(a)","not b.meet(a) <= a.meet(b)"]}
+{"goal":"meet_comm","proof":[]}
+{"goal":"a.join(b) <= b.join(a)","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x1.join(x0) }[S](a, b)","function[T0: JoinSemilattice](x0: T0, x1: T0) { x0 <= x0.join(x1) }[S](b, a)","not b <= b.join(a) or not a <= b.join(a)"]}
+{"goal":"b.join(a) <= a.join(b)","proof":["not b <= a.join(b) or not a <= a.join(b)","not b <= a.join(b)"]}
+{"goal":"a.join(b) = b.join(a)","proof":["not b.join(a) <= a.join(b) or not a.join(b) <= b.join(a)","b.join(a) <= a.join(b)","not a.join(b) <= b.join(a)"]}
+{"goal":"join_comm","proof":[]}
+{"goal":"a <= a.meet(a)","proof":["not a <= a"]}
+{"goal":"a.meet(a) = a","proof":["not a <= a.meet(a) or not a.meet(a) <= a","a <= a.meet(a)","not a.meet(a) <= a"]}
+{"goal":"meet_idem","proof":[]}
+{"goal":"a.join(a) <= a","proof":["not a <= a"]}
+{"goal":"a.join(a) = a","proof":["not a <= a.join(a) or not a.join(a) <= a","a.join(a) <= a","not a <= a.join(a)"]}
+{"goal":"join_idem","proof":[]}
+{"goal":"a.meet(b).meet(c) <= a.meet(b)","proof":[]}
+{"goal":"a.meet(b).meet(c) <= a","proof":["not a.meet(b).meet(c) <= a.meet(b) or not a.meet(b) <= a","not a.meet(b).meet(c) <= a.meet(b)"]}
+{"goal":"a.meet(b).meet(c) <= b","proof":["not a.meet(b).meet(c) <= a.meet(b) or not a.meet(b) <= b","not a.meet(b).meet(c) <= a.meet(b)"]}
+{"goal":"a.meet(b).meet(c) <= c","proof":[]}
+{"goal":"a.meet(b).meet(c) <= b.meet(c)","proof":["not a.meet(b).meet(c) <= c or not a.meet(b).meet(c) <= b","not a.meet(b).meet(c) <= b"]}
+{"goal":"a.meet(b).meet(c) <= a.meet(b.meet(c))","proof":["not a.meet(b).meet(c) <= b.meet(c) or not a.meet(b).meet(c) <= a","not a.meet(b).meet(c) <= b.meet(c)"]}
+{"goal":"a.meet(b.meet(c)) <= a","proof":[]}
+{"goal":"a.meet(b.meet(c)) <= b.meet(c)","proof":[]}
+{"goal":"a.meet(b.meet(c)) <= b","proof":["not a.meet(b.meet(c)) <= b.meet(c) or not b.meet(c) <= b","not a.meet(b.meet(c)) <= b.meet(c)"]}
+{"goal":"a.meet(b.meet(c)) <= c","proof":["not a.meet(b.meet(c)) <= b.meet(c) or not b.meet(c) <= c","not a.meet(b.meet(c)) <= b.meet(c)"]}
+{"goal":"a.meet(b.meet(c)) <= a.meet(b)","proof":["not a.meet(b.meet(c)) <= b or not a.meet(b.meet(c)) <= a","not a.meet(b.meet(c)) <= a"]}
+{"goal":"a.meet(b.meet(c)) <= a.meet(b).meet(c)","proof":["not a.meet(b.meet(c)) <= a.meet(b) or not a.meet(b.meet(c)) <= c","not a.meet(b.meet(c)) <= a.meet(b)"]}
+{"goal":"a.meet(b).meet(c) = a.meet(b.meet(c))","proof":["not a.meet(b.meet(c)) <= a.meet(b).meet(c) or not a.meet(b).meet(c) <= a.meet(b.meet(c))","a.meet(b.meet(c)) <= a.meet(b)","a.meet(b.meet(c)) <= a.meet(b).meet(c)","not a.meet(b).meet(c) <= a.meet(b.meet(c))"]}
+{"goal":"meet_assoc","proof":[]}
+{"goal":"a <= a.join(b)","proof":[]}
+{"goal":"a <= a.join(b).join(c)","proof":["not a.join(b) <= a.join(b).join(c) or not a <= a.join(b)","not a.join(b) <= a.join(b).join(c)"]}
+{"goal":"b <= a.join(b)","proof":[]}
+{"goal":"b <= a.join(b).join(c)","proof":["not a.join(b) <= a.join(b).join(c) or not b <= a.join(b)","not a.join(b) <= a.join(b).join(c)"]}
+{"goal":"c <= a.join(b).join(c)","proof":[]}
+{"goal":"b.join(c) <= a.join(b).join(c)","proof":["not c <= a.join(b).join(c) or not b <= a.join(b).join(c)","not b <= a.join(b).join(c)"]}
+{"goal":"a.join(b.join(c)) <= a.join(b).join(c)","proof":["not b.join(c) <= a.join(b).join(c) or not a <= a.join(b).join(c)","not b.join(c) <= a.join(b).join(c)"]}
+{"goal":"a <= a.join(b.join(c))","proof":[]}
+{"goal":"b.join(c) <= a.join(b.join(c))","proof":[]}
+{"goal":"b <= a.join(b.join(c))","proof":["not b.join(c) <= a.join(b.join(c)) or not b <= b.join(c)","not b.join(c) <= a.join(b.join(c))"]}
+{"goal":"c <= a.join(b.join(c))","proof":["not b.join(c) <= a.join(b.join(c)) or not c <= b.join(c)","not b.join(c) <= a.join(b.join(c))"]}
+{"goal":"a.join(b) <= a.join(b.join(c))","proof":["not b <= a.join(b.join(c)) or not a <= a.join(b.join(c))","not a <= a.join(b.join(c))"]}
+{"goal":"a.join(b).join(c) <= a.join(b.join(c))","proof":["not a.join(b) <= a.join(b.join(c)) or not c <= a.join(b.join(c))","not a.join(b) <= a.join(b.join(c))"]}
+{"goal":"a.join(b).join(c) = a.join(b.join(c))","proof":["not a.join(b.join(c)) <= a.join(b).join(c) or not a.join(b).join(c) <= a.join(b.join(c))","a.join(b) <= a.join(b.join(c))","a.join(b).join(c) <= a.join(b.join(c))","not a.join(b.join(c)) <= a.join(b).join(c)"]}
+{"goal":"join_assoc","proof":[]}
+{"goal":"a.meet(c) <= b","proof":["not a.meet(c) <= a or not a <= b","not a <= b"]}
+{"goal":"a.meet(c) <= d","proof":["not a.meet(c) <= c or not c <= d","not c <= d"]}
+{"goal":"a.meet(c) <= b.meet(d)","proof":["not a.meet(c) <= d or not a.meet(c) <= b","not a.meet(c) <= b"]}
+{"goal":"meet_lte_meet","proof":["not c <= d or not a <= b","c <= d","a <= b","not a <= b"]}
+{"goal":"a <= b.join(d)","proof":["not b <= b.join(d) or not a <= b","not a <= b"]}
+{"goal":"c <= b.join(d)","proof":["not d <= b.join(d) or not c <= d","not c <= d"]}
+{"goal":"a.join(c) <= b.join(d)","proof":["not c <= b.join(d) or not a <= b.join(d)","not a <= b.join(d)"]}
+{"goal":"join_lte_join","proof":["not c <= d or not a <= b","c <= d","a <= b","not a <= b"]}
+{"goal":"a.meet(a.join(b)) <= a","proof":[]}
+{"goal":"a <= a.join(b)","proof":[]}
+{"goal":"a <= a.meet(a.join(b))","proof":["not a <= a.join(b) or not a <= a","not a <= a.join(b)"]}
+{"goal":"a.meet(a.join(b)) = a","proof":["not a <= a.meet(a.join(b)) or not a.meet(a.join(b)) <= a","a <= a.meet(a.join(b))","not a.meet(a.join(b)) <= a"]}
+{"goal":"meet_absorb_join","proof":[]}
+{"goal":"a <= a.join(a.meet(b))","proof":[]}
+{"goal":"a.meet(b) <= a","proof":[]}
+{"goal":"a.join(a.meet(b)) <= a","proof":["not a.meet(b) <= a or not a <= a","not a.meet(b) <= a"]}
+{"goal":"a.join(a.meet(b)) = a","proof":["not a <= a.join(a.meet(b)) or not a.join(a.meet(b)) <= a","a.join(a.meet(b)) <= a","not a <= a.join(a.meet(b))"]}
+{"goal":"join_absorb_meet","proof":[]}
