@@ -3,7 +3,6 @@
 Goal: stabilize the base order hierarchy so later order-theoretic and ordered-algebraic code can depend on one standard API.
 
 - [ ] Unify the order APIs for `Nat`, `Int`, `Rat`, and `Real`
-- [ ] Continue the `order.ac` audit for remaining linear-order naming gaps outside the centralized `min`/`max` bound API
 - [ ] Decide whether Acornlib needs a `Preorder` layer below `PartialOrder`
 
 Status:
@@ -14,3 +13,4 @@ Status:
 - Unbundled order-data predicates and equality transport/extensionality lemmas now live in `src/order_relation.ac`, including strict-part and converse transport for partial-order and linear-order relations.
 - The basic comparison audit now includes Mathlib-style implication aliases in `src/order.ac` and linear-order negation aliases in `src/order_cases.ac`.
 - The central `src/order.ac` API now includes strict and non-strict `min`/`max` selector aliases plus lower-bound and upper-bound characterizations; `src/real/real_base.ac` imports its basic `min`/`max` facts from `order.ac`.
+- The `order.ac` naming audit now includes central `le`/`ge` aliases for reflexivity, transitivity, antisymmetry, equality-to-bound lemmas, strict-to-nonstrict lemmas, negation lemmas, strict/equality decompositions, totality disjunctions, and failed-comparison consequences.
