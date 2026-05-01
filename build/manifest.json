@@ -92,6 +92,7 @@
     "semiring": "a9e2a52a901c480363ff641631c280bdbbf6fe964eda9fb83b22cd0d4eb5fcb5",
     "semiring.base": "94dd496430c9957eec7aa056623b515311acbc2db78213cebdadde678844bcf3",
     "semiring.from_nat": "bc48065c0aa4c8cc0688df7ae0ab8239b3683343870fc15c765b48c600896c29",
+    "semiring_hom": "b7320fd02dbdd2ed4194aa3a6a31907b8cfab066f00f247bf2b0523b22506798",
     "set": "8474a3a6b24f9eb392aa82ecd7295c3ce4fb51637aef800c40c18c91e82cff4b",
     "subgroup": "fbcb1bdf79254732d83b76167476d6315a160ce086849ee8cf28b01fbaa96889",
     "submonoid": "8832dfaf5afb0b24bf69a4a8807fdefd1a2dfcf37c8436a2cd8461488a795b20",
