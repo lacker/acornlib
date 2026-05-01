@@ -69,29 +69,29 @@
 {"goal":"c <= b.join(d)","proof":[]}
 {"goal":"a.join(c) <= b.join(d)","proof":[]}
 {"goal":"join_lte_join","proof":[]}
-{"goal":"a.meet(c) <= b.meet(c)","proof":["not c <= c or not a <= b","not a <= b"]}
-{"goal":"meet_lte_meet_left","proof":["not a <= b"]}
-{"goal":"a.meet(b) <= a.meet(c)","proof":["not a <= a or not b <= c","not b <= c"]}
-{"goal":"meet_lte_meet_right","proof":["not b <= c"]}
-{"goal":"a.join(c) <= b.join(c)","proof":["not c <= c or not a <= b","not a <= b"]}
-{"goal":"join_lte_join_left","proof":["not a <= b"]}
-{"goal":"a.join(b) <= a.join(c)","proof":["not a <= a or not b <= c","not b <= c"]}
-{"goal":"join_lte_join_right","proof":["not b <= c"]}
-{"goal":"a <= b","proof":["not a.meet(b) <= b"]}
+{"goal":"a.meet(c) <= b.meet(c)","proof":[]}
+{"goal":"meet_lte_meet_left","proof":[]}
+{"goal":"a.meet(b) <= a.meet(c)","proof":[]}
+{"goal":"meet_lte_meet_right","proof":[]}
+{"goal":"a.join(c) <= b.join(c)","proof":[]}
+{"goal":"join_lte_join_left","proof":[]}
+{"goal":"a.join(b) <= a.join(c)","proof":[]}
+{"goal":"join_lte_join_right","proof":[]}
+{"goal":"a <= b","proof":[]}
 {"goal":"a.meet(b) <= a","proof":[]}
-{"goal":"a <= a.meet(b)","proof":["not a <= b or not a <= a","not a <= b"]}
-{"goal":"a.meet(b) = a","proof":["not a <= a.meet(b) or not a.meet(b) <= a","a <= a.meet(b)","not a.meet(b) <= a"]}
-{"goal":"a.meet(b) = a = a <= b","proof":["a <= b or a.meet(b) = a","a <= b","a.meet(b) = a","a.meet(b) != a"]}
+{"goal":"a <= a.meet(b)","proof":[]}
+{"goal":"a.meet(b) = a","proof":[]}
+{"goal":"a.meet(b) = a = a <= b","proof":[]}
 {"goal":"meet_eq_left_iff_lte","proof":[]}
-{"goal":"a.meet(b) = b = b <= a","proof":["b.meet(a) = b != b <= a"]}
+{"goal":"a.meet(b) = b = b <= a","proof":[]}
 {"goal":"meet_eq_right_iff_lte","proof":[]}
-{"goal":"b <= a","proof":["not b <= a.join(b)"]}
+{"goal":"b <= a","proof":[]}
 {"goal":"a <= a.join(b)","proof":[]}
-{"goal":"a.join(b) <= a","proof":["not b <= a or not a <= a","not b <= a"]}
-{"goal":"a.join(b) = a","proof":["not a <= a.join(b) or not a.join(b) <= a","a.join(b) <= a","not a <= a.join(b)"]}
-{"goal":"a.join(b) = a = b <= a","proof":["b <= a or a.join(b) = a","b <= a","a.join(b) = a","a.join(b) != a"]}
+{"goal":"a.join(b) <= a","proof":[]}
+{"goal":"a.join(b) = a","proof":[]}
+{"goal":"a.join(b) = a = b <= a","proof":[]}
 {"goal":"join_eq_left_iff_lte","proof":[]}
-{"goal":"a.join(b) = b = a <= b","proof":["b.join(a) = b != a <= b"]}
+{"goal":"a.join(b) = b = a <= b","proof":[]}
 {"goal":"join_eq_right_iff_lte","proof":[]}
 {"goal":"a.meet(a.join(b)) <= a","proof":[]}
 {"goal":"a <= a.join(b)","proof":[]}
