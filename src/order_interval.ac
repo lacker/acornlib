@@ -65,11 +65,31 @@ theorem closed_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
     }
 }
 
+/// Endpoint inequalities give membership in a closed interval.
+theorem closed_interval_of_le_of_le[L: LinearOrder](a: L, b: L, x: L) {
+    a <= x and x <= b implies closed_interval(a, b, x)
+} by {
+    if a <= x and x <= b {
+        closed_interval_intro(a, b, x)
+        closed_interval(a, b, x)
+    }
+}
+
 /// The lower endpoint inequality follows from membership in a closed interval.
 theorem closed_interval_left[L: LinearOrder](a: L, b: L, x: L) {
     closed_interval(a, b, x) implies a <= x
 } by {
     if closed_interval(a, b, x) {
+        a <= x
+    }
+}
+
+/// Membership in a closed interval gives the lower endpoint inequality.
+theorem le_of_closed_interval_left[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) implies a <= x
+} by {
+    if closed_interval(a, b, x) {
+        closed_interval_left(a, b, x)
         a <= x
     }
 }
@@ -83,6 +103,16 @@ theorem closed_interval_right[L: LinearOrder](a: L, b: L, x: L) {
     }
 }
 
+/// Membership in a closed interval gives the upper endpoint inequality.
+theorem le_of_closed_interval_right[L: LinearOrder](a: L, b: L, x: L) {
+    closed_interval(a, b, x) implies x <= b
+} by {
+    if closed_interval(a, b, x) {
+        closed_interval_right(a, b, x)
+        x <= b
+    }
+}
+
 /// A clamp is above the lower endpoint when the endpoints are ordered.
 theorem lte_clamp_of_lte_endpoints[L: LinearOrder](a: L, b: L, x: L) {
     a <= b implies a <= clamp(a, b, x)
@@ -92,6 +122,16 @@ theorem lte_clamp_of_lte_endpoints[L: LinearOrder](a: L, b: L, x: L) {
         a <= a.max(x)
         lte_min_of_bounds(a, a.max(x), b)
         a <= a.max(x).min(b)
+        a <= clamp(a, b, x)
+    }
+}
+
+/// A clamp is above the lower endpoint when the endpoints are ordered.
+theorem le_clamp_of_le_endpoints[L: LinearOrder](a: L, b: L, x: L) {
+    a <= b implies a <= clamp(a, b, x)
+} by {
+    if a <= b {
+        lte_clamp_of_lte_endpoints(a, b, x)
         a <= clamp(a, b, x)
     }
 }
@@ -110,6 +150,13 @@ theorem clamp_lte_right[L: LinearOrder](a: L, b: L, x: L) {
         clamp(a, b, x) = b
         clamp(a, b, x) <= b
     }
+}
+
+/// A clamp is below the upper endpoint.
+theorem clamp_le_right[L: LinearOrder](a: L, b: L, x: L) {
+    clamp(a, b, x) <= b
+} by {
+    clamp_lte_right(a, b, x)
 }
 
 /// A clamp belongs to the closed interval when the endpoints are ordered.
@@ -229,6 +276,16 @@ theorem clamp_lte_clamp[L: LinearOrder](a: L, b: L, x: L, y: L) {
     }
 }
 
+/// Clamping is monotone in the element being clamped.
+theorem clamp_le_clamp[L: LinearOrder](a: L, b: L, x: L, y: L) {
+    x <= y implies clamp(a, b, x) <= clamp(a, b, y)
+} by {
+    if x <= y {
+        clamp_lte_clamp(a, b, x, y)
+        clamp(a, b, x) <= clamp(a, b, y)
+    }
+}
+
 /// Clamping is monotone in the lower endpoint.
 theorem clamp_lte_clamp_left[L: LinearOrder](a: L, b: L, c: L, x: L) {
     a <= b implies clamp(a, c, x) <= clamp(b, c, x)
@@ -238,6 +295,16 @@ theorem clamp_lte_clamp_left[L: LinearOrder](a: L, b: L, c: L, x: L) {
         a.max(x) <= b.max(x)
         min_lte_min_left(a.max(x), b.max(x), c)
         a.max(x).min(c) <= b.max(x).min(c)
+        clamp(a, c, x) <= clamp(b, c, x)
+    }
+}
+
+/// Clamping is monotone in the lower endpoint.
+theorem clamp_le_clamp_left[L: LinearOrder](a: L, b: L, c: L, x: L) {
+    a <= b implies clamp(a, c, x) <= clamp(b, c, x)
+} by {
+    if a <= b {
+        clamp_lte_clamp_left(a, b, c, x)
         clamp(a, c, x) <= clamp(b, c, x)
     }
 }
@@ -253,6 +320,16 @@ theorem clamp_lte_clamp_right[L: LinearOrder](a: L, b: L, c: L, x: L) {
     }
 }
 
+/// Clamping is monotone in the upper endpoint.
+theorem clamp_le_clamp_right[L: LinearOrder](a: L, b: L, c: L, x: L) {
+    b <= c implies clamp(a, b, x) <= clamp(a, c, x)
+} by {
+    if b <= c {
+        clamp_lte_clamp_right(a, b, c, x)
+        clamp(a, b, x) <= clamp(a, c, x)
+    }
+}
+
 /// Clamping is monotone in both endpoints and in the element.
 theorem clamp_lte_clamp_of_lte[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L, y: L) {
     a1 <= a2 and b1 <= b2 and x <= y implies clamp(a1, b1, x) <= clamp(a2, b2, y)
@@ -262,6 +339,16 @@ theorem clamp_lte_clamp_of_lte[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L,
         a1.max(x) <= a2.max(y)
         min_lte_min(a1.max(x), a2.max(y), b1, b2)
         a1.max(x).min(b1) <= a2.max(y).min(b2)
+        clamp(a1, b1, x) <= clamp(a2, b2, y)
+    }
+}
+
+/// Clamping is monotone in both endpoints and in the element.
+theorem clamp_le_clamp_of_le[L: LinearOrder](a1: L, a2: L, b1: L, b2: L, x: L, y: L) {
+    a1 <= a2 and b1 <= b2 and x <= y implies clamp(a1, b1, x) <= clamp(a2, b2, y)
+} by {
+    if a1 <= a2 and b1 <= b2 and x <= y {
+        clamp_lte_clamp_of_lte(a1, a2, b1, b2, x, y)
         clamp(a1, b1, x) <= clamp(a2, b2, y)
     }
 }
@@ -293,6 +380,16 @@ theorem open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
     }
 }
 
+/// Strict endpoint inequalities give membership in an open interval.
+theorem open_interval_of_lt_of_lt[L: LinearOrder](a: L, b: L, x: L) {
+    a < x and x < b implies open_interval(a, b, x)
+} by {
+    if a < x and x < b {
+        open_interval_intro(a, b, x)
+        open_interval(a, b, x)
+    }
+}
+
 /// The lower strict endpoint inequality follows from membership in an open interval.
 theorem open_interval_left[L: LinearOrder](a: L, b: L, x: L) {
     open_interval(a, b, x) implies a < x
@@ -320,6 +417,16 @@ theorem left_open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
     }
 }
 
+/// Endpoint inequalities give membership in a left-open interval.
+theorem left_open_interval_of_lt_of_le[L: LinearOrder](a: L, b: L, x: L) {
+    a < x and x <= b implies left_open_interval(a, b, x)
+} by {
+    if a < x and x <= b {
+        left_open_interval_intro(a, b, x)
+        left_open_interval(a, b, x)
+    }
+}
+
 /// The lower strict endpoint inequality follows from membership in a left-open interval.
 theorem left_open_interval_left[L: LinearOrder](a: L, b: L, x: L) {
     left_open_interval(a, b, x) implies a < x
@@ -343,6 +450,16 @@ theorem right_open_interval_intro[L: LinearOrder](a: L, b: L, x: L) {
     a <= x and x < b implies right_open_interval(a, b, x)
 } by {
     if a <= x and x < b {
+        right_open_interval(a, b, x)
+    }
+}
+
+/// Endpoint inequalities give membership in a right-open interval.
+theorem right_open_interval_of_le_of_lt[L: LinearOrder](a: L, b: L, x: L) {
+    a <= x and x < b implies right_open_interval(a, b, x)
+} by {
+    if a <= x and x < b {
+        right_open_interval_intro(a, b, x)
         right_open_interval(a, b, x)
     }
 }

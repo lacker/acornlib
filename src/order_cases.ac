@@ -198,6 +198,54 @@ theorem gt_or_eq_or_lt[L: LinearOrder](a: L, b: L) {
     }
 }
 
+/// Trichotomy with equality as the final case.
+theorem lt_or_gt_or_eq[L: LinearOrder](a: L, b: L) {
+    a < b or a > b or a = b
+} by {
+    if a = b {
+        a < b or a > b or a = b
+    } else {
+        lt_or_gt_of_ne(a, b)
+        if a < b {
+            a < b or a > b or a = b
+        } else {
+            a > b
+            a < b or a > b or a = b
+        }
+    }
+}
+
+/// Trichotomy with the reverse strict comparison written literally.
+theorem lt_or_lt_swap_or_eq[L: LinearOrder](a: L, b: L) {
+    a < b or b < a or a = b
+} by {
+    lt_or_gt_or_eq(a, b)
+}
+
+/// Reverse trichotomy with equality as the final case.
+theorem gt_or_lt_or_eq[L: LinearOrder](a: L, b: L) {
+    a > b or a < b or a = b
+} by {
+    if a = b {
+        a > b or a < b or a = b
+    } else {
+        gt_or_lt_of_ne(a, b)
+        if a > b {
+            a > b or a < b or a = b
+        } else {
+            a < b
+            a > b or a < b or a = b
+        }
+    }
+}
+
+/// Reverse trichotomy with the reverse strict comparison written literally.
+theorem lt_swap_or_lt_or_eq[L: LinearOrder](a: L, b: L) {
+    b < a or a < b or a = b
+} by {
+    gt_or_lt_or_eq(a, b)
+}
+
 theorem eq_or_lt_or_gt[L: LinearOrder](a: L, b: L) {
     a = b or a < b or a > b
 } by {
