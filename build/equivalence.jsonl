@@ -247,3 +247,69 @@
 {"goal":"g(quotient_projection(qrel, a)) = f(a)","proof":["(forall(x0: T) { f(x0) = g(quotient_projection(qrel, x0)) } = true)","function(x0: T) { g(quotient_projection(qrel, x0)) = f(x0) }(a)"]}
 {"goal":"g(quotient_projection(qrel, a)) = quotient_lift[T, U](qrel, f, quotient_projection(qrel, a))","proof":[]}
 {"goal":"quotient_lift_unique_at_projection","proof":[]}
+{"goal":"quotient_image_set_contains_eq","proof":["function[T0](x0: Set[T0], x1: QuotientRelation[T0], x2: Quotient[T0]) { exists(k0: T0) { k0 ∈ x0 and quotient_projection[T0](x1, k0) = x2 } = quotient_image_set_pred[T0](x1, x0, x2) }[T](s, qrel, q)","function[T0](x0: QuotientRelation[T0], x1: Set[T0]) { Set.new[Quotient[T0]](quotient_image_set_pred[T0](x0, x1)) = quotient_image_set[T0](x0, x1) }[T](qrel, s)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[Quotient[T]](quotient_image_set_pred[T](qrel, s), q)"]}
+{"goal":"quotient_preimage_set_contains_eq","proof":["function[T0](x0: Set[Quotient[T0]], x1: QuotientRelation[T0], x2: T0) { quotient_projection[T0](x1, x2) ∈ x0 = quotient_preimage_set_pred[T0](x1, x0, x2) }[T](qs, qrel, a)","function[T0](x0: QuotientRelation[T0], x1: Set[Quotient[T0]]) { Set.new[T0](quotient_preimage_set_pred[T0](x0, x1)) = quotient_preimage_set[T0](x0, x1) }[T](qrel, qs)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[T](quotient_preimage_set_pred[T](qrel, qs), a)"]}
+{"goal":"qs.contains(quotient_projection(qrel, x))","proof":[]}
+{"goal":"quotient_projection(qrel, x) = quotient_projection(qrel, y)","proof":[]}
+{"goal":"qs.contains(quotient_projection(qrel, y))","proof":[]}
+{"goal":"quotient_preimage_set[T](qrel, qs).contains(y)","proof":[]}
+{"goal":"quotient_preimage_set_is_saturated","proof":["function[T0](x0: Set[T0], x1: (T0, T0) -> Bool) { forall(x2: T0, x3: T0) { not x2 ∈ x0 or not x1(x2, x3) or x3 ∈ x0 } = is_saturated_under[T0](x0, x1) }[T](quotient_preimage_set[T](qrel, qs), qrel.rel)","let w0: T satisfy { exists(k0: T) { w0 ∈ quotient_preimage_set[T](qrel, qs) and qrel.rel(w0, k0) and not k0 ∈ quotient_preimage_set[T](qrel, qs) } }","let w1: T satisfy { w0 ∈ quotient_preimage_set[T](qrel, qs) and qrel.rel(w0, w1) and not w1 ∈ quotient_preimage_set[T](qrel, qs) }","function(x0: T, x1: T) { not x0 ∈ quotient_preimage_set[T](qrel, qs) or not qrel.rel(x0, x1) or x1 ∈ quotient_preimage_set[T](qrel, qs) }(w0, w1)"]}
+{"goal":"is_saturated_under[T](s, r) = forall(x0: T, x1: T) { s.contains(x0) and r(x0, x1) implies s.contains(x1) }","proof":["function[T0](x0: Set[T0], x1: (T0, T0) -> Bool) { forall(x2: T0, x3: T0) { not x2 ∈ x0 or not x1(x2, x3) or x3 ∈ x0 } = is_saturated_under[T0](x0, x1) }[T](s, r)"]}
+{"goal":"s.contains(y)","proof":["r(x, y)","is_saturated_under[T](s, r) and x ∈ s","(forall(x0: T, x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s } = true)","function(x0: T) { forall(x1: T) { not x0 ∈ s or not r(x0, x1) or x1 ∈ s } = true }(x)","function(x0: T, x1: T) { not (x0 ∈ s and r(x0, x1) and not x1 ∈ s) }(x, y)"]}
+{"goal":"saturated_step","proof":[]}
+{"goal":"quotient_preimage_image_contains_eq","proof":[]}
+{"goal":"exists(k0: T) { quotient_preimage_set[T](qrel, qs).contains(k0) and quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"qs.contains(quotient_projection(qrel, a))","proof":[]}
+{"goal":"qs.contains(q)","proof":[]}
+{"goal":"quotient_image_preimage_subset","proof":["let w0: Quotient[T] satisfy { w0 ∈ quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)) and not w0 ∈ qs }","function(x0: Quotient[T]) { not x0 ∈ quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)) or x0 ∈ qs }(w0)"]}
+{"goal":"exists(k0: T) { k0 = x and s.contains(k0) and quotient_projection(qrel, k0) = quotient_projection(qrel, x) }","proof":[]}
+{"goal":"quotient_image_set[T](qrel, s).contains(quotient_projection(qrel, x))","proof":[]}
+{"goal":"quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)).contains(x)","proof":[]}
+{"goal":"quotient_subset_preimage_image","proof":["let w0: T satisfy { w0 ∈ s and not w0 ∈ quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)) }","function(x0: T) { not x0 ∈ s or x0 ∈ quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)) }(w0)"]}
+{"goal":"exists(k0: T) { s.contains(k0) and quotient_projection(qrel, k0) = quotient_projection(qrel, x) }","proof":[]}
+{"goal":"s.contains(x)","proof":[]}
+{"goal":"saturated_preimage_image_subset","proof":[]}
+{"goal":"quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)).contains(x)","proof":["function(x0: T) { not x0 ∈ s or x0 ∈ quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)) }(x)"]}
+{"goal":"s.contains(x)","proof":["(forall(x0: T) { not x0 ∈ quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)) or x0 ∈ s } = true)","function(x0: T) { not (x0 ∈ quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)) and not x0 ∈ s) }(x)"]}
+{"goal":"saturated_preimage_image_iff","proof":["function[T0](x0: Set[T0], x1: T0, x2: QuotientRelation[T0]) { not x1 ∈ x0 or x1 ∈ quotient_preimage_set[T0](x2, quotient_image_set[T0](x2, x0)) }[T](s, x, qrel)"]}
+{"goal":"u.contains(x) = s.contains(x)","proof":[]}
+{"goal":"quotient_preimage_image_of_saturated","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { x0.contains != x1.contains or x0 = x1 }[T](quotient_preimage_set[T](qrel, quotient_image_set[T](qrel, s)), s)","function[T0](x0: Set[T0], x1: QuotientRelation[T0]) { not is_saturated_under[T0](x0, x1.rel) or quotient_preimage_set[T0](x1, quotient_image_set[T0](x1, x0)).contains = x0.contains }[T](s, qrel)"]}
+{"goal":"exists(k0: T) { quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"qs.contains(quotient_projection(qrel, a))","proof":[]}
+{"goal":"quotient_preimage_set[T](qrel, qs).contains(a)","proof":[]}
+{"goal":"exists(k0: T) { k0 = a and quotient_preimage_set[T](qrel, qs).contains(k0) and quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)).contains(q)","proof":["not exists(k0: T) { k0 ∈ quotient_preimage_set[T](qrel, qs) and quotient_projection(qrel, k0) = q }","function(x0: T) { not (x0 ∈ quotient_preimage_set[T](qrel, qs) and quotient_projection(qrel, x0) = q) }(a)"]}
+{"goal":"on_relation_subset_image_preimage","proof":["let w0: Quotient[T] satisfy { w0 ∈ qs and qrel.rel = w0.rel and not w0 ∈ quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)) }","function(x0: Quotient[T]) { not x0 ∈ qs or qrel.rel != x0.rel or x0 ∈ quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)) }(w0)"]}
+{"goal":"q.rel = qrel.rel","proof":[]}
+{"goal":"exists(k0: T) { quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"qs.contains(quotient_projection(qrel, a))","proof":[]}
+{"goal":"quotient_preimage_set[T](qrel, qs).contains(a)","proof":[]}
+{"goal":"exists(k0: T) { k0 = a and quotient_preimage_set[T](qrel, qs).contains(k0) and quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)).contains(q)","proof":["function[T0](x0: Set[Quotient[T0]], x1: Quotient[T0], x2: QuotientRelation[T0]) { not x1 ∈ x0 or x1.rel != x2.rel or x1 ∈ quotient_image_set[T0](x2, quotient_preimage_set[T0](x2, x0)) }[T](qs, q, qrel)"]}
+{"goal":"exists(k0: T) { quotient_preimage_set[T](qrel, qs).contains(k0) and quotient_projection(qrel, k0) = q }","proof":[]}
+{"goal":"qs.contains(quotient_projection(qrel, a))","proof":[]}
+{"goal":"qs.contains(q)","proof":[]}
+{"goal":"on_relation_image_preimage_iff","proof":["function[T0](x0: Set[Quotient[T0]], x1: Quotient[T0], x2: QuotientRelation[T0]) { not x1 ∈ x0 or x1.rel != x2.rel or x1 ∈ quotient_image_set[T0](x2, quotient_preimage_set[T0](x2, x0)) }[T](qs, q, qrel)"]}
+{"goal":"u.contains(q) = qs.contains(q)","proof":["function(x0: Quotient[T]) { not x0 ∈ qs or qrel.rel = x0.rel }(q)"]}
+{"goal":"quotient_image_preimage_on_relation","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { not forall(x2: T0) { x2 ∈ x0 = x2 ∈ x1 } or x0 = x1 }[Quotient[T]](qs, quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)))","let w0: Quotient[T] satisfy { w0 ∈ qs != w0 ∈ quotient_image_set[T](qrel, quotient_preimage_set[T](qrel, qs)) }","function[T0](x0: Set[Quotient[T0]], x1: Quotient[T0], x2: QuotientRelation[T0]) { x1 ∈ x0 and x2.rel != x1.rel or x1 ∈ quotient_image_set[T0](x2, quotient_preimage_set[T0](x2, x0)) = x1 ∈ x0 }[T](qs, w0, qrel)","function(x0: Quotient[T]) { not x0 ∈ qs or qrel.rel = x0.rel }(w0)"]}
+{"goal":"f(x) = f(x)","proof":[]}
+{"goal":"kernel_relation[T, U](f, x, x)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, x, x)"]}
+{"goal":"kernel_relation_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[T](kernel_relation[T, U](f))","let w0: T satisfy { not kernel_relation[T, U](f, w0, w0) }","function(x0: T) { kernel_relation[T, U](f, x0, x0) }(w0)"]}
+{"goal":"f(x) = f(y)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, x, y)"]}
+{"goal":"f(y) = f(x)","proof":[]}
+{"goal":"kernel_relation[T, U](f, y, x)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, y, x)"]}
+{"goal":"kernel_relation_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[T](kernel_relation[T, U](f))","let w0: T satisfy { exists(k0: T) { kernel_relation[T, U](f, w0, k0) and not kernel_relation[T, U](f, k0, w0) } }","let w1: T satisfy { kernel_relation[T, U](f, w0, w1) and not kernel_relation[T, U](f, w1, w0) }","function(x0: T, x1: T) { not kernel_relation[T, U](f, x0, x1) or kernel_relation[T, U](f, x1, x0) }(w0, w1)"]}
+{"goal":"f(x) = f(y)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, x, y)"]}
+{"goal":"f(y) = f(z)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, y, z)"]}
+{"goal":"f(x) = f(z)","proof":[]}
+{"goal":"kernel_relation[T, U](f, x, z)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, x, z)"]}
+{"goal":"kernel_relation_is_transitive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0, x3: T0) { not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) } = is_transitive[T0](x0) }[T](kernel_relation[T, U](f))","let w0: T satisfy { exists(k0: T, k1: T) { kernel_relation[T, U](f, w0, k0) and kernel_relation[T, U](f, k0, k1) and not kernel_relation[T, U](f, w0, k1) } }","let w1: T satisfy { exists(k2: T) { kernel_relation[T, U](f, w0, w1) and kernel_relation[T, U](f, w1, k2) and not kernel_relation[T, U](f, w0, k2) } }","let w2: T satisfy { kernel_relation[T, U](f, w0, w1) and kernel_relation[T, U](f, w1, w2) and not kernel_relation[T, U](f, w0, w2) }","function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, w0, w2)","function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, w0, w1)","function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, w1, w2)"]}
+{"goal":"kernel_relation_is_equivalence","proof":["function[T0](x0: (T0, T0) -> Bool) { not is_transitive[T0](x0) or not is_symmetric[T0](x0) or not is_reflexive[T0](x0) or is_equivalence[T0](x0) }[T](kernel_relation[T, U](f))"]}
+{"goal":"exists(k0: QuotientRelation[T]) { QuotientRelation.new[T](kernel_relation[T, U](f)) = Option.some(k0) }","proof":["function[T0](x0: (T0, T0) -> Bool) { not QuotientRelation.constraint[T0](x0) or exists(k0: QuotientRelation[T0]) { QuotientRelation.new[T0](x0) = Option.some[QuotientRelation[T0]](k0) } }[T](kernel_relation[T, U](f))"]}
+{"goal":"QuotientRelation.new[T](kernel_relation[T, U](f)) = Option.some(kernel_quotient_relation[T, U](f))","proof":["function[T0, T1](x0: T0 -> T1) { Option.some[QuotientRelation[T0]](kernel_quotient_relation[T0, T1](x0)) = QuotientRelation.new[T0](kernel_relation[T0, T1](x0)) }[T, U](f)"]}
+{"goal":"kernel_quotient_relation_rel","proof":[]}
+{"goal":"kernel_relation[T, U](f, a, b)","proof":[]}
+{"goal":"f(a) = f(b)","proof":["function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, a, b)"]}
+{"goal":"kernel_relation_respects","proof":["function[T0, T2](x0: QuotientRelation[T0], x1: T0 -> T2) { forall(x2: T0, x3: T0) { not x0.rel(x2, x3) or x1(x3) = x1(x2) } = quotient_respects[T0, T2](x0, x1) }[T, U](kernel_quotient_relation[T, U](f), f)","let w0: T satisfy { exists(k0: T) { kernel_quotient_relation[T, U](f).rel(w0, k0) and f(k0) != f(w0) } }","let w1: T satisfy { kernel_quotient_relation[T, U](f).rel(w0, w1) and f(w1) != f(w0) }","function(x0: T, x1: T) { not kernel_quotient_relation[T, U](f).rel(x0, x1) or f(x0) = f(x1) }(w0, w1)"]}
+{"goal":"kernel_lift_projection","proof":["function[T0, T1: Inhabited](x0: T0 -> T1, x1: Quotient[T0]) { quotient_lift[T0, T1](kernel_quotient_relation[T0, T1](x0), x0, x1) = kernel_lift[T0, T1](x0, x1) }[T, U](f, quotient_projection(kernel_quotient_relation[T, U](f), a))"]}
+{"goal":"kernel_quotient_projection_eq_iff","proof":["function(x0: T, x1: T) { kernel_quotient_relation[T, U](f).rel(x0, x1) = kernel_relation[T, U](f, x0, x1) }(a, b)","function[T0, T1](x0: T0 -> T1, x1: T0, x2: T0) { kernel_relation[T0, T1](x0, x1, x2) = (x0(x1) = x0(x2)) }[T, U](f, a, b)"]}

@@ -21,7 +21,12 @@ concurrency:
 
 jobs:
   autofix:
-    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'autofix'
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == 'lacker') ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.action == 'labeled' &&
+       github.event.label.name == 'autofix' &&
+       github.event.sender.login == 'lacker')
     runs-on: ubuntu-latest
 
     env:
@@ -219,10 +224,6 @@ jobs:
             } | sort -zu
           )
 
-          if (( ${#verify_changes[@]} == 0 )); then
-            fail "\`acorn verify\` succeeded, but it did not update any files under \`build/\`."
-          fi
-
           bad_verify_changes=()
           for file in "${verify_changes[@]}"; do
             if [[ "$file" != build/* ]]; then
@@ -240,10 +241,12 @@ jobs:
             exit 1
           fi
 
-          git add -- "${verify_changes[@]}"
+          if (( ${#verify_changes[@]} > 0 )); then
+            git add -- "${verify_changes[@]}"
+          fi
 
           if git diff --cached --quiet; then
-            fail "There were no staged changes to commit after \`acorn verify\`."
+            fail "\`acorn verify\` succeeded, but there were no merge or generated build changes to commit."
           fi
 
           git commit -m "Autofix build conflicts for PR #$PR_NUMBER"

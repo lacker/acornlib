@@ -1,0 +1,25 @@
+{"goal":"is_normal_subgroup[G](s) = forall(x0: G, x1: G) { s.contains(x1) implies s.contains(x0 * x1 * x0.inverse) }","proof":["function[T0: Group](x0: Subgroup[T0]) { forall(x1: T0, x2: T0) { not x2 ∈ x0 or x1 * x2 * x1.inverse ∈ x0 } = is_normal_subgroup[T0](x0) }[G](s)"]}
+{"goal":"s.contains(g * n * g.inverse)","proof":["is_normal_subgroup[G](s)","n ∈ s","(forall(x0: G, x1: G) { not x1 ∈ s or x0 * x1 * x0.inverse ∈ s } = true)","function(x0: G) { forall(x1: G) { not x1 ∈ s or x0 * x1 * x0.inverse ∈ s } = true }(g)","function(x0: G, x1: G) { not (x0 ∈ s and not x1 * x0 * x1.inverse ∈ s) }(n, g)"]}
+{"goal":"normal_conjugate_mem","proof":[]}
+{"goal":"a * a.inverse = G.1","proof":["function[T0: Group](x0: T0) { x0 * x0.inverse = T0.1 }[G](a)"]}
+{"goal":"s.contains(G.1)","proof":[]}
+{"goal":"s.contains(a * a.inverse)","proof":[]}
+{"goal":"normal_subgroup_rel_reflexive","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, a, a)"]}
+{"goal":"s.contains(a * b.inverse)","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, a, b)"]}
+{"goal":"s.contains((a * b.inverse).inverse)","proof":[]}
+{"goal":"(a * b.inverse).inverse = b.inverse.inverse * a.inverse","proof":[]}
+{"goal":"b.inverse.inverse = b","proof":[]}
+{"goal":"(a * b.inverse).inverse = b * a.inverse","proof":[]}
+{"goal":"s.contains(b * a.inverse)","proof":[]}
+{"goal":"normal_subgroup_rel_symmetric","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, b, a)"]}
+{"goal":"a * b.inverse * (b * c.inverse) = a * (b.inverse * b) * c.inverse","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](a * b.inverse, b, c.inverse)","function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](a, b.inverse, b)"]}
+{"goal":"b.inverse * b = G.1","proof":["function[T0: Group](x0: T0) { x0.inverse * x0 = T0.1 }[G](b)"]}
+{"goal":"a * G.1 * c.inverse = a * c.inverse","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](a, G.1, c.inverse)","function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](c.inverse)"]}
+{"goal":"normal_subgroup_inv_chain","proof":[]}
+{"goal":"s.contains(a * b.inverse)","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, a, b)"]}
+{"goal":"s.contains(b * c.inverse)","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, b, c)"]}
+{"goal":"s.contains(a * b.inverse * (b * c.inverse))","proof":[]}
+{"goal":"s.contains(a * c.inverse)","proof":[]}
+{"goal":"normal_subgroup_rel_trans_at","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { x1 * x2.inverse ∈ x0 = normal_subgroup_rel[T0](x0, x1, x2) }[G](s, a, c)"]}
+{"goal":"normal_subgroup_rel_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[G](normal_subgroup_rel[G](s))","let w0: G satisfy { not normal_subgroup_rel(s, w0, w0) }","function[T0: Group](x0: Subgroup[T0], x1: T0) { normal_subgroup_rel[T0](x0, x1, x1) }[G](s, w0)"]}
+{"goal":"normal_subgroup_rel_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[G](normal_subgroup_rel[G](s))","let w0: G satisfy { exists(k0: G) { normal_subgroup_rel(s, w0, k0) and not normal_subgroup_rel(s, k0, w0) } }","let w1: G satisfy { normal_subgroup_rel(s, w0, w1) and not normal_subgroup_rel(s, w1, w0) }","function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { not normal_subgroup_rel[T0](x0, x1, x2) or normal_subgroup_rel[T0](x0, x2, x1) }[G](s, w0, w1)"]}

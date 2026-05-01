@@ -793,6 +793,174 @@ theorem relation_compose_monotone[A, B, C](
     }
 }
 
+/// Relation composition distributes over union on the left.
+theorem relation_compose_union_left[A, B, C](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_compose(relation_union(r, s), t) =
+        relation_union(relation_compose(r, t), relation_compose(s, t))
+} by {
+    let u = relation_compose(relation_union(r, s), t)
+    let v = relation_union(relation_compose(r, t), relation_compose(s, t))
+    forall(x: A, z: C) {
+        if u(x, z) {
+            relation_compose_has_witness(relation_union(r, s), t, x, z)
+            let y: B satisfy {
+                relation_union(r, s, x, y) and t(y, z)
+            }
+            relation_union(r, s, x, y) = (r(x, y) or s(x, y))
+            if r(x, y) {
+                relation_compose_intro(r, t, x, y, z)
+                relation_compose(r, t, x, z)
+                v(x, z)
+            }
+            if s(x, y) {
+                relation_compose_intro(s, t, x, y, z)
+                relation_compose(s, t, x, z)
+                v(x, z)
+            }
+            v(x, z)
+        }
+        if v(x, z) {
+            v(x, z) = (relation_compose(r, t, x, z) or relation_compose(s, t, x, z))
+            if relation_compose(r, t, x, z) {
+                relation_compose_has_witness(r, t, x, z)
+                let y: B satisfy {
+                    r(x, y) and t(y, z)
+                }
+                relation_union(r, s, x, y)
+                relation_compose_intro(relation_union(r, s), t, x, y, z)
+                u(x, z)
+            }
+            if relation_compose(s, t, x, z) {
+                relation_compose_has_witness(s, t, x, z)
+                let y: B satisfy {
+                    s(x, y) and t(y, z)
+                }
+                relation_union(r, s, x, y)
+                relation_compose_intro(relation_union(r, s), t, x, y, z)
+                u(x, z)
+            }
+            u(x, z)
+        }
+        u(x, z) = v(x, z)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Relation composition distributes over union on the right.
+theorem relation_compose_union_right[A, B, C](
+    r: (A, B) -> Bool,
+    s: (B, C) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_compose(r, relation_union(s, t)) =
+        relation_union(relation_compose(r, s), relation_compose(r, t))
+} by {
+    let u = relation_compose(r, relation_union(s, t))
+    let v = relation_union(relation_compose(r, s), relation_compose(r, t))
+    forall(x: A, z: C) {
+        if u(x, z) {
+            relation_compose_has_witness(r, relation_union(s, t), x, z)
+            let y: B satisfy {
+                r(x, y) and relation_union(s, t, y, z)
+            }
+            relation_union(s, t, y, z) = (s(y, z) or t(y, z))
+            if s(y, z) {
+                relation_compose_intro(r, s, x, y, z)
+                relation_compose(r, s, x, z)
+                v(x, z)
+            }
+            if t(y, z) {
+                relation_compose_intro(r, t, x, y, z)
+                relation_compose(r, t, x, z)
+                v(x, z)
+            }
+            v(x, z)
+        }
+        if v(x, z) {
+            v(x, z) = (relation_compose(r, s, x, z) or relation_compose(r, t, x, z))
+            if relation_compose(r, s, x, z) {
+                relation_compose_has_witness(r, s, x, z)
+                let y: B satisfy {
+                    r(x, y) and s(y, z)
+                }
+                relation_union(s, t, y, z)
+                relation_compose_intro(r, relation_union(s, t), x, y, z)
+                u(x, z)
+            }
+            if relation_compose(r, t, x, z) {
+                relation_compose_has_witness(r, t, x, z)
+                let y: B satisfy {
+                    r(x, y) and t(y, z)
+                }
+                relation_union(s, t, y, z)
+                relation_compose_intro(r, relation_union(s, t), x, y, z)
+                u(x, z)
+            }
+            u(x, z)
+        }
+        u(x, z) = v(x, z)
+    }
+    binary_function_extensionality(u, v)
+}
+
+/// Composition with an intersection on the left lies in the intersection of the compositions.
+theorem relation_compose_intersection_left_subset[A, B, C](
+    r: (A, B) -> Bool,
+    s: (A, B) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_subset(
+        relation_compose(relation_intersection(r, s), t),
+        relation_intersection(relation_compose(r, t), relation_compose(s, t))
+    )
+} by {
+    forall(x: A, z: C) {
+        if relation_compose(relation_intersection(r, s), t, x, z) {
+            relation_compose_has_witness(relation_intersection(r, s), t, x, z)
+            let y: B satisfy {
+                relation_intersection(r, s, x, y) and t(y, z)
+            }
+            relation_intersection(r, s, x, y) = (r(x, y) and s(x, y))
+            relation_compose_intro(r, t, x, y, z)
+            relation_compose(r, t, x, z)
+            relation_compose_intro(s, t, x, y, z)
+            relation_compose(s, t, x, z)
+            relation_intersection(relation_compose(r, t), relation_compose(s, t), x, z)
+        }
+    }
+}
+
+/// Composition with an intersection on the right lies in the intersection of the compositions.
+theorem relation_compose_intersection_right_subset[A, B, C](
+    r: (A, B) -> Bool,
+    s: (B, C) -> Bool,
+    t: (B, C) -> Bool
+) {
+    relation_subset(
+        relation_compose(r, relation_intersection(s, t)),
+        relation_intersection(relation_compose(r, s), relation_compose(r, t))
+    )
+} by {
+    forall(x: A, z: C) {
+        if relation_compose(r, relation_intersection(s, t), x, z) {
+            relation_compose_has_witness(r, relation_intersection(s, t), x, z)
+            let y: B satisfy {
+                r(x, y) and relation_intersection(s, t, y, z)
+            }
+            relation_intersection(s, t, y, z) = (s(y, z) and t(y, z))
+            relation_compose_intro(r, s, x, y, z)
+            relation_compose(r, s, x, z)
+            relation_compose_intro(r, t, x, y, z)
+            relation_compose(r, t, x, z)
+            relation_intersection(relation_compose(r, s), relation_compose(r, t), x, z)
+        }
+    }
+}
+
 /// The converse of a relation swaps its arguments.
 define relation_converse[A, B](r: (A, B) -> Bool, y: B, x: A) -> Bool {
     r(x, y)
@@ -1306,6 +1474,100 @@ theorem relation_symmetric_closure_subset_of_symmetric[T](r: (T, T) -> Bool, s: 
             }
         }
     }
+}
+
+/// Reflexive closure is monotone in its argument.
+theorem relation_reflexive_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies
+        relation_subset(relation_reflexive_closure(r), relation_reflexive_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_reflexive_closure(r, x, y) {
+                relation_reflexive_closure(r, x, y) = (eq_relation[T](x, y) or r(x, y))
+                if eq_relation[T](x, y) {
+                    relation_reflexive_closure(s, x, y)
+                } else {
+                    relation_subset_step(r, s, x, y)
+                    s(x, y)
+                    relation_reflexive_closure(s, x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Reflexive closure of a reflexive relation equals itself.
+theorem relation_reflexive_closure_eq_self_of_reflexive[T](r: (T, T) -> Bool) {
+    is_reflexive(r) implies relation_reflexive_closure(r) = r
+} by {
+    if is_reflexive(r) {
+        relation_reflexive_closure_subset_of_reflexive(r, r)
+        relation_subset_refl(r)
+        relation_subset(r, r)
+        relation_subset(relation_reflexive_closure(r), r)
+        relation_subset_reflexive_closure(r)
+        relation_subset(r, relation_reflexive_closure(r))
+        relation_eq_iff_subset_both(relation_reflexive_closure(r), r)
+        relation_reflexive_closure(r) = r
+    }
+}
+
+/// Reflexive closure is idempotent.
+theorem relation_reflexive_closure_idempotent[T](r: (T, T) -> Bool) {
+    relation_reflexive_closure(relation_reflexive_closure(r)) = relation_reflexive_closure(r)
+} by {
+    relation_reflexive_closure_is_reflexive(r)
+    relation_reflexive_closure_eq_self_of_reflexive(relation_reflexive_closure(r))
+}
+
+/// Symmetric closure is monotone in its argument.
+theorem relation_symmetric_closure_monotone[T](r: (T, T) -> Bool, s: (T, T) -> Bool) {
+    relation_subset(r, s) implies
+        relation_subset(relation_symmetric_closure(r), relation_symmetric_closure(s))
+} by {
+    if relation_subset(r, s) {
+        forall(x: T, y: T) {
+            if relation_symmetric_closure(r, x, y) {
+                relation_symmetric_closure(r, x, y) = (r(x, y) or relation_converse(r, x, y))
+                if r(x, y) {
+                    relation_subset_step(r, s, x, y)
+                    s(x, y)
+                    relation_symmetric_closure(s, x, y)
+                } else {
+                    r(y, x)
+                    relation_subset_step(r, s, y, x)
+                    s(y, x)
+                    relation_converse(s, x, y)
+                    relation_symmetric_closure(s, x, y)
+                }
+            }
+        }
+    }
+}
+
+/// Symmetric closure of a symmetric relation equals itself.
+theorem relation_symmetric_closure_eq_self_of_symmetric[T](r: (T, T) -> Bool) {
+    is_symmetric(r) implies relation_symmetric_closure(r) = r
+} by {
+    if is_symmetric(r) {
+        relation_symmetric_closure_subset_of_symmetric(r, r)
+        relation_subset_refl(r)
+        relation_subset(r, r)
+        relation_subset(relation_symmetric_closure(r), r)
+        relation_subset_symmetric_closure(r)
+        relation_subset(r, relation_symmetric_closure(r))
+        relation_eq_iff_subset_both(relation_symmetric_closure(r), r)
+        relation_symmetric_closure(r) = r
+    }
+}
+
+/// Symmetric closure is idempotent.
+theorem relation_symmetric_closure_idempotent[T](r: (T, T) -> Bool) {
+    relation_symmetric_closure(relation_symmetric_closure(r)) = relation_symmetric_closure(r)
+} by {
+    relation_symmetric_closure_is_symmetric(r)
+    relation_symmetric_closure_eq_self_of_symmetric(relation_symmetric_closure(r))
 }
 
 /// An equivalence relation is symmetric.

@@ -1,0 +1,425 @@
+from add_comm_group import AddCommGroup
+from add_group import AddGroup
+from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
+from relation_transport import respects_add, is_add_congruence, respects_binary_op,
+    respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
+    add_congruence_eq_binary_congruence
+from equivalence import QuotientRelation, QuotientOver, quotient_over_mk,
+    quotient_relation_new_round_trip, quotient_unary_respects, quotient_binary_respects,
+    quotient_unary_respects_eq_respects_unary_op,
+    quotient_binary_respects_eq_respects_binary_op,
+    quotient_over_binary_op, quotient_over_unary_op,
+    quotient_over_binary_op_projection, quotient_over_binary_op_projection_left,
+    quotient_over_binary_op_projection_right,
+    quotient_over_unary_op_projection, quotient_over_unary_op_projection_compatible
+
+/// True if a subset contains the additive identity.
+define add_zero_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
+    contains(G.0)
+}
+
+/// True if a subset is closed under addition.
+define add_closure_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
+    forall(a: G, b: G) {
+        contains(a) and contains(b) implies contains(a + b)
+    }
+}
+
+/// True if a subset is closed under additive negation.
+define neg_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
+    forall(a: G) {
+        contains(a) implies contains(-a)
+    }
+}
+
+/// True if a subset satisfies all the requirements to be an additive subgroup.
+define add_subgroup_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
+    add_zero_constraint(contains) and add_closure_constraint(contains) and neg_constraint(contains)
+}
+
+/// An additive subgroup of an additive group `G`, represented as a subset closed under the additive group operations.
+structure AddSubgroup[G: AddGroup] {
+    /// True if the given element is a member of this additive subgroup.
+    contains: G -> Bool
+} constraint {
+    add_subgroup_constraint(contains)
+}
+
+/// Membership of zero in any additive subgroup.
+theorem add_subgroup_contains_zero[G: AddGroup](h: AddSubgroup[G]) {
+    h.contains(G.0)
+} by {
+    add_subgroup_constraint(h.contains)
+    add_subgroup_constraint(h.contains) =
+        add_zero_constraint(h.contains) and add_closure_constraint(h.contains) and neg_constraint(h.contains)
+    add_zero_constraint(h.contains)
+    add_zero_constraint(h.contains) = h.contains(G.0)
+}
+
+/// Closure of any additive subgroup under addition.
+theorem add_subgroup_contains_add[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
+    h.contains(a) and h.contains(b) implies h.contains(a + b)
+} by {
+    if h.contains(a) and h.contains(b) {
+        add_subgroup_constraint(h.contains)
+        add_subgroup_constraint(h.contains) =
+            add_zero_constraint(h.contains) and add_closure_constraint(h.contains) and neg_constraint(h.contains)
+        add_closure_constraint(h.contains)
+        add_closure_constraint(h.contains) = forall(x: G, y: G) {
+            h.contains(x) and h.contains(y) implies h.contains(x + y)
+        }
+        h.contains(a + b)
+    }
+}
+
+/// Closure of any additive subgroup under negation.
+theorem add_subgroup_contains_neg[G: AddGroup](h: AddSubgroup[G], a: G) {
+    h.contains(a) implies h.contains(-a)
+} by {
+    if h.contains(a) {
+        add_subgroup_constraint(h.contains)
+        add_subgroup_constraint(h.contains) =
+            add_zero_constraint(h.contains) and add_closure_constraint(h.contains) and neg_constraint(h.contains)
+        neg_constraint(h.contains)
+        neg_constraint(h.contains) = forall(x: G) {
+            h.contains(x) implies h.contains(-x)
+        }
+        h.contains(-a)
+    }
+}
+
+/// Closure of any additive subgroup under subtraction.
+theorem add_subgroup_contains_sub[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
+    h.contains(a) and h.contains(b) implies h.contains(a - b)
+} by {
+    if h.contains(a) and h.contains(b) {
+        add_subgroup_contains_neg(h, b)
+        h.contains(-b)
+        add_subgroup_contains_add(h, a, -b)
+        h.contains(a + -b)
+        a - b = a + -b
+    }
+}
+
+/// The equivalence relation on `G` defined by an additive subgroup: `a ~ b` iff `a - b` lies in the subgroup.
+define add_subgroup_rel[G: AddGroup](h: AddSubgroup[G], a: G, b: G) -> Bool {
+    h.contains(a - b)
+}
+
+/// The relation defined by an additive subgroup is reflexive.
+theorem add_subgroup_rel_reflexive[G: AddGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_rel(h, a, a)
+} by {
+    a - a = G.0
+    add_subgroup_contains_zero(h)
+    h.contains(G.0)
+    h.contains(a - a)
+}
+
+/// The relation defined by an additive subgroup is symmetric.
+theorem add_subgroup_rel_symmetric[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_rel(h, a, b) implies add_subgroup_rel(h, b, a)
+} by {
+    if add_subgroup_rel(h, a, b) {
+        h.contains(a - b)
+        add_subgroup_contains_neg(h, a - b)
+        h.contains(-(a - b))
+        a - b = a + -b
+        -(a + -b) = --b + -a
+        --b = b
+        -(a - b) = b + -a
+        b + -a = b - a
+        h.contains(b - a)
+    }
+}
+
+/// The relation defined by an additive subgroup is reflexive.
+theorem add_subgroup_rel_is_reflexive[G: AddGroup](h: AddSubgroup[G]) {
+    is_reflexive(add_subgroup_rel(h))
+} by {
+    forall(a: G) {
+        add_subgroup_rel_reflexive(h, a)
+    }
+}
+
+/// The relation defined by an additive subgroup is symmetric.
+theorem add_subgroup_rel_is_symmetric[G: AddGroup](h: AddSubgroup[G]) {
+    is_symmetric(add_subgroup_rel(h))
+} by {
+    forall(a: G, b: G) {
+        if add_subgroup_rel(h, a, b) {
+            add_subgroup_rel_symmetric(h, a, b)
+        }
+    }
+}
+
+/// Subtractions chain through an intermediate point.
+theorem add_subgroup_sub_chain[G: AddGroup](a: G, b: G, c: G) {
+    (a - b) + (b - c) = a - c
+} by {
+    a - b = a + -b
+    b - c = b + -c
+    (a + -b) + (b + -c) = a + (-b + b) + -c
+    -b + b = G.0
+    a + G.0 + -c = a + -c
+    a + -c = a - c
+}
+
+/// Pointwise transitivity helper for the additive-subgroup relation.
+theorem add_subgroup_rel_trans_at[G: AddGroup](h: AddSubgroup[G], a: G, b: G, c: G) {
+    add_subgroup_rel(h, a, b) and add_subgroup_rel(h, b, c) implies add_subgroup_rel(h, a, c)
+} by {
+    if add_subgroup_rel(h, a, b) and add_subgroup_rel(h, b, c) {
+        h.contains(a - b)
+        h.contains(b - c)
+        add_subgroup_contains_add(h, a - b, b - c)
+        h.contains((a - b) + (b - c))
+        add_subgroup_sub_chain(a, b, c)
+        h.contains(a - c)
+    }
+}
+
+/// The relation defined by an additive subgroup is transitive.
+theorem add_subgroup_rel_is_transitive[G: AddGroup](h: AddSubgroup[G]) {
+    is_transitive(add_subgroup_rel(h))
+} by {
+    is_transitive(add_subgroup_rel(h)) = forall(x: G, y: G, z: G) {
+        add_subgroup_rel(h, x, y) and add_subgroup_rel(h, y, z) implies add_subgroup_rel(h, x, z)
+    }
+    forall(a: G, b: G, c: G) {
+        if add_subgroup_rel(h, a, b) and add_subgroup_rel(h, b, c) {
+            add_subgroup_rel_trans_at(h, a, b, c)
+            add_subgroup_rel(h, a, c)
+        }
+    }
+}
+
+/// The relation defined by an additive subgroup is an equivalence relation.
+theorem add_subgroup_rel_is_equivalence[G: AddGroup](h: AddSubgroup[G]) {
+    is_equivalence(add_subgroup_rel(h))
+} by {
+    add_subgroup_rel_is_reflexive(h)
+    add_subgroup_rel_is_symmetric(h)
+    add_subgroup_rel_is_transitive(h)
+}
+
+/// The quotient relation associated with an additive subgroup.
+let add_subgroup_quotient_relation[G: AddGroup](h: AddSubgroup[G]) -> result: QuotientRelation[G] satisfy {
+    QuotientRelation[G].new(add_subgroup_rel(h)) = Option.some(result)
+} by {
+    add_subgroup_rel_is_equivalence(h)
+}
+
+/// The quotient relation associated with an additive subgroup has the expected underlying relation.
+theorem add_subgroup_quotient_relation_rel[G: AddGroup](h: AddSubgroup[G]) {
+    add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
+} by {
+    QuotientRelation[G].new(add_subgroup_rel(h)) = Option.some(add_subgroup_quotient_relation(h))
+    quotient_relation_new_round_trip(add_subgroup_rel(h), add_subgroup_quotient_relation(h))
+}
+
+/// In a commutative additive group, the difference of sums regroups along the operation.
+theorem add_sub_distrib[G: AddCommGroup](a: G, b: G, ap: G, bp: G) {
+    (a + b) - (ap + bp) = (a - ap) + (b - bp)
+} by {
+    (a + b) - (ap + bp) = (a + b) + -(ap + bp)
+    -(ap + bp) = -ap + -bp
+    (a + b) + (-ap + -bp) = a + b + -ap + -bp
+    a + b + -ap = a + -ap + b
+    a + b + -ap + -bp = a + -ap + b + -bp
+    a + -ap = a - ap
+    b + -bp = b - bp
+    a + -ap + b + -bp = (a - ap) + (b - bp)
+}
+
+/// The additive-subgroup quotient relation is preserved by pairwise addition (commutative case).
+theorem add_subgroup_rel_add_step[G: AddCommGroup](h: AddSubgroup[G], a: G, ap: G, b: G, bp: G) {
+    add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp)
+    implies add_subgroup_rel(h, a + b, ap + bp)
+} by {
+    if add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp) {
+        h.contains(a - ap)
+        h.contains(b - bp)
+        add_subgroup_contains_add(h, a - ap, b - bp)
+        h.contains((a - ap) + (b - bp))
+        add_sub_distrib(a, b, ap, bp)
+        h.contains((a + b) - (ap + bp))
+    }
+}
+
+/// The additive-subgroup quotient relation is compatible with addition (commutative case).
+theorem add_subgroup_rel_respects_add[G: AddCommGroup](h: AddSubgroup[G]) {
+    respects_add(add_subgroup_rel(h))
+} by {
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    respects_add(add_subgroup_rel(h)) = respects_binary_op(add_subgroup_rel(h), G.add)
+    forall(a: G, ap: G, b: G, bp: G) {
+        if add_subgroup_rel(h, a, ap) and add_subgroup_rel(h, b, bp) {
+            add_subgroup_rel_add_step(h, a, ap, b, bp)
+            add_subgroup_rel(h, a + b, ap + bp)
+            add_subgroup_rel(h, G.add(a, b), G.add(ap, bp))
+        }
+    }
+    respects_binary_op(add_subgroup_rel(h), G.add)
+}
+
+/// The additive-subgroup quotient relation is an additive congruence (commutative case).
+theorem add_subgroup_rel_is_add_congruence[G: AddCommGroup](h: AddSubgroup[G]) {
+    is_add_congruence(add_subgroup_rel(h))
+} by {
+    add_subgroup_rel_is_equivalence(h)
+    add_subgroup_rel_respects_add(h)
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    is_binary_congruence(add_subgroup_rel(h), G.add)
+    add_congruence_eq_binary_congruence(add_subgroup_rel(h))
+}
+
+/// In a commutative additive group, the difference of negations is the negation of the difference.
+theorem add_neg_sub[G: AddCommGroup](a: G, b: G) {
+    -a - -b = -(a - b)
+} by {
+    a - b = a + -b
+    -(a + -b) = -(-b) + -a
+    -(-b) = b
+    -(a - b) = b + -a
+    -a - -b = -a + --b
+    -a + --b = -a + b
+    -a + b = b + -a
+    -a - -b = -(a - b)
+}
+
+/// The additive-subgroup quotient relation is preserved by negation (commutative case).
+theorem add_subgroup_rel_neg_step[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_rel(h, a, b) implies add_subgroup_rel(h, -a, -b)
+} by {
+    if add_subgroup_rel(h, a, b) {
+        h.contains(a - b)
+        add_subgroup_contains_neg(h, a - b)
+        h.contains(-(a - b))
+        add_neg_sub(a, b)
+        h.contains(-a - -b)
+    }
+}
+
+/// The additive-subgroup quotient relation is compatible with negation (commutative case).
+theorem add_subgroup_rel_respects_neg[G: AddCommGroup](h: AddSubgroup[G]) {
+    respects_unary_op(add_subgroup_rel(h), G.neg)
+} by {
+    forall(a: G, b: G) {
+        if add_subgroup_rel(h, a, b) {
+            add_subgroup_rel_neg_step(h, a, b)
+            add_subgroup_rel(h, -a, -b)
+            add_subgroup_rel(h, G.neg(a), G.neg(b))
+        }
+    }
+}
+
+/// The quotient relation built from an additive subgroup respects negation as a quotient unary operation.
+theorem add_subgroup_quotient_relation_respects_neg[G: AddCommGroup](h: AddSubgroup[G]) {
+    quotient_unary_respects(add_subgroup_quotient_relation(h), G.neg)
+} by {
+    quotient_unary_respects_eq_respects_unary_op(add_subgroup_quotient_relation(h), G.neg)
+    add_subgroup_rel_respects_neg(h)
+    add_subgroup_quotient_relation_rel(h)
+    add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
+    respects_unary_op(add_subgroup_quotient_relation(h).rel, G.neg)
+}
+
+/// The quotient relation built from an additive subgroup respects addition as a quotient binary operation.
+theorem add_subgroup_quotient_relation_respects_add[G: AddCommGroup](h: AddSubgroup[G]) {
+    quotient_binary_respects(add_subgroup_quotient_relation(h), G.add)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(add_subgroup_quotient_relation(h), G.add)
+    add_subgroup_rel_respects_add(h)
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    respects_binary_op(add_subgroup_rel(h), G.add)
+    add_subgroup_quotient_relation_rel(h)
+    add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
+    respects_binary_op(add_subgroup_quotient_relation(h).rel, G.add)
+}
+
+/// Addition on the relation-indexed quotient by an additive subgroup.
+define add_subgroup_quotient_add[G: AddCommGroup](h: AddSubgroup[G]) ->
+    (QuotientOver[G], QuotientOver[G]) -> QuotientOver[G] {
+    quotient_over_binary_op(G.add)
+}
+
+/// Addition in the additive-subgroup quotient agrees with addition of representatives.
+theorem add_subgroup_quotient_add_projection[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    ) = quotient_over_mk(add_subgroup_quotient_relation(h), a + b)
+} by {
+    add_subgroup_quotient_relation_respects_add(h)
+    quotient_over_binary_op_projection(add_subgroup_quotient_relation(h), G.add, a, b)
+    G.add(a, b) = a + b
+}
+
+/// Addition in the additive-subgroup quotient respects related left representatives.
+theorem add_subgroup_quotient_add_projection_left[G: AddCommGroup](h: AddSubgroup[G], a1: G, a2: G, b: G) {
+    add_subgroup_rel(h, a1, a2) implies
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a1),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    ) = add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a2),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)
+    )
+} by {
+    if add_subgroup_rel(h, a1, a2) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(a1, a2)
+        add_subgroup_quotient_relation_respects_add(h)
+        quotient_over_binary_op_projection_left(add_subgroup_quotient_relation(h), G.add, a1, a2, b)
+    }
+}
+
+/// Addition in the additive-subgroup quotient respects related right representatives.
+theorem add_subgroup_quotient_add_projection_right[G: AddCommGroup](h: AddSubgroup[G], a: G, b1: G, b2: G) {
+    add_subgroup_rel(h, b1, b2) implies
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b1)
+    ) = add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b2)
+    )
+} by {
+    if add_subgroup_rel(h, b1, b2) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(b1, b2)
+        add_subgroup_quotient_relation_respects_add(h)
+        quotient_over_binary_op_projection_right(add_subgroup_quotient_relation(h), G.add, a, b1, b2)
+    }
+}
+
+/// Negation on the relation-indexed quotient by an additive subgroup.
+define add_subgroup_quotient_neg[G: AddCommGroup](h: AddSubgroup[G]) ->
+    QuotientOver[G] -> QuotientOver[G] {
+    quotient_over_unary_op(add_subgroup_quotient_relation(h), G.neg)
+}
+
+/// Negation in the additive-subgroup quotient agrees with negation of representatives.
+theorem add_subgroup_quotient_neg_projection[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a)
+} by {
+    add_subgroup_quotient_relation_respects_neg(h)
+    quotient_over_unary_op_projection(add_subgroup_quotient_relation(h), G.neg, a)
+    G.neg(a) = -a
+}
+
+/// Negation in the additive-subgroup quotient respects related representatives.
+theorem add_subgroup_quotient_neg_projection_compatible[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_rel(h, a, b) implies
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), b))
+} by {
+    if add_subgroup_rel(h, a, b) {
+        add_subgroup_quotient_relation_rel(h)
+        add_subgroup_quotient_relation(h).rel(a, b)
+        add_subgroup_quotient_relation_respects_neg(h)
+        quotient_over_unary_op_projection_compatible(add_subgroup_quotient_relation(h), G.neg, a, b)
+    }
+}
