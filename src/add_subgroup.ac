@@ -2,8 +2,12 @@ from add_comm_group import AddCommGroup
 from add_group import AddGroup
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
-    is_binary_congruence, respects_add_eq_respects_binary_op, add_congruence_eq_binary_congruence
-from equivalence import QuotientRelation, quotient_relation_new_round_trip
+    respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
+    add_congruence_eq_binary_congruence
+from equivalence import QuotientRelation, quotient_relation_new_round_trip,
+    quotient_unary_respects, quotient_binary_respects,
+    quotient_unary_respects_eq_respects_unary_op,
+    quotient_binary_respects_eq_respects_binary_op
 
 /// True if a subset contains the additive identity.
 define add_zero_constraint[G: AddGroup](contains: G -> Bool) -> Bool {
@@ -264,4 +268,68 @@ theorem add_subgroup_rel_is_add_congruence[G: AddCommGroup](h: AddSubgroup[G]) {
     respects_add_eq_respects_binary_op(add_subgroup_rel(h))
     is_binary_congruence(add_subgroup_rel(h), G.add)
     add_congruence_eq_binary_congruence(add_subgroup_rel(h))
+}
+
+/// In a commutative additive group, the difference of negations is the negation of the difference.
+theorem add_neg_sub[G: AddCommGroup](a: G, b: G) {
+    -a - -b = -(a - b)
+} by {
+    a - b = a + -b
+    -(a + -b) = -(-b) + -a
+    -(-b) = b
+    -(a - b) = b + -a
+    -a - -b = -a + --b
+    -a + --b = -a + b
+    -a + b = b + -a
+    -a - -b = -(a - b)
+}
+
+/// The additive-subgroup quotient relation is preserved by negation (commutative case).
+theorem add_subgroup_rel_neg_step[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_rel(h, a, b) implies add_subgroup_rel(h, -a, -b)
+} by {
+    if add_subgroup_rel(h, a, b) {
+        h.contains(a - b)
+        add_subgroup_contains_neg(h, a - b)
+        h.contains(-(a - b))
+        add_neg_sub(a, b)
+        h.contains(-a - -b)
+    }
+}
+
+/// The additive-subgroup quotient relation is compatible with negation (commutative case).
+theorem add_subgroup_rel_respects_neg[G: AddCommGroup](h: AddSubgroup[G]) {
+    respects_unary_op(add_subgroup_rel(h), G.neg)
+} by {
+    forall(a: G, b: G) {
+        if add_subgroup_rel(h, a, b) {
+            add_subgroup_rel_neg_step(h, a, b)
+            add_subgroup_rel(h, -a, -b)
+            add_subgroup_rel(h, G.neg(a), G.neg(b))
+        }
+    }
+}
+
+/// The quotient relation built from an additive subgroup respects negation as a quotient unary operation.
+theorem add_subgroup_quotient_relation_respects_neg[G: AddCommGroup](h: AddSubgroup[G]) {
+    quotient_unary_respects(add_subgroup_quotient_relation(h), G.neg)
+} by {
+    quotient_unary_respects_eq_respects_unary_op(add_subgroup_quotient_relation(h), G.neg)
+    add_subgroup_rel_respects_neg(h)
+    add_subgroup_quotient_relation_rel(h)
+    add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
+    respects_unary_op(add_subgroup_quotient_relation(h).rel, G.neg)
+}
+
+/// The quotient relation built from an additive subgroup respects addition as a quotient binary operation.
+theorem add_subgroup_quotient_relation_respects_add[G: AddCommGroup](h: AddSubgroup[G]) {
+    quotient_binary_respects(add_subgroup_quotient_relation(h), G.add)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(add_subgroup_quotient_relation(h), G.add)
+    add_subgroup_rel_respects_add(h)
+    respects_add_eq_respects_binary_op(add_subgroup_rel(h))
+    respects_binary_op(add_subgroup_rel(h), G.add)
+    add_subgroup_quotient_relation_rel(h)
+    add_subgroup_quotient_relation(h).rel = add_subgroup_rel(h)
+    respects_binary_op(add_subgroup_quotient_relation(h).rel, G.add)
 }
