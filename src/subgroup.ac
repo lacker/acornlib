@@ -273,6 +273,88 @@ theorem subgroup_intersection_subset_right[G: Group](a: Subgroup[G], b: Subgroup
     }
 }
 
+/// Subgroup intersection is commutative.
+theorem subgroup_intersection_comm[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a.intersection(b) = b.intersection(a)
+} by {
+    forall(x: G) {
+        if a.intersection(b).contains(x) {
+            subgroup_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subgroup_intersection_contains_eq(b, a, x)
+            b.intersection(a).contains(x)
+        }
+        if b.intersection(a).contains(x) {
+            subgroup_intersection_contains_eq(b, a, x)
+            b.contains(x)
+            a.contains(x)
+            subgroup_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+        }
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+    subgroup_ext(a.intersection(b), b.intersection(a))
+}
+
+/// Subgroup intersection is associative.
+theorem subgroup_intersection_assoc[G: Group](
+    a: Subgroup[G],
+    b: Subgroup[G],
+    c: Subgroup[G]
+) {
+    a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    let lhs = a.intersection(b).intersection(c)
+    let rhs = a.intersection(b.intersection(c))
+    forall(x: G) {
+        if lhs.contains(x) {
+            subgroup_intersection_contains_eq(a.intersection(b), c, x)
+            a.intersection(b).contains(x)
+            c.contains(x)
+            subgroup_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subgroup_intersection_contains_eq(b, c, x)
+            b.intersection(c).contains(x)
+            subgroup_intersection_contains_eq(a, b.intersection(c), x)
+            rhs.contains(x)
+        }
+        if rhs.contains(x) {
+            subgroup_intersection_contains_eq(a, b.intersection(c), x)
+            a.contains(x)
+            b.intersection(c).contains(x)
+            subgroup_intersection_contains_eq(b, c, x)
+            b.contains(x)
+            c.contains(x)
+            subgroup_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+            subgroup_intersection_contains_eq(a.intersection(b), c, x)
+            lhs.contains(x)
+        }
+        lhs.contains(x) = rhs.contains(x)
+    }
+    subgroup_ext(lhs, rhs)
+}
+
+/// Subgroup intersection is idempotent.
+theorem subgroup_intersection_idempotent[G: Group](a: Subgroup[G]) {
+    a.intersection(a) = a
+} by {
+    forall(x: G) {
+        if a.intersection(a).contains(x) {
+            subgroup_intersection_contains_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            subgroup_intersection_contains_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    subgroup_ext(a.intersection(a), a)
+}
+
 /// The trivial subgroup containing only the identity element.
 let identity_subgroup[G: Group]: Subgroup[G] satisfy {
     Subgroup.new(is_identity[G]) = Option.some(identity_subgroup)

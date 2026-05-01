@@ -201,6 +201,88 @@ theorem submonoid_intersection_subset_right[M: Monoid](a: Submonoid[M], b: Submo
     }
 }
 
+/// Submonoid intersection is commutative.
+theorem submonoid_intersection_comm[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    a.intersection(b) = b.intersection(a)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            submonoid_intersection_contains_eq(b, a, x)
+            b.intersection(a).contains(x)
+        }
+        if b.intersection(a).contains(x) {
+            submonoid_intersection_contains_eq(b, a, x)
+            b.contains(x)
+            a.contains(x)
+            submonoid_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+        }
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+    submonoid_ext(a.intersection(b), b.intersection(a))
+}
+
+/// Submonoid intersection is associative.
+theorem submonoid_intersection_assoc[M: Monoid](
+    a: Submonoid[M],
+    b: Submonoid[M],
+    c: Submonoid[M]
+) {
+    a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    let lhs = a.intersection(b).intersection(c)
+    let rhs = a.intersection(b.intersection(c))
+    forall(x: M) {
+        if lhs.contains(x) {
+            submonoid_intersection_contains_eq(a.intersection(b), c, x)
+            a.intersection(b).contains(x)
+            c.contains(x)
+            submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            submonoid_intersection_contains_eq(b, c, x)
+            b.intersection(c).contains(x)
+            submonoid_intersection_contains_eq(a, b.intersection(c), x)
+            rhs.contains(x)
+        }
+        if rhs.contains(x) {
+            submonoid_intersection_contains_eq(a, b.intersection(c), x)
+            a.contains(x)
+            b.intersection(c).contains(x)
+            submonoid_intersection_contains_eq(b, c, x)
+            b.contains(x)
+            c.contains(x)
+            submonoid_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+            submonoid_intersection_contains_eq(a.intersection(b), c, x)
+            lhs.contains(x)
+        }
+        lhs.contains(x) = rhs.contains(x)
+    }
+    submonoid_ext(lhs, rhs)
+}
+
+/// Submonoid intersection is idempotent.
+theorem submonoid_intersection_idempotent[M: Monoid](a: Submonoid[M]) {
+    a.intersection(a) = a
+} by {
+    forall(x: M) {
+        if a.intersection(a).contains(x) {
+            submonoid_intersection_contains_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            submonoid_intersection_contains_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    submonoid_ext(a.intersection(a), a)
+}
+
 /// True if an element is the identity element of the monoid.
 define is_monoid_identity[M: Monoid](m: M) -> Bool {
     m = M.1

@@ -176,6 +176,88 @@ theorem subsemigroup_intersection_subset_right[S: Semigroup](a: Subsemigroup[S],
     }
 }
 
+/// Subsemigroup intersection is commutative.
+theorem subsemigroup_intersection_comm[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    a.intersection(b) = b.intersection(a)
+} by {
+    forall(x: S) {
+        if a.intersection(b).contains(x) {
+            subsemigroup_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subsemigroup_intersection_contains_eq(b, a, x)
+            b.intersection(a).contains(x)
+        }
+        if b.intersection(a).contains(x) {
+            subsemigroup_intersection_contains_eq(b, a, x)
+            b.contains(x)
+            a.contains(x)
+            subsemigroup_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+        }
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+    subsemigroup_ext(a.intersection(b), b.intersection(a))
+}
+
+/// Subsemigroup intersection is associative.
+theorem subsemigroup_intersection_assoc[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S],
+    c: Subsemigroup[S]
+) {
+    a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    let lhs = a.intersection(b).intersection(c)
+    let rhs = a.intersection(b.intersection(c))
+    forall(x: S) {
+        if lhs.contains(x) {
+            subsemigroup_intersection_contains_eq(a.intersection(b), c, x)
+            a.intersection(b).contains(x)
+            c.contains(x)
+            subsemigroup_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subsemigroup_intersection_contains_eq(b, c, x)
+            b.intersection(c).contains(x)
+            subsemigroup_intersection_contains_eq(a, b.intersection(c), x)
+            rhs.contains(x)
+        }
+        if rhs.contains(x) {
+            subsemigroup_intersection_contains_eq(a, b.intersection(c), x)
+            a.contains(x)
+            b.intersection(c).contains(x)
+            subsemigroup_intersection_contains_eq(b, c, x)
+            b.contains(x)
+            c.contains(x)
+            subsemigroup_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+            subsemigroup_intersection_contains_eq(a.intersection(b), c, x)
+            lhs.contains(x)
+        }
+        lhs.contains(x) = rhs.contains(x)
+    }
+    subsemigroup_ext(lhs, rhs)
+}
+
+/// Subsemigroup intersection is idempotent.
+theorem subsemigroup_intersection_idempotent[S: Semigroup](a: Subsemigroup[S]) {
+    a.intersection(a) = a
+} by {
+    forall(x: S) {
+        if a.intersection(a).contains(x) {
+            subsemigroup_intersection_contains_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            subsemigroup_intersection_contains_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    subsemigroup_ext(a.intersection(a), a)
+}
+
 /// The empty subset of any semigroup is closed under multiplication.
 define empty_contains[S: Semigroup](a: S) -> Bool {
     false
