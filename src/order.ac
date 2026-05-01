@@ -1997,6 +1997,34 @@ theorem lte_or_gte[L: LinearOrder](a: L, b: L) {
 }
 
 /// Any two elements are comparable.
+theorem lte_or_lte_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_gte(a, b)
+}
+
+/// Any two elements are comparable.
+theorem le_or_le_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
+theorem le_total[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
+theorem linear_order_total[L: LinearOrder](a: L, b: L) {
+    a <= b or b <= a
+} by {
+    lte_or_lte_swap(a, b)
+}
+
+/// Any two elements are comparable.
 theorem le_or_ge[L: LinearOrder](a: L, b: L) {
     a <= b or a >= b
 } by {
@@ -2014,6 +2042,28 @@ theorem ge_or_le[L: LinearOrder](a: L, b: L) {
         a >= b
         a >= b or a <= b
     }
+}
+
+/// Any two elements are comparable in reverse-order form.
+theorem gte_or_gte_swap[L: LinearOrder](a: L, b: L) {
+    a >= b or b >= a
+} by {
+    lte_or_lte_swap(b, a)
+    if b <= a {
+        a >= b
+        a >= b or b >= a
+    } else {
+        a <= b
+        b >= a
+        a >= b or b >= a
+    }
+}
+
+/// Any two elements are comparable in reverse-order form.
+theorem ge_or_ge_swap[L: LinearOrder](a: L, b: L) {
+    a >= b or b >= a
+} by {
+    gte_or_gte_swap(a, b)
 }
 
 /// Either `a < b` or `b <= a`.
@@ -2036,6 +2086,13 @@ theorem lt_or_lte[L: LinearOrder](a: L, b: L) {
     }
 }
 
+/// Either `a < b` or `b <= a`.
+theorem lt_or_le_swap[L: LinearOrder](a: L, b: L) {
+    a < b or b <= a
+} by {
+    lt_or_lte(a, b)
+}
+
 /// Either `a <= b` or `b < a`.
 theorem lte_or_lt[L: LinearOrder](a: L, b: L) {
     a <= b or b < a
@@ -2053,6 +2110,13 @@ theorem lte_or_lt[L: LinearOrder](a: L, b: L) {
         b < a
         a <= b or b < a
     }
+}
+
+/// Either `a <= b` or `b < a`.
+theorem le_or_lt_swap[L: LinearOrder](a: L, b: L) {
+    a <= b or b < a
+} by {
+    lte_or_lt(a, b)
 }
 
 theorem not_lte_imp_gt[L: LinearOrder](a: L, b: L) {
