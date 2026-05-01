@@ -13,3 +13,4 @@ Status:
 - Linear-order trichotomy-style case splits are expanded in `src/order_cases.ac`, including equality-first trichotomy variants, reordered strict/non-strict disjunctions, and equality as the case where neither strict comparison holds.
 - Asymmetric characterizations `lt_iff_lte_not_lte_swap` and `gt_iff_lte_swap_not_lte` are in `src/order.ac`. Their conjunction order is `(not (...) and ...)` to avoid an `acorn check` printer ambiguity where `not P != q` parses incorrectly when regenerated.
 - Unbundled order-data predicates and equality transport/extensionality lemmas now live in `src/order_relation.ac`, including strict-part and converse transport for partial-order and linear-order relations.
+- The basic comparison audit now includes Mathlib-style implication aliases in `src/order.ac` and linear-order negation aliases in `src/order_cases.ac`.
