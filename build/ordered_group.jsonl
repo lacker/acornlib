@@ -44,3 +44,83 @@
 {"goal":"h = G.1","proof":[]}
 {"goal":"not has_finite_order(h) or h = G.1","proof":[]}
 {"goal":"ordered_imp_torsion_free","proof":["function[T0: Group] { forall(x0: T0) { not has_finite_order[T0](x0) or T0.1 = x0 } = is_torsion_free[T0] }[G]","exists(k0: G) { has_finite_order(k0) and G.1 != k0 }","let w9: G satisfy { has_finite_order(w9) and G.1 != w9 }","function(x0: G) { not has_finite_order(x0) or G.1 = x0 }(w9)"]}
+{"goal":"mul_left_map_apply","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, x)"]}
+{"goal":"mul_right_map_apply","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, x)"]}
+{"goal":"c * x <= c * y","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x2 * x0 <= x2 * x1 }[G](x, y, c)"]}
+{"goal":"mul_left_map(c, x) <= mul_left_map(c, y)","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, y)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, x)","not c * x <= mul_left_map(c, y)","c * x <= mul_left_map(c, y)"]}
+{"goal":"mul_left_map_is_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[G, G](mul_left_map(c))","let w0: G satisfy { exists(k0: G) { w0 <= k0 and not mul_left_map(c, w0) <= mul_left_map(c, k0) } }","let w1: G satisfy { w0 <= w1 and not mul_left_map(c, w0) <= mul_left_map(c, w1) }","function(x0: G, x1: G) { not x0 <= x1 or mul_left_map(c, x0) <= mul_left_map(c, x1) }(w0, w1)","w0 <= w1","not mul_left_map(c, w0) <= mul_left_map(c, w1)","mul_left_map(c, w0) <= mul_left_map(c, w1)"]}
+{"goal":"x * c <= y * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x0 * x2 <= x1 * x2 }[G](x, y, c)"]}
+{"goal":"mul_right_map(c, x) <= mul_right_map(c, y)","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, y)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, x)","not x * c <= mul_right_map(c, y)","x * c <= mul_right_map(c, y)"]}
+{"goal":"mul_right_map_is_monotone","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { not x1 <= x2 or x0(x1) <= x0(x2) } = is_monotone[T0, T1](x0) }[G, G](mul_right_map(c))","let w0: G satisfy { exists(k0: G) { w0 <= k0 and not mul_right_map(c, w0) <= mul_right_map(c, k0) } }","let w1: G satisfy { w0 <= w1 and not mul_right_map(c, w0) <= mul_right_map(c, w1) }","function(x0: G, x1: G) { not x0 <= x1 or mul_right_map(c, x0) <= mul_right_map(c, x1) }(w0, w1)","w0 <= w1","not mul_right_map(c, w0) <= mul_right_map(c, w1)","mul_right_map(c, w0) <= mul_right_map(c, w1)"]}
+{"goal":"mul_left_map(c, x) = c * x","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, x)"]}
+{"goal":"mul_left_map(c, y) = c * y","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, y)"]}
+{"goal":"c.inverse * (c * x) <= c.inverse * (c * y)","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x2 * x0 <= x2 * x1 }[G](c * x, mul_left_map(c, y), c.inverse)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, y)","not c.inverse * (c * x) <= c.inverse * mul_left_map(c, y)","c * x <= mul_left_map(c, y)","not c * x <= mul_left_map(c, y)"]}
+{"goal":"c.inverse * (c * x) = c.inverse * c * x","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](c.inverse, c, x)"]}
+{"goal":"c.inverse * (c * y) = c.inverse * c * y","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](c.inverse, c, y)"]}
+{"goal":"c.inverse * c = G.1","proof":["function[T0: Group](x0: T0) { x0.inverse * x0 = T0.1 }[G](c)"]}
+{"goal":"G.1 * x = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](x)"]}
+{"goal":"G.1 * y = y","proof":["function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](y)"]}
+{"goal":"x <= y","proof":[]}
+{"goal":"mul_left_map_reflects_le","proof":["not mul_left_map(c, x) <= mul_left_map(c, y)"]}
+{"goal":"mul_right_map(c, x) = x * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, x)"]}
+{"goal":"mul_right_map(c, y) = y * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, y)"]}
+{"goal":"x * c * c.inverse <= y * c * c.inverse","proof":["function[T0: OrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x0 * x2 <= x1 * x2 }[G](x * c, mul_right_map(c, y), c.inverse)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, y)","not x * c * c.inverse <= mul_right_map(c, y) * c.inverse","x * c <= mul_right_map(c, y)","not x * c <= mul_right_map(c, y)"]}
+{"goal":"x * c * c.inverse = x * (c * c.inverse)","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](x, c, c.inverse)"]}
+{"goal":"y * c * c.inverse = y * (c * c.inverse)","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](y, c, c.inverse)"]}
+{"goal":"c * c.inverse = G.1","proof":["function[T0: Group](x0: T0) { x0 * x0.inverse = T0.1 }[G](c)"]}
+{"goal":"x * G.1 = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[G](x)"]}
+{"goal":"y * G.1 = y","proof":["function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[G](y)"]}
+{"goal":"x <= y","proof":[]}
+{"goal":"mul_right_map_reflects_le","proof":["not mul_right_map(c, x) <= mul_right_map(c, y)"]}
+{"goal":"x <= y","proof":["not mul_left_map(c, x) <= mul_left_map(c, y)"]}
+{"goal":"is_monotone[G, G](mul_left_map(c))","proof":[]}
+{"goal":"mul_left_map(c, x) <= mul_left_map(c, y)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T0, x2: T0) { not is_monotone[T0, T1](x0) or not x1 <= x2 or x0(x1) <= x0(x2) }[G, G](mul_left_map(c), x, y)"]}
+{"goal":"mul_left_map(c, x) <= mul_left_map(c, y) = x <= y","proof":["mul_left_map(c, x) <= mul_left_map(c, y) or x <= y","x <= y","mul_left_map(c, x) <= mul_left_map(c, y)","not mul_left_map(c, x) <= mul_left_map(c, y)"]}
+{"goal":"mul_left_map_is_order_embedding","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[G, G](mul_left_map(c))","let w0: G satisfy { exists(k0: G) { w0 <= k0 != mul_left_map(c, w0) <= mul_left_map(c, k0) } }","let w1: G satisfy { w0 <= w1 != mul_left_map(c, w0) <= mul_left_map(c, w1) }","function(x0: G, x1: G) { mul_left_map(c, x0) <= mul_left_map(c, x1) = x0 <= x1 }(w0, w1)"]}
+{"goal":"x <= y","proof":["not mul_right_map(c, x) <= mul_right_map(c, y)"]}
+{"goal":"is_monotone[G, G](mul_right_map(c))","proof":[]}
+{"goal":"mul_right_map(c, x) <= mul_right_map(c, y)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T0, x2: T0) { not is_monotone[T0, T1](x0) or not x1 <= x2 or x0(x1) <= x0(x2) }[G, G](mul_right_map(c), x, y)"]}
+{"goal":"mul_right_map(c, x) <= mul_right_map(c, y) = x <= y","proof":["mul_right_map(c, x) <= mul_right_map(c, y) or x <= y","x <= y","mul_right_map(c, x) <= mul_right_map(c, y)","not mul_right_map(c, x) <= mul_right_map(c, y)"]}
+{"goal":"mul_right_map_is_order_embedding","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[G, G](mul_right_map(c))","let w0: G satisfy { exists(k0: G) { w0 <= k0 != mul_right_map(c, w0) <= mul_right_map(c, k0) } }","let w1: G satisfy { w0 <= w1 != mul_right_map(c, w0) <= mul_right_map(c, w1) }","function(x0: G, x1: G) { mul_right_map(c, x0) <= mul_right_map(c, x1) = x0 <= x1 }(w0, w1)"]}
+{"goal":"mul_left_map_is_strict_monotone","proof":["not is_order_embedding[G, G](mul_left_map(c))"]}
+{"goal":"mul_right_map_is_strict_monotone","proof":["not is_order_embedding[G, G](mul_right_map(c))"]}
+{"goal":"mul_left_map(c, a) <= mul_left_map(c, b)","proof":["not is_order_embedding[G, G](mul_left_map(c)) or not a <= b","not is_order_embedding[G, G](mul_left_map(c))"]}
+{"goal":"c * a <= c * b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x2 * x0 <= x2 * x1 }[G](a, b, c)"]}
+{"goal":"mul_le_mul_left","proof":["not a <= b"]}
+{"goal":"mul_right_map(c, a) <= mul_right_map(c, b)","proof":["not is_order_embedding[G, G](mul_right_map(c)) or not a <= b","not is_order_embedding[G, G](mul_right_map(c))"]}
+{"goal":"a * c <= b * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x0 * x2 <= x1 * x2 }[G](a, b, c)"]}
+{"goal":"mul_le_mul_right","proof":["not a <= b"]}
+{"goal":"mul_left_map(c, a) < mul_left_map(c, b)","proof":["not is_order_embedding[G, G](mul_left_map(c)) or not a < b","not is_order_embedding[G, G](mul_left_map(c))"]}
+{"goal":"c * a < c * b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","mul_left_map(c, a) < mul_left_map(c, b)","c * a < mul_left_map(c, b)","not c * a < mul_left_map(c, b)"]}
+{"goal":"mul_lt_mul_left","proof":["not a < b"]}
+{"goal":"mul_right_map(c, a) < mul_right_map(c, b)","proof":["not is_order_embedding[G, G](mul_right_map(c)) or not a < b","not is_order_embedding[G, G](mul_right_map(c))"]}
+{"goal":"a * c < b * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","mul_right_map(c, a) < mul_right_map(c, b)","a * c < mul_right_map(c, b)","not a * c < mul_right_map(c, b)"]}
+{"goal":"mul_lt_mul_right","proof":["not a < b"]}
+{"goal":"mul_left_map(c, a) >= mul_left_map(c, b)","proof":["not is_order_embedding[G, G](mul_left_map(c)) or not a >= b","not is_order_embedding[G, G](mul_left_map(c))"]}
+{"goal":"c * a >= c * b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","mul_left_map(c, a) >= mul_left_map(c, b)","c * a >= mul_left_map(c, b)","not c * a >= mul_left_map(c, b)"]}
+{"goal":"mul_ge_mul_left","proof":["not a >= b"]}
+{"goal":"mul_right_map(c, a) >= mul_right_map(c, b)","proof":["not is_order_embedding[G, G](mul_right_map(c)) or not a >= b","not is_order_embedding[G, G](mul_right_map(c))"]}
+{"goal":"a * c >= b * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","mul_right_map(c, a) >= mul_right_map(c, b)","a * c >= mul_right_map(c, b)","not a * c >= mul_right_map(c, b)"]}
+{"goal":"mul_ge_mul_right","proof":["not a >= b"]}
+{"goal":"mul_left_map(c, a) > mul_left_map(c, b)","proof":["not is_order_embedding[G, G](mul_left_map(c)) or not a > b","not is_order_embedding[G, G](mul_left_map(c))"]}
+{"goal":"c * a > c * b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","mul_left_map(c, a) > mul_left_map(c, b)","c * a > mul_left_map(c, b)","not c * a > mul_left_map(c, b)"]}
+{"goal":"mul_gt_mul_left","proof":["not a > b"]}
+{"goal":"mul_right_map(c, a) > mul_right_map(c, b)","proof":["not is_order_embedding[G, G](mul_right_map(c)) or not a > b","not is_order_embedding[G, G](mul_right_map(c))"]}
+{"goal":"a * c > b * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","mul_right_map(c, a) > mul_right_map(c, b)","a * c > mul_right_map(c, b)","not a * c > mul_right_map(c, b)"]}
+{"goal":"mul_gt_mul_right","proof":["not a > b"]}
+{"goal":"a <= b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","not mul_left_map(c, a) <= mul_left_map(c, b)","not c * a <= mul_left_map(c, b)","c * a <= mul_left_map(c, b)"]}
+{"goal":"le_of_mul_le_mul_left","proof":["not c * a <= c * b"]}
+{"goal":"a <= b","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","not mul_right_map(c, a) <= mul_right_map(c, b)","not a * c <= mul_right_map(c, b)","a * c <= mul_right_map(c, b)"]}
+{"goal":"le_of_mul_le_mul_right","proof":["not a * c <= b * c"]}
+{"goal":"a < b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","not mul_left_map(c, a) < mul_left_map(c, b) or not is_order_embedding[G, G](mul_left_map(c))","not mul_left_map(c, a) < mul_left_map(c, b)","not c * a < mul_left_map(c, b)","c * a < mul_left_map(c, b)"]}
+{"goal":"lt_of_mul_lt_mul_left","proof":["not c * a < c * b"]}
+{"goal":"a < b","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","not mul_right_map(c, a) < mul_right_map(c, b) or not is_order_embedding[G, G](mul_right_map(c))","not mul_right_map(c, a) < mul_right_map(c, b)","not a * c < mul_right_map(c, b)","a * c < mul_right_map(c, b)"]}
+{"goal":"lt_of_mul_lt_mul_right","proof":["not a * c < b * c"]}
+{"goal":"a >= b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","not mul_left_map(c, a) >= mul_left_map(c, b) or not is_order_embedding[G, G](mul_left_map(c))","not mul_left_map(c, a) >= mul_left_map(c, b)","not c * a >= mul_left_map(c, b)","c * a >= mul_left_map(c, b)"]}
+{"goal":"ge_of_mul_ge_mul_left","proof":["not c * a >= c * b"]}
+{"goal":"a >= b","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","not mul_right_map(c, a) >= mul_right_map(c, b) or not is_order_embedding[G, G](mul_right_map(c))","not mul_right_map(c, a) >= mul_right_map(c, b)","not a * c >= mul_right_map(c, b)","a * c >= mul_right_map(c, b)"]}
+{"goal":"ge_of_mul_ge_mul_right","proof":["not a * c >= b * c"]}
+{"goal":"a > b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, b)","function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, a)","not mul_left_map(c, a) > mul_left_map(c, b) or not is_order_embedding[G, G](mul_left_map(c))","not mul_left_map(c, a) > mul_left_map(c, b)","not c * a > mul_left_map(c, b)","c * a > mul_left_map(c, b)"]}
+{"goal":"gt_of_mul_gt_mul_left","proof":["not c * a > c * b"]}
+{"goal":"a > b","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, b)","function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, a)","not mul_right_map(c, a) > mul_right_map(c, b) or not is_order_embedding[G, G](mul_right_map(c))","not mul_right_map(c, a) > mul_right_map(c, b)","not a * c > mul_right_map(c, b)","a * c > mul_right_map(c, b)"]}
+{"goal":"gt_of_mul_gt_mul_right","proof":["not a * c > b * c"]}

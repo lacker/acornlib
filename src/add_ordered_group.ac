@@ -1,7 +1,12 @@
 from nat import Nat
-from add_group import AddGroup
+from add_group import AddGroup, left_cancel, right_cancel
 from order import PartialOrder, LinearOrder
 from order_relation import lt_relation_is_transitive
+from order_maps import is_monotone, is_antitone, is_strict_monotone, is_strict_antitone,
+    is_order_embedding, order_embedding_is_strict_monotone, order_embedding_apply_le,
+    order_embedding_apply_lt, order_embedding_apply_ge, order_embedding_apply_gt,
+    order_embedding_reflects_le, order_embedding_reflects_lt, order_embedding_reflects_ge,
+    order_embedding_reflects_gt
 from relation_basic import antisymmetric_eq, transitive_step
 
 /// A left-ordered group is a group with a left-invariant order.
@@ -59,4 +64,504 @@ theorem minus_flips_inequality[F: AddOrderedGroup](a: F, b: F) {
     -b + b = F.0
     -b + F.0 = -b
     F.0 + -a = -a
+}
+
+/// The map obtained by adding a fixed element on the left.
+define add_left_map[G: AddLeftOrderedGroup](c: G, x: G) -> G {
+    c + x
+}
+
+/// The map obtained by adding a fixed element on the right.
+define add_right_map[G: AddOrderedGroup](c: G, x: G) -> G {
+    x + c
+}
+
+/// Left translation is the corresponding addition.
+theorem add_left_map_apply[G: AddLeftOrderedGroup](c: G, x: G) {
+    add_left_map(c, x) = c + x
+}
+
+/// Right translation is the corresponding addition.
+theorem add_right_map_apply[G: AddOrderedGroup](c: G, x: G) {
+    add_right_map(c, x) = x + c
+}
+
+/// Left translation preserves the non-strict order.
+theorem add_left_map_is_monotone[G: AddLeftOrderedGroup](c: G) {
+    is_monotone(add_left_map(c))
+} by {
+    forall(x: G, y: G) {
+        if x <= y {
+            c + x <= c + y
+            add_left_map(c, x) <= add_left_map(c, y)
+        }
+    }
+}
+
+/// Right translation preserves the non-strict order.
+theorem add_right_map_is_monotone[G: AddOrderedGroup](c: G) {
+    is_monotone(add_right_map(c))
+} by {
+    forall(x: G, y: G) {
+        if x <= y {
+            x + c <= y + c
+            add_right_map(c, x) <= add_right_map(c, y)
+        }
+    }
+}
+
+/// Left translation reflects the non-strict order.
+theorem add_left_map_reflects_le[G: AddLeftOrderedGroup](c: G, x: G, y: G) {
+    add_left_map(c, x) <= add_left_map(c, y) implies x <= y
+} by {
+    if add_left_map(c, x) <= add_left_map(c, y) {
+        add_left_map(c, x) = c + x
+        add_left_map(c, y) = c + y
+        -c + (c + x) <= -c + (c + y)
+        -c + (c + x) = -c + c + x
+        -c + (c + y) = -c + c + y
+        -c + c = G.0
+        G.0 + x = x
+        G.0 + y = y
+        x <= y
+    }
+}
+
+/// Right translation reflects the non-strict order.
+theorem add_right_map_reflects_le[G: AddOrderedGroup](c: G, x: G, y: G) {
+    add_right_map(c, x) <= add_right_map(c, y) implies x <= y
+} by {
+    if add_right_map(c, x) <= add_right_map(c, y) {
+        add_right_map(c, x) = x + c
+        add_right_map(c, y) = y + c
+        (x + c) + -c <= (y + c) + -c
+        x + c + -c = x + (c + -c)
+        y + c + -c = y + (c + -c)
+        c + -c = G.0
+        x + G.0 = x
+        y + G.0 = y
+        x <= y
+    }
+}
+
+/// Left translation preserves and reflects the non-strict order.
+theorem add_left_map_is_order_embedding[G: AddLeftOrderedGroup](c: G) {
+    is_order_embedding(add_left_map(c))
+} by {
+    forall(x: G, y: G) {
+        if add_left_map(c, x) <= add_left_map(c, y) {
+            add_left_map_reflects_le(c, x, y)
+            x <= y
+        }
+        if x <= y {
+            add_left_map_is_monotone(c)
+            is_monotone(add_left_map(c))
+            add_left_map(c, x) <= add_left_map(c, y)
+        }
+        add_left_map(c, x) <= add_left_map(c, y) = (x <= y)
+    }
+}
+
+/// Right translation preserves and reflects the non-strict order.
+theorem add_right_map_is_order_embedding[G: AddOrderedGroup](c: G) {
+    is_order_embedding(add_right_map(c))
+} by {
+    forall(x: G, y: G) {
+        if add_right_map(c, x) <= add_right_map(c, y) {
+            add_right_map_reflects_le(c, x, y)
+            x <= y
+        }
+        if x <= y {
+            add_right_map_is_monotone(c)
+            is_monotone(add_right_map(c))
+            add_right_map(c, x) <= add_right_map(c, y)
+        }
+        add_right_map(c, x) <= add_right_map(c, y) = (x <= y)
+    }
+}
+
+/// Left translation preserves strict order.
+theorem add_left_map_is_strict_monotone[G: AddLeftOrderedGroup](c: G) {
+    is_strict_monotone(add_left_map(c))
+} by {
+    add_left_map_is_order_embedding(c)
+    order_embedding_is_strict_monotone(add_left_map(c))
+}
+
+/// Right translation preserves strict order.
+theorem add_right_map_is_strict_monotone[G: AddOrderedGroup](c: G) {
+    is_strict_monotone(add_right_map(c))
+} by {
+    add_right_map_is_order_embedding(c)
+    order_embedding_is_strict_monotone(add_right_map(c))
+}
+
+/// Adding a fixed element on the left preserves a non-strict comparison.
+theorem add_le_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    a <= b implies c + a <= c + b
+} by {
+    if a <= b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_apply_le(add_left_map(c), a, b)
+        add_left_map(c, a) <= add_left_map(c, b)
+        c + a <= c + b
+    }
+}
+
+/// Adding a fixed element on the right preserves a non-strict comparison.
+theorem add_le_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a <= b implies a + c <= b + c
+} by {
+    if a <= b {
+        add_right_map_is_order_embedding(c)
+        order_embedding_apply_le(add_right_map(c), a, b)
+        add_right_map(c, a) <= add_right_map(c, b)
+        a + c <= b + c
+    }
+}
+
+/// Adding a fixed element on the left preserves a strict comparison.
+theorem add_lt_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    a < b implies c + a < c + b
+} by {
+    if a < b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_apply_lt(add_left_map(c), a, b)
+        add_left_map(c, a) < add_left_map(c, b)
+        c + a < c + b
+    }
+}
+
+/// Adding a fixed element on the right preserves a strict comparison.
+theorem add_lt_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a < b implies a + c < b + c
+} by {
+    if a < b {
+        add_right_map_is_order_embedding(c)
+        order_embedding_apply_lt(add_right_map(c), a, b)
+        add_right_map(c, a) < add_right_map(c, b)
+        a + c < b + c
+    }
+}
+
+/// Adding a fixed element on the left preserves a reverse non-strict comparison.
+theorem add_ge_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    a >= b implies c + a >= c + b
+} by {
+    if a >= b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_apply_ge(add_left_map(c), a, b)
+        add_left_map(c, a) >= add_left_map(c, b)
+        c + a >= c + b
+    }
+}
+
+/// Adding a fixed element on the right preserves a reverse non-strict comparison.
+theorem add_ge_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a >= b implies a + c >= b + c
+} by {
+    if a >= b {
+        add_right_map_is_order_embedding(c)
+        order_embedding_apply_ge(add_right_map(c), a, b)
+        add_right_map(c, a) >= add_right_map(c, b)
+        a + c >= b + c
+    }
+}
+
+/// Adding a fixed element on the left preserves a strict reverse comparison.
+theorem add_gt_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    a > b implies c + a > c + b
+} by {
+    if a > b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_apply_gt(add_left_map(c), a, b)
+        add_left_map(c, a) > add_left_map(c, b)
+        c + a > c + b
+    }
+}
+
+/// Adding a fixed element on the right preserves a strict reverse comparison.
+theorem add_gt_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a > b implies a + c > b + c
+} by {
+    if a > b {
+        add_right_map_is_order_embedding(c)
+        order_embedding_apply_gt(add_right_map(c), a, b)
+        add_right_map(c, a) > add_right_map(c, b)
+        a + c > b + c
+    }
+}
+
+/// A non-strict comparison after adding on the left reflects to the original comparison.
+theorem le_of_add_le_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    c + a <= c + b implies a <= b
+} by {
+    if c + a <= c + b {
+        add_left_map_reflects_le(c, a, b)
+        a <= b
+    }
+}
+
+/// A non-strict comparison after adding on the right reflects to the original comparison.
+theorem le_of_add_le_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a + c <= b + c implies a <= b
+} by {
+    if a + c <= b + c {
+        add_right_map_reflects_le(c, a, b)
+        a <= b
+    }
+}
+
+/// A strict comparison after adding on the left reflects to the original comparison.
+theorem lt_of_add_lt_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    c + a < c + b implies a < b
+} by {
+    if c + a < c + b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_reflects_lt(add_left_map(c), a, b)
+        a < b
+    }
+}
+
+/// A strict comparison after adding on the right reflects to the original comparison.
+theorem lt_of_add_lt_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a + c < b + c implies a < b
+} by {
+    if a + c < b + c {
+        add_right_map_is_order_embedding(c)
+        order_embedding_reflects_lt(add_right_map(c), a, b)
+        a < b
+    }
+}
+
+/// A reverse non-strict comparison after adding on the left reflects to the original comparison.
+theorem ge_of_add_ge_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    c + a >= c + b implies a >= b
+} by {
+    if c + a >= c + b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_reflects_ge(add_left_map(c), a, b)
+        a >= b
+    }
+}
+
+/// A reverse non-strict comparison after adding on the right reflects to the original comparison.
+theorem ge_of_add_ge_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a + c >= b + c implies a >= b
+} by {
+    if a + c >= b + c {
+        add_right_map_is_order_embedding(c)
+        order_embedding_reflects_ge(add_right_map(c), a, b)
+        a >= b
+    }
+}
+
+/// A strict reverse comparison after adding on the left reflects to the original comparison.
+theorem gt_of_add_gt_add_left[G: AddLeftOrderedGroup](a: G, b: G, c: G) {
+    c + a > c + b implies a > b
+} by {
+    if c + a > c + b {
+        add_left_map_is_order_embedding(c)
+        order_embedding_reflects_gt(add_left_map(c), a, b)
+        a > b
+    }
+}
+
+/// A strict reverse comparison after adding on the right reflects to the original comparison.
+theorem gt_of_add_gt_add_right[G: AddOrderedGroup](a: G, b: G, c: G) {
+    a + c > b + c implies a > b
+} by {
+    if a + c > b + c {
+        add_right_map_is_order_embedding(c)
+        order_embedding_reflects_gt(add_right_map(c), a, b)
+        a > b
+    }
+}
+
+/// Two non-strict comparisons add componentwise.
+theorem add_le_add[G: AddOrderedGroup](a: G, b: G, c: G, d: G) {
+    a <= b and c <= d implies a + c <= b + d
+} by {
+    if a <= b and c <= d {
+        add_inequality(a, b, c, d)
+        a + c <= b + d
+    }
+}
+
+/// Two reverse non-strict comparisons add componentwise.
+theorem add_ge_add[G: AddOrderedGroup](a: G, b: G, c: G, d: G) {
+    a >= b and c >= d implies a + c >= b + d
+} by {
+    if a >= b and c >= d {
+        b <= a
+        d <= c
+        add_le_add(b, a, d, c)
+        b + d <= a + c
+        a + c >= b + d
+    }
+}
+
+/// The map obtained by taking additive inverses.
+define neg_map[G: AddOrderedGroup](x: G) -> G {
+    -x
+}
+
+/// The inverse map is negation.
+theorem neg_map_apply[G: AddOrderedGroup](x: G) {
+    neg_map(x) = -x
+}
+
+/// Negation reverses the non-strict order.
+theorem neg_map_is_antitone[G: AddOrderedGroup] {
+    is_antitone(neg_map[G])
+} by {
+    forall(x: G, y: G) {
+        if x <= y {
+            minus_flips_inequality(x, y)
+            -y <= -x
+            neg_map(y) <= neg_map(x)
+        }
+    }
+}
+
+/// Negation reflects the reversed non-strict order.
+theorem neg_map_reflects_le[G: AddOrderedGroup](x: G, y: G) {
+    neg_map(y) <= neg_map(x) implies x <= y
+} by {
+    if neg_map(y) <= neg_map(x) {
+        neg_map(y) = -y
+        neg_map(x) = -x
+        minus_flips_inequality(-y, -x)
+        --x <= --y
+        --x = x
+        --y = y
+        x <= y
+    }
+}
+
+/// Negation reverses strict order.
+theorem neg_map_is_strict_antitone[G: AddOrderedGroup] {
+    is_strict_antitone(neg_map[G])
+} by {
+    forall(x: G, y: G) {
+        if x < y {
+            x <= y
+            minus_flips_inequality(x, y)
+            -y <= -x
+            if -y = -x {
+                --y = --x
+                y = x
+                x != y
+                false
+            }
+            -y != -x
+            -y < -x
+            neg_map(y) < neg_map(x)
+        }
+    }
+}
+
+/// Negation reflects the reversed strict order.
+theorem neg_map_reflects_lt[G: AddOrderedGroup](x: G, y: G) {
+    neg_map(y) < neg_map(x) implies x < y
+} by {
+    if neg_map(y) < neg_map(x) {
+        neg_map(y) = -y
+        neg_map(x) = -x
+        neg_map_is_strict_antitone[G]
+        is_strict_antitone(neg_map[G])
+        neg_map(-x) < neg_map(-y)
+        --x < --y
+        x < y
+    }
+}
+
+/// Negation turns a non-strict comparison into the reversed non-strict comparison.
+theorem neg_le_neg[G: AddOrderedGroup](a: G, b: G) {
+    a <= b implies -b <= -a
+} by {
+    if a <= b {
+        minus_flips_inequality(a, b)
+        -b <= -a
+    }
+}
+
+/// A non-strict comparison between negatives reflects to the reversed comparison.
+theorem le_of_neg_le_neg[G: AddOrderedGroup](a: G, b: G) {
+    -b <= -a implies a <= b
+} by {
+    if -b <= -a {
+        neg_map_reflects_le(a, b)
+        a <= b
+    }
+}
+
+/// Negation turns a strict comparison into the reversed strict comparison.
+theorem neg_lt_neg[G: AddOrderedGroup](a: G, b: G) {
+    a < b implies -b < -a
+} by {
+    if a < b {
+        neg_map_is_strict_antitone[G]
+        is_strict_antitone(neg_map[G])
+        neg_map(b) < neg_map(a)
+        -b < -a
+    }
+}
+
+/// A strict comparison between negatives reflects to the reversed comparison.
+theorem lt_of_neg_lt_neg[G: AddOrderedGroup](a: G, b: G) {
+    -b < -a implies a < b
+} by {
+    if -b < -a {
+        neg_map_reflects_lt(a, b)
+        a < b
+    }
+}
+
+/// Negation turns a reverse non-strict comparison into a non-strict comparison.
+theorem neg_ge_neg[G: AddOrderedGroup](a: G, b: G) {
+    a >= b implies -b >= -a
+} by {
+    if a >= b {
+        b <= a
+        neg_le_neg(b, a)
+        -a <= -b
+        -b >= -a
+    }
+}
+
+/// A reverse non-strict comparison between negatives reflects to the original reverse comparison.
+theorem ge_of_neg_ge_neg[G: AddOrderedGroup](a: G, b: G) {
+    -b >= -a implies a >= b
+} by {
+    if -b >= -a {
+        -a <= -b
+        le_of_neg_le_neg(b, a)
+        b <= a
+        a >= b
+    }
+}
+
+/// Negation turns a strict reverse comparison into a strict comparison.
+theorem neg_gt_neg[G: AddOrderedGroup](a: G, b: G) {
+    a > b implies -b > -a
+} by {
+    if a > b {
+        b < a
+        neg_lt_neg(b, a)
+        -a < -b
+        -b > -a
+    }
+}
+
+/// A strict reverse comparison between negatives reflects to the original strict reverse comparison.
+theorem gt_of_neg_gt_neg[G: AddOrderedGroup](a: G, b: G) {
+    -b > -a implies a > b
+} by {
+    if -b > -a {
+        -a < -b
+        lt_of_neg_lt_neg(b, a)
+        b < a
+        a > b
+    }
 }
