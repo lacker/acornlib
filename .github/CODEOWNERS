@@ -1,0 +1,10 @@
+# Default owner for the repository.
+* @lacker
+
+# Shared ownership for the main library and generated outputs.
+/build/ @lacker @AcornLibrarian
+/projects/ @lacker @AcornLibrarian
+/src/ @lacker @AcornLibrarian
+
+# Keep repository settings and workflows owned by the primary maintainer.
+/.github/ @lacker

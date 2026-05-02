@@ -999,3 +999,178 @@ theorem add_subgroup_quotient_neg_projection_compatible[G: AddCommGroup](h: AddS
         quotient_over_unary_op_projection_compatible(add_subgroup_quotient_relation(h), G.neg, a, b)
     }
 }
+
+/// The zero element of the additive-subgroup quotient.
+define add_subgroup_quotient_zero[G: AddCommGroup](h: AddSubgroup[G]) -> QuotientOver[G] {
+    quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+}
+
+/// Addition on the additive-subgroup quotient is associative.
+theorem add_subgroup_quotient_add_assoc[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G, c: G) {
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), a),
+            quotient_over_mk(add_subgroup_quotient_relation(h), b)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c)) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), b),
+            quotient_over_mk(add_subgroup_quotient_relation(h), c)))
+} by {
+    add_subgroup_quotient_add_projection(h, a, b)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + b)
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), a),
+            quotient_over_mk(add_subgroup_quotient_relation(h), b)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c)) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + b),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c))
+    add_subgroup_quotient_add_projection(h, a + b, c)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + b),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), (a + b) + c)
+    add_subgroup_quotient_add_projection(h, b, c)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), b),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), b + c)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), b),
+            quotient_over_mk(add_subgroup_quotient_relation(h), c))) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b + c))
+    add_subgroup_quotient_add_projection(h, a, b + c)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b + c)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + (b + c))
+    (a + b) + c = a + (b + c)
+    quotient_over_mk(add_subgroup_quotient_relation(h), (a + b) + c) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + (b + c))
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), a),
+            quotient_over_mk(add_subgroup_quotient_relation(h), b)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), c)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), (a + b) + c)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_add(h,
+            quotient_over_mk(add_subgroup_quotient_relation(h), b),
+            quotient_over_mk(add_subgroup_quotient_relation(h), c))) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + (b + c))
+}
+
+/// The quotient zero is a left identity for quotient addition.
+theorem add_subgroup_quotient_zero_add[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)
+} by {
+    add_subgroup_quotient_add_projection(h, G.0, a)
+    G.0 + a = a
+}
+
+/// The quotient zero is a right identity for quotient addition.
+theorem add_subgroup_quotient_add_zero[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)
+} by {
+    add_subgroup_quotient_add_projection(h, a, G.0)
+    a + G.0 = a
+}
+
+/// The quotient negation is a left inverse for quotient addition.
+theorem add_subgroup_quotient_neg_add[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+} by {
+    add_subgroup_quotient_neg_projection(h, a)
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a)
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a))
+    add_subgroup_quotient_add_projection(h, -a, a)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a + a)
+    -a + a = G.0
+    quotient_over_mk(add_subgroup_quotient_relation(h), -a + a) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+    add_subgroup_quotient_add(h,
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+}
+
+/// The quotient negation is a right inverse for quotient addition.
+theorem add_subgroup_quotient_add_neg[G: AddCommGroup](h: AddSubgroup[G], a: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a))) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+} by {
+    add_subgroup_quotient_neg_projection(h, a)
+    add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a))) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a))
+    add_subgroup_quotient_add_projection(h, a, -a)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), -a)) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), a + -a)
+    a + -a = G.0
+    quotient_over_mk(add_subgroup_quotient_relation(h), a + -a) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        add_subgroup_quotient_neg(h, quotient_over_mk(add_subgroup_quotient_relation(h), a))) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), G.0)
+}
+
+/// Addition on the additive-subgroup quotient is commutative.
+theorem add_subgroup_quotient_add_comm[G: AddCommGroup](h: AddSubgroup[G], a: G, b: G) {
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), b),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a))
+} by {
+    add_subgroup_quotient_add_projection(h, a, b)
+    add_subgroup_quotient_add_projection(h, b, a)
+    a + b = b + a
+    quotient_over_mk(add_subgroup_quotient_relation(h), a + b) =
+        quotient_over_mk(add_subgroup_quotient_relation(h), b + a)
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), a),
+        quotient_over_mk(add_subgroup_quotient_relation(h), b)) =
+    add_subgroup_quotient_add(h,
+        quotient_over_mk(add_subgroup_quotient_relation(h), b),
+        quotient_over_mk(add_subgroup_quotient_relation(h), a))
+}

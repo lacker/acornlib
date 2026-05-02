@@ -2,7 +2,7 @@
 
 Goal: support quotient objects as first-class foundational tools using equivalence-class constrained structures instead of one-off encodings.
 
-- [ ] [Algebraic quotient constructions for groups, rings, and modules](algebraic-quotients/todo.md)
+The active queue is empty. The [algebraic-quotients](algebraic-quotients/todo.md) branch reached a stable state with the load-bearing per-`qrel` API; its file is kept as the canonical record of that design decision (chosen wrapper-struct path, deferred phantom-singleton alternative).
 
 Status:
 

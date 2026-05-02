@@ -368,3 +368,124 @@ theorem compose_is_functor[O1, M1, O2, M2, O3, M3](
             and functor_compose_axiom(g.src_cat, f.dst_cat, compose(f.obj_map, g.obj_map), compose(f.mor_map, g.mor_map)))
     }
 }
+
+/// The componentwise composition of two functors, packaged as an optional functor.
+/// Returns `Option.some(...)` exactly when the source category of `f` matches the target category of `g`.
+define compose_functor[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2]
+) -> Option[Functor[O1, M1, O3, M3]] {
+    Functor[O1, M1, O3, M3].new(
+        g.src_cat, f.dst_cat,
+        compose(f.obj_map, g.obj_map),
+        compose(f.mor_map, g.mor_map)
+    )
+}
+
+/// The composition of two composable functors yields some bundled functor.
+theorem compose_functor_some[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2]
+) {
+    f.src_cat = g.dst_cat implies exists(h: Functor[O1, M1, O3, M3]) {
+        compose_functor(f, g) = Option.some(h)
+    }
+} by {
+    if f.src_cat = g.dst_cat {
+        compose_is_functor(f, g)
+        let h: Functor[O1, M1, O3, M3] satisfy {
+            Functor[O1, M1, O3, M3].new(
+                g.src_cat, f.dst_cat,
+                compose(f.obj_map, g.obj_map),
+                compose(f.mor_map, g.mor_map)
+            ) = Option.some(h)
+        }
+        compose_functor(f, g) = Option.some(h)
+    }
+}
+
+/// A bundled composite functor inherits the source category of the inner functor.
+theorem compose_functor_src_cat[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2],
+    h: Functor[O1, M1, O3, M3]
+) {
+    compose_functor(f, g) = Option.some(h) implies h.src_cat = g.src_cat
+} by {
+    if compose_functor(f, g) = Option.some(h) {
+        Functor[O1, M1, O3, M3].new(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map)
+        ) = Option.some(h)
+        functor_new_src_cat(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map),
+            h
+        )
+    }
+}
+
+/// A bundled composite functor inherits the target category of the outer functor.
+theorem compose_functor_dst_cat[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2],
+    h: Functor[O1, M1, O3, M3]
+) {
+    compose_functor(f, g) = Option.some(h) implies h.dst_cat = f.dst_cat
+} by {
+    if compose_functor(f, g) = Option.some(h) {
+        Functor[O1, M1, O3, M3].new(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map)
+        ) = Option.some(h)
+        functor_new_dst_cat(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map),
+            h
+        )
+    }
+}
+
+/// The action on objects of a bundled composite functor is the composition of the underlying object maps.
+theorem compose_functor_obj_map[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2],
+    h: Functor[O1, M1, O3, M3]
+) {
+    compose_functor(f, g) = Option.some(h) implies h.obj_map = compose(f.obj_map, g.obj_map)
+} by {
+    if compose_functor(f, g) = Option.some(h) {
+        Functor[O1, M1, O3, M3].new(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map)
+        ) = Option.some(h)
+        functor_new_obj_map(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map),
+            h
+        )
+    }
+}
+
+/// The action on morphisms of a bundled composite functor is the composition of the underlying morphism maps.
+theorem compose_functor_mor_map[O1, M1, O2, M2, O3, M3](
+    f: Functor[O2, M2, O3, M3], g: Functor[O1, M1, O2, M2],
+    h: Functor[O1, M1, O3, M3]
+) {
+    compose_functor(f, g) = Option.some(h) implies h.mor_map = compose(f.mor_map, g.mor_map)
+} by {
+    if compose_functor(f, g) = Option.some(h) {
+        Functor[O1, M1, O3, M3].new(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map)
+        ) = Option.some(h)
+        functor_new_mor_map(
+            g.src_cat, f.dst_cat,
+            compose(f.obj_map, g.obj_map),
+            compose(f.mor_map, g.mor_map),
+            h
+        )
+    }
+}

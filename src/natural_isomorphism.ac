@@ -1,0 +1,142 @@
+/// Natural isomorphisms between functors.
+
+from category_iso import is_iso_pair, is_iso_pair_identity
+from functor import Functor
+from natural_transformation import NaturalTransformation, identity_nat_trans,
+    identity_nat_trans_src_functor, identity_nat_trans_dst_functor,
+    identity_nat_trans_component_eq, identity_nat_trans_component
+
+/// True if `forward` and `backward` are pointwise an inverse pair, at every object.
+define nat_iso_components_inverse[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2]
+) -> Bool {
+    forall(x: O1) {
+        is_iso_pair(forward.src_functor.dst_cat, forward.component(x), backward.component(x))
+    }
+}
+
+/// True if `forward` and `backward` form an inverse pair of natural transformations.
+define is_natural_isomorphism_pair[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2]
+) -> Bool {
+    forward.src_functor = backward.dst_functor
+    and forward.dst_functor = backward.src_functor
+    and nat_iso_components_inverse(forward, backward)
+}
+
+/// Extract the source-functor matching from the natural-isomorphism pair predicate.
+theorem is_natural_isomorphism_pair_src_eq[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2]
+) {
+    is_natural_isomorphism_pair(forward, backward) implies
+        forward.src_functor = backward.dst_functor
+}
+
+/// Extract the target-functor matching from the natural-isomorphism pair predicate.
+theorem is_natural_isomorphism_pair_dst_eq[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2]
+) {
+    is_natural_isomorphism_pair(forward, backward) implies
+        forward.dst_functor = backward.src_functor
+}
+
+/// Extract the components-inverse predicate from the natural-isomorphism pair predicate.
+theorem is_natural_isomorphism_pair_components[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2]
+) {
+    is_natural_isomorphism_pair(forward, backward) implies
+        nat_iso_components_inverse(forward, backward)
+}
+
+/// Pointwise inverse pair from `nat_iso_components_inverse`.
+theorem nat_iso_components_inverse_at[O1, M1, O2, M2](
+    forward: NaturalTransformation[O1, M1, O2, M2],
+    backward: NaturalTransformation[O1, M1, O2, M2], x: O1
+) {
+    nat_iso_components_inverse(forward, backward) implies
+        is_iso_pair(forward.src_functor.dst_cat, forward.component(x), backward.component(x))
+} by {
+    if nat_iso_components_inverse(forward, backward) {
+        nat_iso_components_inverse(forward, backward) = forall(y: O1) {
+            is_iso_pair(forward.src_functor.dst_cat, forward.component(y), backward.component(y))
+        }
+    }
+}
+
+/// At each object, the identity natural transformation's component equals the identity morphism on the functor's image.
+theorem identity_nat_trans_component_at[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], x: O1) {
+    identity_nat_trans(f).component(x) = f.dst_cat.identity(f.obj_map(x))
+} by {
+    identity_nat_trans_component_eq(f)
+    identity_nat_trans(f).component = identity_nat_trans_component(f)
+    identity_nat_trans(f).component(x) = identity_nat_trans_component(f, x)
+    identity_nat_trans_component(f, x) = f.dst_cat.identity(f.obj_map(x))
+}
+
+/// The identity natural transformation's components form an inverse pair with themselves at each object.
+theorem identity_nat_trans_iso_pair_at[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], x: O1) {
+    is_iso_pair(f.dst_cat,
+        identity_nat_trans(f).component(x),
+        identity_nat_trans(f).component(x))
+} by {
+    identity_nat_trans_component_at(f, x)
+    identity_nat_trans(f).component(x) = f.dst_cat.identity(f.obj_map(x))
+    is_iso_pair_identity(f.dst_cat, f.obj_map(x))
+}
+
+/// The identity natural transformation has its functor as both source and target.
+theorem identity_nat_trans_src_eq_dst[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    identity_nat_trans(f).src_functor = identity_nat_trans(f).dst_functor
+} by {
+    identity_nat_trans_src_functor(f)
+    identity_nat_trans(f).src_functor = f
+    identity_nat_trans_dst_functor(f)
+    identity_nat_trans(f).dst_functor = f
+}
+
+/// The components-inverse predicate at the identity natural transformation, per object.
+theorem identity_nat_trans_components_inverse_at[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], x: O1) {
+    is_iso_pair(identity_nat_trans(f).src_functor.dst_cat,
+        identity_nat_trans(f).component(x),
+        identity_nat_trans(f).component(x))
+} by {
+    let n = identity_nat_trans(f)
+    identity_nat_trans_src_functor(f)
+    n.src_functor = f
+    n.src_functor.dst_cat = f.dst_cat
+    identity_nat_trans_iso_pair_at(f, x)
+    is_iso_pair(f.dst_cat, n.component(x), n.component(x))
+}
+
+/// The pointwise components of the identity natural transformation are inverses of themselves.
+theorem identity_nat_trans_components_inverse[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    nat_iso_components_inverse(identity_nat_trans(f), identity_nat_trans(f))
+} by {
+    let n = identity_nat_trans(f)
+    forall(x: O1) {
+        identity_nat_trans_components_inverse_at(f, x)
+    }
+    nat_iso_components_inverse(n, n) = forall(x: O1) {
+        is_iso_pair(n.src_functor.dst_cat, n.component(x), n.component(x))
+    }
+}
+
+/// The identity natural transformation forms a natural isomorphism with itself.
+theorem identity_nat_trans_is_natural_isomorphism[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    is_natural_isomorphism_pair(identity_nat_trans(f), identity_nat_trans(f))
+} by {
+    let n = identity_nat_trans(f)
+    identity_nat_trans_src_eq_dst(f)
+    n.src_functor = n.dst_functor
+    identity_nat_trans_components_inverse(f)
+    nat_iso_components_inverse(n, n)
+    is_natural_isomorphism_pair(n, n) =
+        (n.src_functor = n.dst_functor
+        and n.dst_functor = n.src_functor
+        and nat_iso_components_inverse(n, n))
+}
