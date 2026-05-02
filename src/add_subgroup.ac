@@ -1,5 +1,6 @@
 from add_comm_group import AddCommGroup
 from add_group import AddGroup
+from functions import predicate_extensionality
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
@@ -567,6 +568,113 @@ theorem add_subgroup_subset_full[G: AddGroup](s: AddSubgroup[G]) {
             full_add_subgroup_contains_everything(x)
         }
     }
+}
+
+/// Mutual inclusion of additive subgroups forces equality.
+theorem add_subgroup_subset_antisymm[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    add_subgroup_subset(a, b) and add_subgroup_subset(b, a) implies a = b
+} by {
+    if add_subgroup_subset(a, b) and add_subgroup_subset(b, a) {
+        add_subgroup_subset(a, b) = forall(y: G) {
+            a.contains(y) implies b.contains(y)
+        }
+        add_subgroup_subset(b, a) = forall(y: G) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: G) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of additive subgroups is equivalent to mutual inclusion.
+theorem add_subgroup_eq_iff_subset_both[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    a = b = (add_subgroup_subset(a, b) and add_subgroup_subset(b, a))
+} by {
+    if a = b {
+        add_subgroup_subset_refl(a)
+        add_subgroup_subset(a, b)
+        add_subgroup_subset(b, a)
+        add_subgroup_subset(a, b) and add_subgroup_subset(b, a)
+    }
+    if add_subgroup_subset(a, b) and add_subgroup_subset(b, a) {
+        add_subgroup_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (add_subgroup_subset(a, b) and add_subgroup_subset(b, a))
+}
+
+/// Intersecting with a larger additive subgroup gives the smaller additive subgroup.
+theorem add_subgroup_intersection_eq_left_of_subset[G: AddGroup](
+    a: AddSubgroup[G],
+    b: AddSubgroup[G]
+) {
+    add_subgroup_subset(a, b) implies a.intersection(b) = a
+} by {
+    if add_subgroup_subset(a, b) {
+        add_subgroup_intersection_subset_left_relation(a, b)
+        add_subgroup_subset_intersection_of_subset_left_right(a, a, b)
+        add_subgroup_subset(a, a.intersection(b))
+        add_subgroup_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger additive subgroup on the left gives the smaller additive subgroup.
+theorem add_subgroup_intersection_eq_right_of_subset[G: AddGroup](
+    a: AddSubgroup[G],
+    b: AddSubgroup[G]
+) {
+    add_subgroup_subset(b, a) implies a.intersection(b) = b
+} by {
+    if add_subgroup_subset(b, a) {
+        add_subgroup_intersection_subset_right_relation(a, b)
+        add_subgroup_subset_intersection_of_subset_left_right(b, a, b)
+        add_subgroup_subset(b, a.intersection(b))
+        add_subgroup_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// Intersecting the zero additive subgroup on the left gives the zero additive subgroup.
+theorem zero_add_subgroup_intersection_left[G: AddGroup](s: AddSubgroup[G]) {
+    zero_add_subgroup[G].intersection(s) = zero_add_subgroup[G]
+} by {
+    zero_add_subgroup_subset(s)
+    add_subgroup_intersection_eq_left_of_subset(zero_add_subgroup[G], s)
+}
+
+/// Intersecting the zero additive subgroup on the right gives the zero additive subgroup.
+theorem zero_add_subgroup_intersection_right[G: AddGroup](s: AddSubgroup[G]) {
+    s.intersection(zero_add_subgroup[G]) = zero_add_subgroup[G]
+} by {
+    zero_add_subgroup_subset(s)
+    add_subgroup_intersection_eq_right_of_subset(s, zero_add_subgroup[G])
+}
+
+/// Intersecting the full additive subgroup on the left gives the other additive subgroup.
+theorem full_add_subgroup_intersection_left[G: AddGroup](s: AddSubgroup[G]) {
+    full_add_subgroup[G].intersection(s) = s
+} by {
+    add_subgroup_subset_full(s)
+    add_subgroup_intersection_eq_right_of_subset(full_add_subgroup[G], s)
+}
+
+/// Intersecting the full additive subgroup on the right gives the other additive subgroup.
+theorem full_add_subgroup_intersection_right[G: AddGroup](s: AddSubgroup[G]) {
+    s.intersection(full_add_subgroup[G]) = s
+} by {
+    add_subgroup_subset_full(s)
+    add_subgroup_intersection_eq_left_of_subset(s, full_add_subgroup[G])
 }
 
 /// The equivalence relation on `G` defined by an additive subgroup: `a ~ b` iff `a - b` lies in the subgroup.

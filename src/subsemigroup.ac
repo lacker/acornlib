@@ -1,5 +1,6 @@
 from semigroup import Semigroup
 from set import Set
+from functions import predicate_extensionality
 
 // We define subsemigroups with the "bundled" technique, so a subsemigroup carries along
 // its semigroup.
@@ -429,4 +430,111 @@ theorem subsemigroup_subset_full[S: Semigroup](s: Subsemigroup[S]) {
             full_subsemigroup_contains_everything(x)
         }
     }
+}
+
+/// Mutual inclusion of subsemigroups forces equality.
+theorem subsemigroup_subset_antisymm[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_subset(a, b) and subsemigroup_subset(b, a) implies a = b
+} by {
+    if subsemigroup_subset(a, b) and subsemigroup_subset(b, a) {
+        subsemigroup_subset(a, b) = forall(y: S) {
+            a.contains(y) implies b.contains(y)
+        }
+        subsemigroup_subset(b, a) = forall(y: S) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: S) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of subsemigroups is equivalent to mutual inclusion.
+theorem subsemigroup_eq_iff_subset_both[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    a = b = (subsemigroup_subset(a, b) and subsemigroup_subset(b, a))
+} by {
+    if a = b {
+        subsemigroup_subset_refl(a)
+        subsemigroup_subset(a, b)
+        subsemigroup_subset(b, a)
+        subsemigroup_subset(a, b) and subsemigroup_subset(b, a)
+    }
+    if subsemigroup_subset(a, b) and subsemigroup_subset(b, a) {
+        subsemigroup_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (subsemigroup_subset(a, b) and subsemigroup_subset(b, a))
+}
+
+/// Intersecting with a larger subsemigroup gives the smaller subsemigroup.
+theorem subsemigroup_intersection_eq_left_of_subset[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S]
+) {
+    subsemigroup_subset(a, b) implies a.intersection(b) = a
+} by {
+    if subsemigroup_subset(a, b) {
+        subsemigroup_intersection_subset_left_relation(a, b)
+        subsemigroup_subset_intersection_of_subset_left_right(a, a, b)
+        subsemigroup_subset(a, a.intersection(b))
+        subsemigroup_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger subsemigroup on the left gives the smaller subsemigroup.
+theorem subsemigroup_intersection_eq_right_of_subset[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S]
+) {
+    subsemigroup_subset(b, a) implies a.intersection(b) = b
+} by {
+    if subsemigroup_subset(b, a) {
+        subsemigroup_intersection_subset_right_relation(a, b)
+        subsemigroup_subset_intersection_of_subset_left_right(b, a, b)
+        subsemigroup_subset(b, a.intersection(b))
+        subsemigroup_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// Intersecting the empty subsemigroup on the left gives the empty subsemigroup.
+theorem empty_subsemigroup_intersection_left[S: Semigroup](s: Subsemigroup[S]) {
+    empty_subsemigroup[S].intersection(s) = empty_subsemigroup[S]
+} by {
+    empty_subsemigroup_subset(s)
+    subsemigroup_intersection_eq_left_of_subset(empty_subsemigroup[S], s)
+}
+
+/// Intersecting the empty subsemigroup on the right gives the empty subsemigroup.
+theorem empty_subsemigroup_intersection_right[S: Semigroup](s: Subsemigroup[S]) {
+    s.intersection(empty_subsemigroup[S]) = empty_subsemigroup[S]
+} by {
+    empty_subsemigroup_subset(s)
+    subsemigroup_intersection_eq_right_of_subset(s, empty_subsemigroup[S])
+}
+
+/// Intersecting the full subsemigroup on the left gives the other subsemigroup.
+theorem full_subsemigroup_intersection_left[S: Semigroup](s: Subsemigroup[S]) {
+    full_subsemigroup[S].intersection(s) = s
+} by {
+    subsemigroup_subset_full(s)
+    subsemigroup_intersection_eq_right_of_subset(full_subsemigroup[S], s)
+}
+
+/// Intersecting the full subsemigroup on the right gives the other subsemigroup.
+theorem full_subsemigroup_intersection_right[S: Semigroup](s: Subsemigroup[S]) {
+    s.intersection(full_subsemigroup[S]) = s
+} by {
+    subsemigroup_subset_full(s)
+    subsemigroup_intersection_eq_left_of_subset(s, full_subsemigroup[S])
 }

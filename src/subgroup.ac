@@ -1,5 +1,6 @@
 from group import Group
 from set import Set
+from functions import predicate_extensionality
 
 // We define subgroups with the "bundled subgroups" technique, so a subgroup "carries along"
 // its group.
@@ -454,4 +455,166 @@ let identity_subgroup[G: Group]: Subgroup[G] satisfy {
 
 theorem identity_subgroup_only_has_identity[G: Group](g: G) {
     identity_subgroup[G].contains(g) implies g = G.1
+}
+
+/// The identity subgroup is contained in every subgroup.
+theorem identity_subgroup_subset[G: Group](s: Subgroup[G]) {
+    subgroup_subset(identity_subgroup[G], s)
+} by {
+    forall(x: G) {
+        if identity_subgroup[G].contains(x) {
+            identity_subgroup_only_has_identity(x)
+            x = G.1
+            subgroup_contains_identity(s)
+            s.contains(G.1)
+            s.contains(x)
+        }
+    }
+}
+
+/// The full subset of any group is a subgroup.
+define full_group_contains[G: Group](a: G) -> Bool {
+    true
+}
+
+/// The full membership predicate is a subgroup predicate.
+theorem full_subgroup_constraint[G: Group] {
+    subgroup_constraint(full_group_contains[G])
+} by {
+    full_group_contains[G](G.1)
+    identity_constraint(full_group_contains[G])
+    forall(a: G, b: G) {
+        if full_group_contains[G](a) and full_group_contains[G](b) {
+            full_group_contains[G](a * b)
+        }
+    }
+    closure_constraint(full_group_contains[G])
+    forall(a: G) {
+        if full_group_contains[G](a) {
+            full_group_contains[G](a.inverse)
+        }
+    }
+    inverse_constraint(full_group_contains[G])
+}
+
+/// The full subgroup, containing every element.
+let full_subgroup[G: Group]: Subgroup[G] satisfy {
+    Subgroup.new(full_group_contains[G]) = Option.some(full_subgroup)
+}
+
+/// Every group element belongs to the full subgroup.
+theorem full_subgroup_contains_everything[G: Group](g: G) {
+    full_subgroup[G].contains(g)
+}
+
+/// Every subgroup is contained in the full subgroup.
+theorem subgroup_subset_full[G: Group](s: Subgroup[G]) {
+    subgroup_subset(s, full_subgroup[G])
+} by {
+    forall(x: G) {
+        if s.contains(x) {
+            full_subgroup_contains_everything(x)
+        }
+    }
+}
+
+/// Mutual inclusion of subgroups forces equality.
+theorem subgroup_subset_antisymm[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_subset(a, b) and subgroup_subset(b, a) implies a = b
+} by {
+    if subgroup_subset(a, b) and subgroup_subset(b, a) {
+        subgroup_subset(a, b) = forall(y: G) {
+            a.contains(y) implies b.contains(y)
+        }
+        subgroup_subset(b, a) = forall(y: G) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: G) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of subgroups is equivalent to mutual inclusion.
+theorem subgroup_eq_iff_subset_both[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a = b = (subgroup_subset(a, b) and subgroup_subset(b, a))
+} by {
+    if a = b {
+        subgroup_subset_refl(a)
+        subgroup_subset(a, b)
+        subgroup_subset(b, a)
+        subgroup_subset(a, b) and subgroup_subset(b, a)
+    }
+    if subgroup_subset(a, b) and subgroup_subset(b, a) {
+        subgroup_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (subgroup_subset(a, b) and subgroup_subset(b, a))
+}
+
+/// Intersecting with a larger subgroup gives the smaller subgroup.
+theorem subgroup_intersection_eq_left_of_subset[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_subset(a, b) implies a.intersection(b) = a
+} by {
+    if subgroup_subset(a, b) {
+        subgroup_intersection_subset_left_relation(a, b)
+        subgroup_subset_intersection_of_subset_left_right(a, a, b)
+        subgroup_subset(a, a.intersection(b))
+        subgroup_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger subgroup on the left gives the smaller subgroup.
+theorem subgroup_intersection_eq_right_of_subset[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_subset(b, a) implies a.intersection(b) = b
+} by {
+    if subgroup_subset(b, a) {
+        subgroup_intersection_subset_right_relation(a, b)
+        subgroup_subset_intersection_of_subset_left_right(b, a, b)
+        subgroup_subset(b, a.intersection(b))
+        subgroup_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// Intersecting the identity subgroup on the left gives the identity subgroup.
+theorem identity_subgroup_intersection_left[G: Group](s: Subgroup[G]) {
+    identity_subgroup[G].intersection(s) = identity_subgroup[G]
+} by {
+    identity_subgroup_subset(s)
+    subgroup_intersection_eq_left_of_subset(identity_subgroup[G], s)
+}
+
+/// Intersecting the identity subgroup on the right gives the identity subgroup.
+theorem identity_subgroup_intersection_right[G: Group](s: Subgroup[G]) {
+    s.intersection(identity_subgroup[G]) = identity_subgroup[G]
+} by {
+    identity_subgroup_subset(s)
+    subgroup_intersection_eq_right_of_subset(s, identity_subgroup[G])
+}
+
+/// Intersecting the full subgroup on the left gives the other subgroup.
+theorem full_subgroup_intersection_left[G: Group](s: Subgroup[G]) {
+    full_subgroup[G].intersection(s) = s
+} by {
+    subgroup_subset_full(s)
+    subgroup_intersection_eq_right_of_subset(full_subgroup[G], s)
+}
+
+/// Intersecting the full subgroup on the right gives the other subgroup.
+theorem full_subgroup_intersection_right[G: Group](s: Subgroup[G]) {
+    s.intersection(full_subgroup[G]) = s
+} by {
+    subgroup_subset_full(s)
+    subgroup_intersection_eq_left_of_subset(s, full_subgroup[G])
 }

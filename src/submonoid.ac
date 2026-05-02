@@ -1,5 +1,6 @@
 from monoid import Monoid
 from set import Set
+from functions import predicate_extensionality
 
 // We define submonoids with the "bundled" technique, so a submonoid carries along
 // its monoid.
@@ -477,4 +478,105 @@ theorem submonoid_subset_full[M: Monoid](s: Submonoid[M]) {
             full_submonoid_contains_everything(x)
         }
     }
+}
+
+/// Mutual inclusion of submonoids forces equality.
+theorem submonoid_subset_antisymm[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_subset(a, b) and submonoid_subset(b, a) implies a = b
+} by {
+    if submonoid_subset(a, b) and submonoid_subset(b, a) {
+        submonoid_subset(a, b) = forall(y: M) {
+            a.contains(y) implies b.contains(y)
+        }
+        submonoid_subset(b, a) = forall(y: M) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of submonoids is equivalent to mutual inclusion.
+theorem submonoid_eq_iff_subset_both[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    a = b = (submonoid_subset(a, b) and submonoid_subset(b, a))
+} by {
+    if a = b {
+        submonoid_subset_refl(a)
+        submonoid_subset(a, b)
+        submonoid_subset(b, a)
+        submonoid_subset(a, b) and submonoid_subset(b, a)
+    }
+    if submonoid_subset(a, b) and submonoid_subset(b, a) {
+        submonoid_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (submonoid_subset(a, b) and submonoid_subset(b, a))
+}
+
+/// Intersecting with a larger submonoid gives the smaller submonoid.
+theorem submonoid_intersection_eq_left_of_subset[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_subset(a, b) implies a.intersection(b) = a
+} by {
+    if submonoid_subset(a, b) {
+        submonoid_intersection_subset_left_relation(a, b)
+        submonoid_subset_intersection_of_subset_left_right(a, a, b)
+        submonoid_subset(a, a.intersection(b))
+        submonoid_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger submonoid on the left gives the smaller submonoid.
+theorem submonoid_intersection_eq_right_of_subset[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_subset(b, a) implies a.intersection(b) = b
+} by {
+    if submonoid_subset(b, a) {
+        submonoid_intersection_subset_right_relation(a, b)
+        submonoid_subset_intersection_of_subset_left_right(b, a, b)
+        submonoid_subset(b, a.intersection(b))
+        submonoid_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// Intersecting the identity submonoid on the left gives the identity submonoid.
+theorem identity_submonoid_intersection_left[M: Monoid](s: Submonoid[M]) {
+    identity_submonoid[M].intersection(s) = identity_submonoid[M]
+} by {
+    identity_submonoid_subset(s)
+    submonoid_intersection_eq_left_of_subset(identity_submonoid[M], s)
+}
+
+/// Intersecting the identity submonoid on the right gives the identity submonoid.
+theorem identity_submonoid_intersection_right[M: Monoid](s: Submonoid[M]) {
+    s.intersection(identity_submonoid[M]) = identity_submonoid[M]
+} by {
+    identity_submonoid_subset(s)
+    submonoid_intersection_eq_right_of_subset(s, identity_submonoid[M])
+}
+
+/// Intersecting the full submonoid on the left gives the other submonoid.
+theorem full_submonoid_intersection_left[M: Monoid](s: Submonoid[M]) {
+    full_submonoid[M].intersection(s) = s
+} by {
+    submonoid_subset_full(s)
+    submonoid_intersection_eq_right_of_subset(full_submonoid[M], s)
+}
+
+/// Intersecting the full submonoid on the right gives the other submonoid.
+theorem full_submonoid_intersection_right[M: Monoid](s: Submonoid[M]) {
+    s.intersection(full_submonoid[M]) = s
+} by {
+    submonoid_subset_full(s)
+    submonoid_intersection_eq_left_of_subset(s, full_submonoid[M])
 }
