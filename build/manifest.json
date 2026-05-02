@@ -102,6 +102,7 @@
     "semiring.from_nat": "bc48065c0aa4c8cc0688df7ae0ab8239b3683343870fc15c765b48c600896c29",
     "semiring_hom": "b7320fd02dbdd2ed4194aa3a6a31907b8cfab066f00f247bf2b0523b22506798",
     "set": "8474a3a6b24f9eb392aa82ecd7295c3ce4fb51637aef800c40c18c91e82cff4b",
+    "set_lattice": "8e453bfbf2b1116abbac454dc3783caeb60e0f95fcdbdc70d6ca3e85b6b15e3f",
     "subgroup": "e9457fa64da77fd056ccaaad313c7d218e7056b4768c6088a4941eeb1e8797aa",
     "submodule": "db00c58eb94a2782a29c03e94609bfa7d3c8f9a40fcd5d5ed50d3e1664cecf7e",
     "submonoid": "756ed81998e7f5445dad6eca9aaa70fa77c86e6a95865a79a6e9d648d39853cd",

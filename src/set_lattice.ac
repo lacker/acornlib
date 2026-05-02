@@ -1,0 +1,481 @@
+from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
+    union_contains_eq, intersection_contains_eq, sets_subset_union, sets_subset_contain_union,
+    sets_subset_intersection, set_supset_contains_intersection, union_comm, intersection_comm,
+    union_assoc, intersection_assoc, union_idemp, intersection_idemp, union_with_empty_is_self,
+    intersection_with_universal_is_self, union_with_universal_is_universal,
+    intersection_with_empty_is_empty, union_intersection_distrib, indexed_union,
+    indexed_intersection, indexed_union_contains_eq, indexed_union_contains_of_contains,
+    indexed_union_subset_of_family_subset, indexed_intersection_contains_eq,
+    indexed_intersection_contains_at, indexed_intersection_contains_of_forall,
+    indexed_intersection_superset_of_subset_family, indexed_union_monotone,
+    indexed_intersection_monotone
+
+/// The infimum of two sets.
+define set_inf[K](a: Set[K], b: Set[K]) -> Set[K] {
+    a.intersection(b)
+}
+
+/// The supremum of two sets.
+define set_sup[K](a: Set[K], b: Set[K]) -> Set[K] {
+    a.union(b)
+}
+
+/// Membership in a set infimum is membership in both sets.
+theorem set_inf_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    set_inf(a, b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    intersection_contains_eq(a, b, x)
+}
+
+/// Membership in a set supremum is membership in at least one set.
+theorem set_sup_contains_eq[K](a: Set[K], b: Set[K], x: K) {
+    set_sup(a, b).contains(x) = (a.contains(x) or b.contains(x))
+} by {
+    union_contains_eq(a, b, x)
+}
+
+/// A set infimum is contained in its left argument.
+theorem set_inf_subset_left[K](a: Set[K], b: Set[K]) {
+    set_inf(a, b).subset(a)
+} by {
+    sets_subset_intersection(a, b)
+    a.intersection(b).subset(a)
+}
+
+/// A set infimum is contained in its right argument.
+theorem set_inf_subset_right[K](a: Set[K], b: Set[K]) {
+    set_inf(a, b).subset(b)
+} by {
+    sets_subset_intersection(a, b)
+    a.intersection(b).subset(b)
+}
+
+/// Every common subset is contained in the set infimum.
+theorem set_subset_inf_of_subset_left_right[K](c: Set[K], a: Set[K], b: Set[K]) {
+    c.subset(a) and c.subset(b) implies c.subset(set_inf(a, b))
+} by {
+    if c.subset(a) and c.subset(b) {
+        a.superset(c)
+        b.superset(c)
+        set_supset_contains_intersection(a, b, c)
+        a.intersection(b).superset(c)
+        c.subset(a.intersection(b))
+        c.subset(set_inf(a, b))
+    }
+}
+
+/// Containment in a set infimum is exactly containment in both arguments.
+theorem set_subset_inf_iff[K](c: Set[K], a: Set[K], b: Set[K]) {
+    c.subset(set_inf(a, b)) = (c.subset(a) and c.subset(b))
+} by {
+    if c.subset(set_inf(a, b)) {
+        set_inf_subset_left(a, b)
+        subset_trans(c, set_inf(a, b), a)
+        c.subset(a)
+        set_inf_subset_right(a, b)
+        subset_trans(c, set_inf(a, b), b)
+        c.subset(b)
+        c.subset(a) and c.subset(b)
+    }
+    if c.subset(a) and c.subset(b) {
+        set_subset_inf_of_subset_left_right(c, a, b)
+        c.subset(set_inf(a, b))
+    }
+    c.subset(set_inf(a, b)) = (c.subset(a) and c.subset(b))
+}
+
+/// The left argument is contained in a set supremum.
+theorem set_subset_sup_left[K](a: Set[K], b: Set[K]) {
+    a.subset(set_sup(a, b))
+} by {
+    sets_subset_union(a, b)
+    a.subset(a.union(b))
+}
+
+/// The right argument is contained in a set supremum.
+theorem set_subset_sup_right[K](a: Set[K], b: Set[K]) {
+    b.subset(set_sup(a, b))
+} by {
+    sets_subset_union(a, b)
+    b.subset(a.union(b))
+}
+
+/// A set supremum is contained in every common superset.
+theorem set_sup_subset_of_subset_left_right[K](a: Set[K], b: Set[K], c: Set[K]) {
+    a.subset(c) and b.subset(c) implies set_sup(a, b).subset(c)
+} by {
+    if a.subset(c) and b.subset(c) {
+        sets_subset_contain_union(a, b, c)
+        a.union(b).subset(c)
+        set_sup(a, b).subset(c)
+    }
+}
+
+/// A set supremum is contained in a set exactly when both arguments are contained in it.
+theorem set_sup_subset_iff[K](a: Set[K], b: Set[K], c: Set[K]) {
+    set_sup(a, b).subset(c) = (a.subset(c) and b.subset(c))
+} by {
+    if set_sup(a, b).subset(c) {
+        set_subset_sup_left(a, b)
+        subset_trans(a, set_sup(a, b), c)
+        a.subset(c)
+        set_subset_sup_right(a, b)
+        subset_trans(b, set_sup(a, b), c)
+        b.subset(c)
+        a.subset(c) and b.subset(c)
+    }
+    if a.subset(c) and b.subset(c) {
+        set_sup_subset_of_subset_left_right(a, b, c)
+        set_sup(a, b).subset(c)
+    }
+    set_sup(a, b).subset(c) = (a.subset(c) and b.subset(c))
+}
+
+/// Set infimum is commutative.
+theorem set_inf_comm[K](a: Set[K], b: Set[K]) {
+    set_inf(a, b) = set_inf(b, a)
+} by {
+    intersection_comm(a, b)
+}
+
+/// Set supremum is commutative.
+theorem set_sup_comm[K](a: Set[K], b: Set[K]) {
+    set_sup(a, b) = set_sup(b, a)
+} by {
+    union_comm(a, b)
+}
+
+/// Set infimum is associative.
+theorem set_inf_assoc[K](a: Set[K], b: Set[K], c: Set[K]) {
+    set_inf(a, set_inf(b, c)) = set_inf(set_inf(a, b), c)
+} by {
+    intersection_assoc(a, b, c)
+}
+
+/// Set supremum is associative.
+theorem set_sup_assoc[K](a: Set[K], b: Set[K], c: Set[K]) {
+    set_sup(a, set_sup(b, c)) = set_sup(set_sup(a, b), c)
+} by {
+    union_assoc(a, b, c)
+}
+
+/// Set infimum is idempotent.
+theorem set_inf_idem[K](s: Set[K]) {
+    set_inf(s, s) = s
+} by {
+    intersection_idemp(s)
+}
+
+/// Set supremum is idempotent.
+theorem set_sup_idem[K](s: Set[K]) {
+    set_sup(s, s) = s
+} by {
+    union_idemp(s)
+}
+
+/// The infimum with the universal set is the original set.
+theorem set_inf_universal_right[K](s: Set[K]) {
+    set_inf(s, Set[K].universal_set) = s
+} by {
+    intersection_with_universal_is_self(s)
+}
+
+/// The infimum with the universal set on the left is the original set.
+theorem set_inf_universal_left[K](s: Set[K]) {
+    set_inf(Set[K].universal_set, s) = s
+} by {
+    intersection_comm(Set[K].universal_set, s)
+    intersection_with_universal_is_self(s)
+}
+
+/// The supremum with the empty set is the original set.
+theorem set_sup_empty_right[K](s: Set[K]) {
+    set_sup(s, Set[K].empty_set) = s
+} by {
+    union_with_empty_is_self(s)
+}
+
+/// The supremum with the empty set on the left is the original set.
+theorem set_sup_empty_left[K](s: Set[K]) {
+    set_sup(Set[K].empty_set, s) = s
+} by {
+    union_comm(Set[K].empty_set, s)
+    union_with_empty_is_self(s)
+}
+
+/// The infimum with the empty set is empty.
+theorem set_inf_empty_right[K](s: Set[K]) {
+    set_inf(s, Set[K].empty_set) = Set[K].empty_set
+} by {
+    intersection_with_empty_is_empty(s)
+}
+
+/// The infimum with the empty set on the left is empty.
+theorem set_inf_empty_left[K](s: Set[K]) {
+    set_inf(Set[K].empty_set, s) = Set[K].empty_set
+} by {
+    intersection_comm(Set[K].empty_set, s)
+    intersection_with_empty_is_empty(s)
+}
+
+/// The supremum with the universal set is universal.
+theorem set_sup_universal_right[K](s: Set[K]) {
+    set_sup(s, Set[K].universal_set) = Set[K].universal_set
+} by {
+    union_with_universal_is_universal(s)
+}
+
+/// The supremum with the universal set on the left is universal.
+theorem set_sup_universal_left[K](s: Set[K]) {
+    set_sup(Set[K].universal_set, s) = Set[K].universal_set
+} by {
+    union_comm(Set[K].universal_set, s)
+    union_with_universal_is_universal(s)
+}
+
+/// Set infimum absorbs set supremum.
+theorem set_inf_sup_absorb[K](a: Set[K], b: Set[K]) {
+    set_inf(a, set_sup(a, b)) = a
+} by {
+    set_inf_subset_left(a, set_sup(a, b))
+    set_inf(a, set_sup(a, b)).subset(a)
+    set_subset_sup_left(a, b)
+    set_subset_inf_of_subset_left_right(a, a, set_sup(a, b))
+    a.subset(set_inf(a, set_sup(a, b)))
+    subset_antisymm(set_inf(a, set_sup(a, b)), a)
+}
+
+/// Set supremum absorbs set infimum.
+theorem set_sup_inf_absorb[K](a: Set[K], b: Set[K]) {
+    set_sup(a, set_inf(a, b)) = a
+} by {
+    set_subset_sup_left(a, set_inf(a, b))
+    a.subset(set_sup(a, set_inf(a, b)))
+    set_inf_subset_left(a, b)
+    set_sup_subset_of_subset_left_right(a, set_inf(a, b), a)
+    set_sup(a, set_inf(a, b)).subset(a)
+    subset_antisymm(set_sup(a, set_inf(a, b)), a)
+}
+
+/// Set infimum distributes over set supremum on the left.
+theorem set_inf_sup_distrib_left[K](a: Set[K], b: Set[K], c: Set[K]) {
+    set_inf(a, set_sup(b, c)) = set_sup(set_inf(a, b), set_inf(a, c))
+} by {
+    let u = set_inf(a, set_sup(b, c))
+    let v = set_sup(set_inf(a, b), set_inf(a, c))
+    forall(x: K) {
+        if u.contains(x) {
+            set_inf_contains_eq(a, set_sup(b, c), x)
+            a.contains(x)
+            set_sup(b, c).contains(x)
+            set_sup_contains_eq(b, c, x)
+            if b.contains(x) {
+                set_inf_contains_eq(a, b, x)
+                set_inf(a, b).contains(x)
+                set_sup_contains_eq(set_inf(a, b), set_inf(a, c), x)
+                v.contains(x)
+            } else {
+                c.contains(x)
+                set_inf_contains_eq(a, c, x)
+                set_inf(a, c).contains(x)
+                set_sup_contains_eq(set_inf(a, b), set_inf(a, c), x)
+                v.contains(x)
+            }
+        }
+        if v.contains(x) {
+            set_sup_contains_eq(set_inf(a, b), set_inf(a, c), x)
+            if set_inf(a, b).contains(x) {
+                set_inf_contains_eq(a, b, x)
+                a.contains(x)
+                b.contains(x)
+                set_sup_contains_eq(b, c, x)
+                set_sup(b, c).contains(x)
+                set_inf_contains_eq(a, set_sup(b, c), x)
+                u.contains(x)
+            } else {
+                set_inf(a, c).contains(x)
+                set_inf_contains_eq(a, c, x)
+                a.contains(x)
+                c.contains(x)
+                set_sup_contains_eq(b, c, x)
+                set_sup(b, c).contains(x)
+                set_inf_contains_eq(a, set_sup(b, c), x)
+                u.contains(x)
+            }
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Set supremum distributes over set infimum on the left.
+theorem set_sup_inf_distrib_left[K](a: Set[K], b: Set[K], c: Set[K]) {
+    set_sup(a, set_inf(b, c)) = set_inf(set_sup(a, b), set_sup(a, c))
+} by {
+    union_intersection_distrib(a, b, c)
+}
+
+/// The supremum of an indexed family of sets.
+define set_sSup[K, I](family: I -> Set[K]) -> Set[K] {
+    indexed_union(family)
+}
+
+/// The infimum of an indexed family of sets.
+define set_sInf[K, I](family: I -> Set[K]) -> Set[K] {
+    indexed_intersection(family)
+}
+
+/// Membership in the supremum of a family is membership in some member.
+theorem set_sSup_contains_eq[K, I](family: I -> Set[K], x: K) {
+    set_sSup(family).contains(x) = exists(i: I) {
+        family(i).contains(x)
+    }
+} by {
+    indexed_union_contains_eq(family, x)
+}
+
+/// Membership in the infimum of a family is membership in every member.
+theorem set_sInf_contains_eq[K, I](family: I -> Set[K], x: K) {
+    set_sInf(family).contains(x) = forall(i: I) {
+        family(i).contains(x)
+    }
+} by {
+    indexed_intersection_contains_eq(family, x)
+}
+
+/// Every member of a family is contained in the supremum of that family.
+theorem set_family_subset_sSup[K, I](family: I -> Set[K], i: I) {
+    family(i).subset(set_sSup(family))
+} by {
+    forall(x: K) {
+        if family(i).contains(x) {
+            indexed_union_contains_of_contains(family, i, x)
+            set_sSup(family).contains(x)
+        }
+    }
+}
+
+/// The supremum of a family is contained in every common superset.
+theorem set_sSup_subset_of_family_subset[K, I](family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { family(i).subset(s) }) implies set_sSup(family).subset(s)
+} by {
+    if forall(i: I) { family(i).subset(s) } {
+        indexed_union_subset_of_family_subset(family, s)
+        set_sSup(family).subset(s)
+    }
+}
+
+/// The supremum of a family is contained in a set exactly when every member is contained in it.
+theorem set_sSup_subset_iff[K, I](family: I -> Set[K], s: Set[K]) {
+    set_sSup(family).subset(s) = forall(i: I) {
+        family(i).subset(s)
+    }
+} by {
+    if set_sSup(family).subset(s) {
+        forall(i: I) {
+            set_family_subset_sSup(family, i)
+            subset_trans(family(i), set_sSup(family), s)
+            family(i).subset(s)
+        }
+    }
+    if forall(i: I) { family(i).subset(s) } {
+        set_sSup_subset_of_family_subset(family, s)
+        set_sSup(family).subset(s)
+    }
+    set_sSup(family).subset(s) = forall(i: I) {
+        family(i).subset(s)
+    }
+}
+
+/// The infimum of a family is contained in every member of the family.
+theorem set_sInf_subset_family[K, I](family: I -> Set[K], i: I) {
+    set_sInf(family).subset(family(i))
+} by {
+    forall(x: K) {
+        if set_sInf(family).contains(x) {
+            indexed_intersection_contains_at(family, i, x)
+            family(i).contains(x)
+        }
+    }
+}
+
+/// Every common subset is contained in the infimum of a family.
+theorem set_subset_sInf_of_subset_family[K, I](s: Set[K], family: I -> Set[K]) {
+    (forall(i: I) { s.subset(family(i)) }) implies s.subset(set_sInf(family))
+} by {
+    if forall(i: I) { s.subset(family(i)) } {
+        indexed_intersection_superset_of_subset_family(family, s)
+        indexed_intersection(family).superset(s)
+        s.subset(set_sInf(family))
+    }
+}
+
+/// A set is contained in the infimum of a family exactly when it is contained in every member.
+theorem set_subset_sInf_iff[K, I](s: Set[K], family: I -> Set[K]) {
+    s.subset(set_sInf(family)) = forall(i: I) {
+        s.subset(family(i))
+    }
+} by {
+    if s.subset(set_sInf(family)) {
+        forall(i: I) {
+            set_sInf_subset_family(family, i)
+            subset_trans(s, set_sInf(family), family(i))
+            s.subset(family(i))
+        }
+    }
+    if forall(i: I) { s.subset(family(i)) } {
+        set_subset_sInf_of_subset_family(s, family)
+        s.subset(set_sInf(family))
+    }
+    s.subset(set_sInf(family)) = forall(i: I) {
+        s.subset(family(i))
+    }
+}
+
+/// Pointwise inclusion of families preserves family suprema.
+theorem set_sSup_monotone[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) implies set_sSup(a).subset(set_sSup(b))
+} by {
+    if forall(i: I) { a(i).subset(b(i)) } {
+        indexed_union_monotone(a, b)
+        indexed_union(a).subset(indexed_union(b))
+        set_sSup(a) = indexed_union(a)
+        set_sSup(b) = indexed_union(b)
+        set_sSup(a).subset(set_sSup(b))
+    }
+}
+
+/// Pointwise inclusion of families preserves family infima.
+theorem set_sInf_monotone[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) implies set_sInf(a).subset(set_sInf(b))
+} by {
+    if forall(i: I) { a(i).subset(b(i)) } {
+        indexed_intersection_monotone(a, b)
+        indexed_intersection(a).subset(indexed_intersection(b))
+        set_sInf(a) = indexed_intersection(a)
+        set_sInf(b) = indexed_intersection(b)
+        set_sInf(a).subset(set_sInf(b))
+    }
+}
+
+/// A family supremum is the least upper bound of the family.
+theorem set_sSup_is_lub[K, I](family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { family(i).subset(set_sSup(family)) }) and
+    (set_sSup(family).subset(s) = forall(i: I) { family(i).subset(s) })
+} by {
+    forall(i: I) {
+        set_family_subset_sSup(family, i)
+    }
+    set_sSup_subset_iff(family, s)
+}
+
+/// A family infimum is the greatest lower bound of the family.
+theorem set_sInf_is_glb[K, I](family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { set_sInf(family).subset(family(i)) }) and
+    (s.subset(set_sInf(family)) = forall(i: I) { s.subset(family(i)) })
+} by {
+    forall(i: I) {
+        set_sInf_subset_family(family, i)
+    }
+    set_subset_sInf_iff(s, family)
+}
