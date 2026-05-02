@@ -30,6 +30,16 @@ define list_join[S: JoinSemilattice](head: S, tail: List[S]) -> S {
     }
 }
 
+/// The infimum of a non-empty list.
+define list_inf[S: MeetSemilattice](head: S, tail: List[S]) -> S {
+    list_meet(head, tail)
+}
+
+/// The supremum of a non-empty list.
+define list_sup[S: JoinSemilattice](head: S, tail: List[S]) -> S {
+    list_join(head, tail)
+}
+
 /// True if a point is below every element of a list.
 define list_lower_bound[S: PartialOrder](items: List[S], lower: S) -> Bool {
     forall(x: S) {
@@ -1004,4 +1014,436 @@ theorem list_join_append_le_iff[S: JoinSemilattice](head: S, tail: List[S], last
     join_lte_iff(list_join(head, tail), last, c)
     list_join(head, tail.append(last)) <= c =
     (list_join(head, tail) <= c and last <= c)
+}
+
+/// List infimum is the list meet.
+theorem list_inf_eq_list_meet[S: MeetSemilattice](head: S, tail: List[S]) {
+    list_inf(head, tail) = list_meet(head, tail)
+}
+
+/// List supremum is the list join.
+theorem list_sup_eq_list_join[S: JoinSemilattice](head: S, tail: List[S]) {
+    list_sup(head, tail) = list_join(head, tail)
+}
+
+/// The infimum of a non-empty list is below its head.
+theorem list_inf_lte_head[S: MeetSemilattice](head: S, tail: List[S]) {
+    list_inf(head, tail) <= head
+} by {
+    list_inf_eq_list_meet(head, tail)
+    list_meet_lte_head(head, tail)
+}
+
+/// The infimum of a cons list is below the infimum of its non-empty tail.
+theorem list_inf_lte_tail_inf[S: MeetSemilattice](head: S, next: S, rest: List[S]) {
+    list_inf(head, List.cons(next, rest)) <= list_inf(next, rest)
+} by {
+    list_inf_eq_list_meet(head, List.cons(next, rest))
+    list_inf_eq_list_meet(next, rest)
+    list_meet_lte_tail_meet(head, next, rest)
+}
+
+/// The infimum of a non-empty list is below every element of the list.
+theorem list_inf_lte_contains[S: MeetSemilattice](head: S, tail: List[S], x: S) {
+    List.cons(head, tail).contains(x) implies list_inf(head, tail) <= x
+} by {
+    if List.cons(head, tail).contains(x) {
+        list_inf_eq_list_meet(head, tail)
+        list_meet_lte_contains(head, tail, x)
+        list_inf(head, tail) <= x
+    }
+}
+
+/// The head is below the supremum of a non-empty list.
+theorem head_lte_list_sup[S: JoinSemilattice](head: S, tail: List[S]) {
+    head <= list_sup(head, tail)
+} by {
+    list_sup_eq_list_join(head, tail)
+    head_lte_list_join(head, tail)
+}
+
+/// The supremum of a non-empty tail is below the supremum of the whole cons list.
+theorem tail_sup_lte_list_sup[S: JoinSemilattice](head: S, next: S, rest: List[S]) {
+    list_sup(next, rest) <= list_sup(head, List.cons(next, rest))
+} by {
+    list_sup_eq_list_join(next, rest)
+    list_sup_eq_list_join(head, List.cons(next, rest))
+    tail_join_lte_list_join(head, next, rest)
+}
+
+/// Every element of a non-empty list is below its supremum.
+theorem contains_lte_list_sup[S: JoinSemilattice](head: S, tail: List[S], x: S) {
+    List.cons(head, tail).contains(x) implies x <= list_sup(head, tail)
+} by {
+    if List.cons(head, tail).contains(x) {
+        list_sup_eq_list_join(head, tail)
+        contains_lte_list_join(head, tail, x)
+        x <= list_sup(head, tail)
+    }
+}
+
+/// Any lower bound for every element of a non-empty list is below its infimum.
+theorem lte_list_inf_of_contains_bounds[S: MeetSemilattice](c: S, head: S, tail: List[S]) {
+    list_lower_bound(List.cons(head, tail), c) implies
+    c <= list_inf(head, tail)
+} by {
+    if list_lower_bound(List.cons(head, tail), c) {
+        list_inf_eq_list_meet(head, tail)
+        lte_list_meet_of_contains_bounds(c, head, tail)
+        c <= list_inf(head, tail)
+    }
+}
+
+/// The infimum of a non-empty list is the greatest lower bound of its elements.
+theorem lte_list_inf_iff_contains_bounds[S: MeetSemilattice](c: S, head: S, tail: List[S]) {
+    c <= list_inf(head, tail) = list_lower_bound(List.cons(head, tail), c)
+} by {
+    list_inf_eq_list_meet(head, tail)
+    lte_list_meet_iff_contains_bounds(c, head, tail)
+}
+
+/// The infimum of a non-empty list is a lower bound for that list.
+theorem list_inf_is_lower_bound[S: MeetSemilattice](head: S, tail: List[S]) {
+    list_lower_bound(List.cons(head, tail), list_inf(head, tail))
+} by {
+    list_inf_eq_list_meet(head, tail)
+    list_meet_is_lower_bound(head, tail)
+}
+
+/// A point is below the list infimum exactly when it is a lower bound for the list.
+theorem le_list_inf_iff[S: MeetSemilattice](c: S, head: S, tail: List[S]) {
+    c <= list_inf(head, tail) = list_lower_bound(List.cons(head, tail), c)
+} by {
+    lte_list_inf_iff_contains_bounds(c, head, tail)
+}
+
+/// Any upper bound for every element of a non-empty list is above its supremum.
+theorem list_sup_lte_of_contains_bounds[S: JoinSemilattice](head: S, tail: List[S], c: S) {
+    list_upper_bound(List.cons(head, tail), c) implies
+    list_sup(head, tail) <= c
+} by {
+    if list_upper_bound(List.cons(head, tail), c) {
+        list_sup_eq_list_join(head, tail)
+        list_join_lte_of_contains_bounds(head, tail, c)
+        list_sup(head, tail) <= c
+    }
+}
+
+/// The supremum of a non-empty list is the least upper bound of its elements.
+theorem list_sup_lte_iff_contains_bounds[S: JoinSemilattice](head: S, tail: List[S], c: S) {
+    list_sup(head, tail) <= c = list_upper_bound(List.cons(head, tail), c)
+} by {
+    list_sup_eq_list_join(head, tail)
+    list_join_lte_iff_contains_bounds(head, tail, c)
+}
+
+/// The supremum of a non-empty list is an upper bound for that list.
+theorem list_sup_is_upper_bound[S: JoinSemilattice](head: S, tail: List[S]) {
+    list_upper_bound(List.cons(head, tail), list_sup(head, tail))
+} by {
+    list_sup_eq_list_join(head, tail)
+    list_join_is_upper_bound(head, tail)
+}
+
+/// The list supremum is below a point exactly when the point is an upper bound for the list.
+theorem list_sup_le_iff[S: JoinSemilattice](head: S, tail: List[S], c: S) {
+    list_sup(head, tail) <= c = list_upper_bound(List.cons(head, tail), c)
+} by {
+    list_sup_lte_iff_contains_bounds(head, tail, c)
+}
+
+/// The infimum over a concatenation with a non-empty right list is the meet of the two list infima.
+theorem list_inf_add_cons[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_inf(head, tail + List.cons(next, rest)) =
+    list_inf(head, tail).meet(list_inf(next, rest))
+} by {
+    list_inf_eq_list_meet(head, tail + List.cons(next, rest))
+    list_inf_eq_list_meet(head, tail)
+    list_inf_eq_list_meet(next, rest)
+    list_meet_add_cons(head, tail, next, rest)
+}
+
+/// The supremum over a concatenation with a non-empty right list is the join of the two list suprema.
+theorem list_sup_add_cons[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_sup(head, tail + List.cons(next, rest)) =
+    list_sup(head, tail).join(list_sup(next, rest))
+} by {
+    list_sup_eq_list_join(head, tail + List.cons(next, rest))
+    list_sup_eq_list_join(head, tail)
+    list_sup_eq_list_join(next, rest)
+    list_join_add_cons(head, tail, next, rest)
+}
+
+/// The infimum over a concatenation is below the infimum of the left non-empty list.
+theorem list_inf_add_cons_lte_left[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_inf(head, tail + List.cons(next, rest)) <= list_inf(head, tail)
+} by {
+    list_inf_eq_list_meet(head, tail + List.cons(next, rest))
+    list_inf_eq_list_meet(head, tail)
+    list_meet_add_cons_lte_left(head, tail, next, rest)
+}
+
+/// The infimum over a concatenation is below the infimum of the right non-empty list.
+theorem list_inf_add_cons_lte_right[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_inf(head, tail + List.cons(next, rest)) <= list_inf(next, rest)
+} by {
+    list_inf_eq_list_meet(head, tail + List.cons(next, rest))
+    list_inf_eq_list_meet(next, rest)
+    list_meet_add_cons_lte_right(head, tail, next, rest)
+}
+
+/// The supremum of the left non-empty list is below the supremum over a concatenation.
+theorem list_sup_lte_add_cons_left[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_sup(head, tail) <= list_sup(head, tail + List.cons(next, rest))
+} by {
+    list_sup_eq_list_join(head, tail)
+    list_sup_eq_list_join(head, tail + List.cons(next, rest))
+    list_join_lte_add_cons_left(head, tail, next, rest)
+}
+
+/// The supremum of the right non-empty list is below the supremum over a concatenation.
+theorem list_sup_lte_add_cons_right[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_sup(next, rest) <= list_sup(head, tail + List.cons(next, rest))
+} by {
+    list_sup_eq_list_join(next, rest)
+    list_sup_eq_list_join(head, tail + List.cons(next, rest))
+    list_join_lte_add_cons_right(head, tail, next, rest)
+}
+
+/// A point is below the infimum over a concatenation exactly when it is below both list infima.
+theorem le_list_inf_add_cons_iff[S: MeetSemilattice](c: S, head: S, tail: List[S],
+        next: S, rest: List[S]) {
+    c <= list_inf(head, tail + List.cons(next, rest)) =
+    (c <= list_inf(head, tail) and c <= list_inf(next, rest))
+} by {
+    list_inf_eq_list_meet(head, tail + List.cons(next, rest))
+    list_inf_eq_list_meet(head, tail)
+    list_inf_eq_list_meet(next, rest)
+    le_list_meet_add_cons_iff(c, head, tail, next, rest)
+}
+
+/// The supremum over a concatenation is below a point exactly when both list suprema are below it.
+theorem list_sup_add_cons_le_iff[S: JoinSemilattice](head: S, tail: List[S],
+        next: S, rest: List[S], c: S) {
+    list_sup(head, tail + List.cons(next, rest)) <= c =
+    (list_sup(head, tail) <= c and list_sup(next, rest) <= c)
+} by {
+    list_sup_eq_list_join(head, tail + List.cons(next, rest))
+    list_sup_eq_list_join(head, tail)
+    list_sup_eq_list_join(next, rest)
+    list_join_add_cons_le_iff(head, tail, next, rest, c)
+}
+
+/// Appending one element takes the meet of the old list infimum and that element.
+theorem list_inf_append[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_inf(head, tail.append(last)) = list_inf(head, tail).meet(last)
+} by {
+    list_inf_eq_list_meet(head, tail.append(last))
+    list_inf_eq_list_meet(head, tail)
+    list_meet_append(head, tail, last)
+}
+
+/// Appending one element takes the join of the old list supremum and that element.
+theorem list_sup_append[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    list_sup(head, tail.append(last)) = list_sup(head, tail).join(last)
+} by {
+    list_sup_eq_list_join(head, tail.append(last))
+    list_sup_eq_list_join(head, tail)
+    list_join_append(head, tail, last)
+}
+
+/// The infimum after appending an element is below the previous list infimum.
+theorem list_inf_append_lte_list_inf[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_inf(head, tail.append(last)) <= list_inf(head, tail)
+} by {
+    list_inf_eq_list_meet(head, tail.append(last))
+    list_inf_eq_list_meet(head, tail)
+    list_meet_append_lte_list_meet(head, tail, last)
+}
+
+/// The infimum after appending an element is below that element.
+theorem list_inf_append_lte_last[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_inf(head, tail.append(last)) <= last
+} by {
+    list_inf_eq_list_meet(head, tail.append(last))
+    list_meet_append_lte_last(head, tail, last)
+}
+
+/// The previous list supremum is below the supremum after appending an element.
+theorem list_sup_lte_append_sup[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    list_sup(head, tail) <= list_sup(head, tail.append(last))
+} by {
+    list_sup_eq_list_join(head, tail)
+    list_sup_eq_list_join(head, tail.append(last))
+    list_join_lte_append_join(head, tail, last)
+}
+
+/// The appended element is below the supremum after appending it.
+theorem last_lte_list_sup_append[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    last <= list_sup(head, tail.append(last))
+} by {
+    list_sup_eq_list_join(head, tail.append(last))
+    last_lte_list_join_append(head, tail, last)
+}
+
+/// A point is below the infimum after append exactly when it is below the previous infimum and the appended element.
+theorem le_list_inf_append_iff[S: MeetSemilattice](c: S, head: S, tail: List[S], last: S) {
+    c <= list_inf(head, tail.append(last)) =
+    (c <= list_inf(head, tail) and c <= last)
+} by {
+    list_inf_eq_list_meet(head, tail.append(last))
+    list_inf_eq_list_meet(head, tail)
+    le_list_meet_append_iff(c, head, tail, last)
+}
+
+/// The supremum after append is below a point exactly when the previous supremum and the appended element are below it.
+theorem list_sup_append_le_iff[S: JoinSemilattice](head: S, tail: List[S], last: S, c: S) {
+    list_sup(head, tail.append(last)) <= c =
+    (list_sup(head, tail) <= c and last <= c)
+} by {
+    list_sup_eq_list_join(head, tail.append(last))
+    list_sup_eq_list_join(head, tail)
+    list_join_append_le_iff(head, tail, last, c)
+}
+
+/// The meet of a singleton list is its element.
+theorem list_meet_singleton[S: MeetSemilattice](head: S) {
+    list_meet(head, List.nil[S]) = head
+}
+
+/// The join of a singleton list is its element.
+theorem list_join_singleton[S: JoinSemilattice](head: S) {
+    list_join(head, List.nil[S]) = head
+}
+
+/// The infimum of a singleton list is its element.
+theorem list_inf_singleton[S: MeetSemilattice](head: S) {
+    list_inf(head, List.nil[S]) = head
+} by {
+    list_inf_eq_list_meet(head, List.nil[S])
+    list_meet_singleton(head)
+}
+
+/// The supremum of a singleton list is its element.
+theorem list_sup_singleton[S: JoinSemilattice](head: S) {
+    list_sup(head, List.nil[S]) = head
+} by {
+    list_sup_eq_list_join(head, List.nil[S])
+    list_join_singleton(head)
+}
+
+/// The meet of a cons list is the meet of the head and the tail meet.
+theorem list_meet_cons[S: MeetSemilattice](head: S, next: S, rest: List[S]) {
+    list_meet(head, List.cons(next, rest)) = head.meet(list_meet(next, rest))
+}
+
+/// The join of a cons list is the join of the head and the tail join.
+theorem list_join_cons[S: JoinSemilattice](head: S, next: S, rest: List[S]) {
+    list_join(head, List.cons(next, rest)) = head.join(list_join(next, rest))
+}
+
+/// The infimum of a cons list is the meet of the head and the tail infimum.
+theorem list_inf_cons[S: MeetSemilattice](head: S, next: S, rest: List[S]) {
+    list_inf(head, List.cons(next, rest)) = head.meet(list_inf(next, rest))
+} by {
+    list_inf_eq_list_meet(head, List.cons(next, rest))
+    list_inf_eq_list_meet(next, rest)
+    list_meet_cons(head, next, rest)
+}
+
+/// The supremum of a cons list is the join of the head and the tail supremum.
+theorem list_sup_cons[S: JoinSemilattice](head: S, next: S, rest: List[S]) {
+    list_sup(head, List.cons(next, rest)) = head.join(list_sup(next, rest))
+} by {
+    list_sup_eq_list_join(head, List.cons(next, rest))
+    list_sup_eq_list_join(next, rest)
+    list_join_cons(head, next, rest)
+}
+
+/// The meet of a two-element list is the meet of its elements.
+theorem list_meet_pair[S: MeetSemilattice](a: S, b: S) {
+    list_meet(a, List.cons(b, List.nil[S])) = a.meet(b)
+} by {
+    list_meet_cons(a, b, List.nil[S])
+    list_meet_singleton(b)
+}
+
+/// The join of a two-element list is the join of its elements.
+theorem list_join_pair[S: JoinSemilattice](a: S, b: S) {
+    list_join(a, List.cons(b, List.nil[S])) = a.join(b)
+} by {
+    list_join_cons(a, b, List.nil[S])
+    list_join_singleton(b)
+}
+
+/// The infimum of a two-element list is the meet of its elements.
+theorem list_inf_pair[S: MeetSemilattice](a: S, b: S) {
+    list_inf(a, List.cons(b, List.nil[S])) = a.meet(b)
+} by {
+    list_inf_cons(a, b, List.nil[S])
+    list_inf_singleton(b)
+}
+
+/// The supremum of a two-element list is the join of its elements.
+theorem list_sup_pair[S: JoinSemilattice](a: S, b: S) {
+    list_sup(a, List.cons(b, List.nil[S])) = a.join(b)
+} by {
+    list_sup_cons(a, b, List.nil[S])
+    list_sup_singleton(b)
+}
+
+/// A point below the head and tail infimum is below the cons-list infimum.
+theorem le_list_inf_cons_of_le_head_of_le_tail[S: MeetSemilattice](c: S, head: S, next: S, rest: List[S]) {
+    c <= head and c <= list_inf(next, rest) implies c <= list_inf(head, List.cons(next, rest))
+} by {
+    if c <= head and c <= list_inf(next, rest) {
+        list_inf_cons(head, next, rest)
+        lte_meet_of_bounds(c, head, list_inf(next, rest))
+        c <= list_inf(head, List.cons(next, rest))
+    }
+}
+
+/// A cons-list supremum is below a point when the head and tail supremum are below it.
+theorem list_sup_cons_le_of_head_le_of_tail_le[S: JoinSemilattice](head: S, next: S, rest: List[S], c: S) {
+    head <= c and list_sup(next, rest) <= c implies list_sup(head, List.cons(next, rest)) <= c
+} by {
+    if head <= c and list_sup(next, rest) <= c {
+        list_sup_cons(head, next, rest)
+        join_lte_of_bounds(head, list_sup(next, rest), c)
+        list_sup(head, List.cons(next, rest)) <= c
+    }
+}
+
+/// A point is below a cons-list infimum exactly when it is below the head and tail infimum.
+theorem le_list_inf_cons_iff[S: MeetSemilattice](c: S, head: S, next: S, rest: List[S]) {
+    c <= list_inf(head, List.cons(next, rest)) =
+    (c <= head and c <= list_inf(next, rest))
+} by {
+    list_inf_cons(head, next, rest)
+    lte_meet_iff(c, head, list_inf(next, rest))
+}
+
+/// A cons-list supremum is below a point exactly when the head and tail supremum are below it.
+theorem list_sup_cons_le_iff[S: JoinSemilattice](head: S, next: S, rest: List[S], c: S) {
+    list_sup(head, List.cons(next, rest)) <= c =
+    (head <= c and list_sup(next, rest) <= c)
+} by {
+    list_sup_cons(head, next, rest)
+    join_lte_iff(head, list_sup(next, rest), c)
+}
+
+/// A point is below the infimum of a pair exactly when it is below both elements.
+theorem le_list_inf_pair_iff[S: MeetSemilattice](c: S, a: S, b: S) {
+    c <= list_inf(a, List.cons(b, List.nil[S])) = (c <= a and c <= b)
+} by {
+    list_inf_pair(a, b)
+    lte_meet_iff(c, a, b)
+}
+
+/// The supremum of a pair is below a point exactly when both elements are below it.
+theorem list_sup_pair_le_iff[S: JoinSemilattice](a: S, b: S, c: S) {
+    list_sup(a, List.cons(b, List.nil[S])) <= c = (a <= c and b <= c)
+} by {
+    list_sup_pair(a, b)
+    join_lte_iff(a, b, c)
 }
