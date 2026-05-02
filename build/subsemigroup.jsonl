@@ -94,8 +94,8 @@
 {"goal":"a.contains(x)","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: Subsemigroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subsemigroup_subset[T0](x0, x1) }[S](b, a)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[S](b.contains, a.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[S](b.contains, a.contains, x)"]}
 {"goal":"a.contains(x) = b.contains(x)","proof":[]}
 {"goal":"a.contains = b.contains","proof":[]}
-{"goal":"a = b","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: Subsemigroup[T0]) { x0.contains != x1.contains or x0 = x1 }[S](b, a)","b.contains = a.contains","b.contains != a.contains"]}
-{"goal":"subsemigroup_subset_antisymm","proof":["not subsemigroup_subset[S](b, a) or not subsemigroup_subset[S](a, b)","subsemigroup_subset[S](b, a)","subsemigroup_subset[S](a, b)","not subsemigroup_subset[S](a, b)"]}
+{"goal":"a = b","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: Subsemigroup[T0]) { x0.contains != x1.contains or x0 = x1 }[S](b, a)"]}
+{"goal":"subsemigroup_subset_antisymm","proof":[]}
 {"goal":"subsemigroup_subset[S](a, b)","proof":[]}
 {"goal":"subsemigroup_subset[S](b, a)","proof":[]}
 {"goal":"subsemigroup_subset[S](a, b) and subsemigroup_subset[S](b, a)","proof":[]}

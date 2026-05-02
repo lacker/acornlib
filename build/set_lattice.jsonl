@@ -88,14 +88,14 @@
 {"goal":"s.subset(set_sInf[K, I](family)) = forall(x0: I) { s.subset(family(x0)) }","proof":[]}
 {"goal":"set_subset_sInf_iff","proof":[]}
 {"goal":"indexed_union[K, I](a).subset(indexed_union[K, I](b))","proof":["let w0: I satisfy { not a(w0) ⊂ b(w0) }","function(x0: I) { a(x0) ⊂ b(x0) }(w0)"]}
-{"goal":"set_sSup[K, I](a) = indexed_union[K, I](a)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { set_sSup[T0, T1](x0) = indexed_union[T0, T1](x0) }[K, I](a)"]}
-{"goal":"set_sSup[K, I](b) = indexed_union[K, I](b)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { set_sSup[T0, T1](x0) = indexed_union[T0, T1](x0) }[K, I](b)"]}
-{"goal":"set_sSup[K, I](a).subset(set_sSup[K, I](b))","proof":["not indexed_union[K, I](a) ⊂ set_sSup[K, I](b)","indexed_union[K, I](a) ⊂ set_sSup[K, I](b)"]}
+{"goal":"set_sSup[K, I](a) = indexed_union[K, I](a)","proof":[]}
+{"goal":"set_sSup[K, I](b) = indexed_union[K, I](b)","proof":[]}
+{"goal":"set_sSup[K, I](a).subset(set_sSup[K, I](b))","proof":[]}
 {"goal":"set_sSup_monotone","proof":["let w0: I satisfy { not a(w0) ⊂ b(w0) }","function(x0: I) { a(x0) ⊂ b(x0) }(w0)"]}
 {"goal":"indexed_intersection[K, I](a).subset(indexed_intersection[K, I](b))","proof":["let w0: I satisfy { not a(w0) ⊂ b(w0) }","function(x0: I) { a(x0) ⊂ b(x0) }(w0)"]}
-{"goal":"set_sInf[K, I](a) = indexed_intersection[K, I](a)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { set_sInf[T0, T1](x0) = indexed_intersection[T0, T1](x0) }[K, I](a)"]}
-{"goal":"set_sInf[K, I](b) = indexed_intersection[K, I](b)","proof":["function[T0, T1](x0: T1 -> Set[T0]) { set_sInf[T0, T1](x0) = indexed_intersection[T0, T1](x0) }[K, I](b)"]}
-{"goal":"set_sInf[K, I](a).subset(set_sInf[K, I](b))","proof":["not indexed_intersection[K, I](a) ⊂ set_sInf[K, I](b)","indexed_intersection[K, I](a) ⊂ set_sInf[K, I](b)"]}
+{"goal":"set_sInf[K, I](a) = indexed_intersection[K, I](a)","proof":[]}
+{"goal":"set_sInf[K, I](b) = indexed_intersection[K, I](b)","proof":[]}
+{"goal":"set_sInf[K, I](a).subset(set_sInf[K, I](b))","proof":[]}
 {"goal":"set_sInf_monotone","proof":["let w0: I satisfy { not a(w0) ⊂ b(w0) }","function(x0: I) { a(x0) ⊂ b(x0) }(w0)"]}
 {"goal":"set_sSup_is_lub","proof":["let w0: I satisfy { not family(w0) ⊂ set_sSup[K, I](family) }","function(x0: I) { family(x0) ⊂ set_sSup[K, I](family) }(w0)"]}
 {"goal":"set_sInf_is_glb","proof":["let w0: I satisfy { not set_sInf[K, I](family) ⊂ family(w0) }","function(x0: I) { set_sInf[K, I](family) ⊂ family(x0) }(w0)"]}

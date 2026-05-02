@@ -136,28 +136,28 @@
 {"goal":"add_subgroup_subset_full","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_subgroup_subset[T0](x0, x1) }[G](s, full_add_subgroup[G])","let w0: G satisfy { w0 ∈ s and not w0 ∈ full_add_subgroup[G] }","function[T0: AddGroup](x0: T0) { x0 ∈ full_add_subgroup[T0] }[G](w0)"]}
 {"goal":"add_subgroup_subset[G](a, b) = forall(x0: G) { a.contains(x0) implies b.contains(x0) }","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_subgroup_subset[T0](x0, x1) }[G](a, b)"]}
 {"goal":"add_subgroup_subset[G](b, a) = forall(x0: G) { b.contains(x0) implies a.contains(x0) }","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_subgroup_subset[T0](x0, x1) }[G](b, a)"]}
-{"goal":"b.contains(x)","proof":["add_subgroup_subset[G](a, b)","(forall(x0: G) { not x0 ∈ a or x0 ∈ b } = true)","function(x0: G) { not (x0 ∈ a and not x0 ∈ b) }(x)","function(x0: G) { not x0 ∈ a or x0 ∈ b }(x)"]}
-{"goal":"a.contains(x)","proof":["add_subgroup_subset[G](b, a)","(forall(x0: G) { not x0 ∈ b or x0 ∈ a } = true)","function(x0: G) { not (x0 ∈ b and not x0 ∈ a) }(x)","function(x0: G) { not x0 ∈ b or x0 ∈ a }(x)"]}
-{"goal":"a.contains(x) = b.contains(x)","proof":["x ∈ b or x ∈ a","x ∈ b","x ∈ a","not x ∈ a"]}
+{"goal":"b.contains(x)","proof":["add_subgroup_subset[G](a, b)","(forall(x0: G) { not x0 ∈ a or x0 ∈ b } = true)","function(x0: G) { not (x0 ∈ a and not x0 ∈ b) }(x)"]}
+{"goal":"a.contains(x)","proof":["add_subgroup_subset[G](b, a)","(forall(x0: G) { not x0 ∈ b or x0 ∈ a } = true)","function(x0: G) { not (x0 ∈ b and not x0 ∈ a) }(x)"]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
 {"goal":"a.contains = b.contains","proof":[]}
-{"goal":"a = b","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { x0.contains != x1.contains or x0 = x1 }[G](b, a)","b.contains = a.contains","b.contains != a.contains"]}
-{"goal":"add_subgroup_subset_antisymm","proof":["not add_subgroup_subset[G](b, a) or not add_subgroup_subset[G](a, b)","add_subgroup_subset[G](b, a)","add_subgroup_subset[G](a, b)","not add_subgroup_subset[G](a, b)"]}
-{"goal":"add_subgroup_subset[G](a, b)","proof":["not add_subgroup_subset[G](a, a)"]}
-{"goal":"add_subgroup_subset[G](b, a)","proof":["not add_subgroup_subset[G](a, a)"]}
-{"goal":"add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a)","proof":["not add_subgroup_subset[G](a, b)"]}
-{"goal":"a = b","proof":["not add_subgroup_subset[G](b, a) or not add_subgroup_subset[G](a, b)","add_subgroup_subset[G](b, a)","add_subgroup_subset[G](a, b)","not add_subgroup_subset[G](a, b)"]}
-{"goal":"a = b = (add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a))","proof":["add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a) or b = a","not (add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a)) or b != a","b != a or add_subgroup_subset[G](b, a)","add_subgroup_subset[G](b, a)","b != a or add_subgroup_subset[G](a, b)","add_subgroup_subset[G](a, b)","b != a","b = a"]}
+{"goal":"a = b","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { x0.contains != x1.contains or x0 = x1 }[G](b, a)"]}
+{"goal":"add_subgroup_subset_antisymm","proof":[]}
+{"goal":"add_subgroup_subset[G](a, b)","proof":[]}
+{"goal":"add_subgroup_subset[G](b, a)","proof":[]}
+{"goal":"add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a)","proof":[]}
+{"goal":"a = b","proof":[]}
+{"goal":"a = b = (add_subgroup_subset[G](a, b) and add_subgroup_subset[G](b, a))","proof":[]}
 {"goal":"add_subgroup_eq_iff_subset_both","proof":[]}
-{"goal":"add_subgroup_subset[G](a, a.intersection(b))","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { add_subgroup_subset[T0](x0 ∩ x1, x0) }[G](a, a)","function[T0: AddGroup](x0: AddSubgroup[T0]) { x0 ∩ x0 = x0 }[G](a)","not add_subgroup_subset[G](a, b) or not add_subgroup_subset[G](a, a)","not add_subgroup_subset[G](a, a)"]}
-{"goal":"a.intersection(b) = a","proof":["not add_subgroup_subset[G](a, a ∩ b) or not add_subgroup_subset[G](a ∩ b, a)","not add_subgroup_subset[G](a ∩ b, a)"]}
-{"goal":"add_subgroup_intersection_eq_left_of_subset","proof":["not add_subgroup_subset[G](a, b)"]}
-{"goal":"add_subgroup_subset[G](b, a.intersection(b))","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { add_subgroup_subset[T0](x0 ∩ x1, x0) }[G](b, b)","function[T0: AddGroup](x0: AddSubgroup[T0]) { x0 ∩ x0 = x0 }[G](b)","not add_subgroup_subset[G](b, a) or not add_subgroup_subset[G](b, b)","not add_subgroup_subset[G](b, b)"]}
-{"goal":"a.intersection(b) = b","proof":["not add_subgroup_subset[G](b, a ∩ b) or not add_subgroup_subset[G](a ∩ b, b)","not add_subgroup_subset[G](a ∩ b, b)"]}
-{"goal":"add_subgroup_intersection_eq_right_of_subset","proof":["not add_subgroup_subset[G](b, a)"]}
-{"goal":"zero_add_subgroup_intersection_left","proof":["not add_subgroup_subset[G](zero_add_subgroup[G], s)"]}
-{"goal":"zero_add_subgroup_intersection_right","proof":["not add_subgroup_subset[G](zero_add_subgroup[G], s)"]}
-{"goal":"full_add_subgroup_intersection_left","proof":["not add_subgroup_subset[G](s, full_add_subgroup[G])"]}
-{"goal":"full_add_subgroup_intersection_right","proof":["not add_subgroup_subset[G](s, full_add_subgroup[G])"]}
+{"goal":"add_subgroup_subset[G](a, a.intersection(b))","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { add_subgroup_subset[T0](x0 ∩ x1, x0) }[G](a, a)","function[T0: AddGroup](x0: AddSubgroup[T0]) { x0 ∩ x0 = x0 }[G](a)"]}
+{"goal":"a.intersection(b) = a","proof":[]}
+{"goal":"add_subgroup_intersection_eq_left_of_subset","proof":[]}
+{"goal":"add_subgroup_subset[G](b, a.intersection(b))","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: AddSubgroup[T0]) { add_subgroup_subset[T0](x0 ∩ x1, x0) }[G](b, b)","function[T0: AddGroup](x0: AddSubgroup[T0]) { x0 ∩ x0 = x0 }[G](b)"]}
+{"goal":"a.intersection(b) = b","proof":[]}
+{"goal":"add_subgroup_intersection_eq_right_of_subset","proof":[]}
+{"goal":"zero_add_subgroup_intersection_left","proof":[]}
+{"goal":"zero_add_subgroup_intersection_right","proof":[]}
+{"goal":"full_add_subgroup_intersection_left","proof":[]}
+{"goal":"full_add_subgroup_intersection_right","proof":[]}
 {"goal":"a - a = G.0","proof":["function[T0: AddGroup](x0: T0, x1: T0) { x0 + -x1 = x0 - x1 }[G](a, a)","function[T0: AddGroup](x0: T0) { x0 + -x0 = T0.0 }[G](a)"]}
 {"goal":"h.contains(G.0)","proof":[]}
 {"goal":"h.contains(a - a)","proof":[]}

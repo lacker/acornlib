@@ -2,7 +2,8 @@
 
 from list.list_base import List
 from lattice import MeetSemilattice, JoinSemilattice, meet_lte_left, meet_lte_right,
-    lte_meet_of_bounds, lte_join_left, lte_join_right, join_lte_of_bounds
+    lte_meet_of_bounds, lte_join_left, lte_join_right, join_lte_of_bounds,
+    meet_assoc_rev, join_assoc_rev
 from order import PartialOrder, lte_refl, lte_trans
 
 /// The meet of a non-empty list.
@@ -133,6 +134,14 @@ theorem list_meet_lte_head[S: MeetSemilattice](head: S, tail: List[S]) {
     p(tail)
 }
 
+/// The meet of a cons list is below the meet of its non-empty tail.
+theorem list_meet_lte_tail_meet[S: MeetSemilattice](head: S, next: S, rest: List[S]) {
+    list_meet(head, List.cons(next, rest)) <= list_meet(next, rest)
+} by {
+    list_meet(head, List.cons(next, rest)) = head.meet(list_meet(next, rest))
+    meet_lte_right(head, list_meet(next, rest))
+}
+
 /// The meet of a non-empty list is below every element of the list.
 theorem list_meet_lte_contains[S: MeetSemilattice](head: S, tail: List[S], x: S) {
     List.cons(head, tail).contains(x) implies list_meet(head, tail) <= x
@@ -204,6 +213,14 @@ theorem head_lte_list_join[S: JoinSemilattice](head: S, tail: List[S]) {
         }
     }
     p(tail)
+}
+
+/// The join of a non-empty tail is below the join of the whole cons list.
+theorem tail_join_lte_list_join[S: JoinSemilattice](head: S, next: S, rest: List[S]) {
+    list_join(next, rest) <= list_join(head, List.cons(next, rest))
+} by {
+    list_join(head, List.cons(next, rest)) = head.join(list_join(next, rest))
+    lte_join_right(head, list_join(next, rest))
 }
 
 /// Every element of a non-empty list is below its join.
@@ -317,6 +334,25 @@ theorem lte_list_meet_iff_contains_bounds[S: MeetSemilattice](c: S, head: S, tai
     c <= list_meet(head, tail) = list_lower_bound(List.cons(head, tail), c)
 }
 
+/// The meet of a non-empty list is a lower bound for that list.
+theorem list_meet_is_lower_bound[S: MeetSemilattice](head: S, tail: List[S]) {
+    list_lower_bound(List.cons(head, tail), list_meet(head, tail))
+} by {
+    forall(x: S) {
+        if List.cons(head, tail).contains(x) {
+            list_meet_lte_contains(head, tail, x)
+            list_meet(head, tail) <= x
+        }
+    }
+}
+
+/// A point is below the list meet exactly when it is a lower bound for the list.
+theorem le_list_meet_iff[S: MeetSemilattice](c: S, head: S, tail: List[S]) {
+    c <= list_meet(head, tail) = list_lower_bound(List.cons(head, tail), c)
+} by {
+    lte_list_meet_iff_contains_bounds(c, head, tail)
+}
+
 /// Any upper bound for every element of a non-empty list is above its join.
 theorem list_join_lte_of_contains_bounds[S: JoinSemilattice](head: S, tail: List[S], c: S) {
     list_upper_bound(List.cons(head, tail), c) implies
@@ -381,4 +417,211 @@ theorem list_join_lte_iff_contains_bounds[S: JoinSemilattice](head: S, tail: Lis
         list_join(head, tail) <= c
     }
     list_join(head, tail) <= c = list_upper_bound(List.cons(head, tail), c)
+}
+
+/// The join of a non-empty list is an upper bound for that list.
+theorem list_join_is_upper_bound[S: JoinSemilattice](head: S, tail: List[S]) {
+    list_upper_bound(List.cons(head, tail), list_join(head, tail))
+} by {
+    forall(x: S) {
+        if List.cons(head, tail).contains(x) {
+            contains_lte_list_join(head, tail, x)
+            x <= list_join(head, tail)
+        }
+    }
+}
+
+/// The list join is below a point exactly when the point is an upper bound for the list.
+theorem list_join_le_iff[S: JoinSemilattice](head: S, tail: List[S], c: S) {
+    list_join(head, tail) <= c = list_upper_bound(List.cons(head, tail), c)
+} by {
+    list_join_lte_iff_contains_bounds(head, tail, c)
+}
+
+/// The meet over a concatenation with a non-empty right list is the meet of the two list meets.
+theorem list_meet_add_cons[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_meet(head, tail + List.cons(next, rest)) =
+    list_meet(head, tail).meet(list_meet(next, rest))
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S, n: S, r: List[S]) {
+            list_meet(h, t + List.cons(n, r)) =
+            list_meet(h, t).meet(list_meet(n, r))
+        }
+    }
+    forall(h: S, n: S, r: List[S]) {
+        list_meet(h, List.nil[S] + List.cons(n, r)) = list_meet(h, List.cons(n, r))
+        list_meet(h, List.cons(n, r)) = h.meet(list_meet(n, r))
+        list_meet(h, List.nil[S]) = h
+        list_meet(h, List.nil[S]).meet(list_meet(n, r)) = h.meet(list_meet(n, r))
+        list_meet(h, List.nil[S] + List.cons(n, r)) =
+        list_meet(h, List.nil[S]).meet(list_meet(n, r))
+    }
+    p(List.nil[S])
+    forall(next_tail: S, rest_tail: List[S]) {
+        if p(rest_tail) {
+            forall(h: S, n: S, r: List[S]) {
+                let right_meet = list_meet(n, r)
+                let tail_meet = list_meet(next_tail, rest_tail)
+                list_meet(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.meet(list_meet(next_tail, rest_tail + List.cons(n, r)))
+                p(rest_tail) = forall(base: S, next_right: S, rest_right: List[S]) {
+                    list_meet(base, rest_tail + List.cons(next_right, rest_right)) =
+                    list_meet(base, rest_tail).meet(list_meet(next_right, rest_right))
+                }
+                list_meet(next_tail, rest_tail + List.cons(n, r)) =
+                list_meet(next_tail, rest_tail).meet(list_meet(n, r))
+                list_meet(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.meet(tail_meet.meet(right_meet))
+                meet_assoc_rev(h, tail_meet, right_meet)
+                h.meet(tail_meet.meet(right_meet)) = h.meet(tail_meet).meet(right_meet)
+                list_meet(h, List.cons(next_tail, rest_tail)) = h.meet(tail_meet)
+                list_meet(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                list_meet(h, List.cons(next_tail, rest_tail)).meet(list_meet(n, r))
+            }
+            p(List.cons(next_tail, rest_tail))
+        }
+    }
+    p(tail)
+}
+
+/// The join over a concatenation with a non-empty right list is the join of the two list joins.
+theorem list_join_add_cons[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_join(head, tail + List.cons(next, rest)) =
+    list_join(head, tail).join(list_join(next, rest))
+} by {
+    define p(t: List[S]) -> Bool {
+        forall(h: S, n: S, r: List[S]) {
+            list_join(h, t + List.cons(n, r)) =
+            list_join(h, t).join(list_join(n, r))
+        }
+    }
+    forall(h: S, n: S, r: List[S]) {
+        list_join(h, List.nil[S] + List.cons(n, r)) = list_join(h, List.cons(n, r))
+        list_join(h, List.cons(n, r)) = h.join(list_join(n, r))
+        list_join(h, List.nil[S]) = h
+        list_join(h, List.nil[S]).join(list_join(n, r)) = h.join(list_join(n, r))
+        list_join(h, List.nil[S] + List.cons(n, r)) =
+        list_join(h, List.nil[S]).join(list_join(n, r))
+    }
+    p(List.nil[S])
+    forall(next_tail: S, rest_tail: List[S]) {
+        if p(rest_tail) {
+            forall(h: S, n: S, r: List[S]) {
+                let right_join = list_join(n, r)
+                let tail_join = list_join(next_tail, rest_tail)
+                list_join(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.join(list_join(next_tail, rest_tail + List.cons(n, r)))
+                p(rest_tail) = forall(base: S, next_right: S, rest_right: List[S]) {
+                    list_join(base, rest_tail + List.cons(next_right, rest_right)) =
+                    list_join(base, rest_tail).join(list_join(next_right, rest_right))
+                }
+                list_join(next_tail, rest_tail + List.cons(n, r)) =
+                list_join(next_tail, rest_tail).join(list_join(n, r))
+                list_join(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.join(tail_join.join(right_join))
+                join_assoc_rev(h, tail_join, right_join)
+                h.join(tail_join.join(right_join)) = h.join(tail_join).join(right_join)
+                list_join(h, List.cons(next_tail, rest_tail)) = h.join(tail_join)
+                list_join(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                list_join(h, List.cons(next_tail, rest_tail)).join(list_join(n, r))
+            }
+            p(List.cons(next_tail, rest_tail))
+        }
+    }
+    p(tail)
+}
+
+/// The meet over a concatenation is below the meet of the left non-empty list.
+theorem list_meet_add_cons_lte_left[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_meet(head, tail + List.cons(next, rest)) <= list_meet(head, tail)
+} by {
+    list_meet_add_cons(head, tail, next, rest)
+    meet_lte_left(list_meet(head, tail), list_meet(next, rest))
+    list_meet(head, tail + List.cons(next, rest)) <= list_meet(head, tail)
+}
+
+/// The meet over a concatenation is below the meet of the right non-empty list.
+theorem list_meet_add_cons_lte_right[S: MeetSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_meet(head, tail + List.cons(next, rest)) <= list_meet(next, rest)
+} by {
+    list_meet_add_cons(head, tail, next, rest)
+    meet_lte_right(list_meet(head, tail), list_meet(next, rest))
+    list_meet(head, tail + List.cons(next, rest)) <= list_meet(next, rest)
+}
+
+/// The join of the left non-empty list is below the join over a concatenation.
+theorem list_join_lte_add_cons_left[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_join(head, tail) <= list_join(head, tail + List.cons(next, rest))
+} by {
+    list_join_add_cons(head, tail, next, rest)
+    lte_join_left(list_join(head, tail), list_join(next, rest))
+    list_join(head, tail) <= list_join(head, tail + List.cons(next, rest))
+}
+
+/// The join of the right non-empty list is below the join over a concatenation.
+theorem list_join_lte_add_cons_right[S: JoinSemilattice](head: S, tail: List[S], next: S, rest: List[S]) {
+    list_join(next, rest) <= list_join(head, tail + List.cons(next, rest))
+} by {
+    list_join_add_cons(head, tail, next, rest)
+    lte_join_right(list_join(head, tail), list_join(next, rest))
+    list_join(next, rest) <= list_join(head, tail + List.cons(next, rest))
+}
+
+/// Appending one element meets the old list meet with that element.
+theorem list_meet_append[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_meet(head, tail.append(last)) = list_meet(head, tail).meet(last)
+} by {
+    tail.append(last) = tail + List.singleton(last)
+    List.singleton(last) = List.cons(last, List.nil[S])
+    list_meet_add_cons(head, tail, last, List.nil[S])
+    list_meet(last, List.nil[S]) = last
+    list_meet(head, tail.append(last)) = list_meet(head, tail).meet(last)
+}
+
+/// Appending one element joins the old list join with that element.
+theorem list_join_append[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    list_join(head, tail.append(last)) = list_join(head, tail).join(last)
+} by {
+    tail.append(last) = tail + List.singleton(last)
+    List.singleton(last) = List.cons(last, List.nil[S])
+    list_join_add_cons(head, tail, last, List.nil[S])
+    list_join(last, List.nil[S]) = last
+    list_join(head, tail.append(last)) = list_join(head, tail).join(last)
+}
+
+/// The meet after appending an element is below the previous list meet.
+theorem list_meet_append_lte_list_meet[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_meet(head, tail.append(last)) <= list_meet(head, tail)
+} by {
+    list_meet_append(head, tail, last)
+    meet_lte_left(list_meet(head, tail), last)
+    list_meet(head, tail.append(last)) <= list_meet(head, tail)
+}
+
+/// The meet after appending an element is below that element.
+theorem list_meet_append_lte_last[S: MeetSemilattice](head: S, tail: List[S], last: S) {
+    list_meet(head, tail.append(last)) <= last
+} by {
+    list_meet_append(head, tail, last)
+    meet_lte_right(list_meet(head, tail), last)
+    list_meet(head, tail.append(last)) <= last
+}
+
+/// The previous list join is below the join after appending an element.
+theorem list_join_lte_append_join[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    list_join(head, tail) <= list_join(head, tail.append(last))
+} by {
+    list_join_append(head, tail, last)
+    lte_join_left(list_join(head, tail), last)
+    list_join(head, tail) <= list_join(head, tail.append(last))
+}
+
+/// The appended element is below the join after appending it.
+theorem last_lte_list_join_append[S: JoinSemilattice](head: S, tail: List[S], last: S) {
+    last <= list_join(head, tail.append(last))
+} by {
+    list_join_append(head, tail, last)
+    lte_join_right(list_join(head, tail), last)
+    last <= list_join(head, tail.append(last))
 }
