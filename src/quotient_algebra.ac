@@ -2094,3 +2094,158 @@ theorem linear_map_kernel_quotient_smul_projection_compatible[R: Ring, M: AddCom
         quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f), src.smul(r), a, b)
     }
 }
+
+/// The additive identity of the module kernel quotient.
+define linear_map_kernel_quotient_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) -> QuotientOver[M] {
+    quotient_over_mk(kernel_quotient_relation(f), M.0)
+}
+
+/// Addition on the module kernel quotient is associative.
+theorem linear_map_kernel_quotient_add_assoc[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M, b: M, c: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b)),
+        quotient_over_mk(kernel_quotient_relation(f), c)) =
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), b),
+            quotient_over_mk(kernel_quotient_relation(f), c)))
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_add_projection(src, dst, f, a, b)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b)) =
+            quotient_over_mk(kernel_quotient_relation(f), a + b)
+        linear_map_kernel_quotient_add(src, dst, f,
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), a),
+                quotient_over_mk(kernel_quotient_relation(f), b)),
+            quotient_over_mk(kernel_quotient_relation(f), c)) =
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a + b),
+            quotient_over_mk(kernel_quotient_relation(f), c))
+        linear_map_kernel_quotient_add_projection(src, dst, f, a + b, c)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a + b),
+            quotient_over_mk(kernel_quotient_relation(f), c)) =
+            quotient_over_mk(kernel_quotient_relation(f), (a + b) + c)
+        linear_map_kernel_quotient_add_projection(src, dst, f, b, c)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), b),
+            quotient_over_mk(kernel_quotient_relation(f), c)) =
+            quotient_over_mk(kernel_quotient_relation(f), b + c)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), b),
+                quotient_over_mk(kernel_quotient_relation(f), c))) =
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b + c))
+        linear_map_kernel_quotient_add_projection(src, dst, f, a, b + c)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b + c)) =
+            quotient_over_mk(kernel_quotient_relation(f), a + (b + c))
+        (a + b) + c = a + (b + c)
+        quotient_over_mk(kernel_quotient_relation(f), (a + b) + c) =
+            quotient_over_mk(kernel_quotient_relation(f), a + (b + c))
+        linear_map_kernel_quotient_add(src, dst, f,
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), a),
+                quotient_over_mk(kernel_quotient_relation(f), b)),
+            quotient_over_mk(kernel_quotient_relation(f), c)) =
+            quotient_over_mk(kernel_quotient_relation(f), (a + b) + c)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), b),
+                quotient_over_mk(kernel_quotient_relation(f), c))) =
+            quotient_over_mk(kernel_quotient_relation(f), a + (b + c))
+        linear_map_kernel_quotient_add(src, dst, f,
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), a),
+                quotient_over_mk(kernel_quotient_relation(f), b)),
+            quotient_over_mk(kernel_quotient_relation(f), c)) =
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            linear_map_kernel_quotient_add(src, dst, f,
+                quotient_over_mk(kernel_quotient_relation(f), b),
+                quotient_over_mk(kernel_quotient_relation(f), c)))
+    }
+}
+
+/// The quotient zero is a left identity for module quotient addition.
+theorem linear_map_kernel_quotient_zero_add[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), M.0),
+        quotient_over_mk(kernel_quotient_relation(f), a)) =
+        quotient_over_mk(kernel_quotient_relation(f), a)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_add_projection(src, dst, f, M.0, a)
+        M.0 + a = a
+    }
+}
+
+/// The quotient zero is a right identity for module quotient addition.
+theorem linear_map_kernel_quotient_add_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        quotient_over_mk(kernel_quotient_relation(f), M.0)) =
+        quotient_over_mk(kernel_quotient_relation(f), a)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_add_projection(src, dst, f, a, M.0)
+        a + M.0 = a
+    }
+}
+
+/// Addition on the module kernel quotient is commutative.
+theorem linear_map_kernel_quotient_add_comm[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M, b: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        quotient_over_mk(kernel_quotient_relation(f), b)) =
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), b),
+        quotient_over_mk(kernel_quotient_relation(f), a))
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_add_projection(src, dst, f, a, b)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b)) =
+            quotient_over_mk(kernel_quotient_relation(f), a + b)
+        linear_map_kernel_quotient_add_projection(src, dst, f, b, a)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), b),
+            quotient_over_mk(kernel_quotient_relation(f), a)) =
+            quotient_over_mk(kernel_quotient_relation(f), b + a)
+        a + b = b + a
+        quotient_over_mk(kernel_quotient_relation(f), a + b) =
+            quotient_over_mk(kernel_quotient_relation(f), b + a)
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), a),
+            quotient_over_mk(kernel_quotient_relation(f), b)) =
+        linear_map_kernel_quotient_add(src, dst, f,
+            quotient_over_mk(kernel_quotient_relation(f), b),
+            quotient_over_mk(kernel_quotient_relation(f), a))
+    }
+}
