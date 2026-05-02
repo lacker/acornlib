@@ -8,7 +8,7 @@ from real.real_seq import limit_add_seq, converges_imp_converges_to, converges_t
 from real.real_series import is_lower_bound, add_seq, const_converges, const_limit, neg_seq, mul_seq, comparison_test, seq_lte, is_upper_bound, tail
 from real.real_ring import mul_le_mul_nonneg
 from real.limits import vanishes, abs_seq
-from real.real_base import add_assoc, add_neg_eq_zero, add_zero_left, add_zero_right, neg_neg, sub_moves_sides, abs_neg, lte_trans, lte_lt_trans, lt_lte_trans, lt_trans, lt_add_pos, not_lt_imp_gte
+from real.real_base import add_assoc, add_neg_eq_zero, add_zero_left, add_zero_right, neg_neg, sub_moves_sides, abs_neg, lt_add_pos
 from real.prod_seq import prod_seq
 from set import Set, is_decreasing, is_increasing, seq_intersection, decreasing_seq_transitive, seq_union,
     seq_complement, seq_union_universal_imp_complement_intersection_empty, seq_union_nat_lt_set_universal,

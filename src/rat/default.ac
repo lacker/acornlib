@@ -3,7 +3,7 @@ from int import Int
 from int.lattice import abs
 from rat.rat_base import Rat, reduce, rat_is_reflexive, reduce_idempotent, reduce_cancels_right, lte_from_int,
     from_int_num, from_int_denom, mul_reduced_int_right, lt_add_right, mul_zero_right,
-    neg_imp_lt_zero, not_lt_self
+    neg_imp_lt_zero
 from order import LinearOrder, min_lte_left, min_lte_right, lte_min_of_bounds, lte_max_left,
     lte_max_right, max_lte_of_upper_bounds, min_max_distrib_left, max_min_distrib_left
 

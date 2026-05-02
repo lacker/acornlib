@@ -513,6 +513,126 @@ theorem join_eq_right_iff_lte[S: JoinSemilattice](a: S, b: S) {
     a.join(b) = b = (a <= b)
 }
 
+/// A meet equals its left argument when the left argument is below the right.
+theorem meet_eq_left_of_lte[S: MeetSemilattice](a: S, b: S) {
+    a <= b implies a.meet(b) = a
+} by {
+    if a <= b {
+        meet_eq_left_iff_lte(a, b)
+        a.meet(b) = a
+    }
+}
+
+/// A meet equals its left argument when the left argument is below the right.
+theorem meet_eq_left_of_le[S: MeetSemilattice](a: S, b: S) {
+    a <= b implies a.meet(b) = a
+} by {
+    if a <= b {
+        meet_eq_left_of_lte(a, b)
+        a.meet(b) = a
+    }
+}
+
+/// A meet equals its right argument when the right argument is below the left.
+theorem meet_eq_right_of_lte[S: MeetSemilattice](a: S, b: S) {
+    b <= a implies a.meet(b) = b
+} by {
+    if b <= a {
+        meet_eq_right_iff_lte(a, b)
+        a.meet(b) = b
+    }
+}
+
+/// A meet equals its right argument when the right argument is below the left.
+theorem meet_eq_right_of_le[S: MeetSemilattice](a: S, b: S) {
+    b <= a implies a.meet(b) = b
+} by {
+    if b <= a {
+        meet_eq_right_of_lte(a, b)
+        a.meet(b) = b
+    }
+}
+
+/// A join equals its left argument when the right argument is below the left.
+theorem join_eq_left_of_lte[S: JoinSemilattice](a: S, b: S) {
+    b <= a implies a.join(b) = a
+} by {
+    if b <= a {
+        join_eq_left_iff_lte(a, b)
+        a.join(b) = a
+    }
+}
+
+/// A join equals its left argument when the right argument is below the left.
+theorem join_eq_left_of_le[S: JoinSemilattice](a: S, b: S) {
+    b <= a implies a.join(b) = a
+} by {
+    if b <= a {
+        join_eq_left_of_lte(a, b)
+        a.join(b) = a
+    }
+}
+
+/// A join equals its right argument when the left argument is below the right.
+theorem join_eq_right_of_lte[S: JoinSemilattice](a: S, b: S) {
+    a <= b implies a.join(b) = b
+} by {
+    if a <= b {
+        join_eq_right_iff_lte(a, b)
+        a.join(b) = b
+    }
+}
+
+/// A join equals its right argument when the left argument is below the right.
+theorem join_eq_right_of_le[S: JoinSemilattice](a: S, b: S) {
+    a <= b implies a.join(b) = b
+} by {
+    if a <= b {
+        join_eq_right_of_lte(a, b)
+        a.join(b) = b
+    }
+}
+
+/// An infimum equals its left argument when the left argument is below the right.
+theorem inf_eq_left_of_le[S: MeetSemilattice](a: S, b: S) {
+    a <= b implies a.meet(b) = a
+} by {
+    if a <= b {
+        meet_eq_left_of_lte(a, b)
+        a.meet(b) = a
+    }
+}
+
+/// An infimum equals its right argument when the right argument is below the left.
+theorem inf_eq_right_of_le[S: MeetSemilattice](a: S, b: S) {
+    b <= a implies a.meet(b) = b
+} by {
+    if b <= a {
+        meet_eq_right_of_lte(a, b)
+        a.meet(b) = b
+    }
+}
+
+/// A supremum equals its left argument when the right argument is below the left.
+theorem sup_eq_left_of_le[S: JoinSemilattice](a: S, b: S) {
+    b <= a implies a.join(b) = a
+} by {
+    if b <= a {
+        join_eq_left_of_lte(a, b)
+        a.join(b) = a
+    }
+}
+
+/// A supremum equals its right argument when the left argument is below the right.
+theorem sup_eq_right_of_le[S: JoinSemilattice](a: S, b: S) {
+    a <= b implies a.join(b) = b
+} by {
+    if a <= b {
+        join_eq_right_of_lte(a, b)
+        a.join(b) = b
+    }
+}
+
 /// Meet absorbs join on the right.
 theorem meet_absorb_join[S: Lattice](a: S, b: S) {
     a.meet(a.join(b)) = a
@@ -811,4 +931,126 @@ theorem sup_inf_right[S: DistribLattice](a: S, b: S, c: S) {
     a.meet(b).join(c) = a.join(c).meet(b.join(c))
 } by {
     join_meet_distrib_right(a, b, c)
+}
+
+/// Meet is associative in the reversed nesting.
+theorem meet_assoc_rev[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b.meet(c)) = a.meet(b).meet(c)
+} by {
+    meet_assoc(a, b, c)
+}
+
+/// Join is associative in the reversed nesting.
+theorem join_assoc_rev[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b.join(c)) = a.join(b).join(c)
+} by {
+    join_assoc(a, b, c)
+}
+
+/// The outer left argument of a nested meet may be exchanged.
+theorem meet_left_comm[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b.meet(c)) = b.meet(a.meet(c))
+} by {
+    meet_assoc_rev(a, b, c)
+    meet_comm(a, b)
+    meet_assoc(b, a, c)
+}
+
+/// The outer left argument of a nested join may be exchanged.
+theorem join_left_comm[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b.join(c)) = b.join(a.join(c))
+} by {
+    join_assoc_rev(a, b, c)
+    join_comm(a, b)
+    join_assoc(b, a, c)
+}
+
+/// The two right arguments of an iterated meet may be exchanged.
+theorem meet_right_comm[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b).meet(c) = a.meet(c).meet(b)
+} by {
+    meet_assoc(a, b, c)
+    meet_comm(b, c)
+    meet_assoc_rev(a, c, b)
+}
+
+/// The two right arguments of an iterated join may be exchanged.
+theorem join_right_comm[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b).join(c) = a.join(c).join(b)
+} by {
+    join_assoc(a, b, c)
+    join_comm(b, c)
+    join_assoc_rev(a, c, b)
+}
+
+/// A meet absorbs a join with the same right argument.
+theorem meet_absorb_join_right[S: Lattice](a: S, b: S) {
+    a.meet(b.join(a)) = a
+} by {
+    join_comm(b, a)
+    meet_absorb_join(a, b)
+}
+
+/// A join absorbs a meet with the same right argument.
+theorem join_absorb_meet_right[S: Lattice](a: S, b: S) {
+    a.join(b.meet(a)) = a
+} by {
+    meet_comm(b, a)
+    join_absorb_meet(a, b)
+}
+
+/// Infimum is associative in the reversed nesting.
+theorem inf_assoc_rev[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b.meet(c)) = a.meet(b).meet(c)
+} by {
+    meet_assoc_rev(a, b, c)
+}
+
+/// Supremum is associative in the reversed nesting.
+theorem sup_assoc_rev[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b.join(c)) = a.join(b).join(c)
+} by {
+    join_assoc_rev(a, b, c)
+}
+
+/// The outer left argument of a nested infimum may be exchanged.
+theorem inf_left_comm[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b.meet(c)) = b.meet(a.meet(c))
+} by {
+    meet_left_comm(a, b, c)
+}
+
+/// The outer left argument of a nested supremum may be exchanged.
+theorem sup_left_comm[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b.join(c)) = b.join(a.join(c))
+} by {
+    join_left_comm(a, b, c)
+}
+
+/// The two right arguments of an iterated infimum may be exchanged.
+theorem inf_right_comm[S: MeetSemilattice](a: S, b: S, c: S) {
+    a.meet(b).meet(c) = a.meet(c).meet(b)
+} by {
+    meet_right_comm(a, b, c)
+}
+
+/// The two right arguments of an iterated supremum may be exchanged.
+theorem sup_right_comm[S: JoinSemilattice](a: S, b: S, c: S) {
+    a.join(b).join(c) = a.join(c).join(b)
+} by {
+    join_right_comm(a, b, c)
+}
+
+/// Infimum absorbs a supremum with the same right argument.
+theorem inf_sup_self_right[S: Lattice](a: S, b: S) {
+    a.meet(b.join(a)) = a
+} by {
+    meet_absorb_join_right(a, b)
+}
+
+/// Supremum absorbs an infimum with the same right argument.
+theorem sup_inf_self_right[S: Lattice](a: S, b: S) {
+    a.join(b.meet(a)) = a
+} by {
+    join_absorb_meet_right(a, b)
 }

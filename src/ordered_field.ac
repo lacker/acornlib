@@ -1,5 +1,6 @@
 from field import Field
 from add_ordered_group import AddOrderedGroup
+from order_maps import is_monotone, is_antitone
 
 /// A field with a total order compatible with the field operations.
 typeclass F: OrderedField extends Field, AddOrderedGroup {
@@ -34,6 +35,126 @@ theorem multiply_with_nonpositive_flips_inequality[F: OrderedField](a: F, b: F, 
     -b * -c <= -a * -c
     -a * -c = a * c
     -b * -c = b * c
+}
+
+/// The map obtained by multiplying by a fixed element on the right.
+define mul_right_scalar_map[F: OrderedField](c: F, x: F) -> F {
+    x * c
+}
+
+/// The map obtained by multiplying by a fixed element on the left.
+define mul_left_scalar_map[F: OrderedField](c: F, x: F) -> F {
+    c * x
+}
+
+/// Right multiplication by a nonnegative scalar preserves order.
+theorem mul_right_scalar_map_is_monotone_of_nonnegative[F: OrderedField](c: F) {
+    F.0 <= c implies is_monotone(mul_right_scalar_map(c))
+} by {
+    if F.0 <= c {
+        forall(x: F, y: F) {
+            if x <= y {
+                multiply_inequality_with_nonnegative_element(x, y, c)
+                x * c <= y * c
+                mul_right_scalar_map(c, x) <= mul_right_scalar_map(c, y)
+            }
+        }
+    }
+}
+
+/// Left multiplication by a nonnegative scalar preserves order.
+theorem mul_left_scalar_map_is_monotone_of_nonnegative[F: OrderedField](c: F) {
+    F.0 <= c implies is_monotone(mul_left_scalar_map(c))
+} by {
+    if F.0 <= c {
+        forall(x: F, y: F) {
+            if x <= y {
+                multiply_inequality_with_nonnegative_element(x, y, c)
+                x * c <= y * c
+                c * x = x * c
+                c * y = y * c
+                mul_left_scalar_map(c, x) <= mul_left_scalar_map(c, y)
+            }
+        }
+    }
+}
+
+/// Right multiplication by a nonpositive scalar reverses order.
+theorem mul_right_scalar_map_is_antitone_of_nonpositive[F: OrderedField](c: F) {
+    c <= F.0 implies is_antitone(mul_right_scalar_map(c))
+} by {
+    if c <= F.0 {
+        forall(x: F, y: F) {
+            if x <= y {
+                multiply_with_nonpositive_flips_inequality(x, y, c)
+                y * c <= x * c
+                mul_right_scalar_map(c, y) <= mul_right_scalar_map(c, x)
+            }
+        }
+    }
+}
+
+/// Left multiplication by a nonpositive scalar reverses order.
+theorem mul_left_scalar_map_is_antitone_of_nonpositive[F: OrderedField](c: F) {
+    c <= F.0 implies is_antitone(mul_left_scalar_map(c))
+} by {
+    if c <= F.0 {
+        forall(x: F, y: F) {
+            if x <= y {
+                multiply_with_nonpositive_flips_inequality(x, y, c)
+                y * c <= x * c
+                c * y = y * c
+                c * x = x * c
+                mul_left_scalar_map(c, y) <= mul_left_scalar_map(c, x)
+            }
+        }
+    }
+}
+
+/// Multiplication on the right by a nonnegative scalar preserves order.
+theorem mul_le_mul_of_nonneg_right[F: OrderedField](a: F, b: F, c: F) {
+    a <= b and F.0 <= c implies a * c <= b * c
+} by {
+    if a <= b and F.0 <= c {
+        multiply_inequality_with_nonnegative_element(a, b, c)
+        a * c <= b * c
+    }
+}
+
+/// Multiplication on the left by a nonnegative scalar preserves order.
+theorem mul_le_mul_of_nonneg_left[F: OrderedField](a: F, b: F, c: F) {
+    a <= b and F.0 <= c implies c * a <= c * b
+} by {
+    if a <= b and F.0 <= c {
+        multiply_inequality_with_nonnegative_element(a, b, c)
+        a * c <= b * c
+        c * a = a * c
+        c * b = b * c
+        c * a <= c * b
+    }
+}
+
+/// Multiplication on the right by a nonpositive scalar reverses order.
+theorem mul_le_mul_of_nonpos_right[F: OrderedField](a: F, b: F, c: F) {
+    a <= b and c <= F.0 implies b * c <= a * c
+} by {
+    if a <= b and c <= F.0 {
+        multiply_with_nonpositive_flips_inequality(a, b, c)
+        b * c <= a * c
+    }
+}
+
+/// Multiplication on the left by a nonpositive scalar reverses order.
+theorem mul_le_mul_of_nonpos_left[F: OrderedField](a: F, b: F, c: F) {
+    a <= b and c <= F.0 implies c * b <= c * a
+} by {
+    if a <= b and c <= F.0 {
+        multiply_with_nonpositive_flips_inequality(a, b, c)
+        b * c <= a * c
+        c * b = b * c
+        c * a = a * c
+        c * b <= c * a
+    }
 }
 
 theorem inverse_on_positive_flips_inequality[F: OrderedField](a: F, b: F) {
