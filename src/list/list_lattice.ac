@@ -3,7 +3,7 @@
 from list.list_base import List
 from lattice import MeetSemilattice, JoinSemilattice, meet_lte_left, meet_lte_right,
     lte_meet_of_bounds, lte_join_left, lte_join_right, join_lte_of_bounds,
-    meet_assoc_rev, join_assoc_rev
+    lte_meet_iff, join_lte_iff, meet_assoc_rev, join_assoc_rev
 from order import PartialOrder, lte_refl, lte_trans
 
 /// The meet of a non-empty list.
@@ -103,6 +103,340 @@ theorem list_upper_bound_tail[S: PartialOrder](head: S, tail: List[S], upper: S)
             }
         }
         list_upper_bound(tail, upper)
+    }
+}
+
+/// Lower bounds for a cons list are exactly lower bounds for the head and tail.
+theorem list_lower_bound_cons_iff[S: PartialOrder](head: S, tail: List[S], lower: S) {
+    list_lower_bound(List.cons(head, tail), lower) =
+    (lower <= head and list_lower_bound(tail, lower))
+} by {
+    if list_lower_bound(List.cons(head, tail), lower) {
+        list_lower_bound_head(head, tail, lower)
+        lower <= head
+        list_lower_bound_tail(head, tail, lower)
+        list_lower_bound(tail, lower)
+        lower <= head and list_lower_bound(tail, lower)
+    }
+    if lower <= head and list_lower_bound(tail, lower) {
+        forall(x: S) {
+            if List.cons(head, tail).contains(x) {
+                if head = x {
+                    lower <= x
+                } else {
+                    tail.contains(x)
+                    list_lower_bound(tail, lower) = forall(y: S) {
+                        tail.contains(y) implies lower <= y
+                    }
+                    lower <= x
+                }
+            }
+        }
+        list_lower_bound(List.cons(head, tail), lower)
+    }
+    list_lower_bound(List.cons(head, tail), lower) =
+    (lower <= head and list_lower_bound(tail, lower))
+}
+
+/// Upper bounds for a cons list are exactly upper bounds for the head and tail.
+theorem list_upper_bound_cons_iff[S: PartialOrder](head: S, tail: List[S], upper: S) {
+    list_upper_bound(List.cons(head, tail), upper) =
+    (head <= upper and list_upper_bound(tail, upper))
+} by {
+    if list_upper_bound(List.cons(head, tail), upper) {
+        list_upper_bound_head(head, tail, upper)
+        head <= upper
+        list_upper_bound_tail(head, tail, upper)
+        list_upper_bound(tail, upper)
+        head <= upper and list_upper_bound(tail, upper)
+    }
+    if head <= upper and list_upper_bound(tail, upper) {
+        forall(x: S) {
+            if List.cons(head, tail).contains(x) {
+                if head = x {
+                    x <= upper
+                } else {
+                    tail.contains(x)
+                    list_upper_bound(tail, upper) = forall(y: S) {
+                        tail.contains(y) implies y <= upper
+                    }
+                    x <= upper
+                }
+            }
+        }
+        list_upper_bound(List.cons(head, tail), upper)
+    }
+    list_upper_bound(List.cons(head, tail), upper) =
+    (head <= upper and list_upper_bound(tail, upper))
+}
+
+/// A lower bound for a concatenation is a lower bound for the left list.
+theorem list_lower_bound_add_left[S: PartialOrder](left: List[S], right: List[S], lower: S) {
+    list_lower_bound(left + right, lower) implies list_lower_bound(left, lower)
+} by {
+    define p(l: List[S]) -> Bool {
+        list_lower_bound(l + right, lower) implies list_lower_bound(l, lower)
+    }
+    list_lower_bound(List.nil[S], lower)
+    p(List.nil[S])
+    forall(head: S, tail: List[S]) {
+        if p(tail) {
+            if list_lower_bound(List.cons(head, tail) + right, lower) {
+                list_lower_bound(List.cons(head, tail + right), lower)
+                list_lower_bound_cons_iff(head, tail + right, lower)
+                lower <= head
+                list_lower_bound(tail + right, lower)
+                list_lower_bound(tail, lower)
+                list_lower_bound_cons_iff(head, tail, lower)
+                list_lower_bound(List.cons(head, tail), lower)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(left)
+}
+
+/// A lower bound for a concatenation is a lower bound for the right list.
+theorem list_lower_bound_add_right[S: PartialOrder](left: List[S], right: List[S], lower: S) {
+    list_lower_bound(left + right, lower) implies list_lower_bound(right, lower)
+} by {
+    define p(l: List[S]) -> Bool {
+        list_lower_bound(l + right, lower) implies list_lower_bound(right, lower)
+    }
+    p(List.nil[S])
+    forall(head: S, tail: List[S]) {
+        if p(tail) {
+            if list_lower_bound(List.cons(head, tail) + right, lower) {
+                list_lower_bound(List.cons(head, tail + right), lower)
+                list_lower_bound_tail(head, tail + right, lower)
+                list_lower_bound(tail + right, lower)
+                list_lower_bound(right, lower)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(left)
+}
+
+/// Lower bounds for a concatenation are exactly lower bounds for both lists.
+theorem list_lower_bound_add_iff[S: PartialOrder](left: List[S], right: List[S], lower: S) {
+    list_lower_bound(left + right, lower) =
+    (list_lower_bound(left, lower) and list_lower_bound(right, lower))
+} by {
+    if list_lower_bound(left + right, lower) {
+        list_lower_bound_add_left(left, right, lower)
+        list_lower_bound(left, lower)
+        list_lower_bound_add_right(left, right, lower)
+        list_lower_bound(right, lower)
+        list_lower_bound(left, lower) and list_lower_bound(right, lower)
+    }
+    if list_lower_bound(left, lower) and list_lower_bound(right, lower) {
+        forall(x: S) {
+            if (left + right).contains(x) {
+                if left.contains(x) {
+                    list_lower_bound(left, lower) = forall(y: S) {
+                        left.contains(y) implies lower <= y
+                    }
+                    lower <= x
+                } else {
+                    right.contains(x)
+                    list_lower_bound(right, lower) = forall(y: S) {
+                        right.contains(y) implies lower <= y
+                    }
+                    lower <= x
+                }
+            }
+        }
+        list_lower_bound(left + right, lower)
+    }
+    list_lower_bound(left + right, lower) =
+    (list_lower_bound(left, lower) and list_lower_bound(right, lower))
+}
+
+/// An upper bound for a concatenation is an upper bound for the left list.
+theorem list_upper_bound_add_left[S: PartialOrder](left: List[S], right: List[S], upper: S) {
+    list_upper_bound(left + right, upper) implies list_upper_bound(left, upper)
+} by {
+    define p(l: List[S]) -> Bool {
+        list_upper_bound(l + right, upper) implies list_upper_bound(l, upper)
+    }
+    list_upper_bound(List.nil[S], upper)
+    p(List.nil[S])
+    forall(head: S, tail: List[S]) {
+        if p(tail) {
+            if list_upper_bound(List.cons(head, tail) + right, upper) {
+                list_upper_bound(List.cons(head, tail + right), upper)
+                list_upper_bound_cons_iff(head, tail + right, upper)
+                head <= upper
+                list_upper_bound(tail + right, upper)
+                list_upper_bound(tail, upper)
+                list_upper_bound_cons_iff(head, tail, upper)
+                list_upper_bound(List.cons(head, tail), upper)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(left)
+}
+
+/// An upper bound for a concatenation is an upper bound for the right list.
+theorem list_upper_bound_add_right[S: PartialOrder](left: List[S], right: List[S], upper: S) {
+    list_upper_bound(left + right, upper) implies list_upper_bound(right, upper)
+} by {
+    define p(l: List[S]) -> Bool {
+        list_upper_bound(l + right, upper) implies list_upper_bound(right, upper)
+    }
+    p(List.nil[S])
+    forall(head: S, tail: List[S]) {
+        if p(tail) {
+            if list_upper_bound(List.cons(head, tail) + right, upper) {
+                list_upper_bound(List.cons(head, tail + right), upper)
+                list_upper_bound_tail(head, tail + right, upper)
+                list_upper_bound(tail + right, upper)
+                list_upper_bound(right, upper)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(left)
+}
+
+/// Upper bounds for a concatenation are exactly upper bounds for both lists.
+theorem list_upper_bound_add_iff[S: PartialOrder](left: List[S], right: List[S], upper: S) {
+    list_upper_bound(left + right, upper) =
+    (list_upper_bound(left, upper) and list_upper_bound(right, upper))
+} by {
+    if list_upper_bound(left + right, upper) {
+        list_upper_bound_add_left(left, right, upper)
+        list_upper_bound(left, upper)
+        list_upper_bound_add_right(left, right, upper)
+        list_upper_bound(right, upper)
+        list_upper_bound(left, upper) and list_upper_bound(right, upper)
+    }
+    if list_upper_bound(left, upper) and list_upper_bound(right, upper) {
+        forall(x: S) {
+            if (left + right).contains(x) {
+                if left.contains(x) {
+                    list_upper_bound(left, upper) = forall(y: S) {
+                        left.contains(y) implies y <= upper
+                    }
+                    x <= upper
+                } else {
+                    right.contains(x)
+                    list_upper_bound(right, upper) = forall(y: S) {
+                        right.contains(y) implies y <= upper
+                    }
+                    x <= upper
+                }
+            }
+        }
+        list_upper_bound(left + right, upper)
+    }
+    list_upper_bound(left + right, upper) =
+    (list_upper_bound(left, upper) and list_upper_bound(right, upper))
+}
+
+/// Every point is a lower bound for the empty list.
+theorem list_lower_bound_nil[S: PartialOrder](lower: S) {
+    list_lower_bound(List.nil[S], lower)
+} by {
+    forall(x: S) {
+        if List.nil[S].contains(x) {
+            false
+        }
+    }
+}
+
+/// Every point is an upper bound for the empty list.
+theorem list_upper_bound_nil[S: PartialOrder](upper: S) {
+    list_upper_bound(List.nil[S], upper)
+} by {
+    forall(x: S) {
+        if List.nil[S].contains(x) {
+            false
+        }
+    }
+}
+
+/// A lower bound for a singleton list is exactly a point below the singleton element.
+theorem list_lower_bound_singleton_iff[S: PartialOrder](item: S, lower: S) {
+    list_lower_bound(List.singleton(item), lower) = (lower <= item)
+} by {
+    List.singleton(item) = List.cons(item, List.nil[S])
+    list_lower_bound_cons_iff(item, List.nil[S], lower)
+    list_lower_bound_nil(lower)
+    list_lower_bound(List.singleton(item), lower) = (lower <= item)
+}
+
+/// An upper bound for a singleton list is exactly a point above the singleton element.
+theorem list_upper_bound_singleton_iff[S: PartialOrder](item: S, upper: S) {
+    list_upper_bound(List.singleton(item), upper) = (item <= upper)
+} by {
+    List.singleton(item) = List.cons(item, List.nil[S])
+    list_upper_bound_cons_iff(item, List.nil[S], upper)
+    list_upper_bound_nil(upper)
+    list_upper_bound(List.singleton(item), upper) = (item <= upper)
+}
+
+/// Lower bounds after append are exactly lower bounds for the old list and the appended element.
+theorem list_lower_bound_append_iff[S: PartialOrder](items: List[S], last: S, lower: S) {
+    list_lower_bound(items.append(last), lower) =
+    (list_lower_bound(items, lower) and lower <= last)
+} by {
+    items.append(last) = items + List.singleton(last)
+    list_lower_bound_add_iff(items, List.singleton(last), lower)
+    list_lower_bound_singleton_iff(last, lower)
+    list_lower_bound(items.append(last), lower) =
+    (list_lower_bound(items, lower) and lower <= last)
+}
+
+/// Upper bounds after append are exactly upper bounds for the old list and the appended element.
+theorem list_upper_bound_append_iff[S: PartialOrder](items: List[S], last: S, upper: S) {
+    list_upper_bound(items.append(last), upper) =
+    (list_upper_bound(items, upper) and last <= upper)
+} by {
+    items.append(last) = items + List.singleton(last)
+    list_upper_bound_add_iff(items, List.singleton(last), upper)
+    list_upper_bound_singleton_iff(last, upper)
+    list_upper_bound(items.append(last), upper) =
+    (list_upper_bound(items, upper) and last <= upper)
+}
+
+/// Lower bounds are downward closed.
+theorem list_lower_bound_monotone[S: PartialOrder](items: List[S], lower: S, smaller: S) {
+    list_lower_bound(items, lower) and smaller <= lower implies list_lower_bound(items, smaller)
+} by {
+    if list_lower_bound(items, lower) and smaller <= lower {
+        forall(x: S) {
+            if items.contains(x) {
+                list_lower_bound(items, lower) = forall(y: S) {
+                    items.contains(y) implies lower <= y
+                }
+                lower <= x
+                lte_trans(smaller, lower, x)
+                smaller <= x
+            }
+        }
+        list_lower_bound(items, smaller)
+    }
+}
+
+/// Upper bounds are upward closed.
+theorem list_upper_bound_monotone[S: PartialOrder](items: List[S], upper: S, larger: S) {
+    list_upper_bound(items, upper) and upper <= larger implies list_upper_bound(items, larger)
+} by {
+    if list_upper_bound(items, upper) and upper <= larger {
+        forall(x: S) {
+            if items.contains(x) {
+                list_upper_bound(items, upper) = forall(y: S) {
+                    items.contains(y) implies y <= upper
+                }
+                x <= upper
+                lte_trans(x, upper, larger)
+                x <= larger
+            }
+        }
+        list_upper_bound(items, larger)
     }
 }
 
@@ -568,6 +902,30 @@ theorem list_join_lte_add_cons_right[S: JoinSemilattice](head: S, tail: List[S],
     list_join(next, rest) <= list_join(head, tail + List.cons(next, rest))
 }
 
+/// A point is below the meet over a concatenation exactly when it is below both list meets.
+theorem le_list_meet_add_cons_iff[S: MeetSemilattice](c: S, head: S, tail: List[S],
+        next: S, rest: List[S]) {
+    c <= list_meet(head, tail + List.cons(next, rest)) =
+    (c <= list_meet(head, tail) and c <= list_meet(next, rest))
+} by {
+    list_meet_add_cons(head, tail, next, rest)
+    lte_meet_iff(c, list_meet(head, tail), list_meet(next, rest))
+    c <= list_meet(head, tail + List.cons(next, rest)) =
+    (c <= list_meet(head, tail) and c <= list_meet(next, rest))
+}
+
+/// The join over a concatenation is below a point exactly when both list joins are below it.
+theorem list_join_add_cons_le_iff[S: JoinSemilattice](head: S, tail: List[S],
+        next: S, rest: List[S], c: S) {
+    list_join(head, tail + List.cons(next, rest)) <= c =
+    (list_join(head, tail) <= c and list_join(next, rest) <= c)
+} by {
+    list_join_add_cons(head, tail, next, rest)
+    join_lte_iff(list_join(head, tail), list_join(next, rest), c)
+    list_join(head, tail + List.cons(next, rest)) <= c =
+    (list_join(head, tail) <= c and list_join(next, rest) <= c)
+}
+
 /// Appending one element meets the old list meet with that element.
 theorem list_meet_append[S: MeetSemilattice](head: S, tail: List[S], last: S) {
     list_meet(head, tail.append(last)) = list_meet(head, tail).meet(last)
@@ -624,4 +982,26 @@ theorem last_lte_list_join_append[S: JoinSemilattice](head: S, tail: List[S], la
     list_join_append(head, tail, last)
     lte_join_right(list_join(head, tail), last)
     last <= list_join(head, tail.append(last))
+}
+
+/// A point is below the meet after append exactly when it is below the previous meet and the appended element.
+theorem le_list_meet_append_iff[S: MeetSemilattice](c: S, head: S, tail: List[S], last: S) {
+    c <= list_meet(head, tail.append(last)) =
+    (c <= list_meet(head, tail) and c <= last)
+} by {
+    list_meet_append(head, tail, last)
+    lte_meet_iff(c, list_meet(head, tail), last)
+    c <= list_meet(head, tail.append(last)) =
+    (c <= list_meet(head, tail) and c <= last)
+}
+
+/// The join after append is below a point exactly when the previous join and the appended element are below it.
+theorem list_join_append_le_iff[S: JoinSemilattice](head: S, tail: List[S], last: S, c: S) {
+    list_join(head, tail.append(last)) <= c =
+    (list_join(head, tail) <= c and last <= c)
+} by {
+    list_join_append(head, tail, last)
+    join_lte_iff(list_join(head, tail), last, c)
+    list_join(head, tail.append(last)) <= c =
+    (list_join(head, tail) <= c and last <= c)
 }

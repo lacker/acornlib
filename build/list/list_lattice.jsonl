@@ -16,6 +16,108 @@
 {"goal":"x <= upper","proof":["(forall(x0: S) { not x0 ∈ List.cons(head, tail) or x0 <= upper } = true)","function(x0: S) { not (x0 ∈ List.cons(head, tail) and not x0 <= upper) }(x)"]}
 {"goal":"list_upper_bound(tail, upper)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](tail, upper)","let w0: S satisfy { w0 ∈ tail and not w0 <= upper }","function(x0: S) { not x0 ∈ tail or x0 <= upper }(w0)"]}
 {"goal":"list_upper_bound_tail","proof":[]}
+{"goal":"lower <= head","proof":[]}
+{"goal":"list_lower_bound(tail, lower)","proof":[]}
+{"goal":"lower <= head and list_lower_bound(tail, lower)","proof":[]}
+{"goal":"lower <= x","proof":[]}
+{"goal":"tail.contains(x)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x3) != x0 or x1 ∈ x3 or x1 = x2 }[S](List.cons(head, tail), x, head, tail)"]}
+{"goal":"list_lower_bound(tail, lower) = forall(x0: S) { tail.contains(x0) implies lower <= x0 }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](tail, lower)"]}
+{"goal":"lower <= x","proof":["list_lower_bound(tail, lower)","(forall(x0: S) { not x0 ∈ tail or lower <= x0 } = true)","function(x0: S) { not (x0 ∈ tail and not lower <= x0) }(x)"]}
+{"goal":"list_lower_bound(List.cons(head, tail), lower)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](List.cons(head, tail), lower)","let w0: S satisfy { w0 ∈ List.cons(head, tail) and not lower <= w0 }","function(x0: S) { not x0 ∈ List.cons(head, tail) or lower <= x0 }(w0)"]}
+{"goal":"list_lower_bound(List.cons(head, tail), lower) = (lower <= head and list_lower_bound(tail, lower))","proof":[]}
+{"goal":"list_lower_bound_cons_iff","proof":[]}
+{"goal":"head <= upper","proof":[]}
+{"goal":"list_upper_bound(tail, upper)","proof":[]}
+{"goal":"head <= upper and list_upper_bound(tail, upper)","proof":[]}
+{"goal":"x <= upper","proof":[]}
+{"goal":"tail.contains(x)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x3) != x0 or x1 ∈ x3 or x1 = x2 }[S](List.cons(head, tail), x, head, tail)"]}
+{"goal":"list_upper_bound(tail, upper) = forall(x0: S) { tail.contains(x0) implies x0 <= upper }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](tail, upper)"]}
+{"goal":"x <= upper","proof":["list_upper_bound(tail, upper)","(forall(x0: S) { not x0 ∈ tail or x0 <= upper } = true)","function(x0: S) { not (x0 ∈ tail and not x0 <= upper) }(x)"]}
+{"goal":"list_upper_bound(List.cons(head, tail), upper)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](List.cons(head, tail), upper)","let w0: S satisfy { w0 ∈ List.cons(head, tail) and not w0 <= upper }","function(x0: S) { not x0 ∈ List.cons(head, tail) or x0 <= upper }(w0)"]}
+{"goal":"list_upper_bound(List.cons(head, tail), upper) = (head <= upper and list_upper_bound(tail, upper))","proof":[]}
+{"goal":"list_upper_bound_cons_iff","proof":[]}
+{"goal":"list_lower_bound(List.nil[S], lower)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](List.nil[S], lower)","let w0: S satisfy { w0 ∈ List.nil[S] and not lower <= w0 }","function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], w0)"]}
+{"goal":"p(List.nil[S])","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(x0, lower)) = p(x0) }(List.nil[S])"]}
+{"goal":"list_lower_bound(List.cons(head, tail + right), lower)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: List[T0]) { List.cons[T0](x0, x1) != x2 or List.cons[T0](x0, x1 + x3) = x2 + x3 }[S](head, tail, List.cons(head, tail), right)"]}
+{"goal":"lower <= head","proof":[]}
+{"goal":"list_lower_bound(tail + right, lower)","proof":[]}
+{"goal":"list_lower_bound(tail, lower)","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(x0, lower)) = p(x0) }(tail)"]}
+{"goal":"list_lower_bound(List.cons(head, tail), lower)","proof":[]}
+{"goal":"p(List.cons(head, tail))","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(x0, lower)) = p(x0) }(List.cons(head, tail))"]}
+{"goal":"p(left)","proof":["function[T0](x0: List[T0] -> Bool) { not forall(x1: T0, x2: List[T0]) { not x0(x2) or x0(List.cons[T0](x1, x2)) } or not x0(List.nil[T0]) or forall(x3: List[T0]) { x0(x3) } = true }[S](p)","function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not forall(x2: T0, x3: List[T0]) { not x0(x3) or x0(List.cons[T0](x2, x3)) } or not x0(List.nil[T0]) or x0(x1) }[S](p, left)","let w0: S satisfy { exists(k0: List[S]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[S] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[S] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[S], x1: S) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"list_lower_bound_add_left","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(x0, lower)) = p(x0) }(left)"]}
+{"goal":"p(List.nil[S])","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(right, lower)) = p(x0) }(List.nil[S])","function[T0](x0: List[T0]) { List.nil[T0] + x0 = x0 }[S](right)"]}
+{"goal":"list_lower_bound(List.cons(head, tail + right), lower)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: List[T0]) { List.cons[T0](x0, x1) != x2 or List.cons[T0](x0, x1 + x3) = x2 + x3 }[S](head, tail, List.cons(head, tail), right)"]}
+{"goal":"list_lower_bound(tail + right, lower)","proof":[]}
+{"goal":"list_lower_bound(right, lower)","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(right, lower)) = p(x0) }(tail)"]}
+{"goal":"p(List.cons(head, tail))","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(right, lower)) = p(x0) }(List.cons(head, tail))"]}
+{"goal":"p(left)","proof":["function[T0](x0: List[T0] -> Bool) { not forall(x1: T0, x2: List[T0]) { not x0(x2) or x0(List.cons[T0](x1, x2)) } or not x0(List.nil[T0]) or forall(x3: List[T0]) { x0(x3) } = true }[S](p)","function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not forall(x2: T0, x3: List[T0]) { not x0(x3) or x0(List.cons[T0](x2, x3)) } or not x0(List.nil[T0]) or x0(x1) }[S](p, left)","let w0: S satisfy { exists(k0: List[S]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[S] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[S] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[S], x1: S) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"list_lower_bound_add_right","proof":["function(x0: List[S]) { (not list_lower_bound(x0 + right, lower) or list_lower_bound(right, lower)) = p(x0) }(left)"]}
+{"goal":"list_lower_bound(left, lower)","proof":[]}
+{"goal":"list_lower_bound(right, lower)","proof":[]}
+{"goal":"list_lower_bound(left, lower) and list_lower_bound(right, lower)","proof":[]}
+{"goal":"list_lower_bound(left, lower) = forall(x0: S) { left.contains(x0) implies lower <= x0 }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](left, lower)"]}
+{"goal":"lower <= x","proof":["list_lower_bound(left, lower)","(forall(x0: S) { not x0 ∈ left or lower <= x0 } = true)","function(x0: S) { not (x0 ∈ left and not lower <= x0) }(x)"]}
+{"goal":"right.contains(x)","proof":["function[T0](x0: List[T0], x1: List[T0], x2: T0) { not x2 ∈ x0 + x1 or x2 ∈ x0 or x2 ∈ x1 }[S](left, right, x)"]}
+{"goal":"list_lower_bound(right, lower) = forall(x0: S) { right.contains(x0) implies lower <= x0 }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](right, lower)"]}
+{"goal":"lower <= x","proof":["list_lower_bound(right, lower)","(forall(x0: S) { not x0 ∈ right or lower <= x0 } = true)","function(x0: S) { not (x0 ∈ right and not lower <= x0) }(x)"]}
+{"goal":"list_lower_bound(left + right, lower)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](left + right, lower)","let w0: S satisfy { w0 ∈ left + right and not lower <= w0 }","function(x0: S) { not x0 ∈ left + right or lower <= x0 }(w0)"]}
+{"goal":"list_lower_bound(left + right, lower) = (list_lower_bound(left, lower) and list_lower_bound(right, lower))","proof":[]}
+{"goal":"list_lower_bound_add_iff","proof":[]}
+{"goal":"list_upper_bound(List.nil[S], upper)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](List.nil[S], upper)","let w0: S satisfy { w0 ∈ List.nil[S] and not w0 <= upper }","function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], w0)"]}
+{"goal":"p(List.nil[S])","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(x0, upper)) = p(x0) }(List.nil[S])"]}
+{"goal":"list_upper_bound(List.cons(head, tail + right), upper)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: List[T0]) { List.cons[T0](x0, x1) != x2 or List.cons[T0](x0, x1 + x3) = x2 + x3 }[S](head, tail, List.cons(head, tail), right)"]}
+{"goal":"head <= upper","proof":[]}
+{"goal":"list_upper_bound(tail + right, upper)","proof":[]}
+{"goal":"list_upper_bound(tail, upper)","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(x0, upper)) = p(x0) }(tail)"]}
+{"goal":"list_upper_bound(List.cons(head, tail), upper)","proof":[]}
+{"goal":"p(List.cons(head, tail))","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(x0, upper)) = p(x0) }(List.cons(head, tail))"]}
+{"goal":"p(left)","proof":["function[T0](x0: List[T0] -> Bool) { not forall(x1: T0, x2: List[T0]) { not x0(x2) or x0(List.cons[T0](x1, x2)) } or not x0(List.nil[T0]) or forall(x3: List[T0]) { x0(x3) } = true }[S](p)","function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not forall(x2: T0, x3: List[T0]) { not x0(x3) or x0(List.cons[T0](x2, x3)) } or not x0(List.nil[T0]) or x0(x1) }[S](p, left)","let w0: S satisfy { exists(k0: List[S]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[S] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[S] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[S], x1: S) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"list_upper_bound_add_left","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(x0, upper)) = p(x0) }(left)"]}
+{"goal":"p(List.nil[S])","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(right, upper)) = p(x0) }(List.nil[S])","function[T0](x0: List[T0]) { List.nil[T0] + x0 = x0 }[S](right)"]}
+{"goal":"list_upper_bound(List.cons(head, tail + right), upper)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: List[T0]) { List.cons[T0](x0, x1) != x2 or List.cons[T0](x0, x1 + x3) = x2 + x3 }[S](head, tail, List.cons(head, tail), right)"]}
+{"goal":"list_upper_bound(tail + right, upper)","proof":[]}
+{"goal":"list_upper_bound(right, upper)","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(right, upper)) = p(x0) }(tail)"]}
+{"goal":"p(List.cons(head, tail))","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(right, upper)) = p(x0) }(List.cons(head, tail))"]}
+{"goal":"p(left)","proof":["function[T0](x0: List[T0] -> Bool) { not forall(x1: T0, x2: List[T0]) { not x0(x2) or x0(List.cons[T0](x1, x2)) } or not x0(List.nil[T0]) or forall(x3: List[T0]) { x0(x3) } = true }[S](p)","function[T0](x0: List[T0] -> Bool, x1: List[T0]) { not forall(x2: T0, x3: List[T0]) { not x0(x3) or x0(List.cons[T0](x2, x3)) } or not x0(List.nil[T0]) or x0(x1) }[S](p, left)","let w0: S satisfy { exists(k0: List[S]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[S] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[S] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[S], x1: S) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"list_upper_bound_add_right","proof":["function(x0: List[S]) { (not list_upper_bound(x0 + right, upper) or list_upper_bound(right, upper)) = p(x0) }(left)"]}
+{"goal":"list_upper_bound(left, upper)","proof":[]}
+{"goal":"list_upper_bound(right, upper)","proof":[]}
+{"goal":"list_upper_bound(left, upper) and list_upper_bound(right, upper)","proof":[]}
+{"goal":"list_upper_bound(left, upper) = forall(x0: S) { left.contains(x0) implies x0 <= upper }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](left, upper)"]}
+{"goal":"x <= upper","proof":["list_upper_bound(left, upper)","(forall(x0: S) { not x0 ∈ left or x0 <= upper } = true)","function(x0: S) { not (x0 ∈ left and not x0 <= upper) }(x)"]}
+{"goal":"right.contains(x)","proof":["function[T0](x0: List[T0], x1: List[T0], x2: T0) { not x2 ∈ x0 + x1 or x2 ∈ x0 or x2 ∈ x1 }[S](left, right, x)"]}
+{"goal":"list_upper_bound(right, upper) = forall(x0: S) { right.contains(x0) implies x0 <= upper }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](right, upper)"]}
+{"goal":"x <= upper","proof":["list_upper_bound(right, upper)","(forall(x0: S) { not x0 ∈ right or x0 <= upper } = true)","function(x0: S) { not (x0 ∈ right and not x0 <= upper) }(x)"]}
+{"goal":"list_upper_bound(left + right, upper)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](left + right, upper)","let w0: S satisfy { w0 ∈ left + right and not w0 <= upper }","function(x0: S) { not x0 ∈ left + right or x0 <= upper }(w0)"]}
+{"goal":"list_upper_bound(left + right, upper) = (list_upper_bound(left, upper) and list_upper_bound(right, upper))","proof":[]}
+{"goal":"list_upper_bound_add_iff","proof":[]}
+{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], x)"]}
+{"goal":"list_lower_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](List.nil[S], lower)","let w0: S satisfy { w0 ∈ List.nil[S] and not lower <= w0 }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)","function(x0: S) { not x0 ∈ List.nil[S] }(w0)","w0 ∈ List.nil[S] and not lower <= w0"]}
+{"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], x)"]}
+{"goal":"list_upper_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](List.nil[S], upper)","let w0: S satisfy { w0 ∈ List.nil[S] and not w0 <= upper }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)","function(x0: S) { not x0 ∈ List.nil[S] }(w0)","w0 ∈ List.nil[S] and not w0 <= upper"]}
+{"goal":"List.singleton(item) = List.cons(item, List.nil[S])","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)"]}
+{"goal":"list_lower_bound(List.singleton(item), lower) = lower <= item","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)","function[T0: PartialOrder](x0: T0) { list_lower_bound[T0](List.nil[T0], x0) }[S](lower)","not (lower <= item and list_lower_bound(List.nil[S], lower)) or list_lower_bound(List.cons(item, List.nil[S]), lower)","not list_lower_bound(List.cons(item, List.nil[S]), lower) or (lower <= item and list_lower_bound(List.nil[S], lower))","list_lower_bound(List.cons(item, List.nil[S]), lower) != lower <= item","not lower <= item or list_lower_bound(List.cons(item, List.nil[S]), lower)","lower <= item","list_lower_bound(List.cons(item, List.nil[S]), lower)","not list_lower_bound(List.cons(item, List.nil[S]), lower)"]}
+{"goal":"list_lower_bound_singleton_iff","proof":[]}
+{"goal":"List.singleton(item) = List.cons(item, List.nil[S])","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)"]}
+{"goal":"list_upper_bound(List.singleton(item), upper) = item <= upper","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)","function[T0: PartialOrder](x0: T0) { list_upper_bound[T0](List.nil[T0], x0) }[S](upper)","not (item <= upper and list_upper_bound(List.nil[S], upper)) or list_upper_bound(List.cons(item, List.nil[S]), upper)","not list_upper_bound(List.cons(item, List.nil[S]), upper) or (item <= upper and list_upper_bound(List.nil[S], upper))","list_upper_bound(List.cons(item, List.nil[S]), upper) != item <= upper","not item <= upper or list_upper_bound(List.cons(item, List.nil[S]), upper)","item <= upper","list_upper_bound(List.cons(item, List.nil[S]), upper)","not list_upper_bound(List.cons(item, List.nil[S]), upper)"]}
+{"goal":"list_upper_bound_singleton_iff","proof":[]}
+{"goal":"items.append(last) = items + List.singleton(last)","proof":["function[T0](x0: List[T0], x1: T0) { x0 + List.singleton[T0](x1) = x0.append(x1) }[S](items, last)"]}
+{"goal":"list_lower_bound(items.append(last), lower) = (list_lower_bound(items, lower) and lower <= last)","proof":["(list_lower_bound(items, lower) and list_lower_bound(List.singleton(last), lower)) != list_lower_bound(items.append(last), lower)","(list_lower_bound(items, lower) and list_lower_bound(List.singleton(last), lower)) = list_lower_bound(items.append(last), lower)"]}
+{"goal":"list_lower_bound_append_iff","proof":[]}
+{"goal":"items.append(last) = items + List.singleton(last)","proof":["function[T0](x0: List[T0], x1: T0) { x0 + List.singleton[T0](x1) = x0.append(x1) }[S](items, last)"]}
+{"goal":"list_upper_bound(items.append(last), upper) = (list_upper_bound(items, upper) and last <= upper)","proof":["(list_upper_bound(items, upper) and list_upper_bound(List.singleton(last), upper)) != list_upper_bound(items.append(last), upper)","(list_upper_bound(items, upper) and list_upper_bound(List.singleton(last), upper)) = list_upper_bound(items.append(last), upper)"]}
+{"goal":"list_upper_bound_append_iff","proof":[]}
+{"goal":"list_lower_bound(items, lower) = forall(x0: S) { items.contains(x0) implies lower <= x0 }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](items, lower)"]}
+{"goal":"lower <= x","proof":["list_lower_bound(items, lower)","(forall(x0: S) { not x0 ∈ items or lower <= x0 } = true)","function(x0: S) { not (x0 ∈ items and not lower <= x0) }(x)"]}
+{"goal":"smaller <= x","proof":[]}
+{"goal":"list_lower_bound(items, smaller)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](items, smaller)","let w0: S satisfy { w0 ∈ items and not smaller <= w0 }","function(x0: S) { not x0 ∈ items or smaller <= x0 }(w0)"]}
+{"goal":"list_lower_bound_monotone","proof":[]}
+{"goal":"list_upper_bound(items, upper) = forall(x0: S) { items.contains(x0) implies x0 <= upper }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](items, upper)"]}
+{"goal":"x <= upper","proof":["list_upper_bound(items, upper)","(forall(x0: S) { not x0 ∈ items or x0 <= upper } = true)","function(x0: S) { not (x0 ∈ items and not x0 <= upper) }(x)"]}
+{"goal":"x <= larger","proof":[]}
+{"goal":"list_upper_bound(items, larger)","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](items, larger)","let w0: S satisfy { w0 ∈ items and not w0 <= larger }","function(x0: S) { not x0 ∈ items or x0 <= larger }(w0)"]}
+{"goal":"list_upper_bound_monotone","proof":[]}
 {"goal":"list_meet(h, List.nil[S]) = h","proof":["function[T0: MeetSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_meet[T0](x1, x0) = x1 }[S](List.nil[S], h)"]}
 {"goal":"list_meet(h, List.nil[S]) <= h","proof":[]}
 {"goal":"p(List.nil[S])","proof":["function(x0: List[S]) { forall(x1: S) { list_meet(x1, x0) <= x1 } = p(x0) }(List.nil[S])","let w0: S satisfy { not list_meet(w0, List.nil[S]) <= w0 }","function(x0: S) { list_meet(x0, List.nil[S]) <= x0 }(w0)"]}
@@ -146,6 +248,10 @@
 {"goal":"list_join_lte_add_cons_left","proof":[]}
 {"goal":"list_join(next, rest) <= list_join(head, tail + List.cons(next, rest))","proof":[]}
 {"goal":"list_join_lte_add_cons_right","proof":[]}
+{"goal":"c <= list_meet(head, tail + List.cons(next, rest)) = (c <= list_meet(head, tail) and c <= list_meet(next, rest))","proof":[]}
+{"goal":"le_list_meet_add_cons_iff","proof":[]}
+{"goal":"list_join(head, tail + List.cons(next, rest)) <= c = (list_join(head, tail) <= c and list_join(next, rest) <= c)","proof":[]}
+{"goal":"list_join_add_cons_le_iff","proof":[]}
 {"goal":"tail.append(last) = tail + List.singleton(last)","proof":["function[T0](x0: List[T0], x1: T0) { x0 + List.singleton[T0](x1) = x0.append(x1) }[S](tail, last)"]}
 {"goal":"List.singleton(last) = List.cons(last, List.nil[S])","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](last)"]}
 {"goal":"list_meet(last, List.nil[S]) = last","proof":["function[T0: MeetSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_meet[T0](x1, x0) = x1 }[S](List.nil[S], last)"]}
@@ -164,3 +270,7 @@
 {"goal":"list_join_lte_append_join","proof":[]}
 {"goal":"last <= list_join(head, tail.append(last))","proof":[]}
 {"goal":"last_lte_list_join_append","proof":[]}
+{"goal":"c <= list_meet(head, tail.append(last)) = (c <= list_meet(head, tail) and c <= last)","proof":[]}
+{"goal":"le_list_meet_append_iff","proof":[]}
+{"goal":"list_join(head, tail.append(last)) <= c = (list_join(head, tail) <= c and last <= c)","proof":[]}
+{"goal":"list_join_append_le_iff","proof":[]}
