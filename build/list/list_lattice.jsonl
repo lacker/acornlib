@@ -93,20 +93,20 @@
 {"goal":"list_upper_bound(left + right, upper) = (list_upper_bound(left, upper) and list_upper_bound(right, upper))","proof":[]}
 {"goal":"list_upper_bound_add_iff","proof":[]}
 {"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], x)"]}
-{"goal":"list_lower_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](List.nil[S], lower)","let w0: S satisfy { w0 ∈ List.nil[S] and not lower <= w0 }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)","function(x0: S) { not x0 ∈ List.nil[S] }(w0)","w0 ∈ List.nil[S] and not lower <= w0"]}
+{"goal":"list_lower_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](List.nil[S], lower)","let w0: S satisfy { w0 ∈ List.nil[S] and not lower <= w0 }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)"]}
 {"goal":"false","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[S](List.nil[S], x)"]}
-{"goal":"list_upper_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](List.nil[S], upper)","let w0: S satisfy { w0 ∈ List.nil[S] and not w0 <= upper }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)","function(x0: S) { not x0 ∈ List.nil[S] }(w0)","w0 ∈ List.nil[S] and not w0 <= upper"]}
+{"goal":"list_upper_bound_nil","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[S](List.nil[S], upper)","let w0: S satisfy { w0 ∈ List.nil[S] and not w0 <= upper }","function(x0: S) { not x0 ∈ List.nil[S] or false = true }(w0)"]}
 {"goal":"List.singleton(item) = List.cons(item, List.nil[S])","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)"]}
-{"goal":"list_lower_bound(List.singleton(item), lower) = lower <= item","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)","function[T0: PartialOrder](x0: T0) { list_lower_bound[T0](List.nil[T0], x0) }[S](lower)","not (lower <= item and list_lower_bound(List.nil[S], lower)) or list_lower_bound(List.cons(item, List.nil[S]), lower)","not list_lower_bound(List.cons(item, List.nil[S]), lower) or (lower <= item and list_lower_bound(List.nil[S], lower))","list_lower_bound(List.cons(item, List.nil[S]), lower) != lower <= item","not lower <= item or list_lower_bound(List.cons(item, List.nil[S]), lower)","lower <= item","list_lower_bound(List.cons(item, List.nil[S]), lower)","not list_lower_bound(List.cons(item, List.nil[S]), lower)"]}
+{"goal":"list_lower_bound(List.singleton(item), lower) = lower <= item","proof":[]}
 {"goal":"list_lower_bound_singleton_iff","proof":[]}
 {"goal":"List.singleton(item) = List.cons(item, List.nil[S])","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)"]}
-{"goal":"list_upper_bound(List.singleton(item), upper) = item <= upper","proof":["function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[S](item)","function[T0: PartialOrder](x0: T0) { list_upper_bound[T0](List.nil[T0], x0) }[S](upper)","not (item <= upper and list_upper_bound(List.nil[S], upper)) or list_upper_bound(List.cons(item, List.nil[S]), upper)","not list_upper_bound(List.cons(item, List.nil[S]), upper) or (item <= upper and list_upper_bound(List.nil[S], upper))","list_upper_bound(List.cons(item, List.nil[S]), upper) != item <= upper","not item <= upper or list_upper_bound(List.cons(item, List.nil[S]), upper)","item <= upper","list_upper_bound(List.cons(item, List.nil[S]), upper)","not list_upper_bound(List.cons(item, List.nil[S]), upper)"]}
+{"goal":"list_upper_bound(List.singleton(item), upper) = item <= upper","proof":[]}
 {"goal":"list_upper_bound_singleton_iff","proof":[]}
 {"goal":"items.append(last) = items + List.singleton(last)","proof":["function[T0](x0: List[T0], x1: T0) { x0 + List.singleton[T0](x1) = x0.append(x1) }[S](items, last)"]}
-{"goal":"list_lower_bound(items.append(last), lower) = (list_lower_bound(items, lower) and lower <= last)","proof":["(list_lower_bound(items, lower) and list_lower_bound(List.singleton(last), lower)) != list_lower_bound(items.append(last), lower)","(list_lower_bound(items, lower) and list_lower_bound(List.singleton(last), lower)) = list_lower_bound(items.append(last), lower)"]}
+{"goal":"list_lower_bound(items.append(last), lower) = (list_lower_bound(items, lower) and lower <= last)","proof":[]}
 {"goal":"list_lower_bound_append_iff","proof":[]}
 {"goal":"items.append(last) = items + List.singleton(last)","proof":["function[T0](x0: List[T0], x1: T0) { x0 + List.singleton[T0](x1) = x0.append(x1) }[S](items, last)"]}
-{"goal":"list_upper_bound(items.append(last), upper) = (list_upper_bound(items, upper) and last <= upper)","proof":["(list_upper_bound(items, upper) and list_upper_bound(List.singleton(last), upper)) != list_upper_bound(items.append(last), upper)","(list_upper_bound(items, upper) and list_upper_bound(List.singleton(last), upper)) = list_upper_bound(items.append(last), upper)"]}
+{"goal":"list_upper_bound(items.append(last), upper) = (list_upper_bound(items, upper) and last <= upper)","proof":[]}
 {"goal":"list_upper_bound_append_iff","proof":[]}
 {"goal":"list_lower_bound(items, lower) = forall(x0: S) { items.contains(x0) implies lower <= x0 }","proof":["function[T0: PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[S](items, lower)"]}
 {"goal":"lower <= x","proof":["list_lower_bound(items, lower)","(forall(x0: S) { not x0 ∈ items or lower <= x0 } = true)","function(x0: S) { not (x0 ∈ items and not lower <= x0) }(x)"]}
@@ -274,3 +274,59 @@
 {"goal":"le_list_meet_append_iff","proof":[]}
 {"goal":"list_join(head, tail.append(last)) <= c = (list_join(head, tail) <= c and last <= c)","proof":[]}
 {"goal":"list_join_append_le_iff","proof":[]}
+{"goal":"list_inf_eq_list_meet","proof":[]}
+{"goal":"list_sup_eq_list_join","proof":[]}
+{"goal":"list_inf_lte_head","proof":[]}
+{"goal":"list_inf_lte_tail_inf","proof":[]}
+{"goal":"list_inf(head, tail) <= x","proof":[]}
+{"goal":"list_inf_lte_contains","proof":[]}
+{"goal":"head_lte_list_sup","proof":[]}
+{"goal":"tail_sup_lte_list_sup","proof":[]}
+{"goal":"x <= list_sup(head, tail)","proof":[]}
+{"goal":"contains_lte_list_sup","proof":[]}
+{"goal":"c <= list_inf(head, tail)","proof":[]}
+{"goal":"lte_list_inf_of_contains_bounds","proof":[]}
+{"goal":"lte_list_inf_iff_contains_bounds","proof":[]}
+{"goal":"list_inf_is_lower_bound","proof":[]}
+{"goal":"le_list_inf_iff","proof":[]}
+{"goal":"list_sup(head, tail) <= c","proof":[]}
+{"goal":"list_sup_lte_of_contains_bounds","proof":[]}
+{"goal":"list_sup_lte_iff_contains_bounds","proof":[]}
+{"goal":"list_sup_is_upper_bound","proof":[]}
+{"goal":"list_sup_le_iff","proof":[]}
+{"goal":"list_inf_add_cons","proof":[]}
+{"goal":"list_sup_add_cons","proof":[]}
+{"goal":"list_inf_add_cons_lte_left","proof":[]}
+{"goal":"list_inf_add_cons_lte_right","proof":[]}
+{"goal":"list_sup_lte_add_cons_left","proof":[]}
+{"goal":"list_sup_lte_add_cons_right","proof":[]}
+{"goal":"le_list_inf_add_cons_iff","proof":[]}
+{"goal":"list_sup_add_cons_le_iff","proof":[]}
+{"goal":"list_inf_append","proof":[]}
+{"goal":"list_sup_append","proof":[]}
+{"goal":"list_inf_append_lte_list_inf","proof":[]}
+{"goal":"list_inf_append_lte_last","proof":[]}
+{"goal":"list_sup_lte_append_sup","proof":[]}
+{"goal":"last_lte_list_sup_append","proof":[]}
+{"goal":"le_list_inf_append_iff","proof":[]}
+{"goal":"list_sup_append_le_iff","proof":[]}
+{"goal":"list_meet_singleton","proof":["function[T0: MeetSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_meet[T0](x1, x0) = x1 }[S](List.nil[S], head)"]}
+{"goal":"list_join_singleton","proof":["function[T0: JoinSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_join[T0](x1, x0) = x1 }[S](List.nil[S], head)"]}
+{"goal":"list_inf_singleton","proof":["list_inf(head, List.nil[S]) != list_meet(head, List.nil[S])"]}
+{"goal":"list_sup_singleton","proof":["list_sup(head, List.nil[S]) != list_join(head, List.nil[S])"]}
+{"goal":"list_meet_cons","proof":["function[T0: MeetSemilattice](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x3.meet(list_meet[T0](x0, x1)) = list_meet[T0](x3, x2) }[S](next, rest, List.cons(next, rest), head)"]}
+{"goal":"list_join_cons","proof":["function[T0: JoinSemilattice](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x3.join(list_join[T0](x0, x1)) = list_join[T0](x3, x2) }[S](next, rest, List.cons(next, rest), head)"]}
+{"goal":"list_inf_cons","proof":["list_inf(head, List.cons(next, rest)) != head.meet(list_meet(next, rest))","list_inf(head, List.cons(next, rest)) = head.meet(list_meet(next, rest))"]}
+{"goal":"list_sup_cons","proof":["list_sup(head, List.cons(next, rest)) != head.join(list_join(next, rest))","list_sup(head, List.cons(next, rest)) = head.join(list_join(next, rest))"]}
+{"goal":"list_meet_pair","proof":["list_meet(a, List.cons(b, List.nil[S])) != a.meet(list_meet(b, List.nil[S]))"]}
+{"goal":"list_join_pair","proof":["list_join(a, List.cons(b, List.nil[S])) != a.join(list_join(b, List.nil[S]))"]}
+{"goal":"list_inf_pair","proof":["list_inf(a, List.cons(b, List.nil[S])) != a.meet(list_inf(b, List.nil[S]))"]}
+{"goal":"list_sup_pair","proof":["list_sup(a, List.cons(b, List.nil[S])) != a.join(list_sup(b, List.nil[S]))"]}
+{"goal":"c <= list_inf(head, List.cons(next, rest))","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x0 <= x2) = x0 <= x1.meet(x2) }[S](c, head, list_inf(next, rest))","not c <= head.meet(list_inf(next, rest))","c <= head.meet(list_inf(next, rest))"]}
+{"goal":"le_list_inf_cons_of_le_head_of_le_tail","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x0 <= x2) = x0 <= x1.meet(x2) }[S](c, head, list_inf(next, rest))","function[T0: MeetSemilattice](x0: T0, x1: T0, x2: List[T0]) { list_inf[T0](x0, List.cons[T0](x1, x2)) = x0.meet(list_inf[T0](x1, x2)) }[S](head, next, rest)","c <= head.meet(list_inf(next, rest))","not c <= head.meet(list_inf(next, rest))"]}
+{"goal":"list_sup(head, List.cons(next, rest)) <= c","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x2 <= x1) = x0.join(x2) <= x1 }[S](head, c, list_sup(next, rest))","not head.join(list_sup(next, rest)) <= c","head.join(list_sup(next, rest)) <= c"]}
+{"goal":"list_sup_cons_le_of_head_le_of_tail_le","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x2 <= x1) = x0.join(x2) <= x1 }[S](head, c, list_sup(next, rest))","function[T0: JoinSemilattice](x0: T0, x1: T0, x2: List[T0]) { list_sup[T0](x0, List.cons[T0](x1, x2)) = x0.join(list_sup[T0](x1, x2)) }[S](head, next, rest)","head.join(list_sup(next, rest)) <= c","not head.join(list_sup(next, rest)) <= c"]}
+{"goal":"le_list_inf_cons_iff","proof":["(c <= head and c <= list_inf(next, rest)) != c <= head.meet(list_inf(next, rest))"]}
+{"goal":"list_sup_cons_le_iff","proof":["(head <= c and list_sup(next, rest) <= c) != head.join(list_sup(next, rest)) <= c"]}
+{"goal":"le_list_inf_pair_iff","proof":["(c <= a and c <= b) != c <= a.meet(b)"]}
+{"goal":"list_sup_pair_le_iff","proof":["(a <= c and b <= c) != a.join(b) <= c"]}
