@@ -2,7 +2,8 @@
 
 from order import LinearOrder, lte_trans, lte_antisymm, lt_trans, lt_imp_lte, not_lt_ref,
     gt_imp_not_lte, lt_of_lte_of_lt, lt_of_lt_of_lte, lte_min_of_bounds, lte_max_left,
-    max_eq_left_of_gte, max_eq_right_of_lte, min_eq_left_of_lte, min_eq_right_of_gte,
+    lte_max_right, max_eq_left_of_gte, max_eq_right_of_lte, min_eq_left_of_lte,
+    min_eq_right_of_gte, min_lte_left, min_lte_right, max_lte_of_upper_bounds,
     min_lte_min, min_lte_min_left, min_lte_min_right, max_lte_max, max_lte_max_left,
     max_lte_max_right
 
@@ -980,6 +981,88 @@ theorem right_open_interval_subset_right_open_interval[L: LinearOrder](a1: L, b1
     if a2 <= a1 and b1 <= b2 and right_open_interval(a1, b1, x) {
         right_open_interval_mono(a2, a1, b2, b1, x)
         right_open_interval(a2, b2, x)
+    }
+}
+
+/// Membership in two closed intervals is membership in the interval with joined lower endpoints and met upper endpoints.
+theorem closed_interval_intersection_iff[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    (closed_interval(a1, b1, x) and closed_interval(a2, b2, x)) =
+    closed_interval(a1.max(a2), b1.min(b2), x)
+} by {
+    if closed_interval(a1, b1, x) and closed_interval(a2, b2, x) {
+        closed_interval_left(a1, b1, x)
+        a1 <= x
+        closed_interval_left(a2, b2, x)
+        a2 <= x
+        max_lte_of_upper_bounds(a1, a2, x)
+        a1.max(a2) <= x
+        closed_interval_right(a1, b1, x)
+        x <= b1
+        closed_interval_right(a2, b2, x)
+        x <= b2
+        lte_min_of_bounds(x, b1, b2)
+        x <= b1.min(b2)
+        closed_interval(a1.max(a2), b1.min(b2), x)
+    }
+    if closed_interval(a1.max(a2), b1.min(b2), x) {
+        closed_interval_left(a1.max(a2), b1.min(b2), x)
+        a1.max(a2) <= x
+        lte_max_left(a1, a2)
+        a1 <= a1.max(a2)
+        lte_trans(a1, a1.max(a2), x)
+        a1 <= x
+        lte_max_right(a1, a2)
+        a2 <= a1.max(a2)
+        lte_trans(a2, a1.max(a2), x)
+        a2 <= x
+        closed_interval_right(a1.max(a2), b1.min(b2), x)
+        x <= b1.min(b2)
+        min_lte_left(b1, b2)
+        b1.min(b2) <= b1
+        lte_trans(x, b1.min(b2), b1)
+        x <= b1
+        min_lte_right(b1, b2)
+        b1.min(b2) <= b2
+        lte_trans(x, b1.min(b2), b2)
+        x <= b2
+        closed_interval(a1, b1, x)
+        closed_interval(a2, b2, x)
+        closed_interval(a1, b1, x) and closed_interval(a2, b2, x)
+    }
+    (closed_interval(a1, b1, x) and closed_interval(a2, b2, x)) =
+    closed_interval(a1.max(a2), b1.min(b2), x)
+}
+
+/// Membership in two closed intervals gives membership in their closed interval intersection.
+theorem closed_interval_intersection_intro[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    closed_interval(a1, b1, x) and closed_interval(a2, b2, x) implies
+    closed_interval(a1.max(a2), b1.min(b2), x)
+} by {
+    if closed_interval(a1, b1, x) and closed_interval(a2, b2, x) {
+        closed_interval_intersection_iff(a1, b1, a2, b2, x)
+        closed_interval(a1.max(a2), b1.min(b2), x)
+    }
+}
+
+/// Membership in a closed interval intersection gives membership in the left interval.
+theorem closed_interval_intersection_left[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    closed_interval(a1.max(a2), b1.min(b2), x) implies
+    closed_interval(a1, b1, x)
+} by {
+    if closed_interval(a1.max(a2), b1.min(b2), x) {
+        closed_interval_intersection_iff(a1, b1, a2, b2, x)
+        closed_interval(a1, b1, x)
+    }
+}
+
+/// Membership in a closed interval intersection gives membership in the right interval.
+theorem closed_interval_intersection_right[L: LinearOrder](a1: L, b1: L, a2: L, b2: L, x: L) {
+    closed_interval(a1.max(a2), b1.min(b2), x) implies
+    closed_interval(a2, b2, x)
+} by {
+    if closed_interval(a1.max(a2), b1.min(b2), x) {
+        closed_interval_intersection_iff(a1, b1, a2, b2, x)
+        closed_interval(a2, b2, x)
     }
 }
 

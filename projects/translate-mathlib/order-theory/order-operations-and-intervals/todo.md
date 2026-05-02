@@ -15,3 +15,4 @@ Status:
 - `src/order_interval.ac` now has endpoint iff/nonmembership facts, interval emptiness and nonemptiness facts, same-shape interval subset aliases, and boundedness facts for closed, open, and half-open intervals.
 - `src/order_interval.ac` now has the core clamp API: endpoint selectors, fixed points, idempotence, element and endpoint monotonicity, and the closed-interval fixed-point characterization.
 - `src/list/list_order.ac` now connects non-empty list minima and maxima to `closed_interval` and the predicate-boundedness API via interval-bound predicates and existence theorems.
+- `src/list/list_order.ac` now has universal-property, concatenation, append, and membership-predicate bridge lemmas for non-empty list minima and maxima; `src/order_interval.ac` has closed-interval intersection lemmas using `max` and `min` endpoints.

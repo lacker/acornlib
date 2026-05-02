@@ -1,6 +1,8 @@
 from list.list_base import List
-from order import LinearOrder
+from order import LinearOrder, lte_trans, lte_min_of_bounds, max_lte_of_upper_bounds,
+    min_assoc_rev, max_assoc_rev, min_lte_left, min_lte_right, lte_max_left, lte_max_right
 from order_interval import closed_interval
+from list.list_lattice import list_lower_bound, list_upper_bound
 
 /// Theorems about lists of ordered types.
 
@@ -113,6 +115,80 @@ theorem upper_bound_monotone[T: LinearOrder](list: List[T], ub1: T, ub2: T) {
 
 }
 
+/// Recursive list upper bounds are the same as membership-predicate upper bounds.
+theorem upper_bound_iff_list_upper_bound[T: LinearOrder](list: List[T], upper: T) {
+    is_upper_bound(list, upper) = list_upper_bound(list, upper)
+} by {
+    define p(l: List[T]) -> Bool {
+        is_upper_bound(l, upper) = list_upper_bound(l, upper)
+    }
+    forall(x: T) {
+        if List.nil[T].contains(x) {
+            false
+        }
+    }
+    list_upper_bound(List.nil[T], upper)
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if is_upper_bound(List.cons(head, tail), upper) {
+                head <= upper
+                is_upper_bound(tail, upper)
+                list_upper_bound(tail, upper)
+                forall(x: T) {
+                    if List.cons(head, tail).contains(x) {
+                        if head = x {
+                            x <= upper
+                        } else {
+                            tail.contains(x)
+                            x <= upper
+                        }
+                    }
+                }
+                list_upper_bound(List.cons(head, tail), upper)
+            }
+            if list_upper_bound(List.cons(head, tail), upper) {
+                list_upper_bound(List.cons(head, tail), upper) = forall(x: T) {
+                    List.cons(head, tail).contains(x) implies x <= upper
+                }
+                List.cons(head, tail).contains(head)
+                head <= upper
+                forall(x: T) {
+                    if tail.contains(x) {
+                        List.cons(head, tail).contains(x)
+                        x <= upper
+                    }
+                }
+                list_upper_bound(tail, upper)
+                is_upper_bound(tail, upper)
+                is_upper_bound(List.cons(head, tail), upper)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(list)
+}
+
+/// Recursive list upper bounds give membership-predicate upper bounds.
+theorem upper_bound_imp_list_upper_bound[T: LinearOrder](list: List[T], upper: T) {
+    is_upper_bound(list, upper) implies list_upper_bound(list, upper)
+} by {
+    if is_upper_bound(list, upper) {
+        upper_bound_iff_list_upper_bound(list, upper)
+        list_upper_bound(list, upper)
+    }
+}
+
+/// Membership-predicate upper bounds give recursive list upper bounds.
+theorem list_upper_bound_imp_upper_bound[T: LinearOrder](list: List[T], upper: T) {
+    list_upper_bound(list, upper) implies is_upper_bound(list, upper)
+} by {
+    if list_upper_bound(list, upper) {
+        upper_bound_iff_list_upper_bound(list, upper)
+        is_upper_bound(list, upper)
+    }
+}
+
 /// The maximum element of a non-empty list.
 define list_max[T: LinearOrder](head: T, tail: List[T]) -> T {
     match tail {
@@ -183,6 +259,74 @@ theorem list_max_is_upper_bound[T: LinearOrder](head: T, tail: List[T]) {
     // Apply to our specific head and tail
     p(tail)
     is_upper_bound(List.cons(head, tail), list_max(head, tail))
+}
+
+/// Any upper bound for every element of a non-empty list is above its maximum.
+theorem list_max_lte_of_upper_bound[T: LinearOrder](head: T, tail: List[T], upper: T) {
+    is_upper_bound(List.cons(head, tail), upper) implies
+    list_max(head, tail) <= upper
+} by {
+    define p(t: List[T]) -> Bool {
+        forall(h: T, bound: T) {
+            is_upper_bound(List.cons(h, t), bound) implies
+            list_max(h, t) <= bound
+        }
+    }
+    forall(h: T, bound: T) {
+        if is_upper_bound(List.cons(h, List.nil[T]), bound) {
+            upper_bound_contains(List.cons(h, List.nil[T]), bound, h)
+            h <= bound
+            list_max(h, List.nil[T]) = h
+            list_max(h, List.nil[T]) <= bound
+        }
+    }
+    p(List.nil[T])
+    forall(next: T, rest: List[T]) {
+        if p(rest) {
+            forall(h: T, bound: T) {
+                if is_upper_bound(List.cons(h, List.cons(next, rest)), bound) {
+                    upper_bound_add_right(List.singleton(h), List.cons(next, rest), bound)
+                    is_upper_bound(List.cons(next, rest), bound)
+                    p(rest) = forall(base: T, candidate: T) {
+                        is_upper_bound(List.cons(base, rest), candidate) implies
+                        list_max(base, rest) <= candidate
+                    }
+                    list_max(next, rest) <= bound
+                    upper_bound_contains(List.cons(h, List.cons(next, rest)), bound, h)
+                    h <= bound
+                    max_lte_of_upper_bounds(h, list_max(next, rest), bound)
+                    h.max(list_max(next, rest)) <= bound
+                    list_max(h, List.cons(next, rest)) = h.max(list_max(next, rest))
+                    list_max(h, List.cons(next, rest)) <= bound
+                }
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
+
+/// The maximum of a non-empty list is the least upper bound of its elements.
+theorem list_max_lte_iff_upper_bound[T: LinearOrder](head: T, tail: List[T], upper: T) {
+    list_max(head, tail) <= upper = is_upper_bound(List.cons(head, tail), upper)
+} by {
+    if list_max(head, tail) <= upper {
+        list_max_is_upper_bound(head, tail)
+        upper_bound_monotone(List.cons(head, tail), list_max(head, tail), upper)
+        is_upper_bound(List.cons(head, tail), upper)
+    }
+    if is_upper_bound(List.cons(head, tail), upper) {
+        list_max_lte_of_upper_bound(head, tail, upper)
+        list_max(head, tail) <= upper
+    }
+    list_max(head, tail) <= upper = is_upper_bound(List.cons(head, tail), upper)
+}
+
+/// The list maximum is below a point exactly when the point is an upper bound.
+theorem list_max_le_iff[T: LinearOrder](head: T, tail: List[T], upper: T) {
+    list_max(head, tail) <= upper = is_upper_bound(List.cons(head, tail), upper)
+} by {
+    list_max_lte_iff_upper_bound(head, tail, upper)
 }
 
 /// Every non-empty list has an upper bound.
@@ -298,6 +442,80 @@ theorem lower_bound_monotone[T: LinearOrder](list: List[T], lb1: T, lb2: T) {
         }
     }
 
+}
+
+/// Recursive list lower bounds are the same as membership-predicate lower bounds.
+theorem lower_bound_iff_list_lower_bound[T: LinearOrder](list: List[T], lower: T) {
+    is_lower_bound(list, lower) = list_lower_bound(list, lower)
+} by {
+    define p(l: List[T]) -> Bool {
+        is_lower_bound(l, lower) = list_lower_bound(l, lower)
+    }
+    forall(x: T) {
+        if List.nil[T].contains(x) {
+            false
+        }
+    }
+    list_lower_bound(List.nil[T], lower)
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if is_lower_bound(List.cons(head, tail), lower) {
+                lower <= head
+                is_lower_bound(tail, lower)
+                list_lower_bound(tail, lower)
+                forall(x: T) {
+                    if List.cons(head, tail).contains(x) {
+                        if head = x {
+                            lower <= x
+                        } else {
+                            tail.contains(x)
+                            lower <= x
+                        }
+                    }
+                }
+                list_lower_bound(List.cons(head, tail), lower)
+            }
+            if list_lower_bound(List.cons(head, tail), lower) {
+                list_lower_bound(List.cons(head, tail), lower) = forall(x: T) {
+                    List.cons(head, tail).contains(x) implies lower <= x
+                }
+                List.cons(head, tail).contains(head)
+                lower <= head
+                forall(x: T) {
+                    if tail.contains(x) {
+                        List.cons(head, tail).contains(x)
+                        lower <= x
+                    }
+                }
+                list_lower_bound(tail, lower)
+                is_lower_bound(tail, lower)
+                is_lower_bound(List.cons(head, tail), lower)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    p(list)
+}
+
+/// Recursive list lower bounds give membership-predicate lower bounds.
+theorem lower_bound_imp_list_lower_bound[T: LinearOrder](list: List[T], lower: T) {
+    is_lower_bound(list, lower) implies list_lower_bound(list, lower)
+} by {
+    if is_lower_bound(list, lower) {
+        lower_bound_iff_list_lower_bound(list, lower)
+        list_lower_bound(list, lower)
+    }
+}
+
+/// Membership-predicate lower bounds give recursive list lower bounds.
+theorem list_lower_bound_imp_lower_bound[T: LinearOrder](list: List[T], lower: T) {
+    list_lower_bound(list, lower) implies is_lower_bound(list, lower)
+} by {
+    if list_lower_bound(list, lower) {
+        lower_bound_iff_list_lower_bound(list, lower)
+        is_lower_bound(list, lower)
+    }
 }
 
 /// True if all elements of a list lie in the closed interval from `lower` to `upper`.
@@ -515,6 +733,262 @@ theorem list_min_is_lower_bound[T: LinearOrder](head: T, tail: List[T]) {
     }
 
     // Apply to our specific head and tail
+}
+
+/// Any lower bound for every element of a non-empty list is below its minimum.
+theorem lte_list_min_of_lower_bound[T: LinearOrder](lower: T, head: T, tail: List[T]) {
+    is_lower_bound(List.cons(head, tail), lower) implies
+    lower <= list_min(head, tail)
+} by {
+    define p(t: List[T]) -> Bool {
+        forall(h: T, bound: T) {
+            is_lower_bound(List.cons(h, t), bound) implies
+            bound <= list_min(h, t)
+        }
+    }
+    forall(h: T, bound: T) {
+        if is_lower_bound(List.cons(h, List.nil[T]), bound) {
+            lower_bound_contains(List.cons(h, List.nil[T]), bound, h)
+            bound <= h
+            list_min(h, List.nil[T]) = h
+            bound <= list_min(h, List.nil[T])
+        }
+    }
+    p(List.nil[T])
+    forall(next: T, rest: List[T]) {
+        if p(rest) {
+            forall(h: T, bound: T) {
+                if is_lower_bound(List.cons(h, List.cons(next, rest)), bound) {
+                    lower_bound_add_right(List.singleton(h), List.cons(next, rest), bound)
+                    is_lower_bound(List.cons(next, rest), bound)
+                    p(rest) = forall(base: T, candidate: T) {
+                        is_lower_bound(List.cons(base, rest), candidate) implies
+                        candidate <= list_min(base, rest)
+                    }
+                    bound <= list_min(next, rest)
+                    lower_bound_contains(List.cons(h, List.cons(next, rest)), bound, h)
+                    bound <= h
+                    lte_min_of_bounds(bound, h, list_min(next, rest))
+                    bound <= h.min(list_min(next, rest))
+                    list_min(h, List.cons(next, rest)) = h.min(list_min(next, rest))
+                    bound <= list_min(h, List.cons(next, rest))
+                }
+            }
+            p(List.cons(next, rest))
+        }
+    }
+    p(tail)
+}
+
+/// The minimum of a non-empty list is the greatest lower bound of its elements.
+theorem lte_list_min_iff_lower_bound[T: LinearOrder](lower: T, head: T, tail: List[T]) {
+    lower <= list_min(head, tail) = is_lower_bound(List.cons(head, tail), lower)
+} by {
+    if lower <= list_min(head, tail) {
+        list_min_is_lower_bound(head, tail)
+        lower_bound_monotone(List.cons(head, tail), list_min(head, tail), lower)
+        is_lower_bound(List.cons(head, tail), lower)
+    }
+    if is_lower_bound(List.cons(head, tail), lower) {
+        lte_list_min_of_lower_bound(lower, head, tail)
+        lower <= list_min(head, tail)
+    }
+    lower <= list_min(head, tail) = is_lower_bound(List.cons(head, tail), lower)
+}
+
+/// A point is below the list minimum exactly when it is a lower bound.
+theorem le_list_min_iff[T: LinearOrder](lower: T, head: T, tail: List[T]) {
+    lower <= list_min(head, tail) = is_lower_bound(List.cons(head, tail), lower)
+} by {
+    lte_list_min_iff_lower_bound(lower, head, tail)
+}
+
+/// The minimum over a concatenation with a non-empty right list is the minimum of the two list minima.
+theorem list_min_add_cons[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_min(head, tail + List.cons(next, rest)) =
+    list_min(head, tail).min(list_min(next, rest))
+} by {
+    define p(t: List[T]) -> Bool {
+        forall(h: T, n: T, r: List[T]) {
+            list_min(h, t + List.cons(n, r)) =
+            list_min(h, t).min(list_min(n, r))
+        }
+    }
+    forall(h: T, n: T, r: List[T]) {
+        list_min(h, List.nil[T] + List.cons(n, r)) = list_min(h, List.cons(n, r))
+        list_min(h, List.cons(n, r)) = h.min(list_min(n, r))
+        list_min(h, List.nil[T]) = h
+        list_min(h, List.nil[T]).min(list_min(n, r)) = h.min(list_min(n, r))
+        list_min(h, List.nil[T] + List.cons(n, r)) =
+        list_min(h, List.nil[T]).min(list_min(n, r))
+    }
+    p(List.nil[T])
+    forall(next_tail: T, rest_tail: List[T]) {
+        if p(rest_tail) {
+            forall(h: T, n: T, r: List[T]) {
+                let right_min = list_min(n, r)
+                let tail_min = list_min(next_tail, rest_tail)
+                list_min(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.min(list_min(next_tail, rest_tail + List.cons(n, r)))
+                p(rest_tail) = forall(base: T, next_right: T, rest_right: List[T]) {
+                    list_min(base, rest_tail + List.cons(next_right, rest_right)) =
+                    list_min(base, rest_tail).min(list_min(next_right, rest_right))
+                }
+                list_min(next_tail, rest_tail + List.cons(n, r)) =
+                list_min(next_tail, rest_tail).min(list_min(n, r))
+                list_min(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.min(tail_min.min(right_min))
+                min_assoc_rev(h, tail_min, right_min)
+                h.min(tail_min.min(right_min)) = h.min(tail_min).min(right_min)
+                list_min(h, List.cons(next_tail, rest_tail)) = h.min(tail_min)
+                list_min(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                list_min(h, List.cons(next_tail, rest_tail)).min(list_min(n, r))
+            }
+            p(List.cons(next_tail, rest_tail))
+        }
+    }
+    p(tail)
+}
+
+/// The maximum over a concatenation with a non-empty right list is the maximum of the two list maxima.
+theorem list_max_add_cons[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_max(head, tail + List.cons(next, rest)) =
+    list_max(head, tail).max(list_max(next, rest))
+} by {
+    define p(t: List[T]) -> Bool {
+        forall(h: T, n: T, r: List[T]) {
+            list_max(h, t + List.cons(n, r)) =
+            list_max(h, t).max(list_max(n, r))
+        }
+    }
+    forall(h: T, n: T, r: List[T]) {
+        list_max(h, List.nil[T] + List.cons(n, r)) = list_max(h, List.cons(n, r))
+        list_max(h, List.cons(n, r)) = h.max(list_max(n, r))
+        list_max(h, List.nil[T]) = h
+        list_max(h, List.nil[T]).max(list_max(n, r)) = h.max(list_max(n, r))
+        list_max(h, List.nil[T] + List.cons(n, r)) =
+        list_max(h, List.nil[T]).max(list_max(n, r))
+    }
+    p(List.nil[T])
+    forall(next_tail: T, rest_tail: List[T]) {
+        if p(rest_tail) {
+            forall(h: T, n: T, r: List[T]) {
+                let right_max = list_max(n, r)
+                let tail_max = list_max(next_tail, rest_tail)
+                list_max(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.max(list_max(next_tail, rest_tail + List.cons(n, r)))
+                p(rest_tail) = forall(base: T, next_right: T, rest_right: List[T]) {
+                    list_max(base, rest_tail + List.cons(next_right, rest_right)) =
+                    list_max(base, rest_tail).max(list_max(next_right, rest_right))
+                }
+                list_max(next_tail, rest_tail + List.cons(n, r)) =
+                list_max(next_tail, rest_tail).max(list_max(n, r))
+                list_max(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                h.max(tail_max.max(right_max))
+                max_assoc_rev(h, tail_max, right_max)
+                h.max(tail_max.max(right_max)) = h.max(tail_max).max(right_max)
+                list_max(h, List.cons(next_tail, rest_tail)) = h.max(tail_max)
+                list_max(h, List.cons(next_tail, rest_tail) + List.cons(n, r)) =
+                list_max(h, List.cons(next_tail, rest_tail)).max(list_max(n, r))
+            }
+            p(List.cons(next_tail, rest_tail))
+        }
+    }
+    p(tail)
+}
+
+/// The minimum over a concatenation is below the minimum of the left non-empty list.
+theorem list_min_add_cons_lte_left[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_min(head, tail + List.cons(next, rest)) <= list_min(head, tail)
+} by {
+    list_min_add_cons(head, tail, next, rest)
+    min_lte_left(list_min(head, tail), list_min(next, rest))
+    list_min(head, tail + List.cons(next, rest)) <= list_min(head, tail)
+}
+
+/// The minimum over a concatenation is below the minimum of the right non-empty list.
+theorem list_min_add_cons_lte_right[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_min(head, tail + List.cons(next, rest)) <= list_min(next, rest)
+} by {
+    list_min_add_cons(head, tail, next, rest)
+    min_lte_right(list_min(head, tail), list_min(next, rest))
+    list_min(head, tail + List.cons(next, rest)) <= list_min(next, rest)
+}
+
+/// The maximum of the left non-empty list is below the maximum over a concatenation.
+theorem list_max_lte_add_cons_left[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_max(head, tail) <= list_max(head, tail + List.cons(next, rest))
+} by {
+    list_max_add_cons(head, tail, next, rest)
+    lte_max_left(list_max(head, tail), list_max(next, rest))
+    list_max(head, tail) <= list_max(head, tail + List.cons(next, rest))
+}
+
+/// The maximum of the right non-empty list is below the maximum over a concatenation.
+theorem list_max_lte_add_cons_right[T: LinearOrder](head: T, tail: List[T], next: T, rest: List[T]) {
+    list_max(next, rest) <= list_max(head, tail + List.cons(next, rest))
+} by {
+    list_max_add_cons(head, tail, next, rest)
+    lte_max_right(list_max(head, tail), list_max(next, rest))
+    list_max(next, rest) <= list_max(head, tail + List.cons(next, rest))
+}
+
+/// Appending one element takes the minimum of the old list minimum and that element.
+theorem list_min_append[T: LinearOrder](head: T, tail: List[T], last: T) {
+    list_min(head, tail.append(last)) = list_min(head, tail).min(last)
+} by {
+    tail.append(last) = tail + List.singleton(last)
+    List.singleton(last) = List.cons(last, List.nil[T])
+    list_min_add_cons(head, tail, last, List.nil[T])
+    list_min(last, List.nil[T]) = last
+    list_min(head, tail.append(last)) = list_min(head, tail).min(last)
+}
+
+/// Appending one element takes the maximum of the old list maximum and that element.
+theorem list_max_append[T: LinearOrder](head: T, tail: List[T], last: T) {
+    list_max(head, tail.append(last)) = list_max(head, tail).max(last)
+} by {
+    tail.append(last) = tail + List.singleton(last)
+    List.singleton(last) = List.cons(last, List.nil[T])
+    list_max_add_cons(head, tail, last, List.nil[T])
+    list_max(last, List.nil[T]) = last
+    list_max(head, tail.append(last)) = list_max(head, tail).max(last)
+}
+
+/// The minimum after appending an element is below the previous list minimum.
+theorem list_min_append_lte_list_min[T: LinearOrder](head: T, tail: List[T], last: T) {
+    list_min(head, tail.append(last)) <= list_min(head, tail)
+} by {
+    list_min_append(head, tail, last)
+    min_lte_left(list_min(head, tail), last)
+    list_min(head, tail.append(last)) <= list_min(head, tail)
+}
+
+/// The minimum after appending an element is below that element.
+theorem list_min_append_lte_last[T: LinearOrder](head: T, tail: List[T], last: T) {
+    list_min(head, tail.append(last)) <= last
+} by {
+    list_min_append(head, tail, last)
+    min_lte_right(list_min(head, tail), last)
+    list_min(head, tail.append(last)) <= last
+}
+
+/// The previous list maximum is below the maximum after appending an element.
+theorem list_max_lte_append_max[T: LinearOrder](head: T, tail: List[T], last: T) {
+    list_max(head, tail) <= list_max(head, tail.append(last))
+} by {
+    list_max_append(head, tail, last)
+    lte_max_left(list_max(head, tail), last)
+    list_max(head, tail) <= list_max(head, tail.append(last))
+}
+
+/// The appended element is below the maximum after appending it.
+theorem last_lte_list_max_append[T: LinearOrder](head: T, tail: List[T], last: T) {
+    last <= list_max(head, tail.append(last))
+} by {
+    list_max_append(head, tail, last)
+    lte_max_right(list_max(head, tail), last)
+    last <= list_max(head, tail.append(last))
 }
 
 /// Every non-empty list has a lower bound.
