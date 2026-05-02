@@ -2,7 +2,8 @@ from group import Group, inverse_inverse, inverse_mul, inverse_left, left_cancel
 from subgroup import Subgroup, subgroup_contains_identity, subgroup_mul_mem, subgroup_inv_mem
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_mul, is_mul_congruence, respects_binary_op,
-    is_binary_congruence, respects_mul_eq_respects_binary_op, mul_congruence_eq_binary_congruence
+    respects_unary_op, is_binary_congruence, respects_mul_eq_respects_binary_op,
+    mul_congruence_eq_binary_congruence
 from equivalence import QuotientRelation, quotient_relation_new_round_trip,
     quotient_binary_respects, quotient_binary_respects_eq_respects_binary_op
 
@@ -112,6 +113,94 @@ theorem normal_subgroup_rel_transitive_statement[G: Group](s: Subgroup[G]) {
         if normal_subgroup_rel(s, a, b) and normal_subgroup_rel(s, b, c) {
             normal_subgroup_rel_trans_at(s, a, b, c)
             normal_subgroup_rel(s, a, c)
+        }
+    }
+}
+
+/// The product of `a * b` and the inverse of `ap * bp` regroups as a conjugate of `b * bp.inverse` times `a * ap.inverse`.
+theorem normal_mul_inverse_distrib[G: Group](a: G, b: G, ap: G, bp: G) {
+    (a * b) * (ap * bp).inverse = (a * (b * bp.inverse) * a.inverse) * (a * ap.inverse)
+} by {
+    inverse_mul(ap, bp)
+    (ap * bp).inverse = bp.inverse * ap.inverse
+    (a * b) * (ap * bp).inverse = (a * b) * (bp.inverse * ap.inverse)
+    (a * b) * (bp.inverse * ap.inverse) = a * b * bp.inverse * ap.inverse
+    a.inverse * a = G.1
+    a * b * bp.inverse * ap.inverse = a * (b * bp.inverse) * (a.inverse * a) * ap.inverse
+    a * (b * bp.inverse) * (a.inverse * a) * ap.inverse =
+        (a * (b * bp.inverse) * a.inverse) * (a * ap.inverse)
+}
+
+/// Pointwise multiplicative-step helper: the normal-subgroup relation is preserved by pairwise multiplication.
+theorem normal_subgroup_rel_mul_step[G: Group](s: Subgroup[G],
+        a: G, ap: G, b: G, bp: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a, ap) and normal_subgroup_rel(s, b, bp)
+    implies normal_subgroup_rel(s, a * b, ap * bp)
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a, ap) and normal_subgroup_rel(s, b, bp) {
+        s.contains(a * ap.inverse)
+        s.contains(b * bp.inverse)
+        normal_conjugate_mem(s, a, b * bp.inverse)
+        s.contains(a * (b * bp.inverse) * a.inverse)
+        subgroup_mul_mem(s, a * (b * bp.inverse) * a.inverse, a * ap.inverse)
+        s.contains((a * (b * bp.inverse) * a.inverse) * (a * ap.inverse))
+        normal_mul_inverse_distrib(a, b, ap, bp)
+        s.contains((a * b) * (ap * bp).inverse)
+    }
+}
+
+/// Pointwise inverse-step helper: the normal-subgroup relation is preserved by inversion.
+theorem normal_subgroup_rel_inv_step[G: Group](s: Subgroup[G], a: G, b: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a, b)
+    implies normal_subgroup_rel(s, a.inverse, b.inverse)
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a, b) {
+        normal_subgroup_rel_symmetric(s, a, b)
+        s.contains(b * a.inverse)
+        normal_conjugate_mem(s, b.inverse, b * a.inverse)
+        s.contains(b.inverse * (b * a.inverse) * b.inverse.inverse)
+        inverse_inverse(b)
+        b.inverse.inverse = b
+        b.inverse * (b * a.inverse) * b = (b.inverse * b) * a.inverse * b
+        b.inverse * b = G.1
+        (b.inverse * b) * a.inverse * b = a.inverse * b
+        b.inverse * (b * a.inverse) * b.inverse.inverse = a.inverse * b
+        s.contains(a.inverse * b)
+        a.inverse * b = a.inverse * b.inverse.inverse
+        s.contains(a.inverse * b.inverse.inverse)
+    }
+}
+
+
+/// The normal-subgroup relation is compatible with multiplication when the subgroup is normal.
+theorem normal_subgroup_rel_respects_mul[G: Group](s: Subgroup[G]) {
+    is_normal_subgroup(s) implies respects_mul(normal_subgroup_rel(s))
+} by {
+    if is_normal_subgroup(s) {
+        respects_mul_eq_respects_binary_op(normal_subgroup_rel(s))
+        respects_mul(normal_subgroup_rel(s)) = respects_binary_op(normal_subgroup_rel(s), G.mul)
+        forall(a: G, ap: G, b: G, bp: G) {
+            if normal_subgroup_rel(s, a, ap) and normal_subgroup_rel(s, b, bp) {
+                normal_subgroup_rel_mul_step(s, a, ap, b, bp)
+                normal_subgroup_rel(s, a * b, ap * bp)
+                normal_subgroup_rel(s, G.mul(a, b), G.mul(ap, bp))
+            }
+        }
+        respects_binary_op(normal_subgroup_rel(s), G.mul)
+    }
+}
+
+/// The normal-subgroup relation is compatible with inversion when the subgroup is normal.
+theorem normal_subgroup_rel_respects_inverse[G: Group](s: Subgroup[G]) {
+    is_normal_subgroup(s) implies respects_unary_op(normal_subgroup_rel(s), G.inverse)
+} by {
+    if is_normal_subgroup(s) {
+        forall(a: G, b: G) {
+            if normal_subgroup_rel(s, a, b) {
+                normal_subgroup_rel_inv_step(s, a, b)
+                normal_subgroup_rel(s, a.inverse, b.inverse)
+                normal_subgroup_rel(s, G.inverse(a), G.inverse(b))
+            }
         }
     }
 }

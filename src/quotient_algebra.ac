@@ -1,6 +1,6 @@
 /// Bridges between kernel-of-homomorphism relations and algebraic congruences.
 
-from add_monoid import AddMonoid, is_add_monoid_hom
+from add_monoid import AddMonoid, AddMonoidHom, is_add_monoid_hom
 from add_group import AddGroup, AddGroupHom, is_add_group_hom, add_group_hom_zero,
     add_group_hom_neg, add_group_hom_add
 from monoid import Monoid, MonoidHom, monoid_hom_mul, is_monoid_hom
@@ -16,7 +16,16 @@ from relation_transport import respects_add, is_add_congruence, respects_binary_
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
     add_congruence_eq_binary_congruence, respects_mul, is_mul_congruence,
     respects_mul_eq_respects_binary_op, mul_congruence_eq_binary_congruence
-from equivalence import kernel_relation, kernel_relation_is_equivalence
+from equivalence import kernel_relation, kernel_relation_is_equivalence,
+    QuotientRelation, QuotientOver, quotient_over_mk,
+    kernel_quotient_relation, kernel_quotient_relation_rel,
+    quotient_unary_respects, quotient_binary_respects,
+    quotient_unary_respects_eq_respects_unary_op,
+    quotient_binary_respects_eq_respects_binary_op,
+    quotient_over_binary_op, quotient_over_unary_op,
+    quotient_over_binary_op_projection, quotient_over_binary_op_projection_left,
+    quotient_over_binary_op_projection_right,
+    quotient_over_unary_op_projection, quotient_over_unary_op_projection_compatible
 
 /// The kernel of an additive monoid homomorphism preserves addition pairwise.
 theorem add_monoid_hom_kernel_step[A: AddMonoid, B: AddMonoid](f: A -> B, x1: A, y1: A, x2: A, y2: A) {
@@ -384,5 +393,721 @@ theorem linear_map_kernel_is_add_congruence[R: Ring, M: AddCommGroup, N: AddComm
         respects_add_eq_respects_binary_op(kernel_relation(f))
         is_binary_congruence(kernel_relation(f), M.add)
         add_congruence_eq_binary_congruence(kernel_relation(f))
+    }
+}
+
+/// The kernel quotient relation of an additive group homomorphism respects addition.
+theorem add_group_hom_kernel_quotient_relation_respects_add[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), A.add)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), A.add)
+    add_group_hom_kernel_respects_add(f)
+    respects_add_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), A.add)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, A.add)
+}
+
+/// The kernel quotient relation of an additive group homomorphism respects negation.
+theorem add_group_hom_kernel_quotient_relation_respects_neg[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) {
+    quotient_unary_respects(kernel_quotient_relation(f.hom), A.neg)
+} by {
+    quotient_unary_respects_eq_respects_unary_op(kernel_quotient_relation(f.hom), A.neg)
+    add_group_hom_kernel_respects_neg(f)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_unary_op(kernel_quotient_relation(f.hom).rel, A.neg)
+}
+
+/// Addition on the kernel quotient by an additive group homomorphism.
+define add_group_hom_kernel_quotient_add[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) ->
+    (QuotientOver[A], QuotientOver[A]) -> QuotientOver[A] {
+    quotient_over_binary_op(A.add)
+}
+
+/// Addition on the kernel quotient agrees with addition of representatives.
+theorem add_group_hom_kernel_quotient_add_projection[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A, b: A) {
+    add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a + b)
+} by {
+    add_group_hom_kernel_quotient_relation_respects_add(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), A.add, a, b)
+    A.add(a, b) = a + b
+}
+
+/// Addition in the kernel quotient respects related left representatives.
+theorem add_group_hom_kernel_quotient_add_projection_left[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B],
+        a1: A, a2: A, b: A) {
+    kernel_relation(f.hom, a1, a2) implies
+    add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        add_group_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), A.add, a1, a2, b)
+    }
+}
+
+/// Addition in the kernel quotient respects related right representatives.
+theorem add_group_hom_kernel_quotient_add_projection_right[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B],
+        a: A, b1: A, b2: A) {
+    kernel_relation(f.hom, b1, b2) implies
+    add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        add_group_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), A.add, a, b1, b2)
+    }
+}
+
+/// Negation on the kernel quotient by an additive group homomorphism.
+define add_group_hom_kernel_quotient_neg[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) ->
+    QuotientOver[A] -> QuotientOver[A] {
+    quotient_over_unary_op(kernel_quotient_relation(f.hom), A.neg)
+}
+
+/// Negation on the kernel quotient agrees with negation of representatives.
+theorem add_group_hom_kernel_quotient_neg_projection[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A) {
+    add_group_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        quotient_over_mk(kernel_quotient_relation(f.hom), -a)
+} by {
+    add_group_hom_kernel_quotient_relation_respects_neg(f)
+    quotient_over_unary_op_projection(kernel_quotient_relation(f.hom), A.neg, a)
+    A.neg(a) = -a
+}
+
+/// Negation on the kernel quotient respects related representatives.
+theorem add_group_hom_kernel_quotient_neg_projection_compatible[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B],
+        a: A, b: A) {
+    kernel_relation(f.hom, a, b) implies
+    add_group_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        add_group_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), b))
+} by {
+    if kernel_relation(f.hom, a, b) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a, b)
+        add_group_hom_kernel_quotient_relation_respects_neg(f)
+        quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), A.neg, a, b)
+    }
+}
+
+/// The kernel quotient relation of a group homomorphism respects multiplication.
+theorem group_hom_kernel_quotient_relation_respects_mul[G: Group, H: Group](f: GroupHom[G, H]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), G.mul)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), G.mul)
+    group_hom_kernel_respects_mul(f)
+    respects_mul_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), G.mul)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, G.mul)
+}
+
+/// The kernel quotient relation of a group homomorphism respects inversion.
+theorem group_hom_kernel_quotient_relation_respects_inverse[G: Group, H: Group](f: GroupHom[G, H]) {
+    quotient_unary_respects(kernel_quotient_relation(f.hom), G.inverse)
+} by {
+    quotient_unary_respects_eq_respects_unary_op(kernel_quotient_relation(f.hom), G.inverse)
+    group_hom_kernel_respects_inverse(f)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_unary_op(kernel_quotient_relation(f.hom).rel, G.inverse)
+}
+
+/// Multiplication on the kernel quotient by a group homomorphism.
+define group_hom_kernel_quotient_mul[G: Group, H: Group](f: GroupHom[G, H]) ->
+    (QuotientOver[G], QuotientOver[G]) -> QuotientOver[G] {
+    quotient_over_binary_op(G.mul)
+}
+
+/// Multiplication on the kernel quotient agrees with multiplication of representatives.
+theorem group_hom_kernel_quotient_mul_projection[G: Group, H: Group](f: GroupHom[G, H], a: G, b: G) {
+    group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a * b)
+} by {
+    group_hom_kernel_quotient_relation_respects_mul(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), G.mul, a, b)
+    G.mul(a, b) = a * b
+}
+
+/// Multiplication in the kernel quotient respects related left representatives.
+theorem group_hom_kernel_quotient_mul_projection_left[G: Group, H: Group](f: GroupHom[G, H],
+        a1: G, a2: G, b: G) {
+    kernel_relation(f.hom, a1, a2) implies
+    group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        group_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), G.mul, a1, a2, b)
+    }
+}
+
+/// Multiplication in the kernel quotient respects related right representatives.
+theorem group_hom_kernel_quotient_mul_projection_right[G: Group, H: Group](f: GroupHom[G, H],
+        a: G, b1: G, b2: G) {
+    kernel_relation(f.hom, b1, b2) implies
+    group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        group_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), G.mul, a, b1, b2)
+    }
+}
+
+/// Inversion on the kernel quotient by a group homomorphism.
+define group_hom_kernel_quotient_inverse[G: Group, H: Group](f: GroupHom[G, H]) ->
+    QuotientOver[G] -> QuotientOver[G] {
+    quotient_over_unary_op(kernel_quotient_relation(f.hom), G.inverse)
+}
+
+/// Inversion on the kernel quotient agrees with inversion of representatives.
+theorem group_hom_kernel_quotient_inverse_projection[G: Group, H: Group](f: GroupHom[G, H], a: G) {
+    group_hom_kernel_quotient_inverse(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        quotient_over_mk(kernel_quotient_relation(f.hom), a.inverse)
+} by {
+    group_hom_kernel_quotient_relation_respects_inverse(f)
+    quotient_over_unary_op_projection(kernel_quotient_relation(f.hom), G.inverse, a)
+    G.inverse(a) = a.inverse
+}
+
+/// Inversion on the kernel quotient respects related representatives.
+theorem group_hom_kernel_quotient_inverse_projection_compatible[G: Group, H: Group](f: GroupHom[G, H],
+        a: G, b: G) {
+    kernel_relation(f.hom, a, b) implies
+    group_hom_kernel_quotient_inverse(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        group_hom_kernel_quotient_inverse(f, quotient_over_mk(kernel_quotient_relation(f.hom), b))
+} by {
+    if kernel_relation(f.hom, a, b) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a, b)
+        group_hom_kernel_quotient_relation_respects_inverse(f)
+        quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), G.inverse, a, b)
+    }
+}
+
+/// The kernel quotient relation of a ring homomorphism respects addition.
+theorem ring_hom_kernel_quotient_relation_respects_add[R: Ring, S: Ring](f: RingHom[R, S]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), R.add)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), R.add)
+    ring_hom_kernel_respects_add(f)
+    respects_add_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), R.add)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, R.add)
+}
+
+/// The kernel quotient relation of a ring homomorphism respects multiplication.
+theorem ring_hom_kernel_quotient_relation_respects_mul[R: Ring, S: Ring](f: RingHom[R, S]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), R.mul)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), R.mul)
+    ring_hom_kernel_respects_mul(f)
+    respects_mul_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), R.mul)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, R.mul)
+}
+
+/// The kernel quotient relation of a ring homomorphism respects negation.
+theorem ring_hom_kernel_quotient_relation_respects_neg[R: Ring, S: Ring](f: RingHom[R, S]) {
+    quotient_unary_respects(kernel_quotient_relation(f.hom), R.neg)
+} by {
+    quotient_unary_respects_eq_respects_unary_op(kernel_quotient_relation(f.hom), R.neg)
+    let fa: AddGroupHom[R, S] = ring_hom_to_add_group_hom(f)
+    ring_hom_to_add_group_hom_hom(f)
+    fa.hom = f.hom
+    add_group_hom_kernel_respects_neg(fa)
+    respects_unary_op(kernel_relation(fa.hom), R.neg)
+    kernel_relation(fa.hom) = kernel_relation(f.hom)
+    respects_unary_op(kernel_relation(f.hom), R.neg)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_unary_op(kernel_quotient_relation(f.hom).rel, R.neg)
+}
+
+/// Addition on the kernel quotient by a ring homomorphism.
+define ring_hom_kernel_quotient_add[R: Ring, S: Ring](f: RingHom[R, S]) ->
+    (QuotientOver[R], QuotientOver[R]) -> QuotientOver[R] {
+    quotient_over_binary_op(R.add)
+}
+
+/// Addition on the kernel quotient agrees with addition of representatives.
+theorem ring_hom_kernel_quotient_add_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R, b: R) {
+    ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a + b)
+} by {
+    ring_hom_kernel_quotient_relation_respects_add(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), R.add, a, b)
+    R.add(a, b) = a + b
+}
+
+/// Addition in the kernel quotient respects related left representatives.
+theorem ring_hom_kernel_quotient_add_projection_left[R: Ring, S: Ring](f: RingHom[R, S],
+        a1: R, a2: R, b: R) {
+    kernel_relation(f.hom, a1, a2) implies
+    ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        ring_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), R.add, a1, a2, b)
+    }
+}
+
+/// Addition in the kernel quotient respects related right representatives.
+theorem ring_hom_kernel_quotient_add_projection_right[R: Ring, S: Ring](f: RingHom[R, S],
+        a: R, b1: R, b2: R) {
+    kernel_relation(f.hom, b1, b2) implies
+    ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        ring_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), R.add, a, b1, b2)
+    }
+}
+
+/// Multiplication on the kernel quotient by a ring homomorphism.
+define ring_hom_kernel_quotient_mul[R: Ring, S: Ring](f: RingHom[R, S]) ->
+    (QuotientOver[R], QuotientOver[R]) -> QuotientOver[R] {
+    quotient_over_binary_op(R.mul)
+}
+
+/// Multiplication on the kernel quotient agrees with multiplication of representatives.
+theorem ring_hom_kernel_quotient_mul_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R, b: R) {
+    ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a * b)
+} by {
+    ring_hom_kernel_quotient_relation_respects_mul(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), R.mul, a, b)
+    R.mul(a, b) = a * b
+}
+
+/// Multiplication in the kernel quotient respects related left representatives.
+theorem ring_hom_kernel_quotient_mul_projection_left[R: Ring, S: Ring](f: RingHom[R, S],
+        a1: R, a2: R, b: R) {
+    kernel_relation(f.hom, a1, a2) implies
+    ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        ring_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), R.mul, a1, a2, b)
+    }
+}
+
+/// Multiplication in the kernel quotient respects related right representatives.
+theorem ring_hom_kernel_quotient_mul_projection_right[R: Ring, S: Ring](f: RingHom[R, S],
+        a: R, b1: R, b2: R) {
+    kernel_relation(f.hom, b1, b2) implies
+    ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        ring_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), R.mul, a, b1, b2)
+    }
+}
+
+/// Negation on the kernel quotient by a ring homomorphism.
+define ring_hom_kernel_quotient_neg[R: Ring, S: Ring](f: RingHom[R, S]) ->
+    QuotientOver[R] -> QuotientOver[R] {
+    quotient_over_unary_op(kernel_quotient_relation(f.hom), R.neg)
+}
+
+/// Negation on the kernel quotient agrees with negation of representatives.
+theorem ring_hom_kernel_quotient_neg_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R) {
+    ring_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        quotient_over_mk(kernel_quotient_relation(f.hom), -a)
+} by {
+    ring_hom_kernel_quotient_relation_respects_neg(f)
+    quotient_over_unary_op_projection(kernel_quotient_relation(f.hom), R.neg, a)
+    R.neg(a) = -a
+}
+
+/// Negation on the kernel quotient respects related representatives.
+theorem ring_hom_kernel_quotient_neg_projection_compatible[R: Ring, S: Ring](f: RingHom[R, S],
+        a: R, b: R) {
+    kernel_relation(f.hom, a, b) implies
+    ring_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), a)) =
+        ring_hom_kernel_quotient_neg(f, quotient_over_mk(kernel_quotient_relation(f.hom), b))
+} by {
+    if kernel_relation(f.hom, a, b) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a, b)
+        ring_hom_kernel_quotient_relation_respects_neg(f)
+        quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), R.neg, a, b)
+    }
+}
+
+/// The kernel quotient relation of a monoid homomorphism respects multiplication.
+theorem monoid_hom_kernel_quotient_relation_respects_mul[M: Monoid, N: Monoid](f: MonoidHom[M, N]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), M.mul)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), M.mul)
+    monoid_hom_kernel_respects_mul(f)
+    respects_mul_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), M.mul)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, M.mul)
+}
+
+/// Multiplication on the kernel quotient by a monoid homomorphism.
+define monoid_hom_kernel_quotient_mul[M: Monoid, N: Monoid](f: MonoidHom[M, N]) ->
+    (QuotientOver[M], QuotientOver[M]) -> QuotientOver[M] {
+    quotient_over_binary_op(M.mul)
+}
+
+/// Multiplication on the kernel quotient agrees with multiplication of representatives.
+theorem monoid_hom_kernel_quotient_mul_projection[M: Monoid, N: Monoid](f: MonoidHom[M, N], a: M, b: M) {
+    monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a * b)
+} by {
+    monoid_hom_kernel_quotient_relation_respects_mul(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), M.mul, a, b)
+    M.mul(a, b) = a * b
+}
+
+/// Multiplication in the kernel quotient respects related left representatives.
+theorem monoid_hom_kernel_quotient_mul_projection_left[M: Monoid, N: Monoid](f: MonoidHom[M, N],
+        a1: M, a2: M, b: M) {
+    kernel_relation(f.hom, a1, a2) implies
+    monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        monoid_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), M.mul, a1, a2, b)
+    }
+}
+
+/// Multiplication in the kernel quotient respects related right representatives.
+theorem monoid_hom_kernel_quotient_mul_projection_right[M: Monoid, N: Monoid](f: MonoidHom[M, N],
+        a: M, b1: M, b2: M) {
+    kernel_relation(f.hom, b1, b2) implies
+    monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        monoid_hom_kernel_quotient_relation_respects_mul(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), M.mul, a, b1, b2)
+    }
+}
+
+/// The kernel quotient relation of an additive monoid homomorphism respects addition.
+theorem add_monoid_hom_kernel_quotient_relation_respects_add[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) {
+    quotient_binary_respects(kernel_quotient_relation(f.hom), A.add)
+} by {
+    quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f.hom), A.add)
+    is_add_monoid_hom(f.hom)
+    add_monoid_hom_kernel_respects_add(f.hom)
+    respects_add_eq_respects_binary_op(kernel_relation(f.hom))
+    respects_binary_op(kernel_relation(f.hom), A.add)
+    kernel_quotient_relation_rel(f.hom)
+    kernel_quotient_relation(f.hom).rel = kernel_relation(f.hom)
+    respects_binary_op(kernel_quotient_relation(f.hom).rel, A.add)
+}
+
+/// Addition on the kernel quotient by an additive monoid homomorphism.
+define add_monoid_hom_kernel_quotient_add[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) ->
+    (QuotientOver[A], QuotientOver[A]) -> QuotientOver[A] {
+    quotient_over_binary_op(A.add)
+}
+
+/// Addition on the kernel quotient agrees with addition of representatives.
+theorem add_monoid_hom_kernel_quotient_add_projection[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B], a: A, b: A) {
+    add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a + b)
+} by {
+    add_monoid_hom_kernel_quotient_relation_respects_add(f)
+    quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), A.add, a, b)
+    A.add(a, b) = a + b
+}
+
+/// Addition in the kernel quotient respects related left representatives.
+theorem add_monoid_hom_kernel_quotient_add_projection_left[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B],
+        a1: A, a2: A, b: A) {
+    kernel_relation(f.hom, a1, a2) implies
+    add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        add_monoid_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), A.add, a1, a2, b)
+    }
+}
+
+/// Addition in the kernel quotient respects related right representatives.
+theorem add_monoid_hom_kernel_quotient_add_projection_right[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B],
+        a: A, b1: A, b2: A) {
+    kernel_relation(f.hom, b1, b2) implies
+    add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        add_monoid_hom_kernel_quotient_relation_respects_add(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), A.add, a, b1, b2)
+    }
+}
+
+/// The kernel quotient relation of a linear map respects addition.
+theorem linear_map_kernel_quotient_relation_respects_add[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    is_linear_map(src, dst, f) implies quotient_binary_respects(kernel_quotient_relation(f), M.add)
+} by {
+    if is_linear_map(src, dst, f) {
+        quotient_binary_respects_eq_respects_binary_op(kernel_quotient_relation(f), M.add)
+        linear_map_kernel_respects_add(src, dst, f)
+        respects_add_eq_respects_binary_op(kernel_relation(f))
+        respects_binary_op(kernel_relation(f), M.add)
+        kernel_quotient_relation_rel(f)
+        kernel_quotient_relation(f).rel = kernel_relation(f)
+        respects_binary_op(kernel_quotient_relation(f).rel, M.add)
+    }
+}
+
+/// The kernel of a linear map is preserved under scalar multiplication by a fixed scalar.
+theorem linear_map_kernel_respects_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, r: R
+) {
+    is_linear_map(src, dst, f) implies respects_unary_op(kernel_relation(f), src.smul(r))
+} by {
+    if is_linear_map(src, dst, f) {
+        forall(x: M, y: M) {
+            if kernel_relation(f, x, y) {
+                linear_map_kernel_smul_step(src, dst, f, r, x, y)
+                kernel_relation(f, src.smul(r, x), src.smul(r, y))
+                kernel_relation(f, src.smul(r)(x), src.smul(r)(y))
+            }
+        }
+    }
+}
+
+/// The kernel quotient relation of a linear map respects scalar multiplication by a fixed scalar.
+theorem linear_map_kernel_quotient_relation_respects_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, r: R
+) {
+    is_linear_map(src, dst, f) implies quotient_unary_respects(kernel_quotient_relation(f), src.smul(r))
+} by {
+    if is_linear_map(src, dst, f) {
+        quotient_unary_respects_eq_respects_unary_op(kernel_quotient_relation(f), src.smul(r))
+        linear_map_kernel_respects_smul(src, dst, f, r)
+        kernel_quotient_relation_rel(f)
+        kernel_quotient_relation(f).rel = kernel_relation(f)
+        respects_unary_op(kernel_quotient_relation(f).rel, src.smul(r))
+    }
+}
+
+/// Addition on the kernel quotient by a linear map.
+define linear_map_kernel_quotient_add[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) -> (QuotientOver[M], QuotientOver[M]) -> QuotientOver[M] {
+    quotient_over_binary_op(M.add)
+}
+
+/// Addition on the kernel quotient agrees with addition of representatives.
+theorem linear_map_kernel_quotient_add_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M, b: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        quotient_over_mk(kernel_quotient_relation(f), b)
+    ) = quotient_over_mk(kernel_quotient_relation(f), a + b)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_relation_respects_add(src, dst, f)
+        quotient_over_binary_op_projection(kernel_quotient_relation(f), M.add, a, b)
+        M.add(a, b) = a + b
+    }
+}
+
+/// Addition in the kernel quotient respects related left representatives.
+theorem linear_map_kernel_quotient_add_projection_left[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a1: M, a2: M, b: M
+) {
+    is_linear_map(src, dst, f) and kernel_relation(f, a1, a2) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a1),
+        quotient_over_mk(kernel_quotient_relation(f), b)
+    ) = linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a2),
+        quotient_over_mk(kernel_quotient_relation(f), b)
+    )
+} by {
+    if is_linear_map(src, dst, f) and kernel_relation(f, a1, a2) {
+        kernel_quotient_relation_rel(f)
+        kernel_quotient_relation(f).rel(a1, a2)
+        linear_map_kernel_quotient_relation_respects_add(src, dst, f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f), M.add, a1, a2, b)
+    }
+}
+
+/// Addition in the kernel quotient respects related right representatives.
+theorem linear_map_kernel_quotient_add_projection_right[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M, b1: M, b2: M
+) {
+    is_linear_map(src, dst, f) and kernel_relation(f, b1, b2) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        quotient_over_mk(kernel_quotient_relation(f), b1)
+    ) = linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        quotient_over_mk(kernel_quotient_relation(f), b2)
+    )
+} by {
+    if is_linear_map(src, dst, f) and kernel_relation(f, b1, b2) {
+        kernel_quotient_relation_rel(f)
+        kernel_quotient_relation(f).rel(b1, b2)
+        linear_map_kernel_quotient_relation_respects_add(src, dst, f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f), M.add, a, b1, b2)
+    }
+}
+
+/// Scalar multiplication by a fixed scalar on the kernel quotient by a linear map.
+define linear_map_kernel_quotient_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, r: R
+) -> QuotientOver[M] -> QuotientOver[M] {
+    quotient_over_unary_op(kernel_quotient_relation(f), src.smul(r))
+}
+
+/// Scalar multiplication on the kernel quotient agrees with scalar multiplication of representatives.
+theorem linear_map_kernel_quotient_smul_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, r: R, a: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_smul(src, dst, f, r,
+        quotient_over_mk(kernel_quotient_relation(f), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f), src.smul(r, a))
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_relation_respects_smul(src, dst, f, r)
+        quotient_over_unary_op_projection(kernel_quotient_relation(f), src.smul(r), a)
+        src.smul(r)(a) = src.smul(r, a)
+    }
+}
+
+/// Scalar multiplication on the kernel quotient respects related representatives.
+theorem linear_map_kernel_quotient_smul_projection_compatible[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, r: R, a: M, b: M
+) {
+    is_linear_map(src, dst, f) and kernel_relation(f, a, b) implies
+    linear_map_kernel_quotient_smul(src, dst, f, r,
+        quotient_over_mk(kernel_quotient_relation(f), a)
+    ) = linear_map_kernel_quotient_smul(src, dst, f, r,
+        quotient_over_mk(kernel_quotient_relation(f), b)
+    )
+} by {
+    if is_linear_map(src, dst, f) and kernel_relation(f, a, b) {
+        kernel_quotient_relation_rel(f)
+        kernel_quotient_relation(f).rel(a, b)
+        linear_map_kernel_quotient_relation_respects_smul(src, dst, f, r)
+        quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f), src.smul(r), a, b)
     }
 }
