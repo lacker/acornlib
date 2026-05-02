@@ -702,3 +702,495 @@ theorem vc_lower_mor_map_dst[O1, M1, O2, M2](
         upper.src_functor.dst_cat.dst(lower.src_functor.mor_map(m)) = lower.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
     }
 }
+
+/// Under composability, upper's mor_map src in upper's dst_cat is the obj_map at m's source in lower's source category.
+theorem vc_upper_mor_map_src[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m))
+            = upper.src_functor.obj_map(lower.src_functor.src_cat.src(m))
+} by {
+    if vertical_composable(upper, lower) {
+        functor_src(upper.src_functor, m)
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(upper.src_functor.src_cat.src(m))
+        vertical_composable_src_cat(upper, lower)
+        upper.src_functor.src_cat = lower.src_functor.src_cat
+        upper.src_functor.src_cat.src = lower.src_functor.src_cat.src
+        upper.src_functor.src_cat.src(m) = lower.src_functor.src_cat.src(m)
+        upper.src_functor.obj_map(upper.src_functor.src_cat.src(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.src(m))
+    }
+}
+
+/// Under composability, upper's mor_map dst in upper's dst_cat is the obj_map at m's target in lower's source category.
+theorem vc_upper_mor_map_dst[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m))
+            = upper.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+} by {
+    if vertical_composable(upper, lower) {
+        functor_dst(upper.src_functor, m)
+        upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(upper.src_functor.src_cat.dst(m))
+        vertical_composable_src_cat(upper, lower)
+        upper.src_functor.src_cat = lower.src_functor.src_cat
+        upper.src_functor.src_cat.dst = lower.src_functor.src_cat.dst
+        upper.src_functor.src_cat.dst(m) = lower.src_functor.src_cat.dst(m)
+        upper.src_functor.obj_map(upper.src_functor.src_cat.dst(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+    }
+}
+
+/// Under composability, upper's dst_functor mor_map src in upper's dst_cat.
+theorem vc_upper_dst_mor_map_src[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m))
+            = upper.dst_functor.obj_map(lower.src_functor.src_cat.src(m))
+} by {
+    if vertical_composable(upper, lower) {
+        functor_src(upper.dst_functor, m)
+        upper.dst_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.dst_functor.obj_map(upper.dst_functor.src_cat.src(m))
+        nat_trans_shared_dst_cat(upper)
+        upper.src_functor.dst_cat = upper.dst_functor.dst_cat
+        upper.src_functor.dst_cat.src = upper.dst_functor.dst_cat.src
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.dst_functor.dst_cat.src(upper.dst_functor.mor_map(m))
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.dst_functor.obj_map(upper.dst_functor.src_cat.src(m))
+        vertical_composable_src_cat(upper, lower)
+        upper.dst_functor.src_cat = lower.src_functor.src_cat
+        upper.dst_functor.src_cat.src = lower.src_functor.src_cat.src
+        upper.dst_functor.src_cat.src(m) = lower.src_functor.src_cat.src(m)
+        upper.dst_functor.obj_map(upper.dst_functor.src_cat.src(m)) = upper.dst_functor.obj_map(lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.dst_functor.obj_map(lower.src_functor.src_cat.src(m))
+    }
+}
+
+/// Lower's naturality, bridged into upper's target category and using upper.src_functor.mor_map for the middle functor.
+theorem vc_eta_naturality[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        nat_trans_naturality(lower, m)
+        lower.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = lower.src_functor.dst_cat.compose(lower.dst_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+        vc_dst_cat_eq(upper, lower)
+        lower.src_functor.dst_cat = upper.src_functor.dst_cat
+        lower.src_functor.dst_cat.compose = upper.src_functor.dst_cat.compose
+        upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(lower.dst_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor = lower.dst_functor
+        upper.src_functor.mor_map = lower.dst_functor.mor_map
+        upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// Upper's naturality, bridged so the m-input goes through lower's source category.
+theorem vc_theta_naturality[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        nat_trans_naturality(upper, m)
+        upper.src_functor.dst_cat.compose(upper.component(upper.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(upper.src_functor.src_cat.src(m)))
+        vertical_composable_src_cat(upper, lower)
+        upper.src_functor.src_cat = lower.src_functor.src_cat
+        upper.src_functor.src_cat.dst = lower.src_functor.src_cat.dst
+        upper.src_functor.src_cat.src = lower.src_functor.src_cat.src
+        upper.src_functor.src_cat.dst(m) = lower.src_functor.src_cat.dst(m)
+        upper.src_functor.src_cat.src(m) = lower.src_functor.src_cat.src(m)
+        upper.component(upper.src_functor.src_cat.dst(m)) = upper.component(lower.src_functor.src_cat.dst(m))
+        upper.component(upper.src_functor.src_cat.src(m)) = upper.component(lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// Composability: in upper's dst_cat, lower component at y is composable with F_mor(m) where y = C.dst(m).
+theorem vc_eta_F_composable[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(lower.component(lower.src_functor.src_cat.dst(m)))
+            = upper.src_functor.dst_cat.dst(lower.src_functor.mor_map(m))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_lower_component_src_in_upper_cat(upper, lower, lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.src(lower.component(lower.src_functor.src_cat.dst(m))) = lower.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+        vc_lower_mor_map_dst(upper, lower, m)
+        upper.src_functor.dst_cat.dst(lower.src_functor.mor_map(m)) = lower.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.src(lower.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.dst_cat.dst(lower.src_functor.mor_map(m))
+    }
+}
+
+/// Composability: upper component at y composable with G_mor(m) in upper's dst_cat.
+theorem vc_theta_G_composable[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.dst(m)))
+            = upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m))
+} by {
+    if vertical_composable(upper, lower) {
+        nat_trans_component_src(upper, lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+        vc_upper_mor_map_dst(upper, lower, m)
+        upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m))
+    }
+}
+
+/// Composability: G_mor(m) composable with η_x in upper's dst_cat.
+theorem vc_G_eta_composable[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_upper_mor_map_src(upper, lower, m)
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m)) = upper.src_functor.obj_map(lower.src_functor.src_cat.src(m))
+        vc_lower_component_dst_in_upper_cat(upper, lower, lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.obj_map(lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m)) = upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// Composability: H_mor(m) composable with θ_x in upper's dst_cat.
+theorem vc_H_theta_composable[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m))
+            = upper.src_functor.dst_cat.dst(upper.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_upper_dst_mor_map_src(upper, lower, m)
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.dst_functor.obj_map(lower.src_functor.src_cat.src(m))
+        nat_trans_component_dst(upper, lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.dst(upper.component(lower.src_functor.src_cat.src(m))) = upper.dst_functor.obj_map(lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.src_functor.dst_cat.dst(upper.component(lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// First associativity step: shifting parens of (θ_y * η_y) * F_mor(m).
+theorem vc_assoc_step1[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(
+            upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))),
+            lower.src_functor.mor_map(m)
+        ) = upper.src_functor.dst_cat.compose(
+            upper.component(lower.src_functor.src_cat.dst(m)),
+            upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))
+        )
+} by {
+    if vertical_composable(upper, lower) {
+        vertical_compose_components_composable(upper, lower, lower.src_functor.src_cat.dst(m))
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.dst(m)))
+        vc_eta_F_composable(upper, lower, m)
+        upper.src_functor.dst_cat.src(lower.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.dst_cat.dst(lower.src_functor.mor_map(m))
+        category_compose_assoc(upper.src_functor.dst_cat,
+            upper.component(lower.src_functor.src_cat.dst(m)),
+            lower.component(lower.src_functor.src_cat.dst(m)),
+            lower.src_functor.mor_map(m))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)))
+    }
+}
+
+/// Second associativity step (reversed): shifting parens of θ_y * (G_mor(m) * η_x).
+theorem vc_assoc_step3[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(
+            upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)),
+            lower.component(lower.src_functor.src_cat.src(m))
+        ) = upper.src_functor.dst_cat.compose(
+            upper.component(lower.src_functor.src_cat.dst(m)),
+            upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+        )
+} by {
+    if vertical_composable(upper, lower) {
+        vc_theta_G_composable(upper, lower, m)
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.dst(m))) = upper.src_functor.dst_cat.dst(upper.src_functor.mor_map(m))
+        vc_G_eta_composable(upper, lower, m)
+        upper.src_functor.dst_cat.src(upper.src_functor.mor_map(m)) = upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.src(m)))
+        category_compose_assoc(upper.src_functor.dst_cat,
+            upper.component(lower.src_functor.src_cat.dst(m)),
+            upper.src_functor.mor_map(m),
+            lower.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m))))
+    }
+}
+
+/// Third associativity step: shifting parens of (H_mor(m) * θ_x) * η_x.
+theorem vc_assoc_step5[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(
+            upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m))),
+            lower.component(lower.src_functor.src_cat.src(m))
+        ) = upper.src_functor.dst_cat.compose(
+            upper.dst_functor.mor_map(m),
+            upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m)))
+        )
+} by {
+    if vertical_composable(upper, lower) {
+        vc_H_theta_composable(upper, lower, m)
+        upper.src_functor.dst_cat.src(upper.dst_functor.mor_map(m)) = upper.src_functor.dst_cat.dst(upper.component(lower.src_functor.src_cat.src(m)))
+        vertical_compose_components_composable(upper, lower, lower.src_functor.src_cat.src(m))
+        upper.src_functor.dst_cat.src(upper.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.dst(lower.component(lower.src_functor.src_cat.src(m)))
+        category_compose_assoc(upper.src_functor.dst_cat,
+            upper.dst_functor.mor_map(m),
+            upper.component(lower.src_functor.src_cat.src(m)),
+            lower.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m))), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m))))
+    }
+}
+
+/// Naturality, block A: LHS chains to a normalized middle form using assoc1 + η nat + assoc3 reversed.
+theorem vc_naturality_blockA[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))), lower.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_assoc_step1(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)))
+        vc_eta_naturality(upper, lower, m)
+        upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(lower.component(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m))))
+        vc_assoc_step3(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.dst_cat.compose(upper.src_functor.mor_map(m), lower.component(lower.src_functor.src_cat.src(m))))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// Naturality, block B: middle form chains to RHS form using θ nat + assoc5.
+theorem vc_naturality_blockB[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+            = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m))))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_theta_naturality(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m))), lower.component(lower.src_functor.src_cat.src(m)))
+        vc_assoc_step5(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.component(lower.src_functor.src_cat.src(m))), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m))))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m))))
+    }
+}
+
+/// Combine LHS unfold with blockA chain.
+theorem vc_naturality_lhs_to_blockA_end[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m)))
+        upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), lower.component(lower.src_functor.src_cat.dst(m))), lower.src_functor.mor_map(m))
+        vc_naturality_blockA(upper, lower, m)
+    }
+}
+
+/// Combine blockB end with RHS fold.
+theorem vc_naturality_blockB_to_rhs[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+            = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_naturality_blockB(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m))))
+        vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)) = upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.src(m)), lower.component(lower.src_functor.src_cat.src(m)))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// Vertical composition naturality in upper's target category, before bridging to lower's frame.
+theorem vc_naturality_upper_cat[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    m: M1
+) {
+    vertical_composable(upper, lower) implies
+        upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))
+            = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_naturality_lhs_to_blockA_end(upper, lower, m)
+        upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m)))
+        vc_naturality_blockB_to_rhs(upper, lower, m)
+        upper.src_functor.dst_cat.compose(upper.src_functor.dst_cat.compose(upper.component(lower.src_functor.src_cat.dst(m)), upper.src_functor.mor_map(m)), lower.component(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+        upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+    }
+}
+
+/// The vertical compose component map satisfies the naturality axiom.
+theorem vc_naturality_axiom[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_composable(upper, lower) implies
+        nat_trans_naturality_axiom(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower))
+} by {
+    if vertical_composable(upper, lower) {
+        vc_dst_cat_eq(upper, lower)
+        lower.src_functor.dst_cat = upper.src_functor.dst_cat
+        lower.src_functor.dst_cat.compose = upper.src_functor.dst_cat.compose
+        forall(m: M1) {
+            vc_naturality_upper_cat(upper, lower, m)
+            upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+            vertical_compose_component(upper, lower)(lower.src_functor.src_cat.dst(m)) = vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m))
+            vertical_compose_component(upper, lower)(lower.src_functor.src_cat.src(m)) = vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m))
+            lower.src_functor.dst_cat.compose(vertical_compose_component(upper, lower)(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = upper.src_functor.dst_cat.compose(vertical_compose_component(upper, lower, lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m))
+            lower.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower)(lower.src_functor.src_cat.src(m))) = upper.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower, lower.src_functor.src_cat.src(m)))
+            lower.src_functor.dst_cat.compose(vertical_compose_component(upper, lower)(lower.src_functor.src_cat.dst(m)), lower.src_functor.mor_map(m)) = lower.src_functor.dst_cat.compose(upper.dst_functor.mor_map(m), vertical_compose_component(upper, lower)(lower.src_functor.src_cat.src(m)))
+        }
+    }
+}
+
+/// The vertical compose component map is a natural transformation from lower's source functor to upper's target functor.
+theorem vc_is_natural_transformation[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_composable(upper, lower) implies
+        is_natural_transformation(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower))
+} by {
+    if vertical_composable(upper, lower) {
+        vertical_composable_src_cat(upper, lower)
+        upper.dst_functor.src_cat = lower.src_functor.src_cat
+        lower.src_functor.src_cat = upper.dst_functor.src_cat
+        vertical_composable_dst_cat(upper, lower)
+        upper.dst_functor.dst_cat = lower.src_functor.dst_cat
+        lower.src_functor.dst_cat = upper.dst_functor.dst_cat
+        functors_parallel(lower.src_functor, upper.dst_functor)
+        vc_endpoints_axiom(upper, lower)
+        vc_naturality_axiom(upper, lower)
+        is_natural_transformation(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower))
+    }
+}
+
+/// The vertical composition of two natural transformations, packaged as an optional natural transformation.
+define vertical_compose_nat_trans[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2]
+) -> Option[NaturalTransformation[O1, M1, O2, M2]] {
+    NaturalTransformation[O1, M1, O2, M2].new(
+        lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)
+    )
+}
+
+/// The vertical composition of two vertically composable natural transformations is some bundled transformation.
+theorem vertical_compose_nat_trans_some[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_composable(upper, lower) implies exists(n: NaturalTransformation[O1, M1, O2, M2]) {
+        vertical_compose_nat_trans(upper, lower) = Option.some(n)
+    }
+} by {
+    if vertical_composable(upper, lower) {
+        vc_is_natural_transformation(upper, lower)
+        let n: NaturalTransformation[O1, M1, O2, M2] satisfy {
+            NaturalTransformation[O1, M1, O2, M2].new(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)) = Option.some(n)
+        }
+        vertical_compose_nat_trans(upper, lower) = Option.some(n)
+    }
+}
+
+/// The bundled vertical composition has lower's source functor as its source.
+theorem vertical_compose_nat_trans_src_functor[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_compose_nat_trans(upper, lower) = Option.some(n) implies n.src_functor = lower.src_functor
+} by {
+    if vertical_compose_nat_trans(upper, lower) = Option.some(n) {
+        NaturalTransformation[O1, M1, O2, M2].new(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)) = Option.some(n)
+        nat_trans_new_src_functor(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower), n)
+    }
+}
+
+/// The bundled vertical composition has upper's target functor as its target.
+theorem vertical_compose_nat_trans_dst_functor[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_compose_nat_trans(upper, lower) = Option.some(n) implies n.dst_functor = upper.dst_functor
+} by {
+    if vertical_compose_nat_trans(upper, lower) = Option.some(n) {
+        NaturalTransformation[O1, M1, O2, M2].new(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)) = Option.some(n)
+        nat_trans_new_dst_functor(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower), n)
+    }
+}
+
+/// The bundled vertical composition has the pointwise composed component map.
+theorem vertical_compose_nat_trans_component[O1, M1, O2, M2](
+    upper: NaturalTransformation[O1, M1, O2, M2],
+    lower: NaturalTransformation[O1, M1, O2, M2],
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    vertical_compose_nat_trans(upper, lower) = Option.some(n) implies n.component = vertical_compose_component(upper, lower)
+} by {
+    if vertical_compose_nat_trans(upper, lower) = Option.some(n) {
+        NaturalTransformation[O1, M1, O2, M2].new(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)) = Option.some(n)
+        nat_trans_new_component(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower), n)
+    }
+}
