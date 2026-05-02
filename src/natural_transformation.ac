@@ -1,6 +1,7 @@
 /// Natural transformations between functors.
 
-from category import Category
+from category import Category, category_identity_src, category_identity_dst,
+    category_id_left, category_id_right
 from functor import Functor, functor_src, functor_dst, functor_identity, functor_compose
 
 /// True if the two functors share the same source and target categories.
@@ -174,3 +175,102 @@ theorem nat_trans_naturality[O1, M1, O2, M2](
     }
 }
 
+
+/// The component morphism of the identity natural transformation on a functor.
+define identity_nat_trans_component[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], x: O1) -> M2 {
+    f.dst_cat.identity(f.obj_map(x))
+}
+
+/// The identity component map satisfies the endpoints axiom.
+theorem identity_nat_trans_endpoints[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    nat_trans_endpoints_axiom(f, f, identity_nat_trans_component(f))
+} by {
+    forall(x: O1) {
+        identity_nat_trans_component(f)(x) = identity_nat_trans_component(f, x)
+        identity_nat_trans_component(f, x) = f.dst_cat.identity(f.obj_map(x))
+        category_identity_src(f.dst_cat, f.obj_map(x))
+        category_identity_dst(f.dst_cat, f.obj_map(x))
+        f.dst_cat.src(identity_nat_trans_component(f)(x)) = f.obj_map(x)
+        f.dst_cat.dst(identity_nat_trans_component(f)(x)) = f.obj_map(x)
+    }
+}
+
+/// For the identity natural transformation, the left side of the naturality square reduces to the morphism itself.
+theorem identity_nat_trans_naturality_left[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], m: M1) {
+    f.dst_cat.compose(identity_nat_trans_component(f)(f.src_cat.dst(m)), f.mor_map(m)) = f.mor_map(m)
+} by {
+    identity_nat_trans_component(f)(f.src_cat.dst(m)) = identity_nat_trans_component(f, f.src_cat.dst(m))
+    identity_nat_trans_component(f, f.src_cat.dst(m)) = f.dst_cat.identity(f.obj_map(f.src_cat.dst(m)))
+    functor_dst(f, m)
+    f.obj_map(f.src_cat.dst(m)) = f.dst_cat.dst(f.mor_map(m))
+    f.dst_cat.identity(f.obj_map(f.src_cat.dst(m))) = f.dst_cat.identity(f.dst_cat.dst(f.mor_map(m)))
+    category_id_left(f.dst_cat, f.mor_map(m))
+}
+
+/// For the identity natural transformation, the right side of the naturality square reduces to the morphism itself.
+theorem identity_nat_trans_naturality_right[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2], m: M1) {
+    f.dst_cat.compose(f.mor_map(m), identity_nat_trans_component(f)(f.src_cat.src(m))) = f.mor_map(m)
+} by {
+    identity_nat_trans_component(f)(f.src_cat.src(m)) = identity_nat_trans_component(f, f.src_cat.src(m))
+    identity_nat_trans_component(f, f.src_cat.src(m)) = f.dst_cat.identity(f.obj_map(f.src_cat.src(m)))
+    functor_src(f, m)
+    f.obj_map(f.src_cat.src(m)) = f.dst_cat.src(f.mor_map(m))
+    f.dst_cat.identity(f.obj_map(f.src_cat.src(m))) = f.dst_cat.identity(f.dst_cat.src(f.mor_map(m)))
+    category_id_right(f.dst_cat, f.mor_map(m))
+}
+
+/// The identity component map satisfies the naturality axiom.
+theorem identity_nat_trans_naturality[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    nat_trans_naturality_axiom(f, f, identity_nat_trans_component(f))
+} by {
+    forall(m: M1) {
+        identity_nat_trans_naturality_left(f, m)
+        identity_nat_trans_naturality_right(f, m)
+    }
+}
+
+/// The identity component map is a natural transformation from a functor to itself.
+theorem identity_is_nat_trans[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    is_natural_transformation(f, f, identity_nat_trans_component(f))
+} by {
+    functors_parallel(f, f)
+    identity_nat_trans_endpoints(f)
+    identity_nat_trans_naturality(f)
+}
+
+/// The identity natural transformation on a functor.
+let identity_nat_trans[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) -> result: NaturalTransformation[O1, M1, O2, M2] satisfy {
+    NaturalTransformation[O1, M1, O2, M2].new(f, f, identity_nat_trans_component(f)) = Option.some(result)
+} by {
+    identity_is_nat_trans(f)
+    let n: NaturalTransformation[O1, M1, O2, M2] satisfy {
+        NaturalTransformation[O1, M1, O2, M2].new(f, f, identity_nat_trans_component(f)) = Option.some(n)
+    }
+}
+
+/// The identity natural transformation has the original functor as its source functor.
+theorem identity_nat_trans_src_functor[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    identity_nat_trans(f).src_functor = f
+} by {
+    let n = identity_nat_trans(f)
+    NaturalTransformation[O1, M1, O2, M2].new(f, f, identity_nat_trans_component(f)) = Option.some(n)
+    nat_trans_new_src_functor(f, f, identity_nat_trans_component(f), n)
+}
+
+/// The identity natural transformation has the original functor as its target functor.
+theorem identity_nat_trans_dst_functor[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    identity_nat_trans(f).dst_functor = f
+} by {
+    let n = identity_nat_trans(f)
+    NaturalTransformation[O1, M1, O2, M2].new(f, f, identity_nat_trans_component(f)) = Option.some(n)
+    nat_trans_new_dst_functor(f, f, identity_nat_trans_component(f), n)
+}
+
+/// The identity natural transformation has the per-object identity as its component map.
+theorem identity_nat_trans_component_eq[O1, M1, O2, M2](f: Functor[O1, M1, O2, M2]) {
+    identity_nat_trans(f).component = identity_nat_trans_component(f)
+} by {
+    let n = identity_nat_trans(f)
+    NaturalTransformation[O1, M1, O2, M2].new(f, f, identity_nat_trans_component(f)) = Option.some(n)
+    nat_trans_new_component(f, f, identity_nat_trans_component(f), n)
+}
