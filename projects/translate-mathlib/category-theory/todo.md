@@ -2,13 +2,10 @@
 
 Goal: provide the categorical abstractions that Mathlib uses to organize large mathematical theories.
 
-## Categories
-
-- [ ] Add a small example category instance (e.g. terminal/initial 1-object category)
-
 ## Functors and Natural Transformations
 
-- [ ] Add functors and natural transformations
+- [ ] Add a `compose_functor` constructor that bundles two composable functors into a `Functor`
+- [ ] Add natural transformations between functors
 - [ ] Support equivalences of categories
 
 ## Universal Constructions

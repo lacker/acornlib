@@ -1,0 +1,76 @@
+/// The terminal category: a category with one object and one morphism.
+
+from category import Category
+from discrete_category import discrete_category, discrete_category_src,
+    discrete_category_dst, discrete_category_identity, discrete_category_compose
+from functions import identity_fn
+
+/// A type with exactly one inhabitant.
+inductive UnitType {
+    /// The unique inhabitant.
+    point
+}
+
+/// Every value of `UnitType` equals `UnitType.point`.
+theorem unit_type_unique(x: UnitType) {
+    x = UnitType.point
+} by {
+    match x {
+        UnitType.point {
+            x = UnitType.point
+        }
+    }
+}
+
+/// Any two values of `UnitType` are equal.
+theorem unit_type_eq(x: UnitType, y: UnitType) {
+    x = y
+} by {
+    unit_type_unique(x)
+    unit_type_unique(y)
+}
+
+/// The terminal category, with one object and one morphism.
+let terminal_category: Category[UnitType, UnitType] = discrete_category(UnitType.point)
+
+/// The source map of the terminal category is the identity function.
+theorem terminal_category_src {
+    terminal_category.src = identity_fn[UnitType]
+} by {
+    discrete_category_src(UnitType.point)
+}
+
+/// The target map of the terminal category is the identity function.
+theorem terminal_category_dst {
+    terminal_category.dst = identity_fn[UnitType]
+} by {
+    discrete_category_dst(UnitType.point)
+}
+
+/// The identity-assigning map of the terminal category is the identity function.
+theorem terminal_category_identity {
+    terminal_category.identity = identity_fn[UnitType]
+} by {
+    discrete_category_identity(UnitType.point)
+}
+
+/// Every object in the terminal category equals `UnitType.point`.
+theorem terminal_category_object_unique(x: UnitType) {
+    x = UnitType.point
+} by {
+    unit_type_unique(x)
+}
+
+/// Every morphism in the terminal category equals `UnitType.point`.
+theorem terminal_category_morphism_unique(f: UnitType) {
+    f = UnitType.point
+} by {
+    unit_type_unique(f)
+}
+
+/// Any two morphisms in the terminal category are equal.
+theorem terminal_category_morphism_eq(f: UnitType, g: UnitType) {
+    f = g
+} by {
+    unit_type_eq(f, g)
+}
