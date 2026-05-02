@@ -283,6 +283,114 @@ theorem submonoid_intersection_idempotent[M: Monoid](a: Submonoid[M]) {
     submonoid_ext(a.intersection(a), a)
 }
 
+/// True if every element of one submonoid belongs to another.
+define submonoid_subset[M: Monoid](a: Submonoid[M], b: Submonoid[M]) -> Bool {
+    forall(x: M) {
+        a.contains(x) implies b.contains(x)
+    }
+}
+
+/// Submonoid inclusion is reflexive.
+theorem submonoid_subset_refl[M: Monoid](a: Submonoid[M]) {
+    submonoid_subset(a, a)
+} by {
+    forall(x: M) {
+        a.contains(x) implies a.contains(x)
+    }
+}
+
+/// Submonoid inclusion is transitive.
+theorem submonoid_subset_trans[M: Monoid](
+    a: Submonoid[M],
+    b: Submonoid[M],
+    c: Submonoid[M]
+) {
+    submonoid_subset(a, b) and submonoid_subset(b, c) implies submonoid_subset(a, c)
+} by {
+    if submonoid_subset(a, b) and submonoid_subset(b, c) {
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+                c.contains(x)
+            }
+        }
+    }
+}
+
+/// The intersection of two submonoids is contained in the left submonoid.
+theorem submonoid_intersection_subset_left_relation[M: Monoid](
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    submonoid_subset(a.intersection(b), a)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+        }
+    }
+}
+
+/// The intersection of two submonoids is contained in the right submonoid.
+theorem submonoid_intersection_subset_right_relation[M: Monoid](
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    submonoid_subset(a.intersection(b), b)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            submonoid_intersection_contains_eq(a, b, x)
+            b.contains(x)
+        }
+    }
+}
+
+/// Every common submonoid of two submonoids is contained in their intersection.
+theorem submonoid_subset_intersection_of_subset_left_right[M: Monoid](
+    c: Submonoid[M],
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    submonoid_subset(c, a) and submonoid_subset(c, b) implies submonoid_subset(c, a.intersection(b))
+} by {
+    if submonoid_subset(c, a) and submonoid_subset(c, b) {
+        forall(x: M) {
+            if c.contains(x) {
+                a.contains(x)
+                b.contains(x)
+                submonoid_intersection_contains_eq(a, b, x)
+                a.intersection(b).contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in an intersection is equivalent to containment in both submonoids.
+theorem submonoid_subset_intersection_iff[M: Monoid](
+    c: Submonoid[M],
+    a: Submonoid[M],
+    b: Submonoid[M]
+) {
+    submonoid_subset(c, a.intersection(b)) = (submonoid_subset(c, a) and submonoid_subset(c, b))
+} by {
+    if submonoid_subset(c, a.intersection(b)) {
+        submonoid_intersection_subset_left_relation(a, b)
+        submonoid_subset_trans(c, a.intersection(b), a)
+        submonoid_subset(c, a)
+        submonoid_intersection_subset_right_relation(a, b)
+        submonoid_subset_trans(c, a.intersection(b), b)
+        submonoid_subset(c, b)
+        submonoid_subset(c, a) and submonoid_subset(c, b)
+    }
+    if submonoid_subset(c, a) and submonoid_subset(c, b) {
+        submonoid_subset_intersection_of_subset_left_right(c, a, b)
+        submonoid_subset(c, a.intersection(b))
+    }
+    submonoid_subset(c, a.intersection(b)) = (submonoid_subset(c, a) and submonoid_subset(c, b))
+}
+
 /// True if an element is the identity element of the monoid.
 define is_monoid_identity[M: Monoid](m: M) -> Bool {
     m = M.1
@@ -313,6 +421,26 @@ theorem identity_submonoid_only_has_identity[M: Monoid](m: M) {
     identity_submonoid[M].contains(m) implies m = M.1
 }
 
+/// Every submonoid contains the identity element.
+theorem submonoid_contains_identity[M: Monoid](s: Submonoid[M]) {
+    s.contains(M.1)
+}
+
+/// The identity submonoid is contained in every submonoid.
+theorem identity_submonoid_subset[M: Monoid](s: Submonoid[M]) {
+    submonoid_subset(identity_submonoid[M], s)
+} by {
+    forall(x: M) {
+        if identity_submonoid[M].contains(x) {
+            identity_submonoid_only_has_identity(x)
+            x = M.1
+            submonoid_contains_identity(s)
+            s.contains(M.1)
+            s.contains(x)
+        }
+    }
+}
+
 /// The full subset of any monoid is closed under multiplication and contains the identity.
 define full_monoid_contains[M: Monoid](a: M) -> Bool {
     true
@@ -340,7 +468,13 @@ theorem full_submonoid_contains_everything[M: Monoid](m: M) {
     full_submonoid[M].contains(m)
 }
 
-/// Every submonoid contains the identity element.
-theorem submonoid_contains_identity[M: Monoid](s: Submonoid[M]) {
-    s.contains(M.1)
+/// Every submonoid is contained in the full submonoid.
+theorem submonoid_subset_full[M: Monoid](s: Submonoid[M]) {
+    submonoid_subset(s, full_submonoid[M])
+} by {
+    forall(x: M) {
+        if s.contains(x) {
+            full_submonoid_contains_everything(x)
+        }
+    }
 }

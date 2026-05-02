@@ -15,4 +15,4 @@ Goal: provide a broad order-theoretic language that later algebra, topology, and
 
 ## Current Focus
 
-The active branch is [basic-orders](basic-orders/todo.md). Its items are intended to be session-sized, so this branch is narrow enough to work from directly.
+The earliest basic-orders and interval-preimage frontiers are definition choices, so concrete execution is currently advancing through [lattices](lattices/todo.md) until those API choices are settled.
