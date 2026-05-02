@@ -4,7 +4,6 @@ Goal: provide the categorical abstractions that Mathlib uses to organize large m
 
 ## Categories
 
-- [ ] Build the opposite category construction
 - [ ] Build the product category construction
 - [ ] Add a small example category instance (e.g. terminal/initial 1-object category)
 

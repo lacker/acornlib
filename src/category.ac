@@ -125,6 +125,50 @@ theorem category_ext[O, M](c: Category[O, M], d: Category[O, M]) {
     }
 }
 
+/// Construction of a category remembers its source map.
+theorem category_new_src[O, M](
+    src: M -> O,
+    dst: M -> O,
+    identity: O -> M,
+    compose: (M, M) -> M,
+    c: Category[O, M]
+) {
+    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.src = src
+}
+
+/// Construction of a category remembers its target map.
+theorem category_new_dst[O, M](
+    src: M -> O,
+    dst: M -> O,
+    identity: O -> M,
+    compose: (M, M) -> M,
+    c: Category[O, M]
+) {
+    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.dst = dst
+}
+
+/// Construction of a category remembers its identity-assigning map.
+theorem category_new_identity[O, M](
+    src: M -> O,
+    dst: M -> O,
+    identity: O -> M,
+    compose: (M, M) -> M,
+    c: Category[O, M]
+) {
+    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.identity = identity
+}
+
+/// Construction of a category remembers its composition operator.
+theorem category_new_compose[O, M](
+    src: M -> O,
+    dst: M -> O,
+    identity: O -> M,
+    compose: (M, M) -> M,
+    c: Category[O, M]
+) {
+    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.compose = compose
+}
+
 /// The source of an identity morphism is its underlying object.
 theorem category_identity_src[O, M](c: Category[O, M], x: O) {
     c.src(c.identity(x)) = x

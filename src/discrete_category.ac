@@ -3,7 +3,8 @@
 from category import Category, is_category, category_id_endpoints_constraint,
     category_compose_src_constraint, category_compose_dst_constraint,
     category_assoc_constraint, category_id_left_constraint,
-    category_id_right_constraint
+    category_id_right_constraint, category_new_src, category_new_dst,
+    category_new_identity, category_new_compose
 from functions import identity_fn
 
 /// Composition operator for the discrete category: returns its first argument.
@@ -61,50 +62,6 @@ theorem discrete_is_category[O](anchor: O) {
         discrete_compose(f, identity_fn[O](identity_fn[O](f))) = f
     }
     category_id_right_constraint(identity_fn[O], identity_fn[O], identity_fn[O], discrete_compose[O])
-}
-
-/// Construction of a category remembers its source map.
-theorem category_new_src[O, M](
-    src: M -> O,
-    dst: M -> O,
-    identity: O -> M,
-    compose: (M, M) -> M,
-    c: Category[O, M]
-) {
-    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.src = src
-}
-
-/// Construction of a category remembers its target map.
-theorem category_new_dst[O, M](
-    src: M -> O,
-    dst: M -> O,
-    identity: O -> M,
-    compose: (M, M) -> M,
-    c: Category[O, M]
-) {
-    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.dst = dst
-}
-
-/// Construction of a category remembers its identity-assigning map.
-theorem category_new_identity[O, M](
-    src: M -> O,
-    dst: M -> O,
-    identity: O -> M,
-    compose: (M, M) -> M,
-    c: Category[O, M]
-) {
-    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.identity = identity
-}
-
-/// Construction of a category remembers its composition operator.
-theorem category_new_compose[O, M](
-    src: M -> O,
-    dst: M -> O,
-    identity: O -> M,
-    compose: (M, M) -> M,
-    c: Category[O, M]
-) {
-    Category[O, M].new(src, dst, identity, compose) = Option.some(c) implies c.compose = compose
 }
 
 /// The discrete category over `O`.
