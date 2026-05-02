@@ -111,6 +111,30 @@
 {"goal":"join_eq_left_iff_lte","proof":[]}
 {"goal":"a.join(b) = b = a <= b","proof":[]}
 {"goal":"join_eq_right_iff_lte","proof":[]}
+{"goal":"a.meet(b) = a","proof":[]}
+{"goal":"meet_eq_left_of_lte","proof":["not a <= b"]}
+{"goal":"a.meet(b) = a","proof":["not a <= b"]}
+{"goal":"meet_eq_left_of_le","proof":["not a <= b"]}
+{"goal":"a.meet(b) = b","proof":[]}
+{"goal":"meet_eq_right_of_lte","proof":["not b <= a"]}
+{"goal":"a.meet(b) = b","proof":["not b <= a"]}
+{"goal":"meet_eq_right_of_le","proof":["not b <= a"]}
+{"goal":"a.join(b) = a","proof":[]}
+{"goal":"join_eq_left_of_lte","proof":["not b <= a"]}
+{"goal":"a.join(b) = a","proof":["not b <= a"]}
+{"goal":"join_eq_left_of_le","proof":["not b <= a"]}
+{"goal":"a.join(b) = b","proof":[]}
+{"goal":"join_eq_right_of_lte","proof":["not a <= b"]}
+{"goal":"a.join(b) = b","proof":["not a <= b"]}
+{"goal":"join_eq_right_of_le","proof":["not a <= b"]}
+{"goal":"a.meet(b) = a","proof":["not a <= b"]}
+{"goal":"inf_eq_left_of_le","proof":["not a <= b"]}
+{"goal":"a.meet(b) = b","proof":["not b <= a"]}
+{"goal":"inf_eq_right_of_le","proof":["not b <= a"]}
+{"goal":"a.join(b) = a","proof":["not b <= a"]}
+{"goal":"sup_eq_left_of_le","proof":["not b <= a"]}
+{"goal":"a.join(b) = b","proof":["not a <= b"]}
+{"goal":"sup_eq_right_of_le","proof":["not a <= b"]}
 {"goal":"a.meet(a.join(b)) <= a","proof":[]}
 {"goal":"a <= a.join(b)","proof":[]}
 {"goal":"a <= a.meet(a.join(b))","proof":[]}
@@ -163,3 +187,19 @@
 {"goal":"sup_inf_left","proof":[]}
 {"goal":"inf_sup_right","proof":[]}
 {"goal":"sup_inf_right","proof":[]}
+{"goal":"meet_assoc_rev","proof":[]}
+{"goal":"join_assoc_rev","proof":[]}
+{"goal":"meet_left_comm","proof":[]}
+{"goal":"join_left_comm","proof":[]}
+{"goal":"meet_right_comm","proof":[]}
+{"goal":"join_right_comm","proof":[]}
+{"goal":"meet_absorb_join_right","proof":[]}
+{"goal":"join_absorb_meet_right","proof":[]}
+{"goal":"inf_assoc_rev","proof":[]}
+{"goal":"sup_assoc_rev","proof":[]}
+{"goal":"inf_left_comm","proof":[]}
+{"goal":"sup_left_comm","proof":[]}
+{"goal":"inf_right_comm","proof":[]}
+{"goal":"sup_right_comm","proof":[]}
+{"goal":"inf_sup_self_right","proof":[]}
+{"goal":"sup_inf_self_right","proof":[]}

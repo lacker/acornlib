@@ -2,7 +2,6 @@
 
 Goal: stabilize the base order hierarchy so later order-theoretic and ordered-algebraic code can depend on one standard API.
 
-- [ ] Finish auditing numeric construction-local order theorem names that cannot yet be replaced by generic `LinearOrder` facts
 - [ ] Decide whether Acornlib needs a `Preorder` layer below `PartialOrder`
 
 Status:
@@ -22,3 +21,4 @@ Status:
 - The generic order API now includes literal swapped `le`/`lt` disjunction aliases and Nat-style literal trichotomy aliases in `src/order.ac` and `src/order_cases.ac`.
 - `src/order_interval.ac` now has Mathlib-style `le`/`lt` aliases for interval introduction/projection and clamp monotonicity, so downstream files can avoid choosing between construction-local endpoint names.
 - `src/order_maps.ac` now has `apply`, `le`/`lt`/`ge`/`gt` embedding, identity, and composition aliases for monotone, antitone, strict monotone, strict antitone, order embedding, and order surjection facts.
+- Numeric construction-local order names have been audited against the generic `PartialOrder` / `LinearOrder` API. The remaining unreplaced Nat names are genuinely successor- or arithmetic-specific rather than generic order facts.

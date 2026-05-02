@@ -1,9 +1,9 @@
 {"goal":"x = UnitType.point","proof":[]}
 {"goal":"unit_type_unique","proof":[]}
-{"goal":"unit_type_eq","proof":["UnitType.point != x"]}
-{"goal":"terminal_category_src","proof":["let w0: UnitType satisfy { identity_fn(w0) != terminal_category.src(w0) }","function[T0](x0: T0, x1: T0) { discrete_category[T0](x0).src(x1) = identity_fn[T0](x1) }[UnitType](UnitType.point, w0)"]}
-{"goal":"terminal_category_dst","proof":["let w0: UnitType satisfy { identity_fn(w0) != terminal_category.dst(w0) }","function[T0](x0: T0, x1: T0) { discrete_category[T0](x0).dst(x1) = identity_fn[T0](x1) }[UnitType](UnitType.point, w0)"]}
-{"goal":"terminal_category_identity","proof":["let w0: UnitType satisfy { identity_fn(w0) != terminal_category.identity(w0) }","function[T0](x0: T0, x1: T0) { discrete_category[T0](x0).identity(x1) = identity_fn[T0](x1) }[UnitType](UnitType.point, w0)"]}
+{"goal":"unit_type_eq","proof":[]}
+{"goal":"terminal_category_src","proof":[]}
+{"goal":"terminal_category_dst","proof":[]}
+{"goal":"terminal_category_identity","proof":[]}
 {"goal":"terminal_category_object_unique","proof":[]}
 {"goal":"terminal_category_morphism_unique","proof":[]}
 {"goal":"terminal_category_morphism_eq","proof":[]}
