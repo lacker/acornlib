@@ -1,0 +1,176 @@
+/// Natural transformations between functors.
+
+from category import Category
+from functor import Functor, functor_src, functor_dst, functor_identity, functor_compose
+
+/// True if the two functors share the same source and target categories.
+define functors_parallel[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2]
+) -> Bool {
+    f.src_cat = g.src_cat and f.dst_cat = g.dst_cat
+}
+
+/// True if `component(x)` is a morphism from `f.obj_map(x)` to `g.obj_map(x)` in the target category.
+define nat_trans_endpoints_axiom[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2
+) -> Bool {
+    forall(x: O1) {
+        f.dst_cat.src(component(x)) = f.obj_map(x)
+        and f.dst_cat.dst(component(x)) = g.obj_map(x)
+    }
+}
+
+/// True if the naturality square commutes for every morphism in the source category.
+define nat_trans_naturality_axiom[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2
+) -> Bool {
+    forall(m: M1) {
+        f.dst_cat.compose(component(f.src_cat.dst(m)), f.mor_map(m))
+            = f.dst_cat.compose(g.mor_map(m), component(f.src_cat.src(m)))
+    }
+}
+
+/// True if `component` defines a natural transformation from `f` to `g`.
+define is_natural_transformation[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2
+) -> Bool {
+    functors_parallel(f, g)
+    and nat_trans_endpoints_axiom(f, g, component)
+    and nat_trans_naturality_axiom(f, g, component)
+}
+
+/// A natural transformation between two functors with matching source and target categories.
+structure NaturalTransformation[O1, M1, O2, M2] {
+    /// The source functor.
+    src_functor: Functor[O1, M1, O2, M2]
+
+    /// The target functor.
+    dst_functor: Functor[O1, M1, O2, M2]
+
+    /// The component morphism at each object of the source category.
+    component: O1 -> M2
+} constraint {
+    is_natural_transformation(src_functor, dst_functor, component)
+}
+
+/// Construction of a natural transformation remembers its source functor.
+theorem nat_trans_new_src_functor[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2,
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    NaturalTransformation[O1, M1, O2, M2].new(f, g, component) = Option.some(n)
+        implies n.src_functor = f
+}
+
+/// Construction of a natural transformation remembers its target functor.
+theorem nat_trans_new_dst_functor[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2,
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    NaturalTransformation[O1, M1, O2, M2].new(f, g, component) = Option.some(n)
+        implies n.dst_functor = g
+}
+
+/// Construction of a natural transformation remembers its component map.
+theorem nat_trans_new_component[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2], g: Functor[O1, M1, O2, M2], component: O1 -> M2,
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    NaturalTransformation[O1, M1, O2, M2].new(f, g, component) = Option.some(n)
+        implies n.component = component
+}
+
+/// A natural transformation's data is a natural transformation.
+theorem nat_trans_is_natural_transformation[O1, M1, O2, M2](
+    n: NaturalTransformation[O1, M1, O2, M2]
+) {
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component)
+} by {
+    NaturalTransformation[O1, M1, O2, M2].constraint(n.src_functor, n.dst_functor, n.component)
+}
+
+/// The source and target functors of a natural transformation share a source category.
+theorem nat_trans_shared_src_cat[O1, M1, O2, M2](n: NaturalTransformation[O1, M1, O2, M2]) {
+    n.src_functor.src_cat = n.dst_functor.src_cat
+} by {
+    nat_trans_is_natural_transformation(n)
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component) =
+        (functors_parallel(n.src_functor, n.dst_functor)
+        and nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+        and nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component))
+    functors_parallel(n.src_functor, n.dst_functor)
+    functors_parallel(n.src_functor, n.dst_functor) =
+        (n.src_functor.src_cat = n.dst_functor.src_cat
+        and n.src_functor.dst_cat = n.dst_functor.dst_cat)
+}
+
+/// The source and target functors of a natural transformation share a target category.
+theorem nat_trans_shared_dst_cat[O1, M1, O2, M2](n: NaturalTransformation[O1, M1, O2, M2]) {
+    n.src_functor.dst_cat = n.dst_functor.dst_cat
+} by {
+    nat_trans_is_natural_transformation(n)
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component) =
+        (functors_parallel(n.src_functor, n.dst_functor)
+        and nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+        and nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component))
+    functors_parallel(n.src_functor, n.dst_functor)
+    functors_parallel(n.src_functor, n.dst_functor) =
+        (n.src_functor.src_cat = n.dst_functor.src_cat
+        and n.src_functor.dst_cat = n.dst_functor.dst_cat)
+}
+
+/// The component morphism at any object has the source functor's image as its source.
+theorem nat_trans_component_src[O1, M1, O2, M2](
+    n: NaturalTransformation[O1, M1, O2, M2], x: O1
+) {
+    n.src_functor.dst_cat.src(n.component(x)) = n.src_functor.obj_map(x)
+} by {
+    nat_trans_is_natural_transformation(n)
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component) =
+        (functors_parallel(n.src_functor, n.dst_functor)
+        and nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+        and nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component))
+    nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+    nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component) = forall(y: O1) {
+        n.src_functor.dst_cat.src(n.component(y)) = n.src_functor.obj_map(y)
+        and n.src_functor.dst_cat.dst(n.component(y)) = n.dst_functor.obj_map(y)
+    }
+}
+
+/// The component morphism at any object has the target functor's image as its target.
+theorem nat_trans_component_dst[O1, M1, O2, M2](
+    n: NaturalTransformation[O1, M1, O2, M2], x: O1
+) {
+    n.src_functor.dst_cat.dst(n.component(x)) = n.dst_functor.obj_map(x)
+} by {
+    nat_trans_is_natural_transformation(n)
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component) =
+        (functors_parallel(n.src_functor, n.dst_functor)
+        and nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+        and nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component))
+    nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+    nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component) = forall(y: O1) {
+        n.src_functor.dst_cat.src(n.component(y)) = n.src_functor.obj_map(y)
+        and n.src_functor.dst_cat.dst(n.component(y)) = n.dst_functor.obj_map(y)
+    }
+}
+
+/// The naturality square commutes for any morphism in the source category.
+theorem nat_trans_naturality[O1, M1, O2, M2](
+    n: NaturalTransformation[O1, M1, O2, M2], m: M1
+) {
+    n.src_functor.dst_cat.compose(n.component(n.src_functor.src_cat.dst(m)), n.src_functor.mor_map(m))
+        = n.src_functor.dst_cat.compose(n.dst_functor.mor_map(m), n.component(n.src_functor.src_cat.src(m)))
+} by {
+    nat_trans_is_natural_transformation(n)
+    is_natural_transformation(n.src_functor, n.dst_functor, n.component) =
+        (functors_parallel(n.src_functor, n.dst_functor)
+        and nat_trans_endpoints_axiom(n.src_functor, n.dst_functor, n.component)
+        and nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component))
+    nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component)
+    nat_trans_naturality_axiom(n.src_functor, n.dst_functor, n.component) = forall(p: M1) {
+        n.src_functor.dst_cat.compose(n.component(n.src_functor.src_cat.dst(p)), n.src_functor.mor_map(p))
+            = n.src_functor.dst_cat.compose(n.dst_functor.mor_map(p), n.component(n.src_functor.src_cat.src(p)))
+    }
+}
+

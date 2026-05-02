@@ -4,7 +4,7 @@ Goal: provide the categorical abstractions that Mathlib uses to organize large m
 
 ## Functors and Natural Transformations
 
-- [ ] Add natural transformations between functors
+- [ ] Add the identity natural transformation and vertical/horizontal composition
 - [ ] Support equivalences of categories
 
 ## Universal Constructions
