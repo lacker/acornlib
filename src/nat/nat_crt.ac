@@ -1,0 +1,71 @@
+from nat.nat_coprime import Nat
+from nat.nat_bezout import nat_bezout
+from int.lattice import Int
+from zmod import int_mod_rel
+numerals Int
+
+/// Half of CRT: the chosen witness c = a + (b-a)*x*m is congruent to a modulo m.
+theorem crt_witness_mod_m(m: Nat, a: Int, b: Int, x: Int) {
+    Int.from_nat(m).divides(a + (b - a) * x * Int.from_nat(m) - a)
+} by {
+    let mi: Int = Int.from_nat(m)
+    let c: Int = a + (b - a) * x * mi
+    c - a = (b - a) * x * mi
+    (b - a) * x * mi = mi * ((b - a) * x)
+    mi.divides(c - a)
+}
+
+/// Half of CRT: under the Bezout identity x*m + y*n = 1, the witness
+/// c = a + (b-a)*x*m is congruent to b modulo n.
+theorem crt_witness_mod_n(m: Nat, n: Nat, a: Int, b: Int, x: Int, y: Int) {
+    x * Int.from_nat(m) + y * Int.from_nat(n) = Int.1
+        implies Int.from_nat(n).divides(a + (b - a) * x * Int.from_nat(m) - b)
+} by {
+    if x * Int.from_nat(m) + y * Int.from_nat(n) = Int.1 {
+        let mi: Int = Int.from_nat(m)
+        let ni: Int = Int.from_nat(n)
+        let bma: Int = b - a
+        bma + a = b
+        let c: Int = a + bma * x * mi
+        c - b = a + bma * x * mi - (bma + a)
+        a + bma * x * mi - (bma + a) = bma * x * mi - bma
+        c - b = bma * x * mi - bma
+        bma * x * mi - bma = bma * (x * mi - Int.1)
+        c - b = bma * (x * mi - Int.1)
+        x * mi - Int.1 = -(y * ni)
+        bma * (x * mi - Int.1) = bma * -(y * ni)
+        bma * -(y * ni) = -(bma * y * ni)
+        c - b = -(bma * y * ni)
+        -(bma * y * ni) = ni * (-(bma * y))
+        ni.divides(c - b)
+        Int.from_nat(n).divides(a + (b - a) * x * Int.from_nat(m) - b)
+    }
+}
+
+/// Two-modulus Chinese remainder theorem in Int form: when m and n are
+/// coprime on Nat, every pair of integer residue requirements has a
+/// simultaneous integer solution.
+theorem int_crt_two_moduli(m: Nat, n: Nat, a: Int, b: Int) {
+    m.coprime(n) implies exists(c: Int) {
+        int_mod_rel(m, c, a) and int_mod_rel(n, c, b)
+    }
+} by {
+    if m.coprime(n) {
+        m.gcd(n) = Nat.1
+        nat_bezout(m, n)
+        let (x: Int, y: Int) satisfy {
+            x * Int.from_nat(m) + y * Int.from_nat(n) = Int.from_nat(m.gcd(n))
+        }
+        Int.from_nat(m.gcd(n)) = Int.from_nat(Nat.1)
+        Int.from_nat(Nat.1) = Int.1
+        x * Int.from_nat(m) + y * Int.from_nat(n) = Int.1
+        let c: Int = a + (b - a) * x * Int.from_nat(m)
+        crt_witness_mod_m(m, a, b, x)
+        crt_witness_mod_n(m, n, a, b, x, y)
+        Int.from_nat(m).divides(c - a)
+        Int.from_nat(n).divides(c - b)
+        int_mod_rel(m, c, a)
+        int_mod_rel(n, c, b)
+        exists(c0: Int) { int_mod_rel(m, c0, a) and int_mod_rel(n, c0, b) }
+    }
+}

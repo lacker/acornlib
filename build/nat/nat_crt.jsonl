@@ -1,0 +1,29 @@
+{"goal":"c - a = (b - a) * x * mi","proof":["function(x0: Int, x1: Int) { x0 + x1 - x1 = x0 }((b - a) * x * mi, a)","function(x0: Int, x1: Int) { x0 + x1 = x1 + x0 }(a, (b - a) * x * mi)"]}
+{"goal":"(b - a) * x * mi = mi * ((b - a) * x)","proof":["function(x0: Int, x1: Int) { x0 * x1 = x1 * x0 }(mi, (b - a) * x)"]}
+{"goal":"mi.divides(c - a)","proof":["function(x0: Int, x1: Int) { exists(k0: Int) { k0 * x0 = x1 } = x0.divides(x1) }(mi, c - a)","not exists(k0: Int) { k0 * mi = c - a }","function(x0: Int) { c - a != x0 * mi }((b - a) * x)"]}
+{"goal":"crt_witness_mod_m","proof":[]}
+{"goal":"bma + a = b","proof":["function(x0: Int, x1: Int, x2: Int) { x0 - x1 != x2 or x1 + x2 = x0 }(b, a, bma)","function(x0: Int, x1: Int) { x0 + x1 = x1 + x0 }(a, bma)"]}
+{"goal":"c - b = a + bma * x * mi - (bma + a)","proof":[]}
+{"goal":"a + bma * x * mi - (bma + a) = bma * x * mi - bma","proof":["function(x0: Int, x1: Int, x2: Int) { x0 + x1 - (x2 + x1) = x0 - x2 }(bma * x * mi, a, bma)","function(x0: Int, x1: Int) { x0 + x1 = x1 + x0 }(a, bma * x * mi)"]}
+{"goal":"c - b = bma * x * mi - bma","proof":[]}
+{"goal":"bma * x * mi - bma = bma * (x * mi - 1)","proof":["function(x0: Int, x1: Int, x2: Int) { x0 * x1 - x0 * x2 = x0 * (x1 - x2) }(bma, x * mi, 1)","function(x0: Int, x1: Int, x2: Int) { x0 * x1 * x2 = x0 * (x1 * x2) }(bma, x, mi)","function(x0: Int) { x0 * 1 = x0 }(b - a)"]}
+{"goal":"c - b = bma * (x * mi - 1)","proof":[]}
+{"goal":"x * mi - 1 = -(y * ni)","proof":["function(x0: Int, x1: Int) { x0 - (x0 + x1) = -x1 }(x * mi, y * ni)"]}
+{"goal":"bma * (x * mi - 1) = bma * -(y * ni)","proof":[]}
+{"goal":"bma * -(y * ni) = -(bma * y * ni)","proof":["function(x0: Int, x1: Int, x2: Int) { x0 * x1 * x2 = x0 * (x1 * x2) }(bma, y, ni)","function(x0: Int, x1: Int) { x0 * -x1 = -(x0 * x1) }(bma, y * ni)"]}
+{"goal":"c - b = -(bma * y * ni)","proof":[]}
+{"goal":"-(bma * y * ni) = ni * -(bma * y)","proof":["function(x0: Int, x1: Int) { -x0 * x1 = -(x0 * x1) }(bma * y, ni)","function(x0: Int, x1: Int) { x0 * x1 = x1 * x0 }(ni, -(bma * y))"]}
+{"goal":"ni.divides(c - b)","proof":["function(x0: Int, x1: Int) { exists(k0: Int) { k0 * x0 = x1 } = x0.divides(x1) }(ni, c - b)","function(x0: Int, x1: Int) { -x0 * x1 = -(x0 * x1) }((b - a) * y, ni)","not exists(k0: Int) { k0 * ni = c - b }","function(x0: Int) { c - b != x0 * ni }(-((b - a) * y))"]}
+{"goal":"Int.from_nat(n).divides(a + (b - a) * x * Int.from_nat(m) - b)","proof":[]}
+{"goal":"crt_witness_mod_n","proof":["x * Int.from_nat(m) + y * Int.from_nat(n) != 1"]}
+{"goal":"m.gcd(n) = Nat.1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = Nat.1 = x0.coprime(x1) }(m, n)"]}
+{"goal":"exists(k0: Int, k1: Int) { k0 * Int.from_nat(m) + k1 * Int.from_nat(n) = Int.from_nat(m.gcd(n)) }","proof":[]}
+{"goal":"Int.from_nat(m.gcd(n)) = Int.from_nat(Nat.1)","proof":[]}
+{"goal":"Int.from_nat(Nat.1) = 1","proof":[]}
+{"goal":"x * Int.from_nat(m) + y * Int.from_nat(n) = 1","proof":[]}
+{"goal":"Int.from_nat(m).divides(c - a)","proof":[]}
+{"goal":"Int.from_nat(n).divides(c - b)","proof":[]}
+{"goal":"int_mod_rel(m, c, a)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(m, c, a)"]}
+{"goal":"int_mod_rel(n, c, b)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, c, b)"]}
+{"goal":"exists(k0: Int) { int_mod_rel(m, k0, a) and int_mod_rel(n, k0, b) }","proof":["function(x0: Int) { not (int_mod_rel(m, x0, a) and int_mod_rel(n, x0, b)) }(c)"]}
+{"goal":"int_crt_two_moduli","proof":[]}
