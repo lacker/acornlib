@@ -16,5 +16,10 @@
 {"goal":"head.first.divides(big_mod)","proof":[]}
 {"goal":"system_modulus(tail) * head.first = head.first * system_modulus(tail)","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(head.first, system_modulus(tail))"]}
 {"goal":"system_modulus(tail).divides(big_mod)","proof":[]}
-{"goal":"c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))","proof":["c.congr_mod(c0, system_modulus(tail))","not c.congr_mod(c0, head.first)","c.congr_mod(c0, head.first)"]}
-{"goal":"cons_modulus_split","proof":["c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))","not c.congr_mod(c0, head.first)"]}
+{"goal":"c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))","proof":[]}
+{"goal":"cons_modulus_split","proof":[]}
+{"goal":"c.congr_mod(c0, head.first)","proof":[]}
+{"goal":"c0.congr_mod(head.second, head.first)","proof":[]}
+{"goal":"c.congr_mod(head.second, head.first)","proof":[]}
+{"goal":"satisfies_all(c, List.cons(head, tail))","proof":[]}
+{"goal":"satisfies_all_descend_cons_step","proof":[]}

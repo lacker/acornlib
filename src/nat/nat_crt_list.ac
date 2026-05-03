@@ -124,3 +124,28 @@ theorem cons_modulus_split(c: Nat, c0: Nat, head: Pair[Nat, Nat], tail: List[Pai
     }
 }
 
+/// Cons-step glue: given the tail's descent already discharged, build
+/// the cons descent.
+theorem satisfies_all_descend_cons_step(
+    c: Nat, c0: Nat, head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]
+) {
+    satisfies_all(c, tail)
+        and c.congr_mod(c0, system_modulus(List.cons(head, tail)))
+        and satisfies_all(c0, List.cons(head, tail))
+        implies satisfies_all(c, List.cons(head, tail))
+} by {
+    if satisfies_all(c, tail)
+        and c.congr_mod(c0, system_modulus(List.cons(head, tail)))
+        and satisfies_all(c0, List.cons(head, tail)) {
+        cons_modulus_split(c, c0, head, tail)
+        c.congr_mod(c0, head.first)
+        satisfies_all_cons_imp(c0, head, tail)
+        c0.congr_mod(head.second, head.first)
+        congr_mod_trans(c, c0, head.second, head.first)
+        c.congr_mod(head.second, head.first)
+        satisfies_all_cons_intro(c, head, tail)
+        satisfies_all(c, List.cons(head, tail))
+    }
+}
+
+
