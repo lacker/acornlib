@@ -1,0 +1,34 @@
+from nat import Nat
+numerals Nat
+
+/// RSA encryption of a message `m` with public exponent `e` modulo `n`.
+/// Computes `m^e mod n`.
+define rsa_encrypt(m: Nat, e: Nat, n: Nat) -> Nat {
+    m.pow(e).mod(n)
+}
+
+/// RSA decryption of a ciphertext `c` with private exponent `d` modulo `n`.
+/// Computes `c^d mod n`.
+define rsa_decrypt(c: Nat, d: Nat, n: Nat) -> Nat {
+    c.pow(d).mod(n)
+}
+
+/// True if `(p, q, e, d)` is a valid RSA key tuple: `p` and `q` are distinct
+/// primes and `e * d` is congruent to `1` modulo `(p - 1) * (q - 1)`.
+define is_rsa_key(p: Nat, q: Nat, e: Nat, d: Nat) -> Bool {
+    p.is_prime and q.is_prime and p != q and
+    (e * d).mod((p - 1) * (q - 1)) = 1
+}
+
+// TODO: prove RSA correctness. Requires Euler's theorem (a^phi(n) = 1 mod n
+// when gcd(a, n) = 1), the Chinese remainder theorem, and the totient
+// identity phi(p*q) = (p-1)*(q-1) for distinct primes p, q. None of these
+// are currently in acornlib.
+//
+// /// RSA correctness: decrypting an encrypted message recovers the original.
+// /// For a valid RSA key `(p, q, e, d)` with modulus `n = p * q` and any
+// /// message `m < n`, we have `rsa_decrypt(rsa_encrypt(m, e, n), d, n) = m`.
+// theorem rsa_correctness(p: Nat, q: Nat, e: Nat, d: Nat, m: Nat) {
+//     is_rsa_key(p, q, e, d) and m < p * q implies
+//         rsa_decrypt(rsa_encrypt(m, e, p * q), d, p * q) = m
+// }

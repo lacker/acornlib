@@ -1,0 +1,50 @@
+from int.lattice import Int
+from int.int_base import abs, abs_mul
+from nat.basic_addition import Nat
+from nat.nat_lcm import gcd_mul_lcm
+numerals Int
+
+attributes Int {
+    /// The least common multiple of this integer and b, defined as the
+    /// nonneg integer with absolute value equal to the natural-number lcm
+    /// of the two absolute values.
+    define lcm(self, b: Int) -> Int {
+        Int.from_nat(abs(self).lcm(abs(b)))
+    }
+}
+
+/// The integer lcm is always nonnegative.
+theorem int_lcm_nonneg(a: Int, b: Int) {
+    not a.lcm(b).is_negative
+}
+
+/// Bridge: the integer lcm is the embedding of the natural lcm of the absolute values.
+theorem int_lcm_from_nat_abs(a: Int, b: Int) {
+    a.lcm(b) = Int.from_nat(abs(a).lcm(abs(b)))
+}
+
+/// Defining product identity on the integers: gcd times lcm equals the
+/// natural-number product of the absolute values, lifted to Int.
+theorem int_gcd_mul_lcm(a: Int, b: Int) {
+    a.gcd(b) * a.lcm(b) = Int.from_nat(abs(a) * abs(b))
+} by {
+    a.gcd(b) = Int.from_nat(abs(a).gcd(abs(b)))
+    a.lcm(b) = Int.from_nat(abs(a).lcm(abs(b)))
+    Int.from_nat(abs(a).gcd(abs(b))) * Int.from_nat(abs(a).lcm(abs(b))) =
+        Int.from_nat(abs(a).gcd(abs(b)) * abs(a).lcm(abs(b)))
+    gcd_mul_lcm(abs(a), abs(b))
+    abs(a).gcd(abs(b)) * abs(a).lcm(abs(b)) = abs(a) * abs(b)
+    Int.from_nat(abs(a).gcd(abs(b)) * abs(a).lcm(abs(b))) = Int.from_nat(abs(a) * abs(b))
+}
+
+/// Defining product identity in absolute-value form: gcd times lcm has the
+/// same magnitude as the product a * b.
+theorem int_gcd_mul_lcm_abs(a: Int, b: Int) {
+    abs(a.gcd(b) * a.lcm(b)) = abs(a * b)
+} by {
+    int_gcd_mul_lcm(a, b)
+    a.gcd(b) * a.lcm(b) = Int.from_nat(abs(a) * abs(b))
+    abs(Int.from_nat(abs(a) * abs(b))) = abs(a) * abs(b)
+    abs_mul(a, b)
+    abs(a) * abs(b) = abs(a * b)
+}

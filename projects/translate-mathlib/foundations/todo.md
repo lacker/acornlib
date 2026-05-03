@@ -2,10 +2,11 @@
 
 Goal: make core definitions and proof patterns stable enough that later libraries can build on them without constant local patching.
 
-- [ ] [Quotient constructions with good elimination and equality lemmas](quotients/todo.md)
 - [ ] [Relation algebra for reflexive, symmetric, transitive, and equivalence relations](relation-algebra/todo.md)
 - [ ] [Canonical APIs for products, sums, options, and dependent pairs](core-type-constructions/todo.md)
 
+The [quotients](quotients/todo.md) branch is at a stable state — kernel relations, group/ring/module quotients, full algebraic axiom sets, migration audit, and the per-`qrel` vs typeclass design decision are all settled and recorded under that subtree.
+
 ## Current Focus
 
-Active quotient work: kernel relations, group/ring/module quotients, and migration audit. Transport across equality and equivalence is complete and folded into status notes on the relation and quotient branches. Core type construction refactors remain deferred until their API choices are settled.
+Both remaining branches are deferred design questions awaiting a downstream consumer to force the call: relation-algebra's open question is whether explicit finite-path/walk objects belong on top of `relation_power`; core-type-constructions' open question is whether dependent pairs and the pair/sum/option family share a constrained-structure toolkit.
