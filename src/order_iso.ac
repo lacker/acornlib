@@ -1,6 +1,7 @@
 /// Order isomorphisms between partially ordered types.
 
-from functions import compose, identity_fn, is_injective_fn, is_surjective_fn, is_bijection_fn
+from functions import compose, identity_fn, function_extensionality,
+    is_injective_fn, is_surjective_fn, is_bijection_fn
 from order import PartialOrder, LinearOrder
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval,
     is_lower_bound, is_upper_bound, is_bounded_below, is_bounded_above, is_bounded_by_interval,
@@ -1975,4 +1976,821 @@ theorem compose_order_iso_apply[A: PartialOrder, B: PartialOrder, C: PartialOrde
     order_iso_apply(h, x) = h.map(x)
     order_iso_apply(e, order_iso_apply(h, x)) = e.map(order_iso_apply(h, x))
     order_iso_apply(e, order_iso_apply(h, x)) = e.map(h.map(x))
+}
+
+/// True if one function lies pointwise below another.
+define function_order_lte[X, A: PartialOrder](f: X -> A, g: X -> A) -> Bool {
+    forall(x: X) {
+        f(x) <= g(x)
+    }
+}
+
+/// True if one function lies pointwise strictly below another.
+define function_order_lt[X, A: PartialOrder](f: X -> A, g: X -> A) -> Bool {
+    forall(x: X) {
+        f(x) < g(x)
+    }
+}
+
+/// The pointwise order on functions is reflexive.
+theorem function_order_lte_refl[X, A: PartialOrder](f: X -> A) {
+    function_order_lte(f, f)
+} by {
+    function_order_lte(f, f) = forall(x: X) {
+        f(x) <= f(x)
+    }
+}
+
+/// The pointwise order on functions is transitive.
+theorem function_order_lte_trans[X, A: PartialOrder](f: X -> A, g: X -> A, h: X -> A) {
+    function_order_lte(f, g) and function_order_lte(g, h) implies function_order_lte(f, h)
+} by {
+    if function_order_lte(f, g) and function_order_lte(g, h) {
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        function_order_lte(g, h) = forall(x: X) {
+            g(x) <= h(x)
+        }
+        forall(x: X) {
+            f(x) <= g(x)
+            g(x) <= h(x)
+            f(x) <= h(x)
+        }
+        function_order_lte(f, h) = forall(x: X) {
+            f(x) <= h(x)
+        }
+        function_order_lte(f, h)
+    }
+}
+
+/// Pointwise strict order implies pointwise non-strict order.
+theorem function_order_lt_imp_lte[X, A: PartialOrder](f: X -> A, g: X -> A) {
+    function_order_lt(f, g) implies function_order_lte(f, g)
+} by {
+    if function_order_lt(f, g) {
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        forall(x: X) {
+            f(x) < g(x)
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g)
+    }
+}
+
+/// Applying an order isomorphism pointwise to a function.
+define function_order_iso_map[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    x: X
+) -> B {
+    e.map(f(x))
+}
+
+/// Applying the inverse of an order isomorphism pointwise to a function.
+define function_order_iso_unmap[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    g: X -> B,
+    x: X
+) -> A {
+    e.inv(g(x))
+}
+
+/// Pointwise application of an order isomorphism has the inverse pointwise application as a left inverse.
+theorem function_order_iso_unmap_map[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A
+) {
+    function_order_iso_unmap(e, function_order_iso_map(e, f)) = f
+} by {
+    forall(x: X) {
+        function_order_iso_map(e, f, x) = e.map(f(x))
+        function_order_iso_unmap(e, function_order_iso_map(e, f), x) =
+            e.inv(function_order_iso_map(e, f, x))
+        e.inv(function_order_iso_map(e, f, x)) = e.inv(e.map(f(x)))
+        order_iso_left_inverse(e, f(x))
+        e.inv(e.map(f(x))) = f(x)
+        function_order_iso_unmap(e, function_order_iso_map(e, f), x) = f(x)
+    }
+    function_extensionality(function_order_iso_unmap(e, function_order_iso_map(e, f)), f)
+}
+
+/// Pointwise application of an order isomorphism has the inverse pointwise application as a right inverse.
+theorem function_order_iso_map_unmap[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    g: X -> B
+) {
+    function_order_iso_map(e, function_order_iso_unmap(e, g)) = g
+} by {
+    forall(x: X) {
+        function_order_iso_unmap(e, g, x) = e.inv(g(x))
+        function_order_iso_map(e, function_order_iso_unmap(e, g), x) =
+            e.map(function_order_iso_unmap(e, g, x))
+        e.map(function_order_iso_unmap(e, g, x)) = e.map(e.inv(g(x)))
+        order_iso_right_inverse(e, g(x))
+        e.map(e.inv(g(x))) = g(x)
+        function_order_iso_map(e, function_order_iso_unmap(e, g), x) = g(x)
+    }
+    function_extensionality(function_order_iso_map(e, function_order_iso_unmap(e, g)), g)
+}
+
+/// Pointwise application of an order isomorphism preserves the pointwise order.
+theorem function_order_iso_map_lte[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(f, g) implies
+    function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g))
+} by {
+    if function_order_lte(f, g) {
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        forall(x: X) {
+            f(x) <= g(x)
+            order_iso_apply_le(e, f(x), g(x))
+            e.map(f(x)) <= e.map(g(x))
+            function_order_iso_map(e, f, x) = e.map(f(x))
+            function_order_iso_map(e, g, x) = e.map(g(x))
+            function_order_iso_map(e, f, x) <= function_order_iso_map(e, g, x)
+        }
+        function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+            forall(x: X) {
+                function_order_iso_map(e, f, x) <= function_order_iso_map(e, g, x)
+            }
+        function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    }
+}
+
+/// Pointwise application of an order isomorphism reflects the pointwise order.
+theorem function_order_iso_map_reflects_lte[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    implies
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) {
+        function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+            forall(x: X) {
+                function_order_iso_map(e, f, x) <= function_order_iso_map(e, g, x)
+            }
+        forall(x: X) {
+            function_order_iso_map(e, f, x) <= function_order_iso_map(e, g, x)
+            function_order_iso_map(e, f, x) = e.map(f(x))
+            function_order_iso_map(e, g, x) = e.map(g(x))
+            e.map(f(x)) <= e.map(g(x))
+            order_iso_reflects_le(e, f(x), g(x))
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g)
+    }
+}
+
+/// Pointwise application of an order isomorphism preserves and reflects the pointwise order.
+theorem function_order_iso_map_lte_iff[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) {
+        function_order_iso_map_reflects_lte(e, f, g)
+        function_order_lte(f, g)
+    }
+    if function_order_lte(f, g) {
+        function_order_iso_map_lte(e, f, g)
+        function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    }
+    function_order_lte(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+        function_order_lte(f, g)
+}
+
+/// Pointwise application of an order isomorphism preserves pointwise strict order.
+theorem function_order_iso_map_lt[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(f, g) implies
+    function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g))
+} by {
+    if function_order_lt(f, g) {
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        forall(x: X) {
+            f(x) < g(x)
+            order_iso_apply_lt(e, f(x), g(x))
+            e.map(f(x)) < e.map(g(x))
+            function_order_iso_map(e, f, x) = e.map(f(x))
+            function_order_iso_map(e, g, x) = e.map(g(x))
+            function_order_iso_map(e, f, x) < function_order_iso_map(e, g, x)
+        }
+        function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+            forall(x: X) {
+                function_order_iso_map(e, f, x) < function_order_iso_map(e, g, x)
+            }
+        function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    }
+}
+
+/// Pointwise application of an order isomorphism reflects pointwise strict order.
+theorem function_order_iso_map_reflects_lt[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    implies
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) {
+        function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+            forall(x: X) {
+                function_order_iso_map(e, f, x) < function_order_iso_map(e, g, x)
+            }
+        forall(x: X) {
+            function_order_iso_map(e, f, x) < function_order_iso_map(e, g, x)
+            function_order_iso_map(e, f, x) = e.map(f(x))
+            function_order_iso_map(e, g, x) = e.map(g(x))
+            e.map(f(x)) < e.map(g(x))
+            order_iso_reflects_lt(e, f(x), g(x))
+            f(x) < g(x)
+        }
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        function_order_lt(f, g)
+    }
+}
+
+/// Pointwise application of an order isomorphism preserves and reflects pointwise strict order.
+theorem function_order_iso_map_lt_iff[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) {
+        function_order_iso_map_reflects_lt(e, f, g)
+        function_order_lt(f, g)
+    }
+    if function_order_lt(f, g) {
+        function_order_iso_map_lt(e, f, g)
+        function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g))
+    }
+    function_order_lt(function_order_iso_map(e, f), function_order_iso_map(e, g)) =
+        function_order_lt(f, g)
+}
+
+/// Pointwise application of the inverse of an order isomorphism preserves the pointwise order.
+theorem function_order_iso_unmap_lte[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lte(f, g) implies
+    function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+} by {
+    if function_order_lte(f, g) {
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        forall(x: X) {
+            f(x) <= g(x)
+            order_iso_inv_apply_le(e, f(x), g(x))
+            e.inv(f(x)) <= e.inv(g(x))
+            function_order_iso_unmap(e, f, x) = e.inv(f(x))
+            function_order_iso_unmap(e, g, x) = e.inv(g(x))
+            function_order_iso_unmap(e, f, x) <= function_order_iso_unmap(e, g, x)
+        }
+        function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+            forall(x: X) {
+                function_order_iso_unmap(e, f, x) <= function_order_iso_unmap(e, g, x)
+            }
+        function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    }
+}
+
+/// Pointwise application of the inverse of an order isomorphism reflects the pointwise order.
+theorem function_order_iso_unmap_reflects_lte[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    implies
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) {
+        function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+            forall(x: X) {
+                function_order_iso_unmap(e, f, x) <= function_order_iso_unmap(e, g, x)
+            }
+        forall(x: X) {
+            function_order_iso_unmap(e, f, x) <= function_order_iso_unmap(e, g, x)
+            function_order_iso_unmap(e, f, x) = e.inv(f(x))
+            function_order_iso_unmap(e, g, x) = e.inv(g(x))
+            e.inv(f(x)) <= e.inv(g(x))
+            order_iso_inv_reflects_le(e, f(x), g(x))
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g)
+    }
+}
+
+/// Pointwise application of the inverse of an order isomorphism preserves and reflects the pointwise order.
+theorem function_order_iso_unmap_lte_iff[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) {
+        function_order_iso_unmap_reflects_lte(e, f, g)
+        function_order_lte(f, g)
+    }
+    if function_order_lte(f, g) {
+        function_order_iso_unmap_lte(e, f, g)
+        function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    }
+    function_order_lte(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+        function_order_lte(f, g)
+}
+
+/// Pointwise application of the inverse of an order isomorphism preserves pointwise strict order.
+theorem function_order_iso_unmap_lt[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lt(f, g) implies
+    function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+} by {
+    if function_order_lt(f, g) {
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        forall(x: X) {
+            f(x) < g(x)
+            order_iso_inv_apply_lt(e, f(x), g(x))
+            e.inv(f(x)) < e.inv(g(x))
+            function_order_iso_unmap(e, f, x) = e.inv(f(x))
+            function_order_iso_unmap(e, g, x) = e.inv(g(x))
+            function_order_iso_unmap(e, f, x) < function_order_iso_unmap(e, g, x)
+        }
+        function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+            forall(x: X) {
+                function_order_iso_unmap(e, f, x) < function_order_iso_unmap(e, g, x)
+            }
+        function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    }
+}
+
+/// Pointwise application of the inverse of an order isomorphism reflects pointwise strict order.
+theorem function_order_iso_unmap_reflects_lt[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    implies
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) {
+        function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+            forall(x: X) {
+                function_order_iso_unmap(e, f, x) < function_order_iso_unmap(e, g, x)
+            }
+        forall(x: X) {
+            function_order_iso_unmap(e, f, x) < function_order_iso_unmap(e, g, x)
+            function_order_iso_unmap(e, f, x) = e.inv(f(x))
+            function_order_iso_unmap(e, g, x) = e.inv(g(x))
+            e.inv(f(x)) < e.inv(g(x))
+            order_iso_inv_reflects_lt(e, f(x), g(x))
+            f(x) < g(x)
+        }
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        function_order_lt(f, g)
+    }
+}
+
+/// Pointwise application of the inverse of an order isomorphism preserves and reflects pointwise strict order.
+theorem function_order_iso_unmap_lt_iff[X, A: PartialOrder, B: PartialOrder](
+    e: OrderIso[A, B],
+    f: X -> B,
+    g: X -> B
+) {
+    function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) {
+        function_order_iso_unmap_reflects_lt(e, f, g)
+        function_order_lt(f, g)
+    }
+    if function_order_lt(f, g) {
+        function_order_iso_unmap_lt(e, f, g)
+        function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g))
+    }
+    function_order_lt(function_order_iso_unmap(e, f), function_order_iso_unmap(e, g)) =
+        function_order_lt(f, g)
+}
+
+/// Reindexing a function by an order isomorphism of domains.
+define function_order_iso_reindex[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    x: X
+) -> A {
+    f(e.map(x))
+}
+
+/// Reindexing a function by the inverse order isomorphism of domains.
+define function_order_iso_unreindex[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    y: Y
+) -> A {
+    f(e.inv(y))
+}
+
+/// Reindexing by an order isomorphism and then by its inverse gives the original function.
+theorem function_order_iso_unreindex_reindex[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A
+) {
+    function_order_iso_unreindex(e, function_order_iso_reindex(e, f)) = f
+} by {
+    forall(y: Y) {
+        function_order_iso_unreindex(e, function_order_iso_reindex(e, f), y) =
+            function_order_iso_reindex(e, f, e.inv(y))
+        function_order_iso_reindex(e, f, e.inv(y)) = f(e.map(e.inv(y)))
+        order_iso_right_inverse(e, y)
+        e.map(e.inv(y)) = y
+        f(e.map(e.inv(y))) = f(y)
+        function_order_iso_unreindex(e, function_order_iso_reindex(e, f), y) = f(y)
+    }
+    function_extensionality(function_order_iso_unreindex(e, function_order_iso_reindex(e, f)), f)
+}
+
+/// Reindexing by the inverse order isomorphism and then by the order isomorphism gives the original function.
+theorem function_order_iso_reindex_unreindex[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A
+) {
+    function_order_iso_reindex(e, function_order_iso_unreindex(e, f)) = f
+} by {
+    forall(x: X) {
+        function_order_iso_reindex(e, function_order_iso_unreindex(e, f), x) =
+            function_order_iso_unreindex(e, f, e.map(x))
+        function_order_iso_unreindex(e, f, e.map(x)) = f(e.inv(e.map(x)))
+        order_iso_left_inverse(e, x)
+        e.inv(e.map(x)) = x
+        f(e.inv(e.map(x))) = f(x)
+        function_order_iso_reindex(e, function_order_iso_unreindex(e, f), x) = f(x)
+    }
+    function_extensionality(function_order_iso_reindex(e, function_order_iso_unreindex(e, f)), f)
+}
+
+/// Reindexing by an order isomorphism preserves pointwise order.
+theorem function_order_iso_reindex_lte[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lte(f, g) implies
+    function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+} by {
+    if function_order_lte(f, g) {
+        function_order_lte(f, g) = forall(y: Y) {
+            f(y) <= g(y)
+        }
+        forall(x: X) {
+            f(e.map(x)) <= g(e.map(x))
+            function_order_iso_reindex(e, f, x) = f(e.map(x))
+            function_order_iso_reindex(e, g, x) = g(e.map(x))
+            function_order_iso_reindex(e, f, x) <= function_order_iso_reindex(e, g, x)
+        }
+        function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+            forall(x: X) {
+                function_order_iso_reindex(e, f, x) <= function_order_iso_reindex(e, g, x)
+            }
+        function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    }
+}
+
+/// Reindexing by an order isomorphism reflects pointwise order.
+theorem function_order_iso_reindex_reflects_lte[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    implies
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) {
+        function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+            forall(x: X) {
+                function_order_iso_reindex(e, f, x) <= function_order_iso_reindex(e, g, x)
+            }
+        forall(y: Y) {
+            function_order_iso_reindex(e, f, e.inv(y)) <= function_order_iso_reindex(e, g, e.inv(y))
+            function_order_iso_reindex(e, f, e.inv(y)) = f(e.map(e.inv(y)))
+            function_order_iso_reindex(e, g, e.inv(y)) = g(e.map(e.inv(y)))
+            order_iso_right_inverse(e, y)
+            e.map(e.inv(y)) = y
+            f(e.map(e.inv(y))) = f(y)
+            g(e.map(e.inv(y))) = g(y)
+            f(y) <= g(y)
+        }
+        function_order_lte(f, g) = forall(y: Y) {
+            f(y) <= g(y)
+        }
+        function_order_lte(f, g)
+    }
+}
+
+/// Reindexing by an order isomorphism preserves and reflects pointwise order.
+theorem function_order_iso_reindex_lte_iff[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) {
+        function_order_iso_reindex_reflects_lte(e, f, g)
+        function_order_lte(f, g)
+    }
+    if function_order_lte(f, g) {
+        function_order_iso_reindex_lte(e, f, g)
+        function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    }
+    function_order_lte(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+        function_order_lte(f, g)
+}
+
+/// Reindexing by the inverse of an order isomorphism preserves pointwise order.
+theorem function_order_iso_unreindex_lte[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(f, g) implies
+    function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+} by {
+    if function_order_lte(f, g) {
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        forall(y: Y) {
+            f(e.inv(y)) <= g(e.inv(y))
+            function_order_iso_unreindex(e, f, y) = f(e.inv(y))
+            function_order_iso_unreindex(e, g, y) = g(e.inv(y))
+            function_order_iso_unreindex(e, f, y) <= function_order_iso_unreindex(e, g, y)
+        }
+        function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+            forall(y: Y) {
+                function_order_iso_unreindex(e, f, y) <= function_order_iso_unreindex(e, g, y)
+            }
+        function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    }
+}
+
+/// Reindexing by the inverse of an order isomorphism reflects pointwise order.
+theorem function_order_iso_unreindex_reflects_lte[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    implies
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) {
+        function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+            forall(y: Y) {
+                function_order_iso_unreindex(e, f, y) <= function_order_iso_unreindex(e, g, y)
+            }
+        forall(x: X) {
+            function_order_iso_unreindex(e, f, e.map(x)) <= function_order_iso_unreindex(e, g, e.map(x))
+            function_order_iso_unreindex(e, f, e.map(x)) = f(e.inv(e.map(x)))
+            function_order_iso_unreindex(e, g, e.map(x)) = g(e.inv(e.map(x)))
+            order_iso_left_inverse(e, x)
+            e.inv(e.map(x)) = x
+            f(e.inv(e.map(x))) = f(x)
+            g(e.inv(e.map(x))) = g(x)
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g) = forall(x: X) {
+            f(x) <= g(x)
+        }
+        function_order_lte(f, g)
+    }
+}
+
+/// Reindexing by the inverse of an order isomorphism preserves and reflects pointwise order.
+theorem function_order_iso_unreindex_lte_iff[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+    function_order_lte(f, g)
+} by {
+    if function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) {
+        function_order_iso_unreindex_reflects_lte(e, f, g)
+        function_order_lte(f, g)
+    }
+    if function_order_lte(f, g) {
+        function_order_iso_unreindex_lte(e, f, g)
+        function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    }
+    function_order_lte(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+        function_order_lte(f, g)
+}
+
+/// Reindexing by an order isomorphism preserves pointwise strict order.
+theorem function_order_iso_reindex_lt[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lt(f, g) implies
+    function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+} by {
+    if function_order_lt(f, g) {
+        function_order_lt(f, g) = forall(y: Y) {
+            f(y) < g(y)
+        }
+        forall(x: X) {
+            f(e.map(x)) < g(e.map(x))
+            function_order_iso_reindex(e, f, x) = f(e.map(x))
+            function_order_iso_reindex(e, g, x) = g(e.map(x))
+            function_order_iso_reindex(e, f, x) < function_order_iso_reindex(e, g, x)
+        }
+        function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+            forall(x: X) {
+                function_order_iso_reindex(e, f, x) < function_order_iso_reindex(e, g, x)
+            }
+        function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    }
+}
+
+/// Reindexing by an order isomorphism reflects pointwise strict order.
+theorem function_order_iso_reindex_reflects_lt[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    implies
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) {
+        function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+            forall(x: X) {
+                function_order_iso_reindex(e, f, x) < function_order_iso_reindex(e, g, x)
+            }
+        forall(y: Y) {
+            function_order_iso_reindex(e, f, e.inv(y)) < function_order_iso_reindex(e, g, e.inv(y))
+            function_order_iso_reindex(e, f, e.inv(y)) = f(e.map(e.inv(y)))
+            function_order_iso_reindex(e, g, e.inv(y)) = g(e.map(e.inv(y)))
+            order_iso_right_inverse(e, y)
+            e.map(e.inv(y)) = y
+            f(e.map(e.inv(y))) = f(y)
+            g(e.map(e.inv(y))) = g(y)
+            f(y) < g(y)
+        }
+        function_order_lt(f, g) = forall(y: Y) {
+            f(y) < g(y)
+        }
+        function_order_lt(f, g)
+    }
+}
+
+/// Reindexing by an order isomorphism preserves and reflects pointwise strict order.
+theorem function_order_iso_reindex_lt_iff[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: Y -> A,
+    g: Y -> A
+) {
+    function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) {
+        function_order_iso_reindex_reflects_lt(e, f, g)
+        function_order_lt(f, g)
+    }
+    if function_order_lt(f, g) {
+        function_order_iso_reindex_lt(e, f, g)
+        function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g))
+    }
+    function_order_lt(function_order_iso_reindex(e, f), function_order_iso_reindex(e, g)) =
+        function_order_lt(f, g)
+}
+
+/// Reindexing by the inverse of an order isomorphism preserves pointwise strict order.
+theorem function_order_iso_unreindex_lt[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(f, g) implies
+    function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+} by {
+    if function_order_lt(f, g) {
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        forall(y: Y) {
+            f(e.inv(y)) < g(e.inv(y))
+            function_order_iso_unreindex(e, f, y) = f(e.inv(y))
+            function_order_iso_unreindex(e, g, y) = g(e.inv(y))
+            function_order_iso_unreindex(e, f, y) < function_order_iso_unreindex(e, g, y)
+        }
+        function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+            forall(y: Y) {
+                function_order_iso_unreindex(e, f, y) < function_order_iso_unreindex(e, g, y)
+            }
+        function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    }
+}
+
+/// Reindexing by the inverse of an order isomorphism reflects pointwise strict order.
+theorem function_order_iso_unreindex_reflects_lt[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    implies
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) {
+        function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+            forall(y: Y) {
+                function_order_iso_unreindex(e, f, y) < function_order_iso_unreindex(e, g, y)
+            }
+        forall(x: X) {
+            function_order_iso_unreindex(e, f, e.map(x)) < function_order_iso_unreindex(e, g, e.map(x))
+            function_order_iso_unreindex(e, f, e.map(x)) = f(e.inv(e.map(x)))
+            function_order_iso_unreindex(e, g, e.map(x)) = g(e.inv(e.map(x)))
+            order_iso_left_inverse(e, x)
+            e.inv(e.map(x)) = x
+            f(e.inv(e.map(x))) = f(x)
+            g(e.inv(e.map(x))) = g(x)
+            f(x) < g(x)
+        }
+        function_order_lt(f, g) = forall(x: X) {
+            f(x) < g(x)
+        }
+        function_order_lt(f, g)
+    }
+}
+
+/// Reindexing by the inverse of an order isomorphism preserves and reflects pointwise strict order.
+theorem function_order_iso_unreindex_lt_iff[X: PartialOrder, Y: PartialOrder, A: PartialOrder](
+    e: OrderIso[X, Y],
+    f: X -> A,
+    g: X -> A
+) {
+    function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+    function_order_lt(f, g)
+} by {
+    if function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) {
+        function_order_iso_unreindex_reflects_lt(e, f, g)
+        function_order_lt(f, g)
+    }
+    if function_order_lt(f, g) {
+        function_order_iso_unreindex_lt(e, f, g)
+        function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g))
+    }
+    function_order_lt(function_order_iso_unreindex(e, f), function_order_iso_unreindex(e, g)) =
+        function_order_lt(f, g)
 }
