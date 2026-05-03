@@ -64,3 +64,8 @@
 {"goal":"abs(b) <= abs(a)","proof":[]}
 {"goal":"abs(a) = abs(b)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(relation_basic).is_antisymmetric[T0](x0) or not x0(x1, x2) or not x0(x2, x1) or x1 = x2 }[Nat](Nat.lte, abs(b), abs(a))"]}
 {"goal":"int_divides_antisymm","proof":[]}
+{"goal":"abs(Int.from_nat(n)) = n","proof":[]}
+{"goal":"is_prime(Int.from_nat(n)) = abs(Int.from_nat(n)).is_prime","proof":["function(x0: Int) { abs(x0).is_prime = is_prime(x0) }(Int.from_nat(n))"]}
+{"goal":"is_prime(Int.from_nat(n)) = n.is_prime","proof":["abs(Int.from_nat(n)).is_prime != is_prime(Int.from_nat(n))"]}
+{"goal":"nat_is_prime_iff_int_is_prime","proof":[]}
+{"goal":"int_is_prime_iff_abs_is_prime","proof":["function(x0: Int) { abs(x0).is_prime = is_prime(x0) }(a)"]}
