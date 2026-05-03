@@ -8,10 +8,9 @@ Goal: round out the divisibility/gcd/lcm API on `Nat` and `Int` so later number-
 - [ ] Prove Bezout's identity on `Nat`: existence of `x, y` (as `Int` or as a signed-pair encoding) with `gcd(a, b) = a*x + b*y`
 - [ ] Define `Int.gcd` via the absolute value of the `Nat` gcd of `|a|`, `|b|`; prove the universal property and basic identities
 - [ ] Define `Int.lcm` analogously and prove `gcd * lcm = |a * b|` on `Int`
-- [ ] Add coprime predicate on `Int` and the matching Euclid's lemma
 
 Notes:
 
 - `src/nat/nat_gcd.ac` already has the Euclidean algorithm, gcd uniqueness, gcd commutativity, gcd distribution over multiplication, and Euclid's lemma for primes (`gcd_of_prime`). The coprime predicate, `coprime_comm`, `coprime_one_left`/`_right`, `coprime_mul`, and Euclid's lemma `coprime_divides_of_divides_mul` live in `src/nat/nat_coprime.ac`. Build the lcm and Bezout pieces in a new `src/nat/nat_lcm.ac` next to it; appending to `nat_gcd.ac` perturbs the cache for a few flaky cached proofs there, so prefer new files.
-- `Int.divides` and `Int.gcd` are already defined in `src/int/lattice.ac` (transitivity, gcd_div_left/right, divides_gcd, euclids_lemma all present). The reflexivity, antisymmetry-up-to-sign, additive closure (`int_divides_add`/`_sub`), and sign-flip lemmas (`int_neg_divides`, `int_divides_neg`) live in `src/int/int_divisibility.ac`. The `Int.gcd` work is therefore narrower than originally written — only the universal-property packaging and identities still need filling in beyond what `lattice.ac` already proves.
+- `Int.divides` and `Int.gcd` are already defined in `src/int/lattice.ac` (transitivity, gcd_div_left/right, divides_gcd, euclids_lemma all present). The reflexivity, antisymmetry-up-to-sign, additive closure (`int_divides_add`/`_sub`), sign-flip lemmas (`int_neg_divides`, `int_divides_neg`), and the `Int.coprime` predicate with `int_coprime_comm`, `int_coprime_one_left`/`_right`, and `int_coprime_divides_of_divides_mul` (Euclid's lemma in coprime form) live in `src/int/int_divisibility.ac`. The `Int.gcd` work is therefore narrower than originally written — only the universal-property packaging and identities still need filling in beyond what `lattice.ac` already proves.
 - Bezout on `Nat` is the natural cutover point to `Int`: state it with `Int` coefficients to avoid a signed-`Nat` workaround.

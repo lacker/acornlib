@@ -2,6 +2,7 @@ from int.lattice import Int
 from int.int_base import abs
 from nat.basic_addition import Nat
 from ring import mul_neg_neg, mul_neg_left
+from int.lattice import euclids_lemma
 numerals Int
 
 /// Every integer divides itself.
@@ -89,6 +90,47 @@ theorem int_divides_mul(a: Int, b: Int, c: Int) {
         (x * c) * a = c * b
         c * b = b * c
         (x * c) * a = b * c
+    }
+}
+
+attributes Int {
+    /// True if this integer and b have no common factor greater than one.
+    define coprime(self, b: Int) -> Bool { self.gcd(b) = 1 }
+}
+
+/// Coprimality on the integers is symmetric in its arguments.
+theorem int_coprime_comm(a: Int, b: Int) {
+    a.coprime(b) implies b.coprime(a)
+} by {
+    if a.coprime(b) {
+        a.gcd(b) = 1
+        a.gcd(b) = b.gcd(a)
+        b.gcd(a) = 1
+    }
+}
+
+/// One is coprime with every integer on the left.
+theorem int_coprime_one_left(a: Int) {
+    Int.1.coprime(a)
+} by {
+    Int.1.gcd(a) = 1
+}
+
+/// One is coprime with every integer on the right.
+theorem int_coprime_one_right(a: Int) {
+    a.coprime(Int.1)
+} by {
+    a.gcd(Int.1) = 1
+}
+
+/// Euclid's lemma: if a is coprime to b and divides b * c, then a divides c.
+theorem int_coprime_divides_of_divides_mul(a: Int, b: Int, c: Int) {
+    a.coprime(b) and a.divides(b * c) implies a.divides(c)
+} by {
+    if a.coprime(b) and a.divides(b * c) {
+        a.gcd(b) = 1
+        euclids_lemma(a, b, c)
+        a.divides(c)
     }
 }
 
