@@ -1,6 +1,8 @@
 from nat.nat_coprime import Nat
 from nat.nat_gcd import gcd_of_prime, gcd_zero_left, gcd_zero_right
-from nat.nat_base import divides_self, divides_zero
+from nat.nat_base import divides_self, divides_zero, has_prime_divisor, strong_induction, true_below
+from list.list_base import List
+from list.list_product import product
 numerals Nat
 
 /// Helper: if a prime is the product of two factors, one factor is 1 and the
@@ -94,4 +96,113 @@ theorem coprime_of_distinct_primes(p: Nat, q: Nat) {
             false
         }
     }
+}
+
+/// True if every element of the list is a prime natural number.
+define all_prime(list: List[Nat]) -> Bool {
+    match list {
+        List.nil {
+            true
+        }
+        List.cons(head, tail) {
+            head.is_prime and all_prime(tail)
+        }
+    }
+}
+
+/// The empty list is trivially all-prime.
+theorem all_prime_nil {
+    all_prime(List.nil[Nat])
+}
+
+/// Cons-introduction for all_prime.
+theorem all_prime_cons_intro(head: Nat, tail: List[Nat]) {
+    head.is_prime and all_prime(tail) implies all_prime(List.cons(head, tail))
+} by {
+    if head.is_prime and all_prime(tail) {
+        all_prime(List.cons(head, tail))
+    }
+}
+
+/// Existence of a prime factorisation: every positive natural is the product
+/// of some list of primes.
+theorem prime_factorisation_exists(n: Nat) {
+    Nat.1 <= n implies exists(factors: List[Nat]) {
+        product[Nat](factors) = n and all_prime(factors)
+    }
+} by {
+    define f(m: Nat) -> Bool {
+        Nat.1 <= m implies exists(factors: List[Nat]) {
+            product[Nat](factors) = m and all_prime(factors)
+        }
+    }
+    forall(k: Nat) {
+        if true_below(f, k) {
+            if Nat.1 <= k {
+                if k = Nat.1 {
+                    product[Nat](List.nil[Nat]) = Nat.1
+                    product[Nat](List.nil[Nat]) = k
+                    all_prime_nil
+                    all_prime(List.nil[Nat])
+                    exists(factors: List[Nat]) {
+                        product[Nat](factors) = k and all_prime(factors)
+                    }
+                } else {
+                    Nat.1 < k
+                    has_prime_divisor(k)
+                    let p: Nat satisfy { p.is_prime and p.divides(k) }
+                    let q: Nat satisfy { p * q = k }
+                    Nat.1 < p
+                    // q != 0 (else k = 0).
+                    if q = Nat.0 {
+                        p * Nat.0 = Nat.0
+                        k = Nat.0
+                        false
+                    }
+                    q != Nat.0
+                    Nat.1 <= q
+                    // q < k since p > 1.
+                    p * q = k
+                    if q = k {
+                        p * k = k
+                        // p >= 2, so p * k = k means k = 0 (contradicting k >= 1).
+                        let r: Nat satisfy { p = Nat.1 + r }
+                        r != Nat.0
+                        Nat.1 + r >= Nat.1.suc
+                        p >= Nat.2
+                        (Nat.1 + r) * k = k + r * k
+                        p * k = k + r * k
+                        k + r * k = k
+                        r * k = Nat.0
+                        k = Nat.0
+                        false
+                    }
+                    q != k
+                    q < k
+                    // f(q) follows from true_below(f, k) and q < k; the
+                    // explicit `let h` instantiates the universally
+                    // quantified implication so the prover finds f(q).
+                    let h: Bool = q < k implies f(q)
+                    h
+                    let qfactors: List[Nat] satisfy {
+                        product[Nat](qfactors) = q and all_prime(qfactors)
+                    }
+                    let factors: List[Nat] = List.cons(p, qfactors)
+                    product[Nat](factors) = p * product[Nat](qfactors)
+                    p * product[Nat](qfactors) = p * q
+                    p * q = k
+                    product[Nat](factors) = k
+                    all_prime_cons_intro(p, qfactors)
+                    all_prime(factors)
+                    exists(fs: List[Nat]) {
+                        product[Nat](fs) = k and all_prime(fs)
+                    }
+                }
+            }
+            f(k)
+        }
+    }
+    strong_induction(f)
+    forall(m: Nat) { f(m) }
+    f(n)
 }

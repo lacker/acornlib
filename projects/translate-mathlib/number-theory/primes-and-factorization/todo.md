@@ -2,8 +2,7 @@
 
 Goal: round out the prime-number API on `Nat` and `Int` and add prime factorisation (as a list of primes) with the fundamental theorem of arithmetic.
 
-- [ ] Define `prime_factorisation(n: Nat) -> List[Nat]` (a multiset-style list of prime factors)
-- [ ] Prove the existence side of the fundamental theorem: for `n > 0`, the product of `prime_factorisation(n)` is `n`, and every entry is prime
+- [ ] Define `prime_factorisation(n: Nat) -> List[Nat]` as a satisfy-witness extracted from `prime_factorisation_exists`
 - [ ] Prove uniqueness side of the fundamental theorem: any two prime-factorisation lists for `n` are permutations of each other
 - [ ] Define `count_prime_factor(p, n)` (the multiplicity of prime `p` in the factorisation of `n`)
 - [ ] Prove `count_prime_factor` is multiplicative: `count_prime_factor(p, a * b) = count_prime_factor(p, a) + count_prime_factor(p, b)` for nonzero `a, b`
@@ -18,4 +17,4 @@ Notes:
 - `src/int/lattice.ac` defines `Int.is_prime(a) := abs(a).is_prime` and proves `gcd_of_prime` and `euclids_lemma_prime` for `Int`.
 - For the fundamental theorem: prefer the **list-of-primes** representation as the primary one (matches `nat_crt_list` / `list_product` shape and works with the existing `pairwise_coprime` and `product[Nat]` infrastructure); derive `count_prime_factor` from it. The multiset-via-`v_p(n)` view is the natural alternative form once divisibility lattices are needed.
 - For genericity: keep prime factorisation in a new file `src/nat/nat_factorisation.ac` so the heavy structural-induction lemmas don't inflate `nat_base.ac`'s cache footprint. The downstream `Int` prime API can layer on top via the absolute-value bridge.
-- `src/nat/nat_factorisation.ac` is now in place with `prime_factor_dichotomy` (a prime-as-product forces one factor to be 1 and the other to equal the prime), `prime_divisor_is_one_or_self`, and `coprime_of_distinct_primes`.
+- `src/nat/nat_factorisation.ac` is now in place with `prime_factor_dichotomy`, `prime_divisor_is_one_or_self`, `coprime_of_distinct_primes`, the `all_prime` predicate with structural lemmas (`all_prime_nil`, `all_prime_cons_intro`), and `prime_factorisation_exists` (every positive Nat is the product of some list of primes, by strong induction). The strong-induction body needed `let h: Bool = q < k implies f(q); h` to make the prover instantiate the `true_below` hypothesis at the recursive call site.
