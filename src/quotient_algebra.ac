@@ -23,12 +23,15 @@ from relation_transport import respects_add, is_add_congruence, respects_binary_
 from equivalence import kernel_relation, kernel_relation_is_equivalence,
     QuotientRelation, QuotientOver, quotient_over_mk,
     kernel_quotient_relation, kernel_quotient_relation_rel,
+    quotient_over_const, quotient_over_const_projection,
     quotient_unary_respects, quotient_binary_respects,
     quotient_unary_respects_eq_respects_unary_op,
     quotient_binary_respects_eq_respects_binary_op,
     quotient_over_binary_op, quotient_over_unary_op,
     quotient_over_binary_op_projection, quotient_over_binary_op_projection_left,
     quotient_over_binary_op_projection_right,
+    quotient_over_binary_op_projection_identity_left,
+    quotient_over_binary_op_projection_identity_right,
     quotient_over_unary_op_projection, quotient_over_unary_op_projection_compatible
 
 /// The kernel of an additive monoid homomorphism preserves addition pairwise.
@@ -188,6 +191,46 @@ theorem add_group_hom_kernel_quotient_sub_projection[A: AddGroup, B: AddGroup](f
 } by {
     add_group_hom_kernel_quotient_relation_respects_sub(f)
     quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), A.sub, a, b)
+}
+
+/// Subtraction in the kernel quotient respects related left representatives.
+theorem add_group_hom_kernel_quotient_sub_projection_left[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B],
+        a1: A, a2: A, b: A) {
+    kernel_relation(f.hom, a1, a2) implies
+    add_group_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = add_group_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        add_group_hom_kernel_quotient_relation_respects_sub(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), A.sub, a1, a2, b)
+    }
+}
+
+/// Subtraction in the kernel quotient respects related right representatives.
+theorem add_group_hom_kernel_quotient_sub_projection_right[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B],
+        a: A, b1: A, b2: A) {
+    kernel_relation(f.hom, b1, b2) implies
+    add_group_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = add_group_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        add_group_hom_kernel_quotient_relation_respects_sub(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), A.sub, a, b1, b2)
+    }
 }
 
 /// The kernel of an additive group homomorphism is an additive congruence.
@@ -423,6 +466,46 @@ theorem ring_hom_kernel_quotient_sub_projection[R: Ring, S: Ring](f: RingHom[R, 
     ring_hom_kernel_quotient_relation_respects_sub(f)
     quotient_over_binary_op_projection(kernel_quotient_relation(f.hom), R.sub, a, b)
 }
+
+/// Subtraction in the kernel quotient respects related left representatives.
+theorem ring_hom_kernel_quotient_sub_projection_left[R: Ring, S: Ring](f: RingHom[R, S],
+        a1: R, a2: R, b: R) {
+    kernel_relation(f.hom, a1, a2) implies
+    ring_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a1),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    ) = ring_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a2),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b)
+    )
+} by {
+    if kernel_relation(f.hom, a1, a2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(a1, a2)
+        ring_hom_kernel_quotient_relation_respects_sub(f)
+        quotient_over_binary_op_projection_left(kernel_quotient_relation(f.hom), R.sub, a1, a2, b)
+    }
+}
+
+/// Subtraction in the kernel quotient respects related right representatives.
+theorem ring_hom_kernel_quotient_sub_projection_right[R: Ring, S: Ring](f: RingHom[R, S],
+        a: R, b1: R, b2: R) {
+    kernel_relation(f.hom, b1, b2) implies
+    ring_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b1)
+    ) = ring_hom_kernel_quotient_sub(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        quotient_over_mk(kernel_quotient_relation(f.hom), b2)
+    )
+} by {
+    if kernel_relation(f.hom, b1, b2) {
+        kernel_quotient_relation_rel(f.hom)
+        kernel_quotient_relation(f.hom).rel(b1, b2)
+        ring_hom_kernel_quotient_relation_respects_sub(f)
+        quotient_over_binary_op_projection_right(kernel_quotient_relation(f.hom), R.sub, a, b1, b2)
+    }
+}
 theorem ring_hom_kernel_is_ring_congruence[R: Ring, S: Ring](f: RingHom[R, S]) {
     is_ring_congruence(kernel_relation(f.hom))
 } by {
@@ -535,6 +618,18 @@ define add_group_hom_kernel_quotient_add[A: AddGroup, B: AddGroup](f: AddGroupHo
     quotient_over_binary_op(A.add)
 }
 
+/// The zero element on the kernel quotient by an additive group homomorphism.
+define add_group_hom_kernel_quotient_zero[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) -> QuotientOver[A] {
+    quotient_over_const(kernel_quotient_relation(f.hom), A.0)
+}
+
+/// The zero element on the kernel quotient is the projection of zero.
+theorem add_group_hom_kernel_quotient_zero_projection[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) {
+    add_group_hom_kernel_quotient_zero(f) = quotient_over_mk(kernel_quotient_relation(f.hom), A.0)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), A.0)
+}
+
 /// Addition on the kernel quotient agrees with addition of representatives.
 theorem add_group_hom_kernel_quotient_add_projection[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A, b: A) {
     add_group_hom_kernel_quotient_add(f,
@@ -587,6 +682,36 @@ theorem add_group_hom_kernel_quotient_add_projection_right[A: AddGroup, B: AddGr
     }
 }
 
+/// Zero is a left identity for addition on projected kernel quotient elements.
+theorem add_group_hom_kernel_quotient_add_zero_left_projection[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B], a: A
+) {
+    add_group_hom_kernel_quotient_add(f,
+        add_group_hom_kernel_quotient_zero(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    add_group_hom_kernel_quotient_relation_respects_add(f)
+    A.0 + a = a
+    A.add(A.0, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), A.add, A.0, a)
+}
+
+/// Zero is a right identity for addition on projected kernel quotient elements.
+theorem add_group_hom_kernel_quotient_add_zero_right_projection[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B], a: A
+) {
+    add_group_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        add_group_hom_kernel_quotient_zero(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    add_group_hom_kernel_quotient_relation_respects_add(f)
+    a + A.0 = a
+    A.add(a, A.0) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), A.add, A.0, a)
+}
+
 /// Negation on the kernel quotient by an additive group homomorphism.
 define add_group_hom_kernel_quotient_neg[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) ->
     QuotientOver[A] -> QuotientOver[A] {
@@ -616,11 +741,6 @@ theorem add_group_hom_kernel_quotient_neg_projection_compatible[A: AddGroup, B: 
         add_group_hom_kernel_quotient_relation_respects_neg(f)
         quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), A.neg, a, b)
     }
-}
-
-/// The additive identity of the additive-group kernel quotient.
-define add_group_hom_kernel_quotient_zero[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) -> QuotientOver[A] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), A.0)
 }
 
 /// Addition on the additive-group kernel quotient is associative.
@@ -801,6 +921,18 @@ define group_hom_kernel_quotient_mul[G: Group, H: Group](f: GroupHom[G, H]) ->
     quotient_over_binary_op(G.mul)
 }
 
+/// The identity element on the kernel quotient by a group homomorphism.
+define group_hom_kernel_quotient_one[G: Group, H: Group](f: GroupHom[G, H]) -> QuotientOver[G] {
+    quotient_over_const(kernel_quotient_relation(f.hom), G.1)
+}
+
+/// The identity element on the kernel quotient is the projection of the identity.
+theorem group_hom_kernel_quotient_one_projection[G: Group, H: Group](f: GroupHom[G, H]) {
+    group_hom_kernel_quotient_one(f) = quotient_over_mk(kernel_quotient_relation(f.hom), G.1)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), G.1)
+}
+
 /// Multiplication on the kernel quotient agrees with multiplication of representatives.
 theorem group_hom_kernel_quotient_mul_projection[G: Group, H: Group](f: GroupHom[G, H], a: G, b: G) {
     group_hom_kernel_quotient_mul(f,
@@ -853,6 +985,32 @@ theorem group_hom_kernel_quotient_mul_projection_right[G: Group, H: Group](f: Gr
     }
 }
 
+/// The identity is a left identity for multiplication on projected kernel quotient elements.
+theorem group_hom_kernel_quotient_mul_one_left_projection[G: Group, H: Group](f: GroupHom[G, H], a: G) {
+    group_hom_kernel_quotient_mul(f,
+        group_hom_kernel_quotient_one(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    group_hom_kernel_quotient_relation_respects_mul(f)
+    G.1 * a = a
+    G.mul(G.1, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), G.mul, G.1, a)
+}
+
+/// The identity is a right identity for multiplication on projected kernel quotient elements.
+theorem group_hom_kernel_quotient_mul_one_right_projection[G: Group, H: Group](f: GroupHom[G, H], a: G) {
+    group_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        group_hom_kernel_quotient_one(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    group_hom_kernel_quotient_relation_respects_mul(f)
+    a * G.1 = a
+    G.mul(a, G.1) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), G.mul, G.1, a)
+}
+
 /// Inversion on the kernel quotient by a group homomorphism.
 define group_hom_kernel_quotient_inverse[G: Group, H: Group](f: GroupHom[G, H]) ->
     QuotientOver[G] -> QuotientOver[G] {
@@ -882,11 +1040,6 @@ theorem group_hom_kernel_quotient_inverse_projection_compatible[G: Group, H: Gro
         group_hom_kernel_quotient_relation_respects_inverse(f)
         quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), G.inverse, a, b)
     }
-}
-
-/// The multiplicative identity of the group kernel quotient.
-define group_hom_kernel_quotient_one[G: Group, H: Group](f: GroupHom[G, H]) -> QuotientOver[G] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), G.1)
 }
 
 /// Multiplication on the group kernel quotient is associative.
@@ -1086,6 +1239,18 @@ define ring_hom_kernel_quotient_add[R: Ring, S: Ring](f: RingHom[R, S]) ->
     quotient_over_binary_op(R.add)
 }
 
+/// The zero element on the kernel quotient by a ring homomorphism.
+define ring_hom_kernel_quotient_zero[R: Ring, S: Ring](f: RingHom[R, S]) -> QuotientOver[R] {
+    quotient_over_const(kernel_quotient_relation(f.hom), R.0)
+}
+
+/// The zero element on the kernel quotient is the projection of zero.
+theorem ring_hom_kernel_quotient_zero_projection[R: Ring, S: Ring](f: RingHom[R, S]) {
+    ring_hom_kernel_quotient_zero(f) = quotient_over_mk(kernel_quotient_relation(f.hom), R.0)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), R.0)
+}
+
 /// Addition on the kernel quotient agrees with addition of representatives.
 theorem ring_hom_kernel_quotient_add_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R, b: R) {
     ring_hom_kernel_quotient_add(f,
@@ -1138,10 +1303,48 @@ theorem ring_hom_kernel_quotient_add_projection_right[R: Ring, S: Ring](f: RingH
     }
 }
 
+/// Zero is a left identity for addition on projected kernel quotient elements.
+theorem ring_hom_kernel_quotient_add_zero_left_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R) {
+    ring_hom_kernel_quotient_add(f,
+        ring_hom_kernel_quotient_zero(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    ring_hom_kernel_quotient_relation_respects_add(f)
+    R.0 + a = a
+    R.add(R.0, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), R.add, R.0, a)
+}
+
+/// Zero is a right identity for addition on projected kernel quotient elements.
+theorem ring_hom_kernel_quotient_add_zero_right_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R) {
+    ring_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        ring_hom_kernel_quotient_zero(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    ring_hom_kernel_quotient_relation_respects_add(f)
+    a + R.0 = a
+    R.add(a, R.0) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), R.add, R.0, a)
+}
+
 /// Multiplication on the kernel quotient by a ring homomorphism.
 define ring_hom_kernel_quotient_mul[R: Ring, S: Ring](f: RingHom[R, S]) ->
     (QuotientOver[R], QuotientOver[R]) -> QuotientOver[R] {
     quotient_over_binary_op(R.mul)
+}
+
+/// The identity element on the kernel quotient by a ring homomorphism.
+define ring_hom_kernel_quotient_one[R: Ring, S: Ring](f: RingHom[R, S]) -> QuotientOver[R] {
+    quotient_over_const(kernel_quotient_relation(f.hom), R.1)
+}
+
+/// The identity element on the kernel quotient is the projection of the identity.
+theorem ring_hom_kernel_quotient_one_projection[R: Ring, S: Ring](f: RingHom[R, S]) {
+    ring_hom_kernel_quotient_one(f) = quotient_over_mk(kernel_quotient_relation(f.hom), R.1)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), R.1)
 }
 
 /// Multiplication on the kernel quotient agrees with multiplication of representatives.
@@ -1196,6 +1399,32 @@ theorem ring_hom_kernel_quotient_mul_projection_right[R: Ring, S: Ring](f: RingH
     }
 }
 
+/// The identity is a left identity for multiplication on projected kernel quotient elements.
+theorem ring_hom_kernel_quotient_mul_one_left_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R) {
+    ring_hom_kernel_quotient_mul(f,
+        ring_hom_kernel_quotient_one(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    ring_hom_kernel_quotient_relation_respects_mul(f)
+    R.1 * a = a
+    R.mul(R.1, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), R.mul, R.1, a)
+}
+
+/// The identity is a right identity for multiplication on projected kernel quotient elements.
+theorem ring_hom_kernel_quotient_mul_one_right_projection[R: Ring, S: Ring](f: RingHom[R, S], a: R) {
+    ring_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        ring_hom_kernel_quotient_one(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    ring_hom_kernel_quotient_relation_respects_mul(f)
+    a * R.1 = a
+    R.mul(a, R.1) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), R.mul, R.1, a)
+}
+
 /// Negation on the kernel quotient by a ring homomorphism.
 define ring_hom_kernel_quotient_neg[R: Ring, S: Ring](f: RingHom[R, S]) ->
     QuotientOver[R] -> QuotientOver[R] {
@@ -1225,16 +1454,6 @@ theorem ring_hom_kernel_quotient_neg_projection_compatible[R: Ring, S: Ring](f: 
         ring_hom_kernel_quotient_relation_respects_neg(f)
         quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f.hom), R.neg, a, b)
     }
-}
-
-/// The additive identity of the ring kernel quotient.
-define ring_hom_kernel_quotient_zero[R: Ring, S: Ring](f: RingHom[R, S]) -> QuotientOver[R] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), R.0)
-}
-
-/// The multiplicative identity of the ring kernel quotient.
-define ring_hom_kernel_quotient_one[R: Ring, S: Ring](f: RingHom[R, S]) -> QuotientOver[R] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), R.1)
 }
 
 /// Addition on the ring kernel quotient is associative.
@@ -1632,6 +1851,18 @@ define monoid_hom_kernel_quotient_mul[M: Monoid, N: Monoid](f: MonoidHom[M, N]) 
     quotient_over_binary_op(M.mul)
 }
 
+/// The identity element on the kernel quotient by a monoid homomorphism.
+define monoid_hom_kernel_quotient_one[M: Monoid, N: Monoid](f: MonoidHom[M, N]) -> QuotientOver[M] {
+    quotient_over_const(kernel_quotient_relation(f.hom), M.1)
+}
+
+/// The identity element on the kernel quotient is the projection of the identity.
+theorem monoid_hom_kernel_quotient_one_projection[M: Monoid, N: Monoid](f: MonoidHom[M, N]) {
+    monoid_hom_kernel_quotient_one(f) = quotient_over_mk(kernel_quotient_relation(f.hom), M.1)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), M.1)
+}
+
 /// Multiplication on the kernel quotient agrees with multiplication of representatives.
 theorem monoid_hom_kernel_quotient_mul_projection[M: Monoid, N: Monoid](f: MonoidHom[M, N], a: M, b: M) {
     monoid_hom_kernel_quotient_mul(f,
@@ -1684,6 +1915,32 @@ theorem monoid_hom_kernel_quotient_mul_projection_right[M: Monoid, N: Monoid](f:
     }
 }
 
+/// The identity is a left identity for multiplication on projected kernel quotient elements.
+theorem monoid_hom_kernel_quotient_mul_one_left_projection[M: Monoid, N: Monoid](f: MonoidHom[M, N], a: M) {
+    monoid_hom_kernel_quotient_mul(f,
+        monoid_hom_kernel_quotient_one(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    monoid_hom_kernel_quotient_relation_respects_mul(f)
+    M.1 * a = a
+    M.mul(M.1, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), M.mul, M.1, a)
+}
+
+/// The identity is a right identity for multiplication on projected kernel quotient elements.
+theorem monoid_hom_kernel_quotient_mul_one_right_projection[M: Monoid, N: Monoid](f: MonoidHom[M, N], a: M) {
+    monoid_hom_kernel_quotient_mul(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        monoid_hom_kernel_quotient_one(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    monoid_hom_kernel_quotient_relation_respects_mul(f)
+    a * M.1 = a
+    M.mul(a, M.1) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), M.mul, M.1, a)
+}
+
 /// The kernel quotient relation of an additive monoid homomorphism respects addition.
 theorem add_monoid_hom_kernel_quotient_relation_respects_add[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) {
     quotient_binary_respects(kernel_quotient_relation(f.hom), A.add)
@@ -1702,6 +1959,18 @@ theorem add_monoid_hom_kernel_quotient_relation_respects_add[A: AddMonoid, B: Ad
 define add_monoid_hom_kernel_quotient_add[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) ->
     (QuotientOver[A], QuotientOver[A]) -> QuotientOver[A] {
     quotient_over_binary_op(A.add)
+}
+
+/// The zero element on the kernel quotient by an additive monoid homomorphism.
+define add_monoid_hom_kernel_quotient_zero[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) -> QuotientOver[A] {
+    quotient_over_const(kernel_quotient_relation(f.hom), A.0)
+}
+
+/// The zero element on the kernel quotient is the projection of zero.
+theorem add_monoid_hom_kernel_quotient_zero_projection[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) {
+    add_monoid_hom_kernel_quotient_zero(f) = quotient_over_mk(kernel_quotient_relation(f.hom), A.0)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f.hom), A.0)
 }
 
 /// Addition on the kernel quotient agrees with addition of representatives.
@@ -1756,9 +2025,34 @@ theorem add_monoid_hom_kernel_quotient_add_projection_right[A: AddMonoid, B: Add
     }
 }
 
-/// The multiplicative identity of the monoid kernel quotient.
-define monoid_hom_kernel_quotient_one[M: Monoid, N: Monoid](f: MonoidHom[M, N]) -> QuotientOver[M] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), M.1)
+/// Zero is a left identity for addition on projected kernel quotient elements.
+theorem add_monoid_hom_kernel_quotient_add_zero_left_projection[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B], a: A
+) {
+    add_monoid_hom_kernel_quotient_add(f,
+        add_monoid_hom_kernel_quotient_zero(f),
+        quotient_over_mk(kernel_quotient_relation(f.hom), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    add_monoid_hom_kernel_quotient_relation_respects_add(f)
+    A.0 + a = a
+    A.add(A.0, a) = a
+    quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f.hom), A.add, A.0, a)
+}
+
+/// Zero is a right identity for addition on projected kernel quotient elements.
+theorem add_monoid_hom_kernel_quotient_add_zero_right_projection[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B], a: A
+) {
+    add_monoid_hom_kernel_quotient_add(f,
+        quotient_over_mk(kernel_quotient_relation(f.hom), a),
+        add_monoid_hom_kernel_quotient_zero(f)
+    ) = quotient_over_mk(kernel_quotient_relation(f.hom), a)
+} by {
+    add_monoid_hom_kernel_quotient_relation_respects_add(f)
+    a + A.0 = a
+    A.add(a, A.0) = a
+    quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f.hom), A.add, A.0, a)
 }
 
 /// Multiplication on the monoid kernel quotient is associative.
@@ -1847,11 +2141,6 @@ theorem monoid_hom_kernel_quotient_mul_one[M: Monoid, N: Monoid](f: MonoidHom[M,
 } by {
     monoid_hom_kernel_quotient_mul_projection(f, a, M.1)
     a * M.1 = a
-}
-
-/// The additive identity of the additive-monoid kernel quotient.
-define add_monoid_hom_kernel_quotient_zero[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) -> QuotientOver[A] {
-    quotient_over_mk(kernel_quotient_relation(f.hom), A.0)
 }
 
 /// Addition on the additive-monoid kernel quotient is associative.
@@ -1998,6 +2287,22 @@ define linear_map_kernel_quotient_add[R: Ring, M: AddCommGroup, N: AddCommGroup]
     quotient_over_binary_op(M.add)
 }
 
+/// The zero element on the kernel quotient by a linear map.
+define linear_map_kernel_quotient_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) -> QuotientOver[M] {
+    quotient_over_const(kernel_quotient_relation(f), M.0)
+}
+
+/// The zero element on the kernel quotient is the projection of zero.
+theorem linear_map_kernel_quotient_zero_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    linear_map_kernel_quotient_zero(src, dst, f) = quotient_over_mk(kernel_quotient_relation(f), M.0)
+} by {
+    quotient_over_const_projection(kernel_quotient_relation(f), M.0)
+}
+
 /// Addition on the kernel quotient agrees with addition of representatives.
 theorem linear_map_kernel_quotient_add_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
     src: Module[R, M], dst: Module[R, N], f: M -> N, a: M, b: M
@@ -2057,6 +2362,42 @@ theorem linear_map_kernel_quotient_add_projection_right[R: Ring, M: AddCommGroup
     }
 }
 
+/// Zero is a left identity for addition on projected linear-map kernel quotient elements.
+theorem linear_map_kernel_quotient_add_zero_left_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        linear_map_kernel_quotient_zero(src, dst, f),
+        quotient_over_mk(kernel_quotient_relation(f), a)
+    ) = quotient_over_mk(kernel_quotient_relation(f), a)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_relation_respects_add(src, dst, f)
+        M.0 + a = a
+        M.add(M.0, a) = a
+        quotient_over_binary_op_projection_identity_left(kernel_quotient_relation(f), M.add, M.0, a)
+    }
+}
+
+/// Zero is a right identity for addition on projected linear-map kernel quotient elements.
+theorem linear_map_kernel_quotient_add_zero_right_projection[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, a: M
+) {
+    is_linear_map(src, dst, f) implies
+    linear_map_kernel_quotient_add(src, dst, f,
+        quotient_over_mk(kernel_quotient_relation(f), a),
+        linear_map_kernel_quotient_zero(src, dst, f)
+    ) = quotient_over_mk(kernel_quotient_relation(f), a)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_quotient_relation_respects_add(src, dst, f)
+        a + M.0 = a
+        M.add(a, M.0) = a
+        quotient_over_binary_op_projection_identity_right(kernel_quotient_relation(f), M.add, M.0, a)
+    }
+}
+
 /// Scalar multiplication by a fixed scalar on the kernel quotient by a linear map.
 define linear_map_kernel_quotient_smul[R: Ring, M: AddCommGroup, N: AddCommGroup](
     src: Module[R, M], dst: Module[R, N], f: M -> N, r: R
@@ -2097,13 +2438,6 @@ theorem linear_map_kernel_quotient_smul_projection_compatible[R: Ring, M: AddCom
         linear_map_kernel_quotient_relation_respects_smul(src, dst, f, r)
         quotient_over_unary_op_projection_compatible(kernel_quotient_relation(f), src.smul(r), a, b)
     }
-}
-
-/// The additive identity of the module kernel quotient.
-define linear_map_kernel_quotient_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
-    src: Module[R, M], dst: Module[R, N], f: M -> N
-) -> QuotientOver[M] {
-    quotient_over_mk(kernel_quotient_relation(f), M.0)
 }
 
 /// Addition on the module kernel quotient is associative.
