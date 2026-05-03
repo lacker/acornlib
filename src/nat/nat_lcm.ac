@@ -1,6 +1,7 @@
 from nat.basic_addition import Nat
 from nat.nat_gcd import gcd_divides_left, gcd_divides_right, gcd_comm, gcd_nonzero_left, cofactor, gcd_one_left, gcd_one_right
 from nat.nat_coprime import coprime_divides_of_divides_mul
+from nat.nat_base import divides_symm, divides_trans
 numerals Nat
 
 /// The least common multiple of two natural numbers, characterised by
@@ -263,4 +264,45 @@ theorem lcm_divides_of_common(a: Nat, b: Nat, c: Nat) {
         }
         }
     }
+}
+
+/// The least common multiple is associative.
+theorem lcm_assoc(a: Nat, b: Nat, c: Nat) {
+    (a.lcm(b)).lcm(c) = a.lcm(b.lcm(c))
+} by {
+    let lhs = (a.lcm(b)).lcm(c)
+    let rhs = a.lcm(b.lcm(c))
+
+    lcm_divides_left(a, b)
+    lcm_divides_right(a, b)
+    lcm_divides_left(b, c)
+    lcm_divides_right(b, c)
+    lcm_divides_left(a.lcm(b), c)
+    lcm_divides_right(a.lcm(b), c)
+    a.lcm(b).divides(lhs)
+    c.divides(lhs)
+    lcm_divides_left(a, b.lcm(c))
+    lcm_divides_right(a, b.lcm(c))
+    a.divides(rhs)
+    b.lcm(c).divides(rhs)
+
+    divides_trans(a, a.lcm(b), lhs)
+    a.divides(lhs)
+    divides_trans(b, a.lcm(b), lhs)
+    b.divides(lhs)
+    lcm_divides_of_common(b, c, lhs)
+    b.lcm(c).divides(lhs)
+    lcm_divides_of_common(a, b.lcm(c), lhs)
+    rhs.divides(lhs)
+
+    divides_trans(b, b.lcm(c), rhs)
+    b.divides(rhs)
+    divides_trans(c, b.lcm(c), rhs)
+    c.divides(rhs)
+    lcm_divides_of_common(a, b, rhs)
+    a.lcm(b).divides(rhs)
+    lcm_divides_of_common(a.lcm(b), c, rhs)
+    lhs.divides(rhs)
+
+    divides_symm(lhs, rhs)
 }

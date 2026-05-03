@@ -68,14 +68,14 @@
 {"goal":"a.gcd(b) * nat_lcm(a)(b) = a * b","proof":[]}
 {"goal":"b.gcd(a) * nat_lcm(b)(a) = b * a","proof":[]}
 {"goal":"b * a = a * b","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(b, a)"]}
-{"goal":"a.gcd(b) * nat_lcm(b)(a) = a * b","proof":["b.gcd(a) * nat_lcm(b, a) != a * b","b.gcd(a) * nat_lcm(b, a) = a * b"]}
-{"goal":"a.gcd(b) * nat_lcm(a)(b) = a.gcd(b) * nat_lcm(b)(a)","proof":["a.gcd(b) * nat_lcm(a, b) != a * b"]}
-{"goal":"a = 0","proof":["a.gcd(b) != 0"]}
-{"goal":"b = 0","proof":["b.gcd(a) != 0","b.gcd(a) != a.gcd(b)"]}
+{"goal":"a.gcd(b) * nat_lcm(b)(a) = a * b","proof":[]}
+{"goal":"a.gcd(b) * nat_lcm(a)(b) = a.gcd(b) * nat_lcm(b)(a)","proof":[]}
+{"goal":"a = 0","proof":[]}
+{"goal":"b = 0","proof":[]}
 {"goal":"nat_lcm(a)(b) = 0","proof":[]}
-{"goal":"nat_lcm(b)(a) = 0","proof":["nat_lcm(b, 0) != 0"]}
+{"goal":"nat_lcm(b)(a) = 0","proof":[]}
 {"goal":"nat_lcm(a)(b) = nat_lcm(b)(a)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 != x0 * x2 or 0 = x0 or x1 = x2 }(a.gcd(b), nat_lcm(b, a), nat_lcm(a, b))"]}
-{"goal":"lcm_comm","proof":["function(x0: Nat, x1: Nat) { if x0.gcd(x1) = 0 { nat_lcm(x0, x1) = 0 } else { x0 * x1 = x0.gcd(x1) * nat_lcm(x0, x1) } }(a, b)","a.gcd(b) = 0","nat_lcm(b, a) = 0","function(x0: Nat, x1: Nat) { x0.gcd(x1) != 0 or nat_lcm(x0, x1) = 0 }(a, b)","nat_lcm(a, b) != 0","nat_lcm(a, b) = 0"]}
+{"goal":"lcm_comm","proof":["function(x0: Nat, x1: Nat) { if x0.gcd(x1) = 0 { nat_lcm(x0, x1) = 0 } else { x0 * x1 = x0.gcd(x1) * nat_lcm(x0, x1) } }(a, b)"]}
 {"goal":"1.gcd(a) = 1","proof":[]}
 {"goal":"nat_lcm(1)(0) = 0","proof":[]}
 {"goal":"1.gcd(a) != 0","proof":[]}
@@ -98,7 +98,7 @@
 {"goal":"0 * 0 = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(0, 0)"]}
 {"goal":"exists(k0: Nat) { b * k0 = c }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(b, c)"]}
 {"goal":"c = 0","proof":["function(x0: Nat) { not 0.divides(x0) or 0 = x0 }(c)"]}
-{"goal":"nat_lcm(a)(b) = 0","proof":["nat_lcm(a, 0) != 0"]}
+{"goal":"nat_lcm(a)(b) = 0","proof":[]}
 {"goal":"a.gcd(b) != 0","proof":[]}
 {"goal":"exists(k0: Nat) { a.gcd(b) * k0 = a }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(a.gcd(b), a)"]}
 {"goal":"exists(k0: Nat) { a.gcd(b) * k0 = b }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(a.gcd(b), b)"]}
@@ -133,3 +133,16 @@
 {"goal":"nat_lcm(a)(b) * z = c","proof":[]}
 {"goal":"nat_lcm(a)(b).divides(c)","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(nat_lcm(a, b), c)","not exists(k0: Nat) { nat_lcm(a, b) * k0 = c }","function(x0: Nat) { nat_lcm(a, b) * x0 != c }(z)"]}
 {"goal":"lcm_divides_of_common","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or not x1.divides(x2) or x0.divides(x2) }(nat_lcm(a, b), 0, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { x0 != x1 or not x1(x2) or x0(x2) }[Nat](0.divides, a.divides, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { x0 != x1 or not x1(x2) or x0(x2) }[Nat](0.divides, b.divides, c)","function(x0: Nat) { x0.divides(0) }(nat_lcm(a, b))"]}
+{"goal":"nat_lcm(a)(b).divides(lhs)","proof":["not nat_lcm(a, b).divides(nat_lcm(nat_lcm(a, b), c))"]}
+{"goal":"c.divides(lhs)","proof":["not c.divides(nat_lcm(nat_lcm(a, b), c))"]}
+{"goal":"a.divides(rhs)","proof":["not a.divides(nat_lcm(a, nat_lcm(b, c)))"]}
+{"goal":"nat_lcm(b)(c).divides(rhs)","proof":["not nat_lcm(b, c).divides(nat_lcm(a, nat_lcm(b, c)))"]}
+{"goal":"a.divides(lhs)","proof":["not a.divides(nat_lcm(a, b)) or not nat_lcm(a, b).divides(lhs)","not a.divides(nat_lcm(a, b))"]}
+{"goal":"b.divides(lhs)","proof":["not b.divides(nat_lcm(a, b)) or not nat_lcm(a, b).divides(lhs)","not b.divides(nat_lcm(a, b))"]}
+{"goal":"nat_lcm(b)(c).divides(lhs)","proof":["not c.divides(lhs) or not b.divides(lhs)","not c.divides(lhs)"]}
+{"goal":"rhs.divides(lhs)","proof":["nat_lcm(b, c).divides(lhs)","nat_lcm(a, nat_lcm(b, c)).divides(lhs)","not nat_lcm(a, nat_lcm(b, c)).divides(lhs)"]}
+{"goal":"b.divides(rhs)","proof":["not nat_lcm(b, c).divides(rhs) or not b.divides(nat_lcm(b, c))","not b.divides(nat_lcm(b, c))"]}
+{"goal":"c.divides(rhs)","proof":["not nat_lcm(b, c).divides(rhs) or not c.divides(nat_lcm(b, c))","not c.divides(nat_lcm(b, c))"]}
+{"goal":"nat_lcm(a)(b).divides(rhs)","proof":["not b.divides(rhs) or not a.divides(rhs)","not a.divides(rhs)"]}
+{"goal":"lhs.divides(rhs)","proof":["nat_lcm(a, b).divides(rhs)","nat_lcm(nat_lcm(a, b), c).divides(rhs)","not nat_lcm(nat_lcm(a, b), c).divides(rhs)"]}
+{"goal":"lcm_assoc","proof":["rhs = lhs","nat_lcm(nat_lcm(a, b), c) != rhs","nat_lcm(nat_lcm(a, b), c) = rhs"]}
