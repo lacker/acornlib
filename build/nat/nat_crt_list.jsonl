@@ -12,3 +12,9 @@
 {"goal":"int_mod_rel(m, Int.from_nat(x), Int.from_nat(y))","proof":[]}
 {"goal":"x.congr_mod(y, m)","proof":[]}
 {"goal":"nat_congr_mod_descend","proof":[]}
+{"goal":"c.congr_mod(c0, big_mod)","proof":[]}
+{"goal":"head.first.divides(big_mod)","proof":[]}
+{"goal":"system_modulus(tail) * head.first = head.first * system_modulus(tail)","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(head.first, system_modulus(tail))"]}
+{"goal":"system_modulus(tail).divides(big_mod)","proof":[]}
+{"goal":"c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))","proof":["c.congr_mod(c0, system_modulus(tail))","not c.congr_mod(c0, head.first)","c.congr_mod(c0, head.first)"]}
+{"goal":"cons_modulus_split","proof":["c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))","not c.congr_mod(c0, head.first)"]}

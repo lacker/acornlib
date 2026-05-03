@@ -101,3 +101,26 @@ theorem nat_congr_mod_descend(m: Nat, k: Nat, x: Nat, y: Nat) {
     }
 }
 
+/// Split a system_modulus(cons) congruence into the head-modulus and
+/// tail-modulus pieces.
+theorem cons_modulus_split(c: Nat, c0: Nat, head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]) {
+    c.congr_mod(c0, system_modulus(List.cons(head, tail)))
+        implies c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))
+} by {
+    if c.congr_mod(c0, system_modulus(List.cons(head, tail))) {
+        system_modulus_cons(head, tail)
+        let big_mod: Nat = head.first * system_modulus(tail)
+        c.congr_mod(c0, big_mod)
+        divides_self(head.first)
+        divides_mul(head.first, system_modulus(tail), head.first)
+        head.first.divides(big_mod)
+        nat_congr_mod_descend(head.first, big_mod, c, c0)
+        divides_self(system_modulus(tail))
+        divides_mul(system_modulus(tail), head.first, system_modulus(tail))
+        system_modulus(tail) * head.first = head.first * system_modulus(tail)
+        system_modulus(tail).divides(big_mod)
+        nat_congr_mod_descend(system_modulus(tail), big_mod, c, c0)
+        c.congr_mod(c0, head.first) and c.congr_mod(c0, system_modulus(tail))
+    }
+}
+
