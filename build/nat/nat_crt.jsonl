@@ -27,10 +27,35 @@
 {"goal":"int_mod_rel(n, c, b)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, c, b)"]}
 {"goal":"exists(k0: Int) { int_mod_rel(m, k0, a) and int_mod_rel(n, k0, b) }","proof":["function(x0: Int) { not (int_mod_rel(m, x0, a) and int_mod_rel(n, x0, b)) }(c)"]}
 {"goal":"int_crt_two_moduli","proof":[]}
+{"goal":"lib(nat.nat_lcm).nat_lcm(m)(n).divides(k)","proof":[]}
+{"goal":"m.gcd(n) = Nat.1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = Nat.1 = x0.coprime(x1) }(m, n)"]}
+{"goal":"Nat.1 * lib(nat.nat_lcm).nat_lcm(m)(n) = m * n","proof":[]}
+{"goal":"lib(nat.nat_lcm).nat_lcm(m)(n) = m * n","proof":["function(x0: Nat) { Nat.1 * x0 = x0 }(lib(nat.nat_lcm).nat_lcm(m, n))"]}
+{"goal":"(m * n).divides(k)","proof":[]}
+{"goal":"nat_coprime_combine","proof":[]}
+{"goal":"Int.from_nat(m).divides(x - y)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(m, x, y)"]}
+{"goal":"Int.from_nat(n).divides(x - y)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, x, y)"]}
+{"goal":"abs(Int.from_nat(m)) = m","proof":["function(x0: Nat, x1: Int) { Int.from_nat(x0) != x1 or abs(x1) = x0 }(m, Int.from_nat(m))"]}
+{"goal":"abs(Int.from_nat(n)) = n","proof":["function(x0: Nat, x1: Int) { Int.from_nat(x0) != x1 or abs(x1) = x0 }(n, Int.from_nat(n))"]}
+{"goal":"m.divides(abs(x - y))","proof":[]}
+{"goal":"n.divides(abs(x - y))","proof":[]}
+{"goal":"(m * n).divides(abs(x - y))","proof":[]}
+{"goal":"abs(Int.from_nat(m * n)) = m * n","proof":["function(x0: Nat, x1: Int) { Int.from_nat(x0) != x1 or abs(x1) = x0 }(m * n, Int.from_nat(m * n))"]}
+{"goal":"abs(Int.from_nat(m * n)).divides(abs(x - y))","proof":[]}
+{"goal":"Int.from_nat(m * n).divides(x - y)","proof":[]}
+{"goal":"int_mod_rel_combine_coprime","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(m * n, x, y)"]}
+{"goal":"is_transitive[Int](int_mod_rel(m))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or lib(relation_basic).is_partial_equivalence[T0](x0) }[Int](int_mod_rel(m))","function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_partial_equivalence[T0](x0) or is_transitive[T0](x0) }[Int](int_mod_rel(m))"]}
+{"goal":"is_transitive[Int](int_mod_rel(n))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or lib(relation_basic).is_partial_equivalence[T0](x0) }[Int](int_mod_rel(n))","function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_partial_equivalence[T0](x0) or is_transitive[T0](x0) }[Int](int_mod_rel(n))"]}
+{"goal":"int_mod_rel(m, a, c2)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(relation_basic).is_equivalence[T0](x0) or not x0(x1, x2) or x0(x2, x1) }[Int](int_mod_rel(m), c2, a)"]}
+{"goal":"int_mod_rel(m, c1, c2)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_transitive[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[Int](int_mod_rel(m), c1, a, c2)"]}
+{"goal":"int_mod_rel(n, b, c2)","proof":["function(x0: Nat, x1: Int, x2: Int) { lib(zmod).int_mod_quotient_mk(x0, x1) = lib(zmod).int_mod_quotient_mk(x0, x2) = int_mod_rel(x0, x1, x2) }(n, c2, b)","function(x0: Nat, x1: Int, x2: Int) { lib(zmod).int_mod_quotient_mk(x0, x1) = lib(zmod).int_mod_quotient_mk(x0, x2) = int_mod_rel(x0, x1, x2) }(n, b, c2)"]}
+{"goal":"int_mod_rel(n, c1, c2)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_transitive[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[Int](int_mod_rel(n), c1, b, c2)"]}
+{"goal":"int_mod_rel(m * n, c1, c2)","proof":["not int_mod_rel(n, c1, c2) or not int_mod_rel(m, c1, c2) or not m.coprime(n)","not m.coprime(n)","m.coprime(n) and int_mod_rel(m, c1, a) and int_mod_rel(n, c1, b) and int_mod_rel(m, c2, a)","m.coprime(n) and int_mod_rel(m, c1, a)"]}
+{"goal":"int_crt_unique","proof":["not int_mod_rel(n, c2, b) or not int_mod_rel(m, c2, a) or not int_mod_rel(n, c1, b) or not int_mod_rel(m, c1, a) or not m.coprime(n)","int_mod_rel(n, c2, b)","m.coprime(n) and int_mod_rel(m, c1, a) and int_mod_rel(n, c1, b) and int_mod_rel(m, c2, a)","int_mod_rel(n, c1, b)","not int_mod_rel(m, c1, a) or not m.coprime(n)","m.coprime(n) and int_mod_rel(m, c1, a)","not int_mod_rel(m, c1, a)"]}
 {"goal":"Int.from_nat(m).divides(Int.from_nat(k))","proof":[]}
 {"goal":"Int.from_nat(k).divides(x - y)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(k, x, y)"]}
 {"goal":"Int.from_nat(m).divides(x - y)","proof":[]}
-{"goal":"int_mod_rel_descend","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(m, x, y)","m.divides(k)","int_mod_rel(k, x, y)","Int.from_nat(m).divides(x - y)","not Int.from_nat(m).divides(x - y)"]}
+{"goal":"int_mod_rel_descend","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(m, x, y)"]}
 {"goal":"exists(k0: Int) { int_mod_rel(m, k0, Int.from_nat(a)) and int_mod_rel(n, k0, Int.from_nat(b)) }","proof":[]}
 {"goal":"m * n != Nat.0","proof":[]}
 {"goal":"exists(k0: Nat) { int_mod_rel(m * n, ci, Int.from_nat(k0)) }","proof":[]}

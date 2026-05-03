@@ -3,7 +3,9 @@ from nat.nat_bezout import nat_bezout
 from nat.nat_base import divides_self, divides_mul, mul_to_zero
 from nat.nat_congr_int import nat_congr_mod_iff_int_mod_rel
 from nat.nat_congruence import Nat
-from int.lattice import Int, div_from_nat, div_trans
+from nat.nat_lcm import gcd_mul_lcm, lcm_divides_of_common
+from int.lattice import Int, div_from_nat, div_trans, div_imp_div_abs, div_abs_imp_div
+from int.int_base import abs
 from int.int_residue import int_has_nat_residue
 from zmod import int_mod_rel, int_mod_rel_is_equivalence
 from relation_basic import is_transitive
@@ -72,6 +74,69 @@ theorem int_crt_two_moduli(m: Nat, n: Nat, a: Int, b: Int) {
         int_mod_rel(m, c, a)
         int_mod_rel(n, c, b)
         exists(c0: Int) { int_mod_rel(m, c0, a) and int_mod_rel(n, c0, b) }
+    }
+}
+
+/// When two coprime moduli both divide a Nat, so does their product.
+theorem nat_coprime_combine(m: Nat, n: Nat, k: Nat) {
+    m.coprime(n) and m.divides(k) and n.divides(k) implies (m * n).divides(k)
+} by {
+    if m.coprime(n) and m.divides(k) and n.divides(k) {
+        lcm_divides_of_common(m, n, k)
+        m.lcm(n).divides(k)
+        m.gcd(n) = Nat.1
+        gcd_mul_lcm(m, n)
+        Nat.1 * m.lcm(n) = m * n
+        m.lcm(n) = m * n
+        (m * n).divides(k)
+    }
+}
+
+/// On the integers: when two coprime moduli both witness a congruence, so
+/// does their product.
+theorem int_mod_rel_combine_coprime(m: Nat, n: Nat, x: Int, y: Int) {
+    m.coprime(n) and int_mod_rel(m, x, y) and int_mod_rel(n, x, y)
+        implies int_mod_rel(m * n, x, y)
+} by {
+    if m.coprime(n) and int_mod_rel(m, x, y) and int_mod_rel(n, x, y) {
+        Int.from_nat(m).divides(x - y)
+        Int.from_nat(n).divides(x - y)
+        div_imp_div_abs(Int.from_nat(m), x - y)
+        div_imp_div_abs(Int.from_nat(n), x - y)
+        abs(Int.from_nat(m)) = m
+        abs(Int.from_nat(n)) = n
+        m.divides(abs(x - y))
+        n.divides(abs(x - y))
+        nat_coprime_combine(m, n, abs(x - y))
+        (m * n).divides(abs(x - y))
+        abs(Int.from_nat(m * n)) = m * n
+        abs(Int.from_nat(m * n)).divides(abs(x - y))
+        div_abs_imp_div(Int.from_nat(m * n), x - y)
+        Int.from_nat(m * n).divides(x - y)
+    }
+}
+
+/// CRT uniqueness on the integers: any two integer simultaneous solutions of
+/// a coprime two-modulus congruence system agree modulo the product.
+theorem int_crt_unique(m: Nat, n: Nat, c1: Int, c2: Int, a: Int, b: Int) {
+    m.coprime(n)
+        and int_mod_rel(m, c1, a) and int_mod_rel(n, c1, b)
+        and int_mod_rel(m, c2, a) and int_mod_rel(n, c2, b)
+        implies int_mod_rel(m * n, c1, c2)
+} by {
+    if m.coprime(n)
+        and int_mod_rel(m, c1, a) and int_mod_rel(n, c1, b)
+        and int_mod_rel(m, c2, a) and int_mod_rel(n, c2, b) {
+        int_mod_rel_is_equivalence(m)
+        is_transitive(int_mod_rel(m))
+        int_mod_rel_is_equivalence(n)
+        is_transitive(int_mod_rel(n))
+        int_mod_rel(m, a, c2)
+        int_mod_rel(m, c1, c2)
+        int_mod_rel(n, b, c2)
+        int_mod_rel(n, c1, c2)
+        int_mod_rel_combine_coprime(m, n, c1, c2)
+        int_mod_rel(m * n, c1, c2)
     }
 }
 

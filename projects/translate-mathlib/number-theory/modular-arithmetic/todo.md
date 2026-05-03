@@ -3,7 +3,6 @@
 Goal: build a lightweight congruence-relation API on `Nat` and `Int` that downstream consumers can use without pulling in the full `Zmod[n]` quotient machinery.
 
 - [ ] Unify `nat_modular_inverse_exists_pos` and `nat_modular_inverse_exists_zero` into a single `nat_modular_inverse_exists` theorem (the case-split combined form currently times out the prover)
-- [ ] Add explicit uniqueness for the CRT solution modulo `m * n`
 - [ ] Add CRT generalisation to a finite list of pairwise coprime moduli
 
 Notes:
@@ -16,6 +15,7 @@ Notes:
 - `int_has_nat_residue` is the standalone Int→Nat residue primitive: every integer has a Nat representative under congruence modulo a positive n. The proof case-splits on the sign of x and constructs `r = abs(x)` for nonneg or `r = n*abs(x) - abs(x)` for negative.
 - `int_crt_two_moduli` in `src/nat/nat_crt.ac` proves the two-modulus CRT in Int-witness form via the explicit witness `c = a + (b - a) * x * m`, where `(x, y)` satisfy the Bezout identity `x*m + y*n = 1` from `nat_bezout`. The two divisibility halves are factored as `crt_witness_mod_m` and `crt_witness_mod_n` to keep each step inside the prover budget.
 - `nat_crt_two_moduli` is the Nat-witness form: for coprime positive `m`, `n`, every pair `(a, b): Nat` has a simultaneous solution `c: Nat` with `c.congr_mod(a, m)` and `c.congr_mod(b, n)`. The Nat witness is extracted from the Int CRT solution via `int_has_nat_residue` applied to modulus `m * n`, then descended to `m` and `n` via the supporting `int_mod_rel_descend` lemma.
+- `int_crt_unique` records the CRT uniqueness statement: any two integer simultaneous solutions of a coprime two-modulus system agree modulo the product. The proof routes through `int_mod_rel_combine_coprime`, which combines two coprime divisibilities into a divisibility by the product (lifted from the matching Nat statement `nat_coprime_combine` via `lcm_divides_of_common` and `gcd_mul_lcm`).
 - `src/zmod.ac` already defines `int_mod_rel(n, a, b) := Int.from_nat(n).divides(a - b)` and proves it is an equivalence congruent with addition, multiplication, and negation. The new `Nat.congr_mod` should be value-compatible with this `Int` predicate so the eventual `Zmod[n]` ring instance can be reused without rewrap.
 - Definitional choice: prefer `a.mod(n) = b.mod(n)` over the divisibility-based form on `Nat`, because subtraction on `Nat` truncates and would force ad-hoc case splits. The divisibility form is the natural one on `Int` and already exists.
 - For genericity: package each congruence lemma so it can later be re-stated as a typeclass axiom on a generic congruence-equipped commutative semiring; do not wire any of this through `Zmod[n]` itself. Consumers who want algebraic structure should keep going through `Zmod[n]`; consumers who only want `≡` reasoning use this layer.
