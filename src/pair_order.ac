@@ -1,0 +1,426 @@
+/// Componentwise order on pairs.
+
+from order import PartialOrder, lte_refl
+from order_relation import is_partial_order_relation
+from order_maps import is_monotone, is_antitone, is_order_embedding, monotone_step, antitone_step,
+    order_embedding_apply_le, order_embedding_reflects_lte
+from pair import Pair, pair_ext, pair_new_first, pair_new_second, pair_map, pair_map_first,
+    pair_map_second, swap_swap
+from relation_basic import is_reflexive, is_transitive, is_antisymmetric,
+    transitive_step, antisymmetric_eq
+
+/// The componentwise non-strict order on pairs.
+define pair_lte[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) -> Bool {
+    p.first <= q.first and p.second <= q.second
+}
+
+/// Pair order is exactly componentwise order.
+theorem pair_lte_eq[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) = (p.first <= q.first and p.second <= q.second)
+}
+
+/// Componentwise inequalities give an inequality of pairs.
+theorem pair_lte_of_components[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    p.first <= q.first and p.second <= q.second implies pair_lte(p, q)
+} by {
+    if p.first <= q.first and p.second <= q.second {
+        pair_lte_eq(p, q)
+        pair_lte(p, q)
+    }
+}
+
+/// An inequality of pairs gives an inequality of first components.
+theorem pair_lte_first[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) implies p.first <= q.first
+} by {
+    if pair_lte(p, q) {
+        pair_lte_eq(p, q)
+        p.first <= q.first
+    }
+}
+
+/// An inequality of pairs gives an inequality of second components.
+theorem pair_lte_second[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) implies p.second <= q.second
+} by {
+    if pair_lte(p, q) {
+        pair_lte_eq(p, q)
+        p.second <= q.second
+    }
+}
+
+/// The componentwise order on pairs is reflexive.
+theorem pair_lte_refl[A: PartialOrder, B: PartialOrder](p: Pair[A, B]) {
+    pair_lte(p, p)
+} by {
+    lte_refl(p.first)
+    lte_refl(p.second)
+    pair_lte_of_components(p, p)
+}
+
+/// The componentwise order on pairs is transitive.
+theorem pair_lte_trans[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B], r: Pair[A, B]) {
+    pair_lte(p, q) and pair_lte(q, r) implies pair_lte(p, r)
+} by {
+    if pair_lte(p, q) and pair_lte(q, r) {
+        pair_lte_first(p, q)
+        pair_lte_first(q, r)
+        if p.first <= q.first and q.first <= r.first {
+            transitive_step(A.lte, p.first, q.first, r.first)
+            p.first <= r.first
+        }
+        pair_lte_second(p, q)
+        pair_lte_second(q, r)
+        if p.second <= q.second and q.second <= r.second {
+            transitive_step(B.lte, p.second, q.second, r.second)
+            p.second <= r.second
+        }
+        pair_lte_of_components(p, r)
+        pair_lte(p, r)
+    }
+}
+
+/// The componentwise order on pairs is antisymmetric.
+theorem pair_lte_antisymm[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) and pair_lte(q, p) implies p = q
+} by {
+    if pair_lte(p, q) and pair_lte(q, p) {
+        pair_lte_first(p, q)
+        pair_lte_first(q, p)
+        if p.first <= q.first and q.first <= p.first {
+            antisymmetric_eq(A.lte, p.first, q.first)
+            p.first = q.first
+        }
+        pair_lte_second(p, q)
+        pair_lte_second(q, p)
+        if p.second <= q.second and q.second <= p.second {
+            antisymmetric_eq(B.lte, p.second, q.second)
+            p.second = q.second
+        }
+        pair_ext(p, q)
+        p = q
+    }
+}
+
+/// The componentwise order on pairs is reflexive as a relation.
+theorem pair_lte_is_reflexive[A: PartialOrder, B: PartialOrder] {
+    is_reflexive(pair_lte[A, B])
+} by {
+    forall(p: Pair[A, B]) {
+        pair_lte_refl(p)
+    }
+}
+
+/// The componentwise order on pairs is transitive as a relation.
+theorem pair_lte_is_transitive[A: PartialOrder, B: PartialOrder] {
+    is_transitive(pair_lte[A, B])
+} by {
+    is_transitive(pair_lte[A, B]) = forall(p: Pair[A, B], q: Pair[A, B], r: Pair[A, B]) {
+        pair_lte(p, q) and pair_lte(q, r) implies pair_lte(p, r)
+    }
+    forall(p: Pair[A, B], q: Pair[A, B], r: Pair[A, B]) {
+        if pair_lte(p, q) and pair_lte(q, r) {
+            pair_lte_trans(p, q, r)
+            pair_lte(p, r)
+        }
+    }
+}
+
+/// The componentwise order on pairs is antisymmetric as a relation.
+theorem pair_lte_is_antisymmetric[A: PartialOrder, B: PartialOrder] {
+    is_antisymmetric(pair_lte[A, B])
+} by {
+    forall(p: Pair[A, B], q: Pair[A, B]) {
+        if pair_lte(p, q) and pair_lte(q, p) {
+            pair_lte_antisymm(p, q)
+            p = q
+        }
+    }
+}
+
+/// The componentwise order on pairs has the data of a partial order.
+theorem pair_lte_is_partial_order_relation[A: PartialOrder, B: PartialOrder] {
+    is_partial_order_relation(pair_lte[A, B])
+} by {
+    pair_lte_is_reflexive[A, B]
+    pair_lte_is_transitive[A, B]
+    pair_lte_is_antisymmetric[A, B]
+    is_partial_order_relation(pair_lte[A, B])
+}
+
+/// A new pair is below another new pair exactly when both components are below.
+theorem pair_new_lte_iff[A: PartialOrder, B: PartialOrder](a: A, b: B, c: A, d: B) {
+    pair_lte(Pair.new(a, b), Pair.new(c, d)) = (a <= c and b <= d)
+} by {
+    let p = Pair.new(a, b)
+    let q = Pair.new(c, d)
+    pair_new_first(a, b)
+    pair_new_second(a, b)
+    pair_new_first(c, d)
+    pair_new_second(c, d)
+    pair_lte_eq(p, q)
+    pair_lte(p, q) = (a <= c and b <= d)
+}
+
+/// A new pair is below a pair exactly when both components are below the projections.
+theorem pair_new_lte_iff_right[A: PartialOrder, B: PartialOrder](a: A, b: B, q: Pair[A, B]) {
+    pair_lte(Pair.new(a, b), q) = (a <= q.first and b <= q.second)
+} by {
+    let p = Pair.new(a, b)
+    pair_new_first(a, b)
+    pair_new_second(a, b)
+    pair_lte_eq(p, q)
+    pair_lte(p, q) = (a <= q.first and b <= q.second)
+}
+
+/// A pair is below a new pair exactly when both projections are below the components.
+theorem pair_lte_new_iff_left[A: PartialOrder, B: PartialOrder](p: Pair[A, B], a: A, b: B) {
+    pair_lte(p, Pair.new(a, b)) = (p.first <= a and p.second <= b)
+} by {
+    let q = Pair.new(a, b)
+    pair_new_first(a, b)
+    pair_new_second(a, b)
+    pair_lte_eq(p, q)
+    pair_lte(p, q) = (p.first <= a and p.second <= b)
+}
+
+/// The first projection is monotone for the componentwise order.
+theorem pair_first_monotone_for_lte[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) implies p.first <= q.first
+} by {
+    if pair_lte(p, q) {
+        pair_lte_first(p, q)
+    }
+}
+
+/// The second projection is monotone for the componentwise order.
+theorem pair_second_monotone_for_lte[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) implies p.second <= q.second
+} by {
+    if pair_lte(p, q) {
+        pair_lte_second(p, q)
+    }
+}
+
+/// Mapping both components by monotone maps preserves componentwise order.
+theorem pair_map_preserves_lte[A: PartialOrder, B: PartialOrder, C: PartialOrder, D: PartialOrder](
+    f: A -> C,
+    g: B -> D,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_monotone(f) and is_monotone(g) and pair_lte(p, q) implies
+    pair_lte(pair_map(f, g, p), pair_map(f, g, q))
+} by {
+    if is_monotone(f) and is_monotone(g) and pair_lte(p, q) {
+        pair_lte_first(p, q)
+        p.first <= q.first
+        monotone_step(f, p.first, q.first)
+        f(p.first) <= f(q.first)
+        pair_lte_second(p, q)
+        p.second <= q.second
+        monotone_step(g, p.second, q.second)
+        g(p.second) <= g(q.second)
+        pair_map(f, g, p).first = f(p.first)
+        pair_map(f, g, q).first = f(q.first)
+        pair_map(f, g, p).second = g(p.second)
+        pair_map(f, g, q).second = g(q.second)
+        pair_lte_of_components(pair_map(f, g, p), pair_map(f, g, q))
+        pair_lte(pair_map(f, g, p), pair_map(f, g, q))
+    }
+}
+
+/// Mapping both components by antitone maps reverses componentwise order.
+theorem pair_map_antitone_reverses_lte[A: PartialOrder, B: PartialOrder, C: PartialOrder, D: PartialOrder](
+    f: A -> C,
+    g: B -> D,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_antitone(f) and is_antitone(g) and pair_lte(p, q) implies
+    pair_lte(pair_map(f, g, q), pair_map(f, g, p))
+} by {
+    if is_antitone(f) and is_antitone(g) and pair_lte(p, q) {
+        pair_lte_first(p, q)
+        p.first <= q.first
+        antitone_step(f, p.first, q.first)
+        f(q.first) <= f(p.first)
+        pair_lte_second(p, q)
+        p.second <= q.second
+        antitone_step(g, p.second, q.second)
+        g(q.second) <= g(p.second)
+        pair_map(f, g, q).first = f(q.first)
+        pair_map(f, g, p).first = f(p.first)
+        pair_map(f, g, q).second = g(q.second)
+        pair_map(f, g, p).second = g(p.second)
+        pair_lte_of_components(pair_map(f, g, q), pair_map(f, g, p))
+        pair_lte(pair_map(f, g, q), pair_map(f, g, p))
+    }
+}
+
+/// Mapping both components by order embeddings reflects componentwise order.
+theorem pair_map_reflects_lte_of_embeddings[A: PartialOrder, B: PartialOrder, C: PartialOrder, D: PartialOrder](
+    f: A -> C,
+    g: B -> D,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_order_embedding(f) and is_order_embedding(g) and
+    pair_lte(pair_map(f, g, p), pair_map(f, g, q)) implies pair_lte(p, q)
+} by {
+    if is_order_embedding(f) and is_order_embedding(g) and
+        pair_lte(pair_map(f, g, p), pair_map(f, g, q)) {
+        pair_lte_first(pair_map(f, g, p), pair_map(f, g, q))
+        pair_map(f, g, p).first <= pair_map(f, g, q).first
+        pair_map(f, g, p).first = f(p.first)
+        pair_map(f, g, q).first = f(q.first)
+        f(p.first) <= f(q.first)
+        order_embedding_reflects_lte(f, p.first, q.first)
+        p.first <= q.first
+        pair_lte_second(pair_map(f, g, p), pair_map(f, g, q))
+        pair_map(f, g, p).second <= pair_map(f, g, q).second
+        pair_map(f, g, p).second = g(p.second)
+        pair_map(f, g, q).second = g(q.second)
+        g(p.second) <= g(q.second)
+        order_embedding_reflects_lte(g, p.second, q.second)
+        p.second <= q.second
+        pair_lte_of_components(p, q)
+        pair_lte(p, q)
+    }
+}
+
+/// Mapping both components by order embeddings preserves and reflects componentwise order.
+theorem pair_map_lte_iff_of_embeddings[A: PartialOrder, B: PartialOrder, C: PartialOrder, D: PartialOrder](
+    f: A -> C,
+    g: B -> D,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_order_embedding(f) and is_order_embedding(g) implies
+    (pair_lte(pair_map(f, g, p), pair_map(f, g, q)) = pair_lte(p, q))
+} by {
+    if is_order_embedding(f) and is_order_embedding(g) {
+        if pair_lte(pair_map(f, g, p), pair_map(f, g, q)) {
+            pair_map_reflects_lte_of_embeddings(f, g, p, q)
+            pair_lte(p, q)
+        }
+        if pair_lte(p, q) {
+            order_embedding_apply_le(f, p.first, q.first)
+            f(p.first) <= f(q.first)
+            order_embedding_apply_le(g, p.second, q.second)
+            g(p.second) <= g(q.second)
+            pair_map(f, g, p).first = f(p.first)
+            pair_map(f, g, q).first = f(q.first)
+            pair_map(f, g, p).second = g(p.second)
+            pair_map(f, g, q).second = g(q.second)
+            pair_lte_of_components(pair_map(f, g, p), pair_map(f, g, q))
+            pair_lte(pair_map(f, g, p), pair_map(f, g, q))
+        }
+        pair_lte(pair_map(f, g, p), pair_map(f, g, q)) = pair_lte(p, q)
+    }
+}
+
+/// Mapping the first component by a monotone map preserves componentwise order.
+theorem pair_map_first_preserves_lte[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    f: A -> C,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_monotone(f) and pair_lte(p, q) implies
+    pair_lte(pair_map_first(f, p), pair_map_first(f, q))
+} by {
+    if is_monotone(f) and pair_lte(p, q) {
+        pair_lte_first(p, q)
+        monotone_step(f, p.first, q.first)
+        f(p.first) <= f(q.first)
+        pair_lte_second(p, q)
+        p.second <= q.second
+        pair_map_first(f, p).first = f(p.first)
+        pair_map_first(f, q).first = f(q.first)
+        pair_map_first(f, p).second = p.second
+        pair_map_first(f, q).second = q.second
+        pair_lte_of_components(pair_map_first(f, p), pair_map_first(f, q))
+        pair_lte(pair_map_first(f, p), pair_map_first(f, q))
+    }
+}
+
+/// Mapping the second component by a monotone map preserves componentwise order.
+theorem pair_map_second_preserves_lte[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    f: B -> C,
+    p: Pair[A, B],
+    q: Pair[A, B]
+) {
+    is_monotone(f) and pair_lte(p, q) implies
+    pair_lte(pair_map_second(f, p), pair_map_second(f, q))
+} by {
+    if is_monotone(f) and pair_lte(p, q) {
+        pair_lte_first(p, q)
+        p.first <= q.first
+        pair_lte_second(p, q)
+        monotone_step(f, p.second, q.second)
+        f(p.second) <= f(q.second)
+        pair_map_second(f, p).first = p.first
+        pair_map_second(f, q).first = q.first
+        pair_map_second(f, p).second = f(p.second)
+        pair_map_second(f, q).second = f(q.second)
+        pair_lte_of_components(pair_map_second(f, p), pair_map_second(f, q))
+        pair_lte(pair_map_second(f, p), pair_map_second(f, q))
+    }
+}
+
+/// Swapping both sides converts componentwise order to componentwise order in the swapped product.
+theorem pair_swap_lte_swap[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p, q) implies pair_lte(p.swap, q.swap)
+} by {
+    if pair_lte(p, q) {
+        pair_lte_first(p, q)
+        p.first <= q.first
+        pair_lte_second(p, q)
+        p.second <= q.second
+        p.swap.first = p.second
+        q.swap.first = q.second
+        p.swap.second = p.first
+        q.swap.second = q.first
+        pair_lte_of_components(p.swap, q.swap)
+        pair_lte(p.swap, q.swap)
+    }
+}
+
+/// Swapping both sides reflects componentwise order.
+theorem pair_swap_reflects_lte[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p.swap, q.swap) implies pair_lte(p, q)
+} by {
+    if pair_lte(p.swap, q.swap) {
+        pair_swap_lte_swap(p.swap, q.swap)
+        pair_lte(p.swap.swap, q.swap.swap)
+        swap_swap(p)
+        swap_swap(q)
+        pair_lte(p, q)
+    }
+}
+
+/// Swapping a product is an order embedding.
+theorem pair_swap_is_order_embedding[A: PartialOrder, B: PartialOrder] {
+    forall(p: Pair[A, B], q: Pair[A, B]) {
+        pair_lte(p.swap, q.swap) = pair_lte(p, q)
+    }
+} by {
+    forall(p: Pair[A, B], q: Pair[A, B]) {
+        if pair_lte(p.swap, q.swap) {
+            pair_swap_reflects_lte(p, q)
+            pair_lte(p, q)
+        }
+        if pair_lte(p, q) {
+            pair_swap_lte_swap(p, q)
+            pair_lte(p.swap, q.swap)
+        }
+        pair_lte(p.swap, q.swap) = pair_lte(p, q)
+    }
+}
+
+/// Swapped pairs are ordered exactly when the original pairs are ordered.
+theorem pair_swap_lte_iff[A: PartialOrder, B: PartialOrder](p: Pair[A, B], q: Pair[A, B]) {
+    pair_lte(p.swap, q.swap) = pair_lte(p, q)
+} by {
+    pair_swap_is_order_embedding[A, B]
+}
