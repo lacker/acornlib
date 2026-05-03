@@ -1,6 +1,6 @@
 from int.lattice import Int
 from int.int_base import abs
-from nat.basic_addition import Nat
+from nat.nat_coprime import Nat
 from ring import mul_neg_neg, mul_neg_left
 from int.lattice import euclids_lemma
 numerals Int
@@ -132,6 +132,23 @@ theorem int_coprime_divides_of_divides_mul(a: Int, b: Int, c: Int) {
         euclids_lemma(a, b, c)
         a.divides(c)
     }
+}
+
+/// Bridge: a natural is coprime to b on Nat exactly when its embedding into
+/// Int is coprime to the embedding of b on Int.
+theorem nat_coprime_iff_int_coprime(a: Nat, b: Nat) {
+    a.coprime(b) = Int.from_nat(a).coprime(Int.from_nat(b))
+} by {
+    Int.from_nat(a).gcd(Int.from_nat(b)) =
+        Int.from_nat(abs(Int.from_nat(a)).gcd(abs(Int.from_nat(b))))
+    abs(Int.from_nat(a)) = a
+    abs(Int.from_nat(b)) = b
+    Int.from_nat(a).gcd(Int.from_nat(b)) = Int.from_nat(a.gcd(b))
+    Int.from_nat(Nat.1) = Int.1
+    a.coprime(b) = (a.gcd(b) = Nat.1)
+    Int.from_nat(a).coprime(Int.from_nat(b)) = (Int.from_nat(a).gcd(Int.from_nat(b)) = Int.1)
+    Int.from_nat(a).coprime(Int.from_nat(b)) = (Int.from_nat(a.gcd(b)) = Int.from_nat(Nat.1))
+    Int.from_nat(a).coprime(Int.from_nat(b)) = (a.gcd(b) = Nat.1)
 }
 
 /// Antisymmetry up to sign: if two integers divide each other and are nonzero, they have equal absolute value.
