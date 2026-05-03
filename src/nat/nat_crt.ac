@@ -1,7 +1,12 @@
-from nat.nat_coprime import Nat
+from nat.nat_coprime import coprime_one_left
 from nat.nat_bezout import nat_bezout
-from int.lattice import Int
-from zmod import int_mod_rel
+from nat.nat_base import divides_self, divides_mul, mul_to_zero
+from nat.nat_congr_int import nat_congr_mod_iff_int_mod_rel
+from nat.nat_congruence import Nat
+from int.lattice import Int, div_from_nat, div_trans
+from int.int_residue import int_has_nat_residue
+from zmod import int_mod_rel, int_mod_rel_is_equivalence
+from relation_basic import is_transitive
 numerals Int
 
 /// Half of CRT: the chosen witness c = a + (b-a)*x*m is congruent to a modulo m.
@@ -69,3 +74,66 @@ theorem int_crt_two_moduli(m: Nat, n: Nat, a: Int, b: Int) {
         exists(c0: Int) { int_mod_rel(m, c0, a) and int_mod_rel(n, c0, b) }
     }
 }
+
+/// Descending the modulus along divisibility: a congruence modulo a multiple
+/// of m is also a congruence modulo m.
+theorem int_mod_rel_descend(m: Nat, k: Nat, x: Int, y: Int) {
+    m.divides(k) and int_mod_rel(k, x, y) implies int_mod_rel(m, x, y)
+} by {
+    if m.divides(k) and int_mod_rel(k, x, y) {
+        div_from_nat(m, k)
+        Int.from_nat(m).divides(Int.from_nat(k))
+        Int.from_nat(k).divides(x - y)
+        div_trans(Int.from_nat(m), Int.from_nat(k), x - y)
+        Int.from_nat(m).divides(x - y)
+    }
+}
+
+/// Two-modulus Chinese remainder theorem on the naturals: for coprime
+/// positive moduli, every pair of natural-number residue requirements has a
+/// simultaneous Nat solution.
+theorem nat_crt_two_moduli(m: Nat, n: Nat, a: Nat, b: Nat) {
+    m.coprime(n) and m != Nat.0 and n != Nat.0 implies
+        exists(c: Nat) { c.congr_mod(a, m) and c.congr_mod(b, n) }
+} by {
+    if m.coprime(n) and m != Nat.0 and n != Nat.0 {
+        int_crt_two_moduli(m, n, Int.from_nat(a), Int.from_nat(b))
+        let ci: Int satisfy {
+            int_mod_rel(m, ci, Int.from_nat(a)) and int_mod_rel(n, ci, Int.from_nat(b))
+        }
+        mul_to_zero(m, n)
+        m * n != Nat.0
+        int_has_nat_residue(ci, m * n)
+        let c: Nat satisfy { int_mod_rel(m * n, ci, Int.from_nat(c)) }
+        // Descend modulus from m*n to m (since m | m*n).
+        divides_self(m)
+        divides_mul(m, n, m)
+        m.divides(m * n)
+        int_mod_rel_descend(m, m * n, ci, Int.from_nat(c))
+        int_mod_rel(m, ci, Int.from_nat(c))
+        // Combine with int_mod_rel(m, ci, Int.from_nat(a)) by symmetry/transitivity.
+        int_mod_rel_is_equivalence(m)
+        is_transitive(int_mod_rel(m))
+        int_mod_rel(m, Int.from_nat(c), ci)
+        int_mod_rel(m, Int.from_nat(c), Int.from_nat(a))
+        nat_congr_mod_iff_int_mod_rel(c, a, m)
+        c.congr_mod(a, m)
+        // Same for n: descend and combine.
+        divides_self(n)
+        divides_mul(n, m, n)
+        n.divides(n * m)
+        n * m = m * n
+        n.divides(m * n)
+        int_mod_rel_descend(n, m * n, ci, Int.from_nat(c))
+        int_mod_rel(n, ci, Int.from_nat(c))
+        int_mod_rel_is_equivalence(n)
+        is_transitive(int_mod_rel(n))
+        int_mod_rel(n, Int.from_nat(c), ci)
+        int_mod_rel(n, Int.from_nat(c), Int.from_nat(b))
+        nat_congr_mod_iff_int_mod_rel(c, b, n)
+        c.congr_mod(b, n)
+        c.congr_mod(a, m) and c.congr_mod(b, n)
+        exists(c0: Nat) { c0.congr_mod(a, m) and c0.congr_mod(b, n) }
+    }
+}
+
