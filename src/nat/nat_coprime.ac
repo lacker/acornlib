@@ -1,0 +1,51 @@
+from nat.basic_addition import Nat
+from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides
+numerals Nat
+
+attributes Nat {
+    /// True if this number and b have no common factor greater than one.
+    define coprime(self, b: Nat) -> Bool { self.gcd(b) = 1 }
+}
+
+/// Coprimality is symmetric in its arguments.
+theorem coprime_comm(a: Nat, b: Nat) {
+    a.coprime(b) implies b.coprime(a)
+} by {
+    if a.coprime(b) {
+        a.gcd(b) = 1
+        gcd_comm(a, b)
+        b.gcd(a) = 1
+    }
+}
+
+/// One is coprime with every natural number on the left.
+theorem coprime_one_left(a: Nat) {
+    Nat.1.coprime(a)
+} by {
+    gcd_one_left(a)
+}
+
+/// One is coprime with every natural number on the right.
+theorem coprime_one_right(a: Nat) {
+    a.coprime(Nat.1)
+} by {
+    gcd_one_right(a)
+}
+
+/// Euclid's lemma: if a is coprime to b and divides b * c, then a divides c.
+theorem coprime_divides_of_divides_mul(a: Nat, b: Nat, c: Nat) {
+    a.coprime(b) and a.divides(b * c) implies a.divides(c)
+} by {
+    if a.coprime(b) and a.divides(b * c) {
+        a.gcd(b) = 1
+        gcd_mult_right(a, b, c)
+        a.gcd(b) * c = (a * c).gcd(b * c)
+        Nat.1 * c = (a * c).gcd(b * c)
+        c = (a * c).gcd(b * c)
+        a.divides(a * c)
+        a.divides(b * c)
+        gcd_divides(a, a * c, b * c)
+        a.divides((a * c).gcd(b * c))
+        a.divides(c)
+    }
+}
