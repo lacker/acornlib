@@ -211,14 +211,14 @@
 {"goal":"contains_k(a + b)","proof":[]}
 {"goal":"contains_k(x)","proof":[]}
 {"goal":"ideal_sum_lub","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = ideal_subset[T0](x0, x1) }[R](ideal_sum[R](contains_i, contains_j), contains_k)"]}
-{"goal":"ideal_subset[R](contains_i, ideal_sum[R](contains_i, contains_j))","proof":["not is_ideal[R](contains_j)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
-{"goal":"ideal_subset[R](contains_i, contains_k)","proof":["not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k) or not ideal_subset[R](contains_i, ideal_sum[R](contains_i, contains_j))","not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)"]}
-{"goal":"ideal_subset[R](contains_j, ideal_sum[R](contains_i, contains_j))","proof":["not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
-{"goal":"ideal_subset[R](contains_j, contains_k)","proof":["not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k) or not ideal_subset[R](contains_j, ideal_sum[R](contains_i, contains_j))","not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)"]}
-{"goal":"ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k)","proof":["not ideal_subset[R](contains_i, contains_k)"]}
-{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)","proof":["not ideal_subset[R](contains_j, contains_k) or not ideal_subset[R](contains_i, contains_k) or not is_ideal[R](contains_k)","is_ideal[R](contains_k)","ideal_subset[R](contains_j, contains_k)","ideal_subset[R](contains_i, contains_k)","not ideal_subset[R](contains_i, contains_k)"]}
-{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k) = (ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k))","proof":["ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k) or ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)","not (ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k)) or not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)","ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k)","not ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)","ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)"]}
-{"goal":"ideal_sum_subset_iff","proof":["not is_ideal[R](contains_k) or not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","is_ideal[R](contains_k)","not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)","not is_ideal[R](contains_i)"]}
+{"goal":"ideal_subset[R](contains_i, ideal_sum[R](contains_i, contains_j))","proof":[]}
+{"goal":"ideal_subset[R](contains_i, contains_k)","proof":[]}
+{"goal":"ideal_subset[R](contains_j, ideal_sum[R](contains_i, contains_j))","proof":[]}
+{"goal":"ideal_subset[R](contains_j, contains_k)","proof":[]}
+{"goal":"ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k)","proof":[]}
+{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k)","proof":[]}
+{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_k) = (ideal_subset[R](contains_i, contains_k) and ideal_subset[R](contains_j, contains_k))","proof":[]}
+{"goal":"ideal_sum_subset_iff","proof":[]}
 {"goal":"exists(k0: R, k1: R) { contains_i(k0) and contains_j(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, contains_j, x)"]}
 {"goal":"x = b + a","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[R](b, a)"]}
 {"goal":"contains_j(b) and contains_i(a) and x = b + a","proof":[]}
@@ -232,42 +232,42 @@
 {"goal":"ideal_sum[R](contains_i, contains_j)(x) = ideal_sum[R](contains_j, contains_i)(x)","proof":[]}
 {"goal":"ideal_sum_comm","proof":[]}
 {"goal":"exists(k0: R, k1: R) { contains_i(k0) and ideal_sum[R](contains_j, contains_k)(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, ideal_sum[R](contains_j, contains_k), x)"]}
-{"goal":"exists(k0: R, k1: R) { contains_j(k0) and contains_k(k1) and bc = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_j, contains_k, bc)","contains_i(a) and ideal_sum(contains_j, contains_k, bc)","not ideal_sum(contains_j, contains_k, bc)"]}
-{"goal":"x = a + (b + c)","proof":["a + bc = x","b + c = bc"]}
+{"goal":"exists(k0: R, k1: R) { contains_j(k0) and contains_k(k1) and bc = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_j, contains_k, bc)"]}
+{"goal":"x = a + (b + c)","proof":[]}
 {"goal":"a + (b + c) = a + b + c","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[R](a, b, c)"]}
-{"goal":"x = a + b + c","proof":["a + (b + c) != a + b + c"]}
-{"goal":"contains_i(a) and contains_j(b) and a + b = a + b","proof":["contains_j(b) and contains_k(c)","not contains_i(a)","contains_i(a) and ideal_sum(contains_j, contains_k, bc)"]}
-{"goal":"exists(k0: R, k1: R) { contains_i(k0) and contains_j(k1) and a + b = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { contains_i(x0) and contains_j(k0) and x0 + k0 = a + b } }(a)","function(x0: R, x1: R) { not (contains_i(x0) and contains_j(x1) and x0 + x1 = a + b) }(a, b)"]}
+{"goal":"x = a + b + c","proof":[]}
+{"goal":"contains_i(a) and contains_j(b) and a + b = a + b","proof":[]}
+{"goal":"exists(k0: R, k1: R) { contains_i(k0) and contains_j(k1) and a + b = k0 + k1 }","proof":[]}
 {"goal":"ideal_sum[R](contains_i, contains_j)(a + b)","proof":["let w0: R satisfy { exists(k0: R) { contains_i(w0) and contains_j(k0) and w0 + k0 = a + b } }","let w1: R satisfy { contains_i(w0) and contains_j(w1) and a + b = w0 + w1 }","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, contains_j, a + b)"]}
-{"goal":"ideal_sum[R](contains_i, contains_j)(a + b) and contains_k(c) and x = a + b + c","proof":["not contains_k(c)","contains_j(b) and contains_k(c)"]}
+{"goal":"ideal_sum[R](contains_i, contains_j)(a + b) and contains_k(c) and x = a + b + c","proof":[]}
 {"goal":"exists(k0: R, k1: R) { ideal_sum[R](contains_i, contains_j)(k0) and contains_k(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { ideal_sum(contains_i, contains_j, x0) and contains_k(k0) and x0 + k0 = x } }(a + b)","function(x0: R, x1: R) { not (ideal_sum(contains_i, contains_j, x0) and contains_k(x1) and x0 + x1 = x) }(a + b, c)"]}
 {"goal":"ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x)","proof":["let w0: R satisfy { exists(k0: R) { ideal_sum(contains_i, contains_j, w0) and contains_k(k0) and w0 + k0 = x } }","let w1: R satisfy { ideal_sum(contains_i, contains_j, w0) and contains_k(w1) and w0 + w1 = x }","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](ideal_sum[R](contains_i, contains_j), contains_k, x)"]}
 {"goal":"exists(k0: R, k1: R) { ideal_sum[R](contains_i, contains_j)(k0) and contains_k(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](ideal_sum[R](contains_i, contains_j), contains_k, x)"]}
-{"goal":"exists(k0: R, k1: R) { contains_i(k0) and contains_j(k1) and ab = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, contains_j, ab)","ideal_sum(contains_i, contains_j, ab) and contains_k(c)","not ideal_sum(contains_i, contains_j, ab)"]}
-{"goal":"x = a + b + c","proof":["ab + c = x","a + b = ab"]}
+{"goal":"exists(k0: R, k1: R) { contains_i(k0) and contains_j(k1) and ab = k0 + k1 }","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, contains_j, ab)"]}
+{"goal":"x = a + b + c","proof":[]}
 {"goal":"a + b + c = a + (b + c)","proof":["function[T0: lib(add_semigroup).AddSemigroup](x0: T0, x1: T0, x2: T0) { x0 + x1 + x2 = x0 + (x1 + x2) }[R](a, b, c)"]}
-{"goal":"x = a + (b + c)","proof":["a + (b + c) != a + b + c"]}
-{"goal":"contains_j(b) and contains_k(c) and b + c = b + c","proof":["contains_i(a) and contains_j(b)","not contains_k(c)","ideal_sum(contains_i, contains_j, ab) and contains_k(c)"]}
-{"goal":"exists(k0: R, k1: R) { contains_j(k0) and contains_k(k1) and b + c = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { contains_j(x0) and contains_k(k0) and x0 + k0 = b + c } }(b)","function(x0: R, x1: R) { not (contains_j(x0) and contains_k(x1) and x0 + x1 = b + c) }(b, c)"]}
+{"goal":"x = a + (b + c)","proof":[]}
+{"goal":"contains_j(b) and contains_k(c) and b + c = b + c","proof":[]}
+{"goal":"exists(k0: R, k1: R) { contains_j(k0) and contains_k(k1) and b + c = k0 + k1 }","proof":[]}
 {"goal":"ideal_sum[R](contains_j, contains_k)(b + c)","proof":["let w0: R satisfy { exists(k0: R) { contains_j(w0) and contains_k(k0) and w0 + k0 = b + c } }","let w1: R satisfy { contains_j(w0) and contains_k(w1) and b + c = w0 + w1 }","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_j, contains_k, b + c)"]}
-{"goal":"contains_i(a) and ideal_sum[R](contains_j, contains_k)(b + c) and x = a + (b + c)","proof":["not contains_i(a)","contains_i(a) and contains_j(b)"]}
+{"goal":"contains_i(a) and ideal_sum[R](contains_j, contains_k)(b + c) and x = a + (b + c)","proof":[]}
 {"goal":"exists(k0: R, k1: R) { contains_i(k0) and ideal_sum[R](contains_j, contains_k)(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { contains_i(x0) and ideal_sum(contains_j, contains_k, k0) and x0 + k0 = x } }(a)","function(x0: R, x1: R) { not (contains_i(x0) and ideal_sum(contains_j, contains_k, x1) and x0 + x1 = x) }(a, b + c)"]}
 {"goal":"ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x)","proof":["let w0: R satisfy { exists(k0: R) { contains_i(w0) and ideal_sum(contains_j, contains_k, k0) and w0 + k0 = x } }","let w1: R satisfy { contains_i(w0) and ideal_sum(contains_j, contains_k, w1) and w0 + w1 = x }","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](contains_i, ideal_sum[R](contains_j, contains_k), x)"]}
-{"goal":"ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x) = ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x)","proof":["ideal_sum(contains_i, ideal_sum[R](contains_j, contains_k), x) or ideal_sum(ideal_sum[R](contains_i, contains_j), contains_k, x)","not ideal_sum(contains_i, ideal_sum[R](contains_j, contains_k), x) or not ideal_sum(ideal_sum[R](contains_i, contains_j), contains_k, x)","ideal_sum(contains_i, ideal_sum[R](contains_j, contains_k), x)","not ideal_sum(contains_i, ideal_sum[R](contains_j, contains_k), x)"]}
+{"goal":"ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x) = ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x)","proof":[]}
 {"goal":"ideal_sum_assoc","proof":[]}
-{"goal":"ideal_subset[R](ideal_sum[R](contains, contains), contains)","proof":["not ideal_subset[R](contains, contains) or not is_ideal[R](contains)","not ideal_subset[R](contains, contains)"]}
-{"goal":"ideal_subset[R](contains, ideal_sum[R](contains, contains))","proof":["not is_ideal[R](contains)"]}
+{"goal":"ideal_subset[R](ideal_sum[R](contains, contains), contains)","proof":[]}
+{"goal":"ideal_subset[R](contains, ideal_sum[R](contains, contains))","proof":[]}
 {"goal":"ideal_sum[R](contains, contains) = contains","proof":[]}
 {"goal":"ideal_sum_idempotent","proof":[]}
-{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_i)","proof":["not ideal_subset[R](contains_j, contains_i) or not ideal_subset[R](contains_i, contains_i) or not is_ideal[R](contains_i)","ideal_subset[R](contains_j, contains_i)","not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
-{"goal":"ideal_subset[R](contains_i, ideal_sum[R](contains_i, contains_j))","proof":["not is_ideal[R](contains_j)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
+{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_i)","proof":[]}
+{"goal":"ideal_subset[R](contains_i, ideal_sum[R](contains_i, contains_j))","proof":[]}
 {"goal":"ideal_sum[R](contains_i, contains_j) = contains_i","proof":[]}
-{"goal":"ideal_sum_eq_left_of_subset","proof":["not ideal_subset[R](contains_j, contains_i) or not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","ideal_subset[R](contains_j, contains_i)","not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)","not is_ideal[R](contains_i)"]}
-{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_j)","proof":["not ideal_subset[R](contains_j, contains_j) or not ideal_subset[R](contains_i, contains_j) or not is_ideal[R](contains_j)","ideal_subset[R](contains_i, contains_j)","not is_ideal[R](contains_j)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
-{"goal":"ideal_subset[R](contains_j, ideal_sum[R](contains_i, contains_j))","proof":["not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)"]}
+{"goal":"ideal_sum_eq_left_of_subset","proof":[]}
+{"goal":"ideal_subset[R](ideal_sum[R](contains_i, contains_j), contains_j)","proof":[]}
+{"goal":"ideal_subset[R](contains_j, ideal_sum[R](contains_i, contains_j))","proof":[]}
 {"goal":"ideal_sum[R](contains_i, contains_j) = contains_j","proof":[]}
-{"goal":"ideal_sum_eq_right_of_subset","proof":["not ideal_subset[R](contains_i, contains_j) or not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","ideal_subset[R](contains_i, contains_j)","not is_ideal[R](contains_j) or not is_ideal[R](contains_i)","is_ideal[R](contains_i) and is_ideal[R](contains_j)","not is_ideal[R](contains_i)"]}
-{"goal":"zero_ideal_sum_left","proof":["function[T0: CommRing](x0: T0 -> Bool) { not is_ideal[T0](x0) or ideal_subset[T0](zero_ideal[T0], x0) }[R](contains)","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]","not ideal_subset[R](zero_ideal[R], contains) or not is_ideal[R](zero_ideal[R])","ideal_subset[R](zero_ideal[R], contains)","not ideal_subset[R](zero_ideal[R], contains)"]}
-{"goal":"zero_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { not is_ideal[T0](x0) or ideal_subset[T0](zero_ideal[T0], x0) }[R](contains)","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]","not ideal_subset[R](zero_ideal[R], contains) or not is_ideal[R](zero_ideal[R])","ideal_subset[R](zero_ideal[R], contains)","not ideal_subset[R](zero_ideal[R], contains)"]}
-{"goal":"unit_ideal_sum_left","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]","not ideal_subset[R](contains, unit_ideal[R]) or not is_ideal[R](unit_ideal[R])"]}
-{"goal":"unit_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]","not ideal_subset[R](contains, unit_ideal[R]) or not is_ideal[R](unit_ideal[R])"]}
+{"goal":"ideal_sum_eq_right_of_subset","proof":[]}
+{"goal":"zero_ideal_sum_left","proof":["function[T0: CommRing](x0: T0 -> Bool) { not is_ideal[T0](x0) or ideal_subset[T0](zero_ideal[T0], x0) }[R](contains)","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]"]}
+{"goal":"zero_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { not is_ideal[T0](x0) or ideal_subset[T0](zero_ideal[T0], x0) }[R](contains)","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]"]}
+{"goal":"unit_ideal_sum_left","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]"]}
+{"goal":"unit_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]"]}

@@ -76,24 +76,24 @@
 {"goal":"c.congr_mod(a, m) and c.congr_mod(b, n)","proof":[]}
 {"goal":"exists(k0: Nat) { k0.congr_mod(a, m) and k0.congr_mod(b, n) }","proof":["function(x0: Nat) { not (x0.congr_mod(a, m) and x0.congr_mod(b, n)) }(c)"]}
 {"goal":"nat_crt_two_moduli","proof":[]}
-{"goal":"exists(k0: Nat) { k0.congr_mod(a, m) and k0.congr_mod(b, n) }","proof":["not m.coprime(n) or Nat.0 = n or Nat.0 = m","m.coprime(n) and m.coprime(p) and n.coprime(p) and Nat.0 != m and Nat.0 != n","Nat.0 != m","not m.coprime(n)","m.coprime(n) and m.coprime(p) and n.coprime(p)"]}
-{"goal":"p.coprime(m)","proof":["not m.coprime(p)","m.coprime(n) and m.coprime(p) and n.coprime(p) and Nat.0 != m and Nat.0 != n","m.coprime(n) and m.coprime(p) and n.coprime(p)"]}
-{"goal":"p.coprime(n)","proof":["not n.coprime(p)","m.coprime(n) and m.coprime(p) and n.coprime(p) and Nat.0 != m and Nat.0 != n","m.coprime(n) and m.coprime(p) and n.coprime(p)"]}
-{"goal":"p.coprime(m * n)","proof":["not p.coprime(n) or not p.coprime(m)","not p.coprime(m)"]}
-{"goal":"(m * n).coprime(p)","proof":["not p.coprime(m * n)"]}
-{"goal":"m * n != Nat.0","proof":["Nat.0 = n or Nat.0 = m","m.coprime(n) and m.coprime(p) and n.coprime(p) and Nat.0 != m and Nat.0 != n","Nat.0 = m"]}
-{"goal":"exists(k0: Nat) { k0.congr_mod(y, m * n) and k0.congr_mod(c, p) }","proof":["not (m * n).coprime(p) or m * n = Nat.0 or Nat.0 = p","p.coprime(m * n)","(m * n).coprime(p)","Nat.0 = p"]}
-{"goal":"int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y))","proof":["x.congr_mod(y, m * n)","not x.congr_mod(y, m * n)"]}
-{"goal":"m.divides(m * n)","proof":["not m.divides(m)"]}
-{"goal":"int_mod_rel(m, Int.from_nat(x), Int.from_nat(y))","proof":["not int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y)) or not m.divides(m * n)","m.divides(m * n)","not int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y))"]}
+{"goal":"exists(k0: Nat) { k0.congr_mod(a, m) and k0.congr_mod(b, n) }","proof":[]}
+{"goal":"p.coprime(m)","proof":[]}
+{"goal":"p.coprime(n)","proof":[]}
+{"goal":"p.coprime(m * n)","proof":[]}
+{"goal":"(m * n).coprime(p)","proof":[]}
+{"goal":"m * n != Nat.0","proof":[]}
+{"goal":"exists(k0: Nat) { k0.congr_mod(y, m * n) and k0.congr_mod(c, p) }","proof":[]}
+{"goal":"int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y))","proof":[]}
+{"goal":"m.divides(m * n)","proof":[]}
+{"goal":"int_mod_rel(m, Int.from_nat(x), Int.from_nat(y))","proof":[]}
 {"goal":"x.congr_mod(y, m)","proof":[]}
-{"goal":"n.divides(n * m)","proof":["not n.divides(n)"]}
+{"goal":"n.divides(n * m)","proof":[]}
 {"goal":"n * m = m * n","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(n, m)"]}
-{"goal":"n.divides(m * n)","proof":["n.divides(n * m)"]}
-{"goal":"int_mod_rel(n, Int.from_nat(x), Int.from_nat(y))","proof":["not int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y)) or not n.divides(m * n)","not int_mod_rel(m * n, Int.from_nat(x), Int.from_nat(y))"]}
+{"goal":"n.divides(m * n)","proof":[]}
+{"goal":"int_mod_rel(n, Int.from_nat(x), Int.from_nat(y))","proof":[]}
 {"goal":"x.congr_mod(y, n)","proof":[]}
-{"goal":"x.congr_mod(a, m)","proof":["not x.congr_mod(y, m) or not y.congr_mod(a, m)","not y.congr_mod(a, m)"]}
-{"goal":"x.congr_mod(b, n)","proof":["not x.congr_mod(y, n) or not y.congr_mod(b, n)","not y.congr_mod(b, n)"]}
+{"goal":"x.congr_mod(a, m)","proof":[]}
+{"goal":"x.congr_mod(b, n)","proof":[]}
 {"goal":"x.congr_mod(c, p)","proof":[]}
-{"goal":"x.congr_mod(a, m) and x.congr_mod(b, n) and x.congr_mod(c, p)","proof":["not x.congr_mod(a, m)"]}
-{"goal":"nat_crt_three_moduli","proof":["not n.coprime(p) or not m.coprime(p) or not m.coprime(n) or Nat.0 = p or Nat.0 = n or Nat.0 = m","Nat.0 != p","m.coprime(n) and m.coprime(p) and n.coprime(p) and Nat.0 != m and Nat.0 != n","Nat.0 != m","not n.coprime(p) or not m.coprime(p) or not m.coprime(n)","m.coprime(n) and m.coprime(p) and n.coprime(p)","m.coprime(p)","m.coprime(n)","not m.coprime(n)"]}
+{"goal":"x.congr_mod(a, m) and x.congr_mod(b, n) and x.congr_mod(c, p)","proof":[]}
+{"goal":"nat_crt_three_moduli","proof":[]}

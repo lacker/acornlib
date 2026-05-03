@@ -4,24 +4,24 @@
 {"goal":"coprime_one_left","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(1, a)"]}
 {"goal":"coprime_one_right","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, 1)"]}
 {"goal":"a.gcd(b) = 1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, b)"]}
-{"goal":"a.gcd(c) = 1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, c)","a.coprime(c)"]}
-{"goal":"d.divides(a)","proof":["not a.gcd(b * c).divides(a)"]}
-{"goal":"d.divides(b * c)","proof":["not a.gcd(b * c).divides(b * c)"]}
+{"goal":"a.gcd(c) = 1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, c)"]}
+{"goal":"d.divides(a)","proof":[]}
+{"goal":"d.divides(b * c)","proof":[]}
 {"goal":"d.divides(a * c)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or x0.divides(x1 * x2) }(d, a, c)"]}
 {"goal":"a.gcd(b) * c = (a * c).gcd(b * c)","proof":[]}
 {"goal":"1 * c = (a * c).gcd(b * c)","proof":[]}
 {"goal":"c = (a * c).gcd(b * c)","proof":["function(x0: Nat) { 1 * x0 = x0 }(c)"]}
 {"goal":"d.divides((a * c).gcd(b * c))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or not x0.divides(x2) or x0.divides(x1.gcd(x2)) }(d, a * c, b * c)"]}
-{"goal":"d.divides(c)","proof":["not d.divides((a * c).gcd(b * c))"]}
+{"goal":"d.divides(c)","proof":[]}
 {"goal":"d.divides(a.gcd(c))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or not x0.divides(x2) or x0.divides(x1.gcd(x2)) }(d, a, c)"]}
-{"goal":"d.divides(1)","proof":["not d.divides(a.gcd(c))"]}
+{"goal":"d.divides(1)","proof":[]}
 {"goal":"exists(k0: Nat) { d * k0 = 1 }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(d, 1)"]}
 {"goal":"d = 1","proof":["function(x0: Nat, x1: Nat) { x0 * x1 != 1 or 1 = x0 }(d, k)"]}
-{"goal":"a.gcd(b * c) = 1","proof":["a.gcd(b * c) != d"]}
-{"goal":"coprime_mul","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, b * c)","a.coprime(c)","a.coprime(b)","a.gcd(b * c) = 1","a.gcd(b * c) != 1"]}
-{"goal":"a.gcd(b) = 1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, b)","a.coprime(b)"]}
+{"goal":"a.gcd(b * c) = 1","proof":[]}
+{"goal":"coprime_mul","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, b * c)"]}
+{"goal":"a.gcd(b) = 1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(a, b)"]}
 {"goal":"a.gcd(b) * c = (a * c).gcd(b * c)","proof":[]}
-{"goal":"1 * c = (a * c).gcd(b * c)","proof":["(a * c).gcd(b * c) != a.gcd(b) * c"]}
+{"goal":"1 * c = (a * c).gcd(b * c)","proof":[]}
 {"goal":"c = (a * c).gcd(b * c)","proof":["function(x0: Nat) { 1 * x0 = x0 }(c)"]}
 {"goal":"a.divides(a * c)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or x0.divides(x1 * x2) }(a, a, c)","function(x0: Nat) { x0.divides(x0) }(a)"]}
 {"goal":"a.divides(b * c)","proof":[]}

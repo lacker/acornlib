@@ -70,4 +70,4 @@
 {"goal":"int_mod_rel(n, ai, bi)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, ai, bi)"]}
 {"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","proof":[]}
 {"goal":"nat_congr_mod_imp_int_mod_rel","proof":[]}
-{"goal":"nat_congr_mod_iff_int_mod_rel","proof":["int_mod_rel(n, Int.from_nat(a), Int.from_nat(b)) or a.congr_mod(b, n)","a.congr_mod(b, n)","int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","not int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))"]}
+{"goal":"nat_congr_mod_iff_int_mod_rel","proof":[]}

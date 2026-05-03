@@ -32,8 +32,8 @@
 {"goal":"a = Nat.1","proof":[]}
 {"goal":"(a * Nat.1).congr_mod(Nat.1, Nat.0)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * Nat.1, Nat.0, Nat.1)"]}
 {"goal":"nat_modular_inverse_exists_zero","proof":["(a * Nat.1).congr_mod(Nat.1, Nat.0)","function(x0: Nat) { not (a * x0).congr_mod(Nat.1, Nat.0) }(Nat.1)"]}
-{"goal":"n = Nat.0 or n != Nat.0","proof":["Nat.0 != n","Nat.0 = n"]}
+{"goal":"n = Nat.0 or n != Nat.0","proof":[]}
 {"goal":"a.coprime(Nat.0)","proof":[]}
-{"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, Nat.0) }","proof":["not a.coprime(Nat.0)"]}
-{"goal":"(a * b0).congr_mod(Nat.1, n)","proof":["not (a * b0).congr_mod(Nat.1, Nat.0)"]}
-{"goal":"nat_modular_inverse_exists","proof":["not a.coprime(n) or Nat.0 = n","not a.coprime(n) or Nat.0 != n","not a.coprime(n)"]}
+{"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, Nat.0) }","proof":[]}
+{"goal":"(a * b0).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"nat_modular_inverse_exists","proof":[]}
