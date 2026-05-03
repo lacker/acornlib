@@ -48,6 +48,8 @@
 {"goal":"all_prime_nil","proof":[]}
 {"goal":"all_prime(List.cons(head, tail))","proof":["function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x1) or not x0.is_prime or all_prime(x2) }(head, tail, List.cons(head, tail))"]}
 {"goal":"all_prime_cons_intro","proof":[]}
+{"goal":"head.is_prime and all_prime(tail)","proof":["function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x2) or all_prime(x1) }(head, tail, List.cons(head, tail))","function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x2) or x0.is_prime }(head, tail, List.cons(head, tail))"]}
+{"goal":"all_prime_cons_elim","proof":[]}
 {"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
 {"goal":"product[Nat](List.nil[Nat]) = k","proof":[]}
 {"goal":"all_prime(List.nil[Nat])","proof":[]}
@@ -136,9 +138,9 @@
 {"goal":"false","proof":[]}
 {"goal":"prime_imp_no_proper_divisor_at","proof":[]}
 {"goal":"1 < n","proof":["function(x0: Nat) { (1 < x0 and not x0.is_composite) = x0.is_prime }(n)"]}
-{"goal":"1 < k and k < n implies not k.divides(n)","proof":["not 1 < k or not k < n or not n.is_prime","not 1 < k or not k < n","k < n","1 < k","not 1 < k"]}
-{"goal":"1 < n and forall(x0: Nat) { 1 < x0 and x0 < n implies not x0.divides(n) }","proof":["let w0: Nat satisfy { 1 < w0 and w0 < n and w0.divides(n) }","function(x0: Nat) { not 1 < x0 or not x0 < n or not x0.divides(n) }(w0)","w0.divides(n)","1 < w0 and w0 < n","not 1 < w0"]}
-{"goal":"prime_imp_no_proper_divisor","proof":["1 < n and forall(x0: Nat) { not 1 < x0 or not x0 < n or not x0.divides(n) }","not forall(x1: Nat) { not 1 < x1 or not x1 < n or not x1.divides(n) }"]}
+{"goal":"1 < k and k < n implies not k.divides(n)","proof":[]}
+{"goal":"1 < n and forall(x0: Nat) { 1 < x0 and x0 < n implies not x0.divides(n) }","proof":["let w0: Nat satisfy { 1 < w0 and w0 < n and w0.divides(n) }","function(x0: Nat) { not 1 < x0 or not x0 < n or not x0.divides(n) }(w0)"]}
+{"goal":"prime_imp_no_proper_divisor","proof":[]}
 {"goal":"1 < n","proof":[]}
 {"goal":"n.is_composite","proof":["function(x0: Nat) { (1 < x0 and not x0.is_composite) = x0.is_prime }(n)"]}
 {"goal":"exists(k0: Nat, k1: Nat) { 1 < k0 and 1 < k1 and n = k0 * k1 }","proof":["function(x0: Nat) { exists(k0: Nat, k1: Nat) { 1 < k0 and 1 < k1 and k0 * k1 = x0 } = x0.is_composite }(n)"]}
@@ -157,3 +159,102 @@
 {"goal":"false","proof":[]}
 {"goal":"no_proper_divisor_imp_prime","proof":[]}
 {"goal":"prime_iff_no_proper_divisor","proof":[]}
+{"goal":"all_prime(tail)","proof":[]}
+{"goal":"List.cons(head, tail).remove_one(head) = tail","proof":[]}
+{"goal":"all_prime(List.cons(head, tail).remove_one(head))","proof":[]}
+{"goal":"all_prime_remove_one_cons_eq","proof":[]}
+{"goal":"head.is_prime","proof":[]}
+{"goal":"List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))","proof":[]}
+{"goal":"all_prime(List.cons(head, tail.remove_one(item)))","proof":[]}
+{"goal":"all_prime(List.cons(head, tail).remove_one(item))","proof":[]}
+{"goal":"all_prime_remove_one_cons_neq","proof":[]}
+{"goal":"p(List.nil[Nat])","proof":["function(x0: List[Nat]) { (not all_prime(x0) or all_prime(x0.remove_one(item))) = p(x0) }(List.nil[Nat])","function[T0](x0: List[T0], x1: T0) { List.nil[T0] != x0 or x0.remove_one(x1) = List.nil[T0] }[Nat](List.nil[Nat], item)"]}
+{"goal":"all_prime(t)","proof":[]}
+{"goal":"tail_rm","proof":["function(x0: List[Nat]) { (not all_prime(x0) or all_prime(x0.remove_one(item))) = p(x0) }(t)"]}
+{"goal":"all_prime(List.cons(h, t).remove_one(h))","proof":[]}
+{"goal":"all_prime(List.cons(h, t).remove_one(item))","proof":[]}
+{"goal":"all_prime(List.cons(h, t).remove_one(item))","proof":[]}
+{"goal":"p(List.cons(h, t))","proof":["function(x0: List[Nat]) { (not all_prime(x0) or all_prime(x0.remove_one(item))) = p(x0) }(List.cons(h, t))"]}
+{"goal":"p(l)","proof":["not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(l)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"p(list)","proof":["function(x0: List[Nat]) { p(x0) }(list)"]}
+{"goal":"all_prime_remove_one","proof":["function(x0: List[Nat]) { (not all_prime(x0) or all_prime(x0.remove_one(item))) = p(x0) }(list)"]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"exists(k0: Nat) { p * k0 = 1 }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(p, 1)"]}
+{"goal":"p * 0 = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(0, p)"]}
+{"goal":"0 = 1","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"k != 0","proof":[]}
+{"goal":"1 <= k","proof":["function(x0: Nat, x1: Nat) { x0 * x1 != 1 or 1 = x0 }(p, k)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](1, p)"]}
+{"goal":"p * 1 <= p * k","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 <= x1 or x2 * x0 <= x2 * x1 }(1, k, p)"]}
+{"goal":"p <= 1","proof":["function(x0: Nat, x1: Nat) { x0 * x1 != 1 or 1 = x0 }(p, k)"]}
+{"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(1, p)"]}
+{"goal":"prime_does_not_divide_one","proof":[]}
+{"goal":"list = List.nil[Nat]","proof":[]}
+{"goal":"head.is_prime","proof":["function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x2) or x0.is_prime }(head, tail, List.cons(head, tail))"]}
+{"goal":"product[Nat](List.cons(head, tail)) = head * product[Nat](tail)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](head, tail)"]}
+{"goal":"head * product[Nat](tail) = 1","proof":[]}
+{"goal":"head.divides(1)","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(head, 1)","not exists(k0: Nat) { head * k0 = 1 }","function(x0: Nat) { head * x0 != 1 }(product[Nat](tail))"]}
+{"goal":"false","proof":[]}
+{"goal":"all_prime_product_eq_one_imp_nil","proof":[]}
+{"goal":"p = 1 or p = head","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"p != 1","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](p, 1)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[Nat](p, 1)"]}
+{"goal":"p = head","proof":[]}
+{"goal":"head = p","proof":[]}
+{"goal":"List.cons(head, tail).contains(p)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[Nat](head, tail, List.cons(head, tail), p)"]}
+{"goal":"p.gcd(head) = 1","proof":[]}
+{"goal":"p.coprime(head)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(p, head)"]}
+{"goal":"p.divides(product[Nat](tail))","proof":[]}
+{"goal":"tail.contains(p)","proof":[]}
+{"goal":"List.cons(head, tail).contains(p)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x0) != x3 or x1 ∈ x3 or x1 = x2 }[Nat](tail, p, head, List.cons(head, tail))","function(x0: Nat) { x0.divides(x0) }(p)"]}
+{"goal":"prime_divides_product_cons_step","proof":[]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"p.divides(1)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"f(List.nil[Nat])","proof":["function(x0: List[Nat]) { (not all_prime(x0) or not p.is_prime or not p.divides(product[Nat](x0)) or p ∈ x0) = f(x0) }(List.nil[Nat])"]}
+{"goal":"h.is_prime","proof":[]}
+{"goal":"all_prime(t)","proof":[]}
+{"goal":"product[Nat](List.cons(h, t)) = h * product[Nat](t)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](h, t)"]}
+{"goal":"p.divides(h * product[Nat](t))","proof":[]}
+{"goal":"tail_implication","proof":["function(x0: List[Nat]) { (not all_prime(x0) or not p.is_prime or not p.divides(product[Nat](x0)) or p ∈ x0) = f(x0) }(t)"]}
+{"goal":"List.cons(h, t).contains(p)","proof":[]}
+{"goal":"f(List.cons(h, t))","proof":["function(x0: List[Nat]) { (not all_prime(x0) or not p.is_prime or not p.divides(product[Nat](x0)) or p ∈ x0) = f(x0) }(List.cons(h, t))"]}
+{"goal":"f(l)","proof":["not forall(x0: Nat, x1: List[Nat]) { not f(x1) or f(List.cons(x0, x1)) } or forall(x2: List[Nat]) { f(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not f(x2) or f(List.cons(x1, x2)) } or f(x0) }(l)","let w0: Nat satisfy { exists(k0: List[Nat]) { f(k0) and not f(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { f(w1) and not f(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { f(w2) and not f(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not f(x0) or f(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"f(list)","proof":["function(x0: List[Nat]) { f(x0) }(list)"]}
+{"goal":"prime_divides_product_imp_contains","proof":["function(x0: List[Nat]) { (not all_prime(x0) or not p.is_prime or not p.divides(product[Nat](x0)) or p ∈ x0) = f(x0) }(list)"]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"product[Nat](other) = 1","proof":[]}
+{"goal":"other = List.nil[Nat]","proof":[]}
+{"goal":"List.nil[Nat].count(x) = other.count(x)","proof":[]}
+{"goal":"is_permutation[Nat](List.nil[Nat], other)","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](List.nil[Nat], other)","let w0: Nat satisfy { other.count(w0) != List.nil[Nat].count(w0) }"]}
+{"goal":"p(List.nil[Nat])","proof":["function(x0: List[Nat]) { forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = p(x0) }(List.nil[Nat])","let w0: List[Nat] satisfy { all_prime(List.nil[Nat]) and all_prime(w0) and product[Nat](List.nil[Nat]) = product[Nat](w0) and not is_permutation[Nat](List.nil[Nat], w0) }","function(x0: List[Nat]) { product[Nat](List.nil[Nat]) != product[Nat](x0) or not all_prime(List.nil[Nat]) or not all_prime(x0) or is_permutation[Nat](List.nil[Nat], x0) }(w0)"]}
+{"goal":"head.is_prime","proof":["function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x2) or x0.is_prime }(head, tail, List.cons(head, tail))"]}
+{"goal":"1 < head","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(head)"]}
+{"goal":"head != 0","proof":["function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"all_prime(tail)","proof":["function(x0: Nat, x1: List[Nat], x2: List[Nat]) { List.cons(x0, x1) != x2 or not all_prime(x2) or all_prime(x1) }(head, tail, List.cons(head, tail))"]}
+{"goal":"product[Nat](List.cons(head, tail)) = head * product[Nat](tail)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](head, tail)"]}
+{"goal":"head * product[Nat](tail) = product[Nat](other)","proof":[]}
+{"goal":"head.divides(product[Nat](other))","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(head, product[Nat](other))","not exists(k0: Nat) { product[Nat](other) = head * k0 }","function(x0: Nat) { product[Nat](other) != head * x0 }(product[Nat](tail))"]}
+{"goal":"other.contains(head)","proof":[]}
+{"goal":"head * product[Nat](other.remove_one(head)) = product[Nat](other)","proof":[]}
+{"goal":"head * product[Nat](other.remove_one(head)) = head * product[Nat](tail)","proof":[]}
+{"goal":"product[Nat](other.remove_one(head)) = product[Nat](tail)","proof":[]}
+{"goal":"product[Nat](tail) = product[Nat](other.remove_one(head))","proof":[]}
+{"goal":"all_prime(other.remove_one(head))","proof":[]}
+{"goal":"is_permutation[Nat](tail, other.remove_one(head))","proof":["function(x0: List[Nat]) { forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = p(x0) }(tail)","function(x0: List[Nat]) { not p(x0) or forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = true }(tail)","function(x0: List[Nat], x1: List[Nat]) { not (all_prime(x0) and all_prime(x1) and product[Nat](x0) = product[Nat](x1) and not is_permutation[Nat](x0, x1)) or not p(x0) }(tail, other.remove_one(head))"]}
+{"goal":"other.remove_one(head).count(head) + 1 = other.count(head)","proof":[]}
+{"goal":"x = head","proof":[]}
+{"goal":"List.cons(head, tail).count(x) = 1 + tail.count(x)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or (if x0 = x3 { 1 + x1.count(x3) } else { x1.count(x3) }) = x2.count(x3) }[Nat](head, tail, List.cons(head, tail), x)","function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or 1 + x1.count(x3) = x2.count(x3) }[Nat](head, tail, List.cons(head, tail), x)","function(x0: Nat) { List.cons(head, tail) != List.cons(x0, tail) or x != x0 }(head)"]}
+{"goal":"tail.count(x) = tail.count(head)","proof":["x != head"]}
+{"goal":"tail.count(head) = other.remove_one(head).count(head)","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](tail, other.remove_one(head))"]}
+{"goal":"other.count(head) = other.count(x)","proof":["x != head"]}
+{"goal":"1 + tail.count(head) = other.remove_one(head).count(head) + 1","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, tail.count(head))"]}
+{"goal":"List.cons(head, tail).count(x) = other.count(x)","proof":[]}
+{"goal":"head != x","proof":[]}
+{"goal":"List.cons(head, tail).count(x) = tail.count(x)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or (if x0 = x3 { 1 + x1.count(x3) } else { x1.count(x3) }) = x2.count(x3) }[Nat](head, tail, List.cons(head, tail), x)"]}
+{"goal":"tail.count(x) = other.remove_one(head).count(x)","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](tail, other.remove_one(head))"]}
+{"goal":"other.remove_one(head).count(x) = other.count(x)","proof":[]}
+{"goal":"List.cons(head, tail).count(x) = other.count(x)","proof":[]}
+{"goal":"is_permutation[Nat](List.cons(head, tail), other)","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](List.cons(head, tail), other)","let w0: Nat satisfy { other.count(w0) != List.cons(head, tail).count(w0) }"]}
+{"goal":"p(List.cons(head, tail))","proof":["function(x0: List[Nat]) { forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = p(x0) }(List.cons(head, tail))","let w0: List[Nat] satisfy { all_prime(List.cons(head, tail)) and all_prime(w0) and product[Nat](List.cons(head, tail)) = product[Nat](w0) and not is_permutation[Nat](List.cons(head, tail), w0) }","function(x0: List[Nat]) { product[Nat](List.cons(head, tail)) != product[Nat](x0) or not all_prime(List.cons(head, tail)) or not all_prime(x0) or is_permutation[Nat](List.cons(head, tail), x0) }(w0)"]}
+{"goal":"prime_factorisation_unique","proof":["function(x0: List[Nat]) { forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = p(x0) }(l1)","not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(l1)","function(x0: List[Nat]) { not p(x0) or forall(x1: List[Nat]) { not all_prime(x0) or not all_prime(x1) or product[Nat](x0) != product[Nat](x1) or is_permutation[Nat](x0, x1) } = true }(l1)","function(x0: List[Nat], x1: List[Nat]) { not (all_prime(x0) and all_prime(x1) and product[Nat](x0) = product[Nat](x1) and not is_permutation[Nat](x0, x1)) or not p(x0) }(l1, l2)","function(x0: List[Nat], x1: List[Nat]) { not (all_prime(x0) and all_prime(x1) and product[Nat](x0) = product[Nat](x1)) or not p(x0) or is_permutation[Nat](x0, x1) }(l1, l2)","not p(l1)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}

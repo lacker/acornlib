@@ -1,0 +1,378 @@
+from list.list_base import List, list_contains_implies_count_geq_one,
+    list_not_contains_impl_count_zero
+from list.list_product import product
+from comm_monoid import CommMonoid
+from nat.lattice import Nat
+numerals Nat
+
+attributes List[T] {
+    /// The list with the first occurrence of the given element removed.
+    /// If the element is not present, the list is unchanged.
+    define remove_one(self, item: T) -> List[T] {
+        match self {
+            List.nil {
+                List.nil[T]
+            }
+            List.cons(head, tail) {
+                if head = item {
+                    tail
+                } else {
+                    List.cons(head, tail.remove_one(item))
+                }
+            }
+        }
+    }
+}
+
+/// Cons step for `remove_one` when head matches.
+theorem remove_one_cons_eq[T](head: T, tail: List[T]) {
+    List.cons(head, tail).remove_one(head) = tail
+}
+
+/// Cons step for `remove_one` when head does not match.
+theorem remove_one_cons_neq[T](head: T, tail: List[T], item: T) {
+    head != item implies List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+}
+
+/// Removing an element absent from the list leaves the list unchanged.
+theorem remove_one_not_contains[T](list: List[T], item: T) {
+    not list.contains(item) implies list.remove_one(item) = list
+} by {
+    define p(l: List[T]) -> Bool {
+        not l.contains(item) implies l.remove_one(item) = l
+    }
+    List.nil[T].remove_one(item) = List.nil[T]
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if not List.cons(head, tail).contains(item) {
+                if head = item {
+                    List.cons(head, tail).contains(item)
+                    false
+                }
+                head != item
+                if tail.contains(item) {
+                    List.cons(head, tail).contains(item)
+                    false
+                }
+                not tail.contains(item)
+                tail.remove_one(item) = tail
+                remove_one_cons_neq(head, tail, item)
+                List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+                List.cons(head, tail).remove_one(item) = List.cons(head, tail)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+}
+
+/// Removing one occurrence drops the count of that element by one.
+theorem remove_one_count_self[T](list: List[T], item: T) {
+    list.contains(item) implies list.remove_one(item).count(item) + Nat.1 = list.count(item)
+} by {
+    define p(l: List[T]) -> Bool {
+        l.contains(item) implies l.remove_one(item).count(item) + Nat.1 = l.count(item)
+    }
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if List.cons(head, tail).contains(item) {
+                if head = item {
+                    remove_one_cons_eq(head, tail)
+                    List.cons(head, tail).remove_one(item) = tail
+                    List.cons(head, tail).count(item) = Nat.1 + tail.count(item)
+                    tail.count(item) + Nat.1 = Nat.1 + tail.count(item)
+                    List.cons(head, tail).remove_one(item).count(item) + Nat.1 = List.cons(head, tail).count(item)
+                } else {
+                    head != item
+                    if tail.contains(item) {
+                    } else {
+                        List.cons(head, tail).contains(item)
+                        false
+                    }
+                    tail.contains(item)
+                    tail.remove_one(item).count(item) + Nat.1 = tail.count(item)
+                    remove_one_cons_neq(head, tail, item)
+                    List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+                    List.cons(head, tail.remove_one(item)).count(item) = tail.remove_one(item).count(item)
+                    List.cons(head, tail).count(item) = tail.count(item)
+                    List.cons(head, tail).remove_one(item).count(item) + Nat.1 = List.cons(head, tail).count(item)
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+}
+
+/// Removing one occurrence of an item leaves counts of other items unchanged.
+theorem remove_one_count_other[T](list: List[T], item: T, other: T) {
+    item != other implies list.remove_one(item).count(other) = list.count(other)
+} by {
+    define p(l: List[T]) -> Bool {
+        item != other implies l.remove_one(item).count(other) = l.count(other)
+    }
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if item != other {
+                tail.remove_one(item).count(other) = tail.count(other)
+                if head = item {
+                    remove_one_cons_eq(head, tail)
+                    List.cons(head, tail).remove_one(item) = tail
+                    head != other
+                    List.cons(head, tail).count(other) = tail.count(other)
+                    List.cons(head, tail).remove_one(item).count(other) = List.cons(head, tail).count(other)
+                } else {
+                    remove_one_cons_neq(head, tail, item)
+                    List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+                    if head = other {
+                        List.cons(head, tail.remove_one(item)).count(other) = Nat.1 + tail.remove_one(item).count(other)
+                        List.cons(head, tail).count(other) = Nat.1 + tail.count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = Nat.1 + tail.remove_one(item).count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = Nat.1 + tail.count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = List.cons(head, tail).count(other)
+                    } else {
+                        List.cons(head, tail.remove_one(item)).count(other) = tail.remove_one(item).count(other)
+                        List.cons(head, tail).count(other) = tail.count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = tail.remove_one(item).count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = tail.count(other)
+                        List.cons(head, tail).remove_one(item).count(other) = List.cons(head, tail).count(other)
+                    }
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+}
+
+/// True if two lists contain the same elements with the same multiplicities.
+define is_permutation[T](a: List[T], b: List[T]) -> Bool {
+    forall(x: T) { a.count(x) = b.count(x) }
+}
+
+/// Permutation is reflexive.
+theorem permutation_refl[T](a: List[T]) {
+    is_permutation(a, a)
+}
+
+/// Permutation is symmetric.
+theorem permutation_symm[T](a: List[T], b: List[T]) {
+    is_permutation(a, b) implies is_permutation(b, a)
+} by {
+    if is_permutation(a, b) {
+        forall(x: T) {
+            a.count(x) = b.count(x)
+            b.count(x) = a.count(x)
+        }
+    }
+}
+
+/// Permutation is transitive.
+theorem permutation_trans[T](a: List[T], b: List[T], c: List[T]) {
+    is_permutation(a, b) and is_permutation(b, c) implies is_permutation(a, c)
+} by {
+    if is_permutation(a, b) and is_permutation(b, c) {
+        forall(x: T) {
+            a.count(x) = b.count(x)
+            b.count(x) = c.count(x)
+            a.count(x) = c.count(x)
+        }
+    }
+}
+
+/// A list whose every-element count is zero must be empty.
+theorem list_count_all_zero_imp_nil[T](list: List[T]) {
+    (forall(x: T) { list.count(x) = Nat.0 }) implies list = List.nil[T]
+} by {
+    define p(l: List[T]) -> Bool {
+        (forall(x: T) { l.count(x) = Nat.0 }) implies l = List.nil[T]
+    }
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if forall(x: T) { List.cons(head, tail).count(x) = Nat.0 } {
+                List.cons(head, tail).count(head) = Nat.1 + tail.count(head)
+                List.cons(head, tail).count(head) = Nat.0
+                Nat.1 + tail.count(head) = Nat.0
+                false
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+}
+
+/// All counts in the empty list are zero.
+theorem nil_count_zero[T](item: T) {
+    List.nil[T].count(item) = Nat.0
+}
+
+/// A list permutation-equivalent to the empty list is itself empty.
+theorem permutation_nil_imp_nil[T](list: List[T]) {
+    is_permutation(list, List.nil[T]) implies list = List.nil[T]
+} by {
+    define p(l: List[T]) -> Bool {
+        is_permutation(l, List.nil[T]) implies l = List.nil[T]
+    }
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            if is_permutation(List.cons(head, tail), List.nil[T]) {
+                List.cons(head, tail).count(head) = Nat.1 + tail.count(head)
+                List.cons(head, tail).count(head) = List.nil[T].count(head)
+                nil_count_zero[T](head)
+                List.cons(head, tail).count(head) = Nat.0
+                Nat.1 + tail.count(head) = Nat.0
+                false
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+}
+
+/// Permutations are preserved under removing one occurrence of an element.
+theorem permutation_remove_one[T](a: List[T], b: List[T], item: T) {
+    is_permutation(a, b) implies is_permutation(a.remove_one(item), b.remove_one(item))
+} by {
+    if is_permutation(a, b) {
+        a.count(item) = b.count(item)
+        forall(x: T) {
+            if x = item {
+                if a.contains(item) {
+                    remove_one_count_self(a, item)
+                    a.remove_one(item).count(item) + Nat.1 = a.count(item)
+                    b.count(item) >= Nat.1
+                    if not b.contains(item) {
+                        list_not_contains_impl_count_zero[T](b, item)
+                        b.count(item) = Nat.0
+                        false
+                    }
+                    b.contains(item)
+                    remove_one_count_self(b, item)
+                    b.remove_one(item).count(item) + Nat.1 = b.count(item)
+                    a.remove_one(item).count(item) = b.remove_one(item).count(item)
+                } else {
+                    list_not_contains_impl_count_zero[T](a, item)
+                    a.count(item) = Nat.0
+                    b.count(item) = Nat.0
+                    if b.contains(item) {
+                        list_contains_implies_count_geq_one[T](b, item)
+                        b.count(item) >= Nat.1
+                        false
+                    }
+                    not b.contains(item)
+                    remove_one_not_contains(a, item)
+                    remove_one_not_contains(b, item)
+                    a.remove_one(item) = a
+                    b.remove_one(item) = b
+                    a.remove_one(item).count(item) = b.remove_one(item).count(item)
+                }
+                a.remove_one(item).count(x) = b.remove_one(item).count(x)
+            } else {
+                remove_one_count_other(a, item, x)
+                remove_one_count_other(b, item, x)
+                a.remove_one(item).count(x) = a.count(x)
+                b.remove_one(item).count(x) = b.count(x)
+                a.count(x) = b.count(x)
+                a.remove_one(item).count(x) = b.remove_one(item).count(x)
+            }
+        }
+    }
+}
+
+/// Removing one occurrence of an element pulls a factor out of the product.
+theorem product_remove_one[A: CommMonoid](list: List[A], item: A) {
+    list.contains(item) implies item * product[A](list.remove_one(item)) = product[A](list)
+} by {
+    define p(l: List[A]) -> Bool {
+        l.contains(item) implies item * product[A](l.remove_one(item)) = product[A](l)
+    }
+    p(List.nil[A])
+    forall(head: A, tail: List[A]) {
+        if p(tail) {
+            if List.cons(head, tail).contains(item) {
+                if head = item {
+                    remove_one_cons_eq(head, tail)
+                    List.cons(head, tail).remove_one(item) = tail
+                    item * product[A](tail) = head * product[A](tail)
+                    head * product[A](tail) = product[A](List.cons(head, tail))
+                    item * product[A](List.cons(head, tail).remove_one(item)) = product[A](List.cons(head, tail))
+                } else {
+                    head != item
+                    if tail.contains(item) {
+                    } else {
+                        List.cons(head, tail).contains(item)
+                        false
+                    }
+                    tail.contains(item)
+                    item * product[A](tail.remove_one(item)) = product[A](tail)
+                    remove_one_cons_neq(head, tail, item)
+                    List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+                    product[A](List.cons(head, tail.remove_one(item))) = head * product[A](tail.remove_one(item))
+                    item * (head * product[A](tail.remove_one(item))) = head * (item * product[A](tail.remove_one(item)))
+                    item * product[A](List.cons(head, tail.remove_one(item))) = head * product[A](tail)
+                    head * product[A](tail) = product[A](List.cons(head, tail))
+                    item * product[A](List.cons(head, tail).remove_one(item)) = product[A](List.cons(head, tail))
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[A]) { p(l) })
+}
+
+/// Permutations preserve product in any commutative monoid.
+theorem permutation_preserves_product[A: CommMonoid](a: List[A], b: List[A]) {
+    is_permutation(a, b) implies product[A](a) = product[A](b)
+} by {
+    define p(l: List[A]) -> Bool {
+        forall(other: List[A]) {
+            is_permutation(l, other) implies product[A](l) = product[A](other)
+        }
+    }
+    forall(other: List[A]) {
+        if is_permutation(List.nil[A], other) {
+            permutation_symm(List.nil[A], other)
+            is_permutation(other, List.nil[A])
+            permutation_nil_imp_nil[A](other)
+            other = List.nil[A]
+            product[A](List.nil[A]) = product[A](other)
+        }
+    }
+    p(List.nil[A])
+    forall(head: A, tail: List[A]) {
+        if p(tail) {
+            forall(other: List[A]) {
+                if is_permutation(List.cons(head, tail), other) {
+                    List.cons(head, tail).count(head) = Nat.1 + tail.count(head)
+                    List.cons(head, tail).count(head) = other.count(head)
+                    other.count(head) = Nat.1 + tail.count(head)
+                    other.count(head) >= Nat.1
+                    if not other.contains(head) {
+                        list_not_contains_impl_count_zero[A](other, head)
+                        other.count(head) = Nat.0
+                        false
+                    }
+                    other.contains(head)
+                    permutation_remove_one(List.cons(head, tail), other, head)
+                    is_permutation(List.cons(head, tail).remove_one(head), other.remove_one(head))
+                    remove_one_cons_eq(head, tail)
+                    List.cons(head, tail).remove_one(head) = tail
+                    is_permutation(tail, other.remove_one(head))
+                    product[A](tail) = product[A](other.remove_one(head))
+                    product_remove_one[A](other, head)
+                    head * product[A](other.remove_one(head)) = product[A](other)
+                    head * product[A](tail) = product[A](other)
+                    product[A](List.cons(head, tail)) = head * product[A](tail)
+                    product[A](List.cons(head, tail)) = product[A](other)
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[A]) { p(l) })
+}

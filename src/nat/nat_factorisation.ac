@@ -1,10 +1,13 @@
-from nat.nat_coprime import Nat
+from nat.nat_coprime import Nat, coprime_divides_of_divides_mul
 from nat.nat_gcd import gcd_of_prime, gcd_zero_left, gcd_zero_right,
     gcd_divides_left, gcd_divides_right, gcd_nonzero_left, gcd_nonzero_right,
     gcd_comm
-from nat.nat_base import divides_self, divides_zero, has_prime_divisor, strong_induction, true_below, divides_trans
+from nat.nat_base import divides_self, divides_zero, has_prime_divisor, strong_induction, true_below, divides_trans, mul_cancel_left
 from list.list_base import List
 from list.list_product import product
+from list.list_permutation import is_permutation, remove_one_count_self,
+    remove_one_count_other, remove_one_cons_eq, remove_one_cons_neq,
+    nil_count_zero, product_remove_one
 numerals Nat
 
 /// Helper: if a prime is the product of two factors, one factor is 1 and the
@@ -123,6 +126,16 @@ theorem all_prime_cons_intro(head: Nat, tail: List[Nat]) {
 } by {
     if head.is_prime and all_prime(tail) {
         all_prime(List.cons(head, tail))
+    }
+}
+
+/// Cons-elimination for all_prime: a non-empty all-prime list has a prime head
+/// and an all-prime tail.
+theorem all_prime_cons_elim(head: Nat, tail: List[Nat]) {
+    all_prime(List.cons(head, tail)) implies head.is_prime and all_prime(tail)
+} by {
+    if all_prime(List.cons(head, tail)) {
+        head.is_prime and all_prime(tail)
     }
 }
 
@@ -443,4 +456,254 @@ theorem prime_iff_no_proper_divisor(n: Nat) {
     } {
         no_proper_divisor_imp_prime(n)
     }
+}
+
+/// Cons-step for `all_prime` under `remove_one` when the head matches.
+theorem all_prime_remove_one_cons_eq(head: Nat, tail: List[Nat]) {
+    all_prime(List.cons(head, tail)) implies all_prime(List.cons(head, tail).remove_one(head))
+} by {
+    if all_prime(List.cons(head, tail)) {
+        all_prime_cons_elim(head, tail)
+        all_prime(tail)
+        remove_one_cons_eq[Nat](head, tail)
+        List.cons(head, tail).remove_one(head) = tail
+        all_prime(List.cons(head, tail).remove_one(head))
+    }
+}
+
+/// Cons-step for `all_prime` under `remove_one` when the head does not match
+/// and the tail's removal is already known to preserve all-primeness.
+theorem all_prime_remove_one_cons_neq(head: Nat, tail: List[Nat], item: Nat) {
+    all_prime(List.cons(head, tail)) and head != item and all_prime(tail.remove_one(item))
+        implies all_prime(List.cons(head, tail).remove_one(item))
+} by {
+    if all_prime(List.cons(head, tail)) and head != item and all_prime(tail.remove_one(item)) {
+        all_prime_cons_elim(head, tail)
+        head.is_prime
+        remove_one_cons_neq[Nat](head, tail, item)
+        List.cons(head, tail).remove_one(item) = List.cons(head, tail.remove_one(item))
+        all_prime_cons_intro(head, tail.remove_one(item))
+        all_prime(List.cons(head, tail.remove_one(item)))
+        all_prime(List.cons(head, tail).remove_one(item))
+    }
+}
+
+/// Removing one occurrence of an element from an all-prime list keeps it
+/// all-prime.
+theorem all_prime_remove_one(list: List[Nat], item: Nat) {
+    all_prime(list) implies all_prime(list.remove_one(item))
+} by {
+    define p(l: List[Nat]) -> Bool {
+        all_prime(l) implies all_prime(l.remove_one(item))
+    }
+    p(List.nil[Nat])
+    forall(h: Nat, t: List[Nat]) {
+        if p(t) {
+            if all_prime(List.cons(h, t)) {
+                all_prime_cons_elim(h, t)
+                all_prime(t)
+                let tail_rm: Bool = all_prime(t.remove_one(item))
+                tail_rm
+                if h = item {
+                    all_prime_remove_one_cons_eq(h, t)
+                    all_prime(List.cons(h, t).remove_one(h))
+                    all_prime(List.cons(h, t).remove_one(item))
+                } else {
+                    all_prime_remove_one_cons_neq(h, t, item)
+                    all_prime(List.cons(h, t).remove_one(item))
+                }
+            }
+            p(List.cons(h, t))
+        }
+    }
+    List.induction(function(l: List[Nat]) { p(l) })
+    forall(l: List[Nat]) { p(l) }
+    p(list)
+}
+
+/// A prime cannot divide one.
+theorem prime_does_not_divide_one(p: Nat) {
+    p.is_prime implies not p.divides(Nat.1)
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        if p.divides(Nat.1) {
+            let k: Nat satisfy { p * k = Nat.1 }
+            if k = Nat.0 {
+                p * Nat.0 = Nat.0
+                Nat.0 = Nat.1
+                false
+            }
+            k != Nat.0
+            Nat.1 <= k
+            p * Nat.1 <= p * k
+            p <= Nat.1
+            false
+        }
+    }
+}
+
+/// An all-prime list whose product is one must be empty (since each prime is
+/// at least two and so contributes a factor greater than one).
+theorem all_prime_product_eq_one_imp_nil(list: List[Nat]) {
+    all_prime(list) and product[Nat](list) = Nat.1 implies list = List.nil[Nat]
+} by {
+    if all_prime(list) and product[Nat](list) = Nat.1 {
+        match list {
+            List.nil {
+                list = List.nil[Nat]
+            }
+            List.cons(head, tail) {
+                head.is_prime
+                product[Nat](List.cons(head, tail)) = head * product[Nat](tail)
+                head * product[Nat](tail) = Nat.1
+                head.divides(Nat.1)
+                prime_does_not_divide_one(head)
+                false
+            }
+        }
+    }
+}
+
+/// Cons-step of Euclid's lemma for prime-divides-product on all-prime lists.
+theorem prime_divides_product_cons_step(head: Nat, tail: List[Nat], p: Nat) {
+    (p.divides(product[Nat](tail)) implies tail.contains(p)) and
+        head.is_prime and p.is_prime and p.divides(head * product[Nat](tail))
+        implies List.cons(head, tail).contains(p)
+} by {
+    if (p.divides(product[Nat](tail)) implies tail.contains(p)) and
+        head.is_prime and p.is_prime and p.divides(head * product[Nat](tail)) {
+        gcd_of_prime(p, head)
+        if p.divides(head) {
+            prime_divisor_is_one_or_self(head, p)
+            p = Nat.1 or p = head
+            Nat.1 < p
+            p != Nat.1
+            p = head
+            head = p
+            List.cons(head, tail).contains(p)
+        } else {
+            p.gcd(head) = Nat.1
+            p.coprime(head)
+            coprime_divides_of_divides_mul(p, head, product[Nat](tail))
+            p.divides(product[Nat](tail))
+            tail.contains(p)
+            List.cons(head, tail).contains(p)
+        }
+    }
+}
+
+/// Euclid's lemma extended to lists: if a prime divides the product of an
+/// all-prime list, then the prime occurs in the list.
+theorem prime_divides_product_imp_contains(list: List[Nat], p: Nat) {
+    all_prime(list) and p.is_prime and p.divides(product[Nat](list))
+        implies list.contains(p)
+} by {
+    define f(l: List[Nat]) -> Bool {
+        all_prime(l) and p.is_prime and p.divides(product[Nat](l))
+            implies l.contains(p)
+    }
+    if all_prime(List.nil[Nat]) and p.is_prime and p.divides(product[Nat](List.nil[Nat])) {
+        product[Nat](List.nil[Nat]) = Nat.1
+        p.divides(Nat.1)
+        prime_does_not_divide_one(p)
+        false
+    }
+    f(List.nil[Nat])
+    forall(h: Nat, t: List[Nat]) {
+        if f(t) {
+            if all_prime(List.cons(h, t)) and p.is_prime and p.divides(product[Nat](List.cons(h, t))) {
+                all_prime_cons_elim(h, t)
+                h.is_prime
+                all_prime(t)
+                product[Nat](List.cons(h, t)) = h * product[Nat](t)
+                p.divides(h * product[Nat](t))
+                let tail_implication: Bool = p.divides(product[Nat](t)) implies t.contains(p)
+                tail_implication
+                prime_divides_product_cons_step(h, t, p)
+                List.cons(h, t).contains(p)
+            }
+            f(List.cons(h, t))
+        }
+    }
+    List.induction(function(l: List[Nat]) { f(l) })
+    forall(l: List[Nat]) { f(l) }
+    f(list)
+}
+
+/// Uniqueness side of the fundamental theorem of arithmetic: any two prime
+/// factorisations of the same natural number are permutations of each other.
+theorem prime_factorisation_unique(l1: List[Nat], l2: List[Nat]) {
+    all_prime(l1) and all_prime(l2) and product[Nat](l1) = product[Nat](l2)
+        implies is_permutation(l1, l2)
+} by {
+    define p(first: List[Nat]) -> Bool {
+        forall(other: List[Nat]) {
+            all_prime(first) and all_prime(other) and product[Nat](first) = product[Nat](other)
+                implies is_permutation(first, other)
+        }
+    }
+    forall(other: List[Nat]) {
+        if all_prime(List.nil[Nat]) and all_prime(other) and product[Nat](List.nil[Nat]) = product[Nat](other) {
+            product[Nat](List.nil[Nat]) = Nat.1
+            product[Nat](other) = Nat.1
+            all_prime_product_eq_one_imp_nil(other)
+            other = List.nil[Nat]
+            forall(x: Nat) {
+                nil_count_zero[Nat](x)
+                List.nil[Nat].count(x) = other.count(x)
+            }
+            is_permutation(List.nil[Nat], other)
+        }
+    }
+    p(List.nil[Nat])
+    forall(head: Nat, tail: List[Nat]) {
+        if p(tail) {
+            forall(other: List[Nat]) {
+                if all_prime(List.cons(head, tail)) and all_prime(other) and product[Nat](List.cons(head, tail)) = product[Nat](other) {
+                    head.is_prime
+                    Nat.1 < head
+                    head != Nat.0
+                    all_prime(tail)
+                    product[Nat](List.cons(head, tail)) = head * product[Nat](tail)
+                    head * product[Nat](tail) = product[Nat](other)
+                    head.divides(product[Nat](other))
+                    prime_divides_product_imp_contains(other, head)
+                    other.contains(head)
+                    product_remove_one[Nat](other, head)
+                    head * product[Nat](other.remove_one(head)) = product[Nat](other)
+                    head * product[Nat](other.remove_one(head)) = head * product[Nat](tail)
+                    mul_cancel_left(head, product[Nat](other.remove_one(head)), product[Nat](tail))
+                    product[Nat](other.remove_one(head)) = product[Nat](tail)
+                    product[Nat](tail) = product[Nat](other.remove_one(head))
+                    all_prime_remove_one(other, head)
+                    all_prime(other.remove_one(head))
+                    is_permutation(tail, other.remove_one(head))
+                    remove_one_count_self(other, head)
+                    other.remove_one(head).count(head) + Nat.1 = other.count(head)
+                    forall(x: Nat) {
+                        if x = head {
+                            x = head
+                            List.cons(head, tail).count(x) = Nat.1 + tail.count(x)
+                            tail.count(x) = tail.count(head)
+                            tail.count(head) = other.remove_one(head).count(head)
+                            other.count(head) = other.count(x)
+                            Nat.1 + tail.count(head) = other.remove_one(head).count(head) + Nat.1
+                            List.cons(head, tail).count(x) = other.count(x)
+                        } else {
+                            head != x
+                            List.cons(head, tail).count(x) = tail.count(x)
+                            tail.count(x) = other.remove_one(head).count(x)
+                            remove_one_count_other(other, head, x)
+                            other.remove_one(head).count(x) = other.count(x)
+                            List.cons(head, tail).count(x) = other.count(x)
+                        }
+                    }
+                    is_permutation(List.cons(head, tail), other)
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[Nat]) { p(l) })
 }
