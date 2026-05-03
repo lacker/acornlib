@@ -1,0 +1,50 @@
+from nat.nat_congruence import Nat
+from list.list_base import List
+from pair import Pair
+numerals Nat
+
+/// True if c satisfies every congruence requirement in a list of
+/// (modulus, residue) pairs, i.e., for each (m, r) pair, c is congruent to
+/// r modulo m.
+define satisfies_all(c: Nat, system: List[Pair[Nat, Nat]]) -> Bool {
+    match system {
+        List.nil {
+            true
+        }
+        List.cons(head, tail) {
+            c.congr_mod(head.second, head.first) and satisfies_all(c, tail)
+        }
+    }
+}
+
+/// The empty system is satisfied by anything.
+theorem satisfies_all_nil(c: Nat) {
+    satisfies_all(c, List.nil[Pair[Nat, Nat]])
+}
+
+/// Forward direction of the cons unfold for satisfies_all.
+theorem satisfies_all_cons_imp(c: Nat, head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]) {
+    satisfies_all(c, List.cons(head, tail)) implies
+        c.congr_mod(head.second, head.first) and satisfies_all(c, tail)
+} by {
+    if satisfies_all(c, List.cons(head, tail)) {
+        c.congr_mod(head.second, head.first) and satisfies_all(c, tail)
+    }
+}
+
+/// Building up satisfies_all from the cons-pieces.
+theorem satisfies_all_cons_intro(c: Nat, head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]) {
+    c.congr_mod(head.second, head.first) and satisfies_all(c, tail) implies
+        satisfies_all(c, List.cons(head, tail))
+} by {
+    if c.congr_mod(head.second, head.first) and satisfies_all(c, tail) {
+        satisfies_all(c, List.cons(head, tail))
+    }
+}
+
+/// CRT for the empty system: every Nat trivially solves the empty system.
+theorem nat_crt_list_nil {
+    exists(c: Nat) { satisfies_all(c, List.nil[Pair[Nat, Nat]]) }
+} by {
+    satisfies_all_nil(Nat.0)
+}
