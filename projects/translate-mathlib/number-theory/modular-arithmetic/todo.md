@@ -2,7 +2,6 @@
 
 Goal: build a lightweight congruence-relation API on `Nat` and `Int` that downstream consumers can use without pulling in the full `Zmod[n]` quotient machinery.
 
-- [ ] Define a `List[Nat]` product helper (mirroring `list_sum`) so the `List`-indexed CRT modulus has a stable name
 - [ ] Prove `nat_crt_list`: for `pairwise_coprime` lists of positive moduli paired with residues, a simultaneous solution exists; the proof is structural induction on the moduli list, applying `nat_crt_two_moduli` at the cons step
 
 Notes:
@@ -18,6 +17,7 @@ Notes:
 - `int_crt_unique` records the CRT uniqueness statement: any two integer simultaneous solutions of a coprime two-modulus system agree modulo the product. The proof routes through `int_mod_rel_combine_coprime`, which combines two coprime divisibilities into a divisibility by the product (lifted from the matching Nat statement `nat_coprime_combine` via `lcm_divides_of_common` and `gcd_mul_lcm`).
 - `nat_crt_three_moduli` extends CRT to three pairwise-coprime positive moduli by composing two `nat_crt_two_moduli` applications: solve the first pair to a witness `y`, treat `(m*n, p)` as a coprime pair (using `coprime_mul`), and apply two-modulus CRT again. The descent from `m*n` to `m` and `n` reuses `int_mod_rel_descend`. This composition pattern is the natural inductive step for the `List[Nat]`-indexed generalisation.
 - `src/nat/nat_pairwise_coprime.ac` defines the `coprime_with_all(head, tail)` and `pairwise_coprime(list)` predicates on `List[Nat]` plus the structural lemmas `pairwise_coprime_nil`, `pairwise_coprime_singleton`, `pairwise_coprime_cons_imp`, and `pairwise_coprime_cons`. These are the recursion infrastructure needed for the `List`-indexed CRT.
+- `src/list/list_product.ac` defines the generic list product `product[A: CommMonoid](items)` mirroring `list_sum`'s shape, so the `List`-indexed CRT modulus has a stable name. `Nat` is now declared as `CommSemigroup` and `CommMonoid` in `src/nat/lattice.ac` so `product[Nat]` works directly.
 - `src/zmod.ac` already defines `int_mod_rel(n, a, b) := Int.from_nat(n).divides(a - b)` and proves it is an equivalence congruent with addition, multiplication, and negation. The new `Nat.congr_mod` should be value-compatible with this `Int` predicate so the eventual `Zmod[n]` ring instance can be reused without rewrap.
 - Definitional choice: prefer `a.mod(n) = b.mod(n)` over the divisibility-based form on `Nat`, because subtraction on `Nat` truncates and would force ad-hoc case splits. The divisibility form is the natural one on `Int` and already exists.
 - For genericity: package each congruence lemma so it can later be re-stated as a typeclass axiom on a generic congruence-equipped commutative semiring; do not wire any of this through `Zmod[n]` itself. Consumers who want algebraic structure should keep going through `Zmod[n]`; consumers who only want `≡` reasoning use this layer.
