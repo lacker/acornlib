@@ -1,0 +1,8 @@
+# Keep repository settings and top-level utility files owned by the primary maintainer.
+/.github/ @lacker
+/AGENTS.md @lacker
+/CLAUDE.md @lacker
+/LICENSE @lacker
+/README.md @lacker
+/acorn.toml @lacker
+/scripts/ @lacker

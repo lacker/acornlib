@@ -5,7 +5,13 @@ from relation_transport import respects_mul, is_mul_congruence, respects_binary_
     respects_unary_op, is_binary_congruence, respects_mul_eq_respects_binary_op,
     mul_congruence_eq_binary_congruence
 from equivalence import QuotientRelation, quotient_relation_new_round_trip,
-    quotient_binary_respects, quotient_binary_respects_eq_respects_binary_op
+    quotient_binary_respects, quotient_binary_respects_eq_respects_binary_op,
+    QuotientOver, quotient_over_mk, quotient_unary_respects,
+    quotient_unary_respects_eq_respects_unary_op,
+    quotient_over_binary_op, quotient_over_binary_op_projection,
+    quotient_over_binary_op_projection_left, quotient_over_binary_op_projection_right,
+    quotient_over_unary_op, quotient_over_unary_op_projection,
+    quotient_over_unary_op_projection_compatible
 
 /// True if a subgroup is normal: it is invariant under conjugation.
 define is_normal_subgroup[G: Group](s: Subgroup[G]) -> Bool {
@@ -117,6 +123,27 @@ theorem normal_subgroup_rel_transitive_statement[G: Group](s: Subgroup[G]) {
     }
 }
 
+/// The relation defined by a subgroup is transitive.
+theorem normal_subgroup_rel_is_transitive[G: Group](s: Subgroup[G]) {
+    is_transitive(normal_subgroup_rel(s))
+} by {
+    let r: (G, G) -> Bool = normal_subgroup_rel(s)
+    forall(a: G, b: G, c: G) {
+        if r(a, b) and r(b, c) {
+            r(a, b) = normal_subgroup_rel(s, a, b)
+            r(b, c) = normal_subgroup_rel(s, b, c)
+            normal_subgroup_rel_trans_at(s, a, b, c)
+            normal_subgroup_rel(s, a, c) = r(a, c)
+            r(a, c)
+        }
+    }
+    is_transitive(r) = forall(x: G, y: G, z: G) {
+        r(x, y) and r(y, z) implies r(x, z)
+    }
+    is_transitive(r)
+    is_transitive(normal_subgroup_rel(s))
+}
+
 /// The product of `a * b` and the inverse of `ap * bp` regroups as a conjugate of `b * bp.inverse` times `a * ap.inverse`.
 theorem normal_mul_inverse_distrib[G: Group](a: G, b: G, ap: G, bp: G) {
     (a * b) * (ap * bp).inverse = (a * (b * bp.inverse) * a.inverse) * (a * ap.inverse)
@@ -204,3 +231,341 @@ theorem normal_subgroup_rel_respects_inverse[G: Group](s: Subgroup[G]) {
         }
     }
 }
+
+/// The relation defined by a subgroup is an equivalence relation.
+theorem normal_subgroup_rel_is_equivalence[G: Group](s: Subgroup[G]) {
+    is_equivalence(normal_subgroup_rel(s))
+} by {
+    normal_subgroup_rel_is_reflexive(s)
+    normal_subgroup_rel_is_symmetric(s)
+    normal_subgroup_rel_is_transitive(s)
+}
+
+/// The quotient relation associated with a subgroup.
+let normal_subgroup_quotient_relation[G: Group](s: Subgroup[G]) -> result: QuotientRelation[G] satisfy {
+    QuotientRelation[G].new(normal_subgroup_rel(s)) = Option.some(result)
+} by {
+    normal_subgroup_rel_is_equivalence(s)
+}
+
+/// The quotient relation associated with a subgroup has the expected underlying relation.
+theorem normal_subgroup_quotient_relation_rel[G: Group](s: Subgroup[G]) {
+    normal_subgroup_quotient_relation(s).rel = normal_subgroup_rel(s)
+} by {
+    QuotientRelation[G].new(normal_subgroup_rel(s)) = Option.some(normal_subgroup_quotient_relation(s))
+    quotient_relation_new_round_trip(normal_subgroup_rel(s), normal_subgroup_quotient_relation(s))
+}
+
+/// The normal-subgroup relation is a multiplicative congruence when the subgroup is normal.
+theorem normal_subgroup_rel_is_mul_congruence[G: Group](s: Subgroup[G]) {
+    is_normal_subgroup(s) implies is_mul_congruence(normal_subgroup_rel(s))
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_rel_is_equivalence(s)
+        normal_subgroup_rel_respects_mul(s)
+        respects_mul_eq_respects_binary_op(normal_subgroup_rel(s))
+        is_binary_congruence(normal_subgroup_rel(s), G.mul)
+        mul_congruence_eq_binary_congruence(normal_subgroup_rel(s))
+    }
+}
+
+/// The quotient relation built from a normal subgroup respects multiplication as a quotient binary operation.
+theorem normal_subgroup_quotient_relation_respects_mul[G: Group](s: Subgroup[G]) {
+    is_normal_subgroup(s) implies quotient_binary_respects(normal_subgroup_quotient_relation(s), G.mul)
+} by {
+    if is_normal_subgroup(s) {
+        quotient_binary_respects_eq_respects_binary_op(normal_subgroup_quotient_relation(s), G.mul)
+        normal_subgroup_rel_respects_mul(s)
+        respects_mul_eq_respects_binary_op(normal_subgroup_rel(s))
+        respects_binary_op(normal_subgroup_rel(s), G.mul)
+        normal_subgroup_quotient_relation_rel(s)
+        normal_subgroup_quotient_relation(s).rel = normal_subgroup_rel(s)
+        respects_binary_op(normal_subgroup_quotient_relation(s).rel, G.mul)
+    }
+}
+
+/// The quotient relation built from a normal subgroup respects inversion as a quotient unary operation.
+theorem normal_subgroup_quotient_relation_respects_inverse[G: Group](s: Subgroup[G]) {
+    is_normal_subgroup(s) implies quotient_unary_respects(normal_subgroup_quotient_relation(s), G.inverse)
+} by {
+    if is_normal_subgroup(s) {
+        quotient_unary_respects_eq_respects_unary_op(normal_subgroup_quotient_relation(s), G.inverse)
+        normal_subgroup_rel_respects_inverse(s)
+        normal_subgroup_quotient_relation_rel(s)
+        normal_subgroup_quotient_relation(s).rel = normal_subgroup_rel(s)
+        respects_unary_op(normal_subgroup_quotient_relation(s).rel, G.inverse)
+    }
+}
+
+/// Multiplication on the relation-indexed quotient by a normal subgroup.
+define normal_subgroup_quotient_mul[G: Group](s: Subgroup[G]) ->
+    (QuotientOver[G], QuotientOver[G]) -> QuotientOver[G] {
+    quotient_over_binary_op(G.mul)
+}
+
+/// Multiplication in the normal-subgroup quotient agrees with multiplication of representatives.
+theorem normal_subgroup_quotient_mul_projection[G: Group](s: Subgroup[G], a: G, b: G) {
+    is_normal_subgroup(s) implies normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), b)
+    ) = quotient_over_mk(normal_subgroup_quotient_relation(s), a * b)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_relation_respects_mul(s)
+        quotient_over_binary_op_projection(normal_subgroup_quotient_relation(s), G.mul, a, b)
+        G.mul(a, b) = a * b
+    }
+}
+
+/// Multiplication in the normal-subgroup quotient respects related left representatives.
+theorem normal_subgroup_quotient_mul_projection_left[G: Group](s: Subgroup[G], a1: G, a2: G, b: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a1, a2) implies
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a1),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), b)
+    ) = normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a2),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), b)
+    )
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a1, a2) {
+        normal_subgroup_quotient_relation_rel(s)
+        normal_subgroup_quotient_relation(s).rel(a1, a2)
+        normal_subgroup_quotient_relation_respects_mul(s)
+        quotient_over_binary_op_projection_left(normal_subgroup_quotient_relation(s), G.mul, a1, a2, b)
+    }
+}
+
+/// Multiplication in the normal-subgroup quotient respects related right representatives.
+theorem normal_subgroup_quotient_mul_projection_right[G: Group](s: Subgroup[G], a: G, b1: G, b2: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, b1, b2) implies
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), b1)
+    ) = normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), b2)
+    )
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, b1, b2) {
+        normal_subgroup_quotient_relation_rel(s)
+        normal_subgroup_quotient_relation(s).rel(b1, b2)
+        normal_subgroup_quotient_relation_respects_mul(s)
+        quotient_over_binary_op_projection_right(normal_subgroup_quotient_relation(s), G.mul, a, b1, b2)
+    }
+}
+
+/// Inversion on the relation-indexed quotient by a normal subgroup.
+define normal_subgroup_quotient_inverse[G: Group](s: Subgroup[G]) ->
+    QuotientOver[G] -> QuotientOver[G] {
+    quotient_over_unary_op(normal_subgroup_quotient_relation(s), G.inverse)
+}
+
+/// Inversion in the normal-subgroup quotient agrees with inversion of representatives.
+theorem normal_subgroup_quotient_inverse_projection[G: Group](s: Subgroup[G], a: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_relation_respects_inverse(s)
+        quotient_over_unary_op_projection(normal_subgroup_quotient_relation(s), G.inverse, a)
+        G.inverse(a) = a.inverse
+    }
+}
+
+/// Inversion in the normal-subgroup quotient respects related representatives.
+theorem normal_subgroup_quotient_inverse_projection_compatible[G: Group](s: Subgroup[G], a: G, b: G) {
+    is_normal_subgroup(s) and normal_subgroup_rel(s, a, b) implies
+    normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+        normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), b))
+} by {
+    if is_normal_subgroup(s) and normal_subgroup_rel(s, a, b) {
+        normal_subgroup_quotient_relation_rel(s)
+        normal_subgroup_quotient_relation(s).rel(a, b)
+        normal_subgroup_quotient_relation_respects_inverse(s)
+        quotient_over_unary_op_projection_compatible(normal_subgroup_quotient_relation(s), G.inverse, a, b)
+    }
+}
+
+/// The identity element of the normal-subgroup quotient.
+define normal_subgroup_quotient_one[G: Group](s: Subgroup[G]) -> QuotientOver[G] {
+    quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+}
+
+/// Multiplication on the normal-subgroup quotient is associative.
+theorem normal_subgroup_quotient_mul_assoc[G: Group](s: Subgroup[G], a: G, b: G, c: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_mul(s,
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b)),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)))
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_mul_projection(s, a, b)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * b)
+        normal_subgroup_quotient_mul(s,
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b)),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * b),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c))
+        normal_subgroup_quotient_mul_projection(s, a * b, c)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * b),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), (a * b) * c)
+        normal_subgroup_quotient_mul_projection(s, b, c)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b * c)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), c))) =
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b * c))
+        normal_subgroup_quotient_mul_projection(s, a, b * c)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), b * c)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * (b * c))
+        (a * b) * c = a * (b * c)
+        quotient_over_mk(normal_subgroup_quotient_relation(s), (a * b) * c) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * (b * c))
+        normal_subgroup_quotient_mul(s,
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b)),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), (a * b) * c)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), c))) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * (b * c))
+        normal_subgroup_quotient_mul(s,
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b)),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), c)) =
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            normal_subgroup_quotient_mul(s,
+                quotient_over_mk(normal_subgroup_quotient_relation(s), b),
+                quotient_over_mk(normal_subgroup_quotient_relation(s), c)))
+    }
+}
+
+/// The quotient identity is a left identity for quotient multiplication.
+theorem normal_subgroup_quotient_one_mul[G: Group](s: Subgroup[G], a: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), G.1),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_mul_projection(s, G.1, a)
+        G.1 * a = a
+    }
+}
+
+/// The quotient identity is a right identity for quotient multiplication.
+theorem normal_subgroup_quotient_mul_one[G: Group](s: Subgroup[G], a: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)) =
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_mul_projection(s, a, G.1)
+        a * G.1 = a
+    }
+}
+
+/// The quotient inverse is a left inverse for quotient multiplication.
+theorem normal_subgroup_quotient_inverse_left[G: Group](s: Subgroup[G], a: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_mul(s,
+        normal_subgroup_quotient_inverse(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a)),
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+        quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_inverse_projection(s, a)
+        normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse)
+        normal_subgroup_quotient_mul(s,
+            normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a))
+        normal_subgroup_quotient_mul_projection(s, a.inverse, a)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse * a)
+        inverse_left(a)
+        a.inverse * a = G.1
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse * a) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+        normal_subgroup_quotient_mul(s,
+            normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+    }
+}
+
+/// The quotient inverse is a right inverse for quotient multiplication.
+theorem normal_subgroup_quotient_inverse_right[G: Group](s: Subgroup[G], a: G) {
+    is_normal_subgroup(s) implies
+    normal_subgroup_quotient_mul(s,
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+        normal_subgroup_quotient_inverse(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a))) =
+        quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+} by {
+    if is_normal_subgroup(s) {
+        normal_subgroup_quotient_inverse_projection(s, a)
+        normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a))) =
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse))
+        normal_subgroup_quotient_mul_projection(s, a, a.inverse)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a.inverse)) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a * a.inverse)
+        a * a.inverse = G.1
+        quotient_over_mk(normal_subgroup_quotient_relation(s), a * a.inverse) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+        normal_subgroup_quotient_mul(s,
+            quotient_over_mk(normal_subgroup_quotient_relation(s), a),
+            normal_subgroup_quotient_inverse(s, quotient_over_mk(normal_subgroup_quotient_relation(s), a))) =
+            quotient_over_mk(normal_subgroup_quotient_relation(s), G.1)
+    }
+}
+

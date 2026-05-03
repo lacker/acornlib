@@ -11,12 +11,6 @@ Goal: over time, give Acornlib a reasonable analogue of each major area of mathe
       AddCommGroup, AddCommGroup]"). Reproducible via field accessors `.src`/`.dst`/`.hom`
       on such a struct. Next action: report upstream with a minimal repro, then revisit
       bundled `ModuleHom` once fixed.
-- [ ] prover-limitation: foundations/quotients/algebraic-quotients - `normal_subgroup_rel_transitive_statement`
-      verifies in `src/normal_subgroup.ac`, but the definitional wrapper
-      `is_transitive(normal_subgroup_rel(s))` times out, blocking `QuotientRelation[G]`
-      packaging for normal subgroup quotients. Next action: improve prover/typeclass
-      search for this wrapper or find a smaller definitionally equivalent packaging.
-
 ## Foundational And Core Infrastructure
 
 - [ ] [Foundations and set-theoretic infrastructure](foundations/todo.md)

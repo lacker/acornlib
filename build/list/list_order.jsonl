@@ -150,45 +150,45 @@
 {"goal":"lower <= item","proof":[]}
 {"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = lib(order_interval).is_lower_bound[T0](x0, x1) }[T](list.contains, lower)","let w0: T satisfy { w0 ∈ list and not lower <= w0 }","function(x0: T) { not x0 ∈ list or lower <= x0 }(w0)"]}
 {"goal":"lower_bound_imp_contains_lower_bound","proof":[]}
-{"goal":"lower <= item","proof":["not lib(order_interval).is_lower_bound(list.contains, lower) or not item ∈ list","not lib(order_interval).is_lower_bound(list.contains, lower)"]}
-{"goal":"list_lower_bound(list, lower)","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[T](list, lower)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = lib(order_interval).is_lower_bound[T0](x0, x1) }[T](list.contains, lower)","not forall(x0: T) { not x0 ∈ list or lower <= x0 }","(forall(x1: T) { not x1 ∈ list or lower <= x1 } = true)"]}
-{"goal":"is_lower_bound(list, lower)","proof":["not list_lower_bound(list, lower)"]}
-{"goal":"contains_lower_bound_imp_lower_bound","proof":["not lib(order_interval).is_lower_bound(list.contains, lower)"]}
+{"goal":"lower <= item","proof":[]}
+{"goal":"list_lower_bound(list, lower)","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[T](list, lower)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = lib(order_interval).is_lower_bound[T0](x0, x1) }[T](list.contains, lower)"]}
+{"goal":"is_lower_bound(list, lower)","proof":[]}
+{"goal":"contains_lower_bound_imp_lower_bound","proof":[]}
 {"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":[]}
-{"goal":"is_lower_bound(list, lower)","proof":["not lib(order_interval).is_lower_bound(list.contains, lower)"]}
-{"goal":"is_lower_bound(list, lower) = lib(order_interval).is_lower_bound(list.contains, lower)","proof":["lib(order_interval).is_lower_bound(list.contains, lower) or is_lower_bound(list, lower)","is_lower_bound(list, lower)","lib(order_interval).is_lower_bound(list.contains, lower)","not lib(order_interval).is_lower_bound(list.contains, lower)"]}
+{"goal":"is_lower_bound(list, lower)","proof":[]}
+{"goal":"is_lower_bound(list, lower) = lib(order_interval).is_lower_bound(list.contains, lower)","proof":[]}
 {"goal":"lower_bound_iff_contains_lower_bound","proof":[]}
-{"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":["not is_lower_bound(list, lower)"]}
+{"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":[]}
 {"goal":"lib(order_interval).is_bounded_below[T](list.contains)","proof":[]}
 {"goal":"lower_bound_imp_contains_bounded_below","proof":[]}
 {"goal":"item <= upper","proof":[]}
 {"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = lib(order_interval).is_upper_bound[T0](x0, x1) }[T](list.contains, upper)","let w0: T satisfy { w0 ∈ list and not w0 <= upper }","function(x0: T) { not x0 ∈ list or x0 <= upper }(w0)"]}
 {"goal":"upper_bound_imp_contains_upper_bound","proof":[]}
-{"goal":"item <= upper","proof":["not lib(order_interval).is_upper_bound(list.contains, upper) or not item ∈ list","not lib(order_interval).is_upper_bound(list.contains, upper)"]}
-{"goal":"list_upper_bound(list, upper)","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[T](list, upper)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = lib(order_interval).is_upper_bound[T0](x0, x1) }[T](list.contains, upper)","not forall(x0: T) { not x0 ∈ list or x0 <= upper }","(forall(x1: T) { not x1 ∈ list or x1 <= upper } = true)"]}
-{"goal":"is_upper_bound(list, upper)","proof":["not list_upper_bound(list, upper)"]}
-{"goal":"contains_upper_bound_imp_upper_bound","proof":["not lib(order_interval).is_upper_bound(list.contains, upper)"]}
+{"goal":"item <= upper","proof":[]}
+{"goal":"list_upper_bound(list, upper)","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x2 <= x1 } = list_upper_bound[T0](x0, x1) }[T](list, upper)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = lib(order_interval).is_upper_bound[T0](x0, x1) }[T](list.contains, upper)"]}
+{"goal":"is_upper_bound(list, upper)","proof":[]}
+{"goal":"contains_upper_bound_imp_upper_bound","proof":[]}
 {"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":[]}
-{"goal":"is_upper_bound(list, upper)","proof":["not lib(order_interval).is_upper_bound(list.contains, upper)"]}
-{"goal":"is_upper_bound(list, upper) = lib(order_interval).is_upper_bound(list.contains, upper)","proof":["lib(order_interval).is_upper_bound(list.contains, upper) or is_upper_bound(list, upper)","is_upper_bound(list, upper)","lib(order_interval).is_upper_bound(list.contains, upper)","not lib(order_interval).is_upper_bound(list.contains, upper)"]}
+{"goal":"is_upper_bound(list, upper)","proof":[]}
+{"goal":"is_upper_bound(list, upper) = lib(order_interval).is_upper_bound(list.contains, upper)","proof":[]}
 {"goal":"upper_bound_iff_contains_upper_bound","proof":[]}
-{"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":["not is_upper_bound(list, upper)"]}
+{"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":[]}
 {"goal":"lib(order_interval).is_bounded_above[T](list.contains)","proof":[]}
 {"goal":"upper_bound_imp_contains_bounded_above","proof":[]}
 {"goal":"closed_interval(lower, upper, item)","proof":[]}
 {"goal":"lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0, x2: T0) { forall(x3: T0) { not x0(x3) or closed_interval[T0](x1, x2, x3) } = lib(order_interval).is_bounded_by_interval[T0](x0, x1, x2) }[T](list.contains, lower, upper)","let w0: T satisfy { w0 ∈ list and not closed_interval(lower, upper, w0) }","function(x0: T) { not x0 ∈ list or closed_interval(lower, upper, x0) }(w0)"]}
 {"goal":"interval_bound_imp_contains_bounded_by_interval","proof":[]}
-{"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":["not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)"]}
-{"goal":"is_lower_bound(list, lower)","proof":["not lib(order_interval).is_lower_bound(list.contains, lower)"]}
-{"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":["not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)"]}
-{"goal":"is_upper_bound(list, upper)","proof":["not lib(order_interval).is_upper_bound(list.contains, upper)"]}
-{"goal":"is_interval_bound(list, lower, upper)","proof":["not is_lower_bound(list, lower) or not is_upper_bound(list, upper)","not is_lower_bound(list, lower)"]}
-{"goal":"contains_bounded_by_interval_imp_interval_bound","proof":["not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)"]}
+{"goal":"lib(order_interval).is_lower_bound(list.contains, lower)","proof":[]}
+{"goal":"is_lower_bound(list, lower)","proof":[]}
+{"goal":"lib(order_interval).is_upper_bound(list.contains, upper)","proof":[]}
+{"goal":"is_upper_bound(list, upper)","proof":[]}
+{"goal":"is_interval_bound(list, lower, upper)","proof":[]}
+{"goal":"contains_bounded_by_interval_imp_interval_bound","proof":[]}
 {"goal":"lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":[]}
-{"goal":"is_interval_bound(list, lower, upper)","proof":["not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)"]}
-{"goal":"is_interval_bound(list, lower, upper) = lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":["lib(order_interval).is_bounded_by_interval(list.contains, lower, upper) or is_interval_bound(list, lower, upper)","not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper) or not is_interval_bound(list, lower, upper)","lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","not lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)"]}
+{"goal":"is_interval_bound(list, lower, upper)","proof":[]}
+{"goal":"is_interval_bound(list, lower, upper) = lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":[]}
 {"goal":"interval_bound_iff_contains_bounded_by_interval","proof":[]}
-{"goal":"lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":["not is_interval_bound(list, lower, upper)"]}
+{"goal":"lib(order_interval).is_bounded_by_interval(list.contains, lower, upper)","proof":[]}
 {"goal":"lib(order_interval).is_bounded[T](list.contains)","proof":[]}
 {"goal":"interval_bound_imp_contains_bounded","proof":[]}
 {"goal":"list_min(h, List.nil[T]) = h","proof":["function[T0: LinearOrder](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_min[T0](x1, x0) = x1 }[T](List.nil[T], h)"]}
