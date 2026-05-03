@@ -1,5 +1,5 @@
 from nat.basic_addition import Nat
-from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides
+from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides, gcd_divides_left, gcd_divides_right
 numerals Nat
 
 attributes Nat {
@@ -30,6 +30,35 @@ theorem coprime_one_right(a: Nat) {
     a.coprime(Nat.1)
 } by {
     gcd_one_right(a)
+}
+
+/// Coprimality is preserved under multiplication on the right.
+theorem coprime_mul(a: Nat, b: Nat, c: Nat) {
+    a.coprime(b) and a.coprime(c) implies a.coprime(b * c)
+} by {
+    if a.coprime(b) and a.coprime(c) {
+        a.gcd(b) = 1
+        a.gcd(c) = 1
+        let d = a.gcd(b * c)
+        gcd_divides_left(a, b * c)
+        gcd_divides_right(a, b * c)
+        d.divides(a)
+        d.divides(b * c)
+        d.divides(a * c)
+        gcd_mult_right(a, b, c)
+        a.gcd(b) * c = (a * c).gcd(b * c)
+        Nat.1 * c = (a * c).gcd(b * c)
+        c = (a * c).gcd(b * c)
+        gcd_divides(d, a * c, b * c)
+        d.divides((a * c).gcd(b * c))
+        d.divides(c)
+        gcd_divides(d, a, c)
+        d.divides(a.gcd(c))
+        d.divides(Nat.1)
+        let k: Nat satisfy { d * k = 1 }
+        d = 1
+        a.gcd(b * c) = 1
+    }
 }
 
 /// Euclid's lemma: if a is coprime to b and divides b * c, then a divides c.
