@@ -45,8 +45,8 @@
 {"goal":"other_q * n + r2 = q * n + r","proof":[]}
 {"goal":"big_q * n + r1 = other_q * n + r2","proof":[]}
 {"goal":"r1 = r2","proof":[]}
-{"goal":"lib(nat.nat_base).nat_mod(q * n + r)(n) = lib(nat.nat_base).nat_mod(r)(n)","proof":["lib(nat.nat_base).nat_mod(q * n + r, n) != r2","lib(nat.nat_base).nat_mod(q * n + r, n) = r2"]}
-{"goal":"mod_add_mul","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(n, lib(functions).identity_fn(q))","function(x0: Nat) { 0 + x0 = x0 }(r)","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[Nat](q)","0 = n","lib(nat.nat_base).nat_mod(lib(functions).identity_fn(q) * n + r, n) != lib(nat.nat_base).nat_mod(r, n)","lib(functions).identity_fn(q) * n + r != r","Nat.zero = n","function(x0: Nat) { x0 * n = 0 }(lib(functions).identity_fn(q))"]}
+{"goal":"lib(nat.nat_base).nat_mod(q * n + r)(n) = lib(nat.nat_base).nat_mod(r)(n)","proof":[]}
+{"goal":"mod_add_mul","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(n, lib(functions).identity_fn(q))","function(x0: Nat) { 0 + x0 = x0 }(r)","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[Nat](q)"]}
 {"goal":"lib(nat.nat_base).nat_mod(a)(0) = a","proof":["function(x0: Nat) { lib(nat.nat_base).nat_mod(x0, 0) = x0 }(a)"]}
 {"goal":"lib(nat.nat_base).nat_mod(b)(0) = b","proof":["function(x0: Nat) { lib(nat.nat_base).nat_mod(x0, 0) = x0 }(b)"]}
 {"goal":"a + b = lib(nat.nat_base).nat_mod(a)(0) + lib(nat.nat_base).nat_mod(b)(0)","proof":[]}
@@ -60,6 +60,27 @@
 {"goal":"lib(nat.nat_base).nat_mod(s * n + r)(n) = lib(nat.nat_base).nat_mod(r)(n)","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a + b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) + lib(nat.nat_base).nat_mod(b)(n))(n)","proof":[]}
 {"goal":"mod_add_eq","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a)(0) = a","proof":["function(x0: Nat) { lib(nat.nat_base).nat_mod(x0, 0) = x0 }(a)"]}
+{"goal":"exists(k0: Nat) { k0 * n + lib(nat.nat_base).nat_mod(a)(n) = a }","proof":[]}
+{"goal":"a * b = (qa * n + lib(nat.nat_base).nat_mod(a)(n)) * b","proof":[]}
+{"goal":"(qa * n + lib(nat.nat_base).nat_mod(a)(n)) * b = qa * n * b + lib(nat.nat_base).nat_mod(a)(n) * b","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 + x2 * x1 = (x0 + x2) * x1 }(qa * n, b, lib(nat.nat_base).nat_mod(a, n))"]}
+{"goal":"qa * n * b = qa * (n * b)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(qa, n, b)"]}
+{"goal":"n * b = b * n","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(b, n)"]}
+{"goal":"qa * (n * b) = qa * (b * n)","proof":["b * n != n * b"]}
+{"goal":"qa * (b * n) = qa * b * n","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(qa, b, n)"]}
+{"goal":"qa * n * b = qa * b * n","proof":["qa * (n * b) = qa * b * n","qa * (n * b) != qa * b * n"]}
+{"goal":"a * b = qa * b * n + lib(nat.nat_base).nat_mod(a)(n) * b","proof":[]}
+{"goal":"a * b = qa * b * n + lib(nat.nat_base).nat_mod(a)(n) * b","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(qa * b * n + lib(nat.nat_base).nat_mod(a)(n) * b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * b)(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * b)(n)","proof":[]}
+{"goal":"mod_mul_left_eq","proof":[]}
+{"goal":"a * b = b * a","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(b, a)"]}
+{"goal":"a * lib(nat.nat_base).nat_mod(b)(n) = lib(nat.nat_base).nat_mod(b)(n) * a","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(a, lib(nat.nat_base).nat_mod(b, n))"]}
+{"goal":"lib(nat.nat_base).nat_mod(b * a)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(b)(n) * a)(n)","proof":[]}
+{"goal":"mod_mul_right_eq","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * b)(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * lib(nat.nat_base).nat_mod(b)(n))(n)","proof":[]}
+{"goal":"mod_mul_eq","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a)(n) = lib(nat.nat_base).nat_mod(c)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a, n, c)"]}
 {"goal":"lib(nat.nat_base).nat_mod(b)(n) = lib(nat.nat_base).nat_mod(d)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(b, n, d)"]}
 {"goal":"lib(nat.nat_base).nat_mod(a + b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) + lib(nat.nat_base).nat_mod(b)(n))(n)","proof":[]}
@@ -68,3 +89,11 @@
 {"goal":"lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) + lib(nat.nat_base).nat_mod(b)(n))(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(c)(n) + lib(nat.nat_base).nat_mod(d)(n))(n)","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a + b)(n) = lib(nat.nat_base).nat_mod(c + d)(n)","proof":[]}
 {"goal":"congr_mod_add","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a + b, n, c + d)"]}
+{"goal":"lib(nat.nat_base).nat_mod(a)(n) = lib(nat.nat_base).nat_mod(c)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a, n, c)"]}
+{"goal":"lib(nat.nat_base).nat_mod(b)(n) = lib(nat.nat_base).nat_mod(d)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(b, n, d)"]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * lib(nat.nat_base).nat_mod(b)(n))(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(c * d)(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(c)(n) * lib(nat.nat_base).nat_mod(d)(n))(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a)(n) * lib(nat.nat_base).nat_mod(b)(n) = lib(nat.nat_base).nat_mod(c)(n) * lib(nat.nat_base).nat_mod(d)(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(a)(n) * lib(nat.nat_base).nat_mod(b)(n))(n) = lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(c)(n) * lib(nat.nat_base).nat_mod(d)(n))(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n) = lib(nat.nat_base).nat_mod(c * d)(n)","proof":[]}
+{"goal":"congr_mod_mul","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * b, n, c * d)"]}

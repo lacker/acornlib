@@ -153,6 +153,51 @@ theorem mod_add_eq(a: Nat, b: Nat, n: Nat) {
     }
 }
 
+/// Replacing a factor by its remainder leaves the product's remainder unchanged.
+theorem mod_mul_left_eq(a: Nat, b: Nat, n: Nat) {
+    (a * b).mod(n) = (a.mod(n) * b).mod(n)
+} by {
+    if n = Nat.0 {
+        a.mod(Nat.0) = a
+    } else {
+        add_mod(a, n)
+        let qa: Nat satisfy { qa * n + a.mod(n) = a }
+        a * b = (qa * n + a.mod(n)) * b
+        (qa * n + a.mod(n)) * b = qa * n * b + a.mod(n) * b
+        qa * n * b = qa * (n * b)
+        n * b = b * n
+        qa * (n * b) = qa * (b * n)
+        qa * (b * n) = qa * b * n
+        qa * n * b = qa * b * n
+        a * b = qa * b * n + a.mod(n) * b
+        a * b = (qa * b) * n + a.mod(n) * b
+        mod_add_mul(qa * b, n, a.mod(n) * b)
+        ((qa * b) * n + a.mod(n) * b).mod(n) = (a.mod(n) * b).mod(n)
+        (a * b).mod(n) = (a.mod(n) * b).mod(n)
+    }
+}
+
+/// Replacing a factor on the right by its remainder leaves the product's remainder unchanged.
+theorem mod_mul_right_eq(a: Nat, b: Nat, n: Nat) {
+    (a * b).mod(n) = (a * b.mod(n)).mod(n)
+} by {
+    a * b = b * a
+    a * b.mod(n) = b.mod(n) * a
+    mod_mul_left_eq(b, a, n)
+    (b * a).mod(n) = (b.mod(n) * a).mod(n)
+}
+
+/// Modular multiplication reduces componentwise: the remainder of a * b
+/// modulo n only depends on the remainders of a and b.
+theorem mod_mul_eq(a: Nat, b: Nat, n: Nat) {
+    (a * b).mod(n) = (a.mod(n) * b.mod(n)).mod(n)
+} by {
+    mod_mul_left_eq(a, b, n)
+    mod_mul_right_eq(a.mod(n), b, n)
+    (a * b).mod(n) = (a.mod(n) * b).mod(n)
+    (a.mod(n) * b).mod(n) = (a.mod(n) * b.mod(n)).mod(n)
+}
+
 /// Congruence modulo n is preserved by addition.
 theorem congr_mod_add(a: Nat, b: Nat, c: Nat, d: Nat, n: Nat) {
     a.congr_mod(c, n) and b.congr_mod(d, n) implies (a + b).congr_mod(c + d, n)
@@ -167,5 +212,22 @@ theorem congr_mod_add(a: Nat, b: Nat, c: Nat, d: Nat, n: Nat) {
         a.mod(n) + b.mod(n) = c.mod(n) + d.mod(n)
         (a.mod(n) + b.mod(n)).mod(n) = (c.mod(n) + d.mod(n)).mod(n)
         (a + b).mod(n) = (c + d).mod(n)
+    }
+}
+
+/// Congruence modulo n is preserved by multiplication.
+theorem congr_mod_mul(a: Nat, b: Nat, c: Nat, d: Nat, n: Nat) {
+    a.congr_mod(c, n) and b.congr_mod(d, n) implies (a * b).congr_mod(c * d, n)
+} by {
+    if a.congr_mod(c, n) and b.congr_mod(d, n) {
+        a.mod(n) = c.mod(n)
+        b.mod(n) = d.mod(n)
+        mod_mul_eq(a, b, n)
+        mod_mul_eq(c, d, n)
+        (a * b).mod(n) = (a.mod(n) * b.mod(n)).mod(n)
+        (c * d).mod(n) = (c.mod(n) * d.mod(n)).mod(n)
+        a.mod(n) * b.mod(n) = c.mod(n) * d.mod(n)
+        (a.mod(n) * b.mod(n)).mod(n) = (c.mod(n) * d.mod(n)).mod(n)
+        (a * b).mod(n) = (c * d).mod(n)
     }
 }
