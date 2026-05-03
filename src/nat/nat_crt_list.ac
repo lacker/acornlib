@@ -124,6 +124,44 @@ theorem cons_modulus_split(c: Nat, c0: Nat, head: Pair[Nat, Nat], tail: List[Pai
     }
 }
 
+/// If c is congruent to c0 modulo the combined system modulus, and c0
+/// satisfies the system, then c also satisfies the system.
+theorem satisfies_all_descend(c: Nat, c0: Nat, system: List[Pair[Nat, Nat]]) {
+    c.congr_mod(c0, system_modulus(system)) and satisfies_all(c0, system)
+        implies satisfies_all(c, system)
+} by {
+    define p(s: List[Pair[Nat, Nat]]) -> Bool {
+        c.congr_mod(c0, system_modulus(s)) and satisfies_all(c0, s)
+            implies satisfies_all(c, s)
+    }
+    satisfies_all_nil(c)
+    p(List.nil[Pair[Nat, Nat]])
+    forall(head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]) {
+        if p(tail) {
+            if c.congr_mod(c0, system_modulus(List.cons(head, tail)))
+                and satisfies_all(c0, List.cons(head, tail)) {
+                cons_modulus_split(c, c0, head, tail)
+                c.congr_mod(c0, head.first)
+                c.congr_mod(c0, system_modulus(tail))
+                satisfies_all_cons_imp(c0, head, tail)
+                c0.congr_mod(head.second, head.first)
+                satisfies_all(c0, tail)
+                satisfies_all(c, tail)
+                congr_mod_trans(c, c0, head.second, head.first)
+                c.congr_mod(head.second, head.first)
+                satisfies_all_cons_intro(c, head, tail)
+                satisfies_all(c, List.cons(head, tail))
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[Pair[Nat, Nat]]) { p(l) })
+    forall(l: List[Pair[Nat, Nat]]) {
+        p(l)
+    }
+    p(system)
+}
+
 /// Cons-step glue: given the tail's descent already discharged, build
 /// the cons descent.
 theorem satisfies_all_descend_cons_step(
