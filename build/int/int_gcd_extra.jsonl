@@ -1,0 +1,21 @@
+{"goal":"a.gcd(a).divides(a)","proof":[]}
+{"goal":"a.divides(a)","proof":[]}
+{"goal":"a.divides(a) and a.divides(a)","proof":[]}
+{"goal":"a.divides(a.gcd(a))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or not x0.divides(x2) or x0.divides(x1.gcd(x2)) }(a, a, a)"]}
+{"goal":"nat_gcd_self","proof":["not a.divides(a.gcd(a)) or not a.gcd(a).divides(a)","not a.gcd(a).divides(a)"]}
+{"goal":"abs(0) = Nat.0","proof":[]}
+{"goal":"0.gcd(a) = Int.from_nat(abs(0).gcd(abs(a)))","proof":["function(x0: Int, x1: Int) { Int.from_nat(abs(x0).gcd(abs(x1))) = x0.gcd(x1) }(0, a)"]}
+{"goal":"0.gcd(a) = Int.from_nat(Nat.0.gcd(abs(a)))","proof":[]}
+{"goal":"Nat.0.gcd(abs(a)) = abs(a)","proof":[]}
+{"goal":"0.gcd(a) = Int.from_nat(abs(a))","proof":[]}
+{"goal":"int_gcd_zero_left","proof":[]}
+{"goal":"abs(0) = Nat.0","proof":[]}
+{"goal":"a.gcd(0) = Int.from_nat(abs(a).gcd(abs(0)))","proof":["function(x0: Int, x1: Int) { Int.from_nat(abs(x0).gcd(abs(x1))) = x0.gcd(x1) }(a, 0)"]}
+{"goal":"a.gcd(0) = Int.from_nat(abs(a).gcd(Nat.0))","proof":[]}
+{"goal":"abs(a).gcd(Nat.0) = abs(a)","proof":[]}
+{"goal":"a.gcd(0) = Int.from_nat(abs(a))","proof":[]}
+{"goal":"int_gcd_zero_right","proof":[]}
+{"goal":"a.gcd(a) = Int.from_nat(abs(a).gcd(abs(a)))","proof":["function(x0: Int, x1: Int) { Int.from_nat(abs(x0).gcd(abs(x1))) = x0.gcd(x1) }(a, a)"]}
+{"goal":"abs(a).gcd(abs(a)) = abs(a)","proof":[]}
+{"goal":"Int.from_nat(abs(a).gcd(abs(a))) = Int.from_nat(abs(a))","proof":["abs(a).gcd(abs(a)) != abs(a)"]}
+{"goal":"int_gcd_self","proof":["Int.from_nat(abs(a).gcd(abs(a))) != a.gcd(a)"]}
