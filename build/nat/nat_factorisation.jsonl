@@ -1,0 +1,47 @@
+{"goal":"1 < p","proof":["function(x0: Nat) { (1 < x0 and not x0.is_composite) = x0.is_prime }(p)"]}
+{"goal":"p != 0","proof":["function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"0 * k = p","proof":[]}
+{"goal":"p = 0","proof":["function(x0: Nat) { 0 * x0 = 0 }(k)"]}
+{"goal":"false","proof":[]}
+{"goal":"d * 0 = p","proof":[]}
+{"goal":"p = 0","proof":["function(x0: Nat) { x0 * 0 = 0 }(d)"]}
+{"goal":"false","proof":[]}
+{"goal":"d != 0","proof":[]}
+{"goal":"k != 0","proof":[]}
+{"goal":"exists(k0: Nat, k1: Nat) { 1 < k0 and 1 < k1 and p = k0 * k1 }","proof":["function(x0: Nat) { not exists(k0: Nat) { 1 < x0 and 1 < k0 and x0 * k0 = p } }(d)","function(x0: Nat, x1: Nat) { not (1 < x0 and 1 < x1 and x0 * x1 = p) }(d, k)"]}
+{"goal":"p.is_composite","proof":["function(x0: Nat) { exists(k0: Nat, k1: Nat) { 1 < k0 and 1 < k1 and k0 * k1 = x0 } = x0.is_composite }(p)"]}
+{"goal":"not p.is_prime","proof":["function(x0: Nat) { (1 < x0 and not x0.is_composite) = x0.is_prime }(p)"]}
+{"goal":"false","proof":[]}
+{"goal":"not (1 < d and 1 < k)","proof":[]}
+{"goal":"not 1 < d or not 1 < k","proof":[]}
+{"goal":"1 <= d","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(0, d)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, d)","function(x0: Nat) { not x0 < 0 }(d)"]}
+{"goal":"1 <= k","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(0, k)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, k)","function(x0: Nat) { not x0 < 0 }(k)"]}
+{"goal":"not 1 < d","proof":[]}
+{"goal":"d <= 1","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(1, d)"]}
+{"goal":"d = 1","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(relation_basic).is_antisymmetric[T0](x0) or not x0(x1, x2) or not x0(x2, x1) or x1 = x2 }[Nat](Nat.lte, d, 1)"]}
+{"goal":"not 1 < k","proof":[]}
+{"goal":"k <= 1","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(1, k)"]}
+{"goal":"k = 1","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(relation_basic).is_antisymmetric[T0](x0) or not x0(x1, x2) or not x0(x2, x1) or x1 = x2 }[Nat](Nat.lte, k, 1)"]}
+{"goal":"d = 1 or k = 1","proof":[]}
+{"goal":"1 * k = p","proof":[]}
+{"goal":"k = p","proof":["function(x0: Nat) { 1 * x0 = x0 }(k)"]}
+{"goal":"d = 1 and k = p","proof":["1 != d"]}
+{"goal":"d = 1 and k = p or (d = p and k = 1)","proof":[]}
+{"goal":"k = 1","proof":[]}
+{"goal":"d * 1 = p","proof":[]}
+{"goal":"d = p","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(d, 1)","function(x0: Nat) { 1 * x0 = x0 }(d)"]}
+{"goal":"d = p and k = 1","proof":["1 != k"]}
+{"goal":"d = 1 and k = p or (d = p and k = 1)","proof":["not (p = d and 1 = k)"]}
+{"goal":"prime_factor_dichotomy","proof":["not (p = d and 1 = k)","d * k != p or not p.is_prime or (1 = d and p = k)","not (1 = d and p = k)","p.is_prime","d * k = p","d * k != p"]}
+{"goal":"exists(k0: Nat) { d * k0 = p }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(d, p)"]}
+{"goal":"d = 1 and k = p or (d = p and k = 1)","proof":["not (p = d and 1 = k)","not p.is_prime or (1 = d and p = k)","not (1 = d and p = k)","p.is_prime","not p.is_prime"]}
+{"goal":"d = 1 or d = p","proof":[]}
+{"goal":"prime_divisor_is_one_or_self","proof":[]}
+{"goal":"p.coprime(q)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(p, q)"]}
+{"goal":"p.divides(q)","proof":[]}
+{"goal":"p = 1 or p = q","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { (1 < x0 and not x0.is_composite) = x0.is_prime }(p)"]}
+{"goal":"p != 1","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](p, 1)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[Nat](p, 1)"]}
+{"goal":"p = q","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"coprime_of_distinct_primes","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(p, q)"]}

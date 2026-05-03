@@ -1,0 +1,97 @@
+from nat.nat_coprime import Nat
+from nat.nat_gcd import gcd_of_prime, gcd_zero_left, gcd_zero_right
+from nat.nat_base import divides_self, divides_zero
+numerals Nat
+
+/// Helper: if a prime is the product of two factors, one factor is 1 and the
+/// other equals the prime.
+theorem prime_factor_dichotomy(p: Nat, d: Nat, k: Nat) {
+    p.is_prime and d * k = p implies (d = Nat.1 and k = p) or (d = p and k = Nat.1)
+} by {
+    if p.is_prime and d * k = p {
+        Nat.1 < p
+        p != Nat.0
+        // Neither factor can be 0 (their product is nonzero p).
+        if d = Nat.0 {
+            Nat.0 * k = p
+            p = Nat.0
+            false
+        }
+        if k = Nat.0 {
+            d * Nat.0 = p
+            p = Nat.0
+            false
+        }
+        d != Nat.0
+        k != Nat.0
+        // If both > 1, p is composite.
+        if Nat.1 < d and Nat.1 < k {
+            exists(b: Nat, c: Nat) {
+                Nat.1 < b and Nat.1 < c and p = b * c
+            }
+            p.is_composite
+            not p.is_prime
+            false
+        }
+        // So at least one of d, k equals 1.
+        not (Nat.1 < d and Nat.1 < k)
+        not (Nat.1 < d) or not (Nat.1 < k)
+        Nat.1 <= d
+        Nat.1 <= k
+        if not (Nat.1 < d) {
+            not (Nat.1 < d)
+            d <= Nat.1
+            d = Nat.1
+        }
+        if not (Nat.1 < k) {
+            not (Nat.1 < k)
+            k <= Nat.1
+            k = Nat.1
+        }
+        d = Nat.1 or k = Nat.1
+        if d = Nat.1 {
+            Nat.1 * k = p
+            k = p
+            d = Nat.1 and k = p
+            (d = Nat.1 and k = p) or (d = p and k = Nat.1)
+        } else {
+            k = Nat.1
+            d * Nat.1 = p
+            d = p
+            d = p and k = Nat.1
+            (d = Nat.1 and k = p) or (d = p and k = Nat.1)
+        }
+    }
+}
+
+/// Only 1 and a prime divide that prime.
+theorem prime_divisor_is_one_or_self(p: Nat, d: Nat) {
+    p.is_prime and d.divides(p) implies d = Nat.1 or d = p
+} by {
+    if p.is_prime and d.divides(p) {
+        let k: Nat satisfy { d * k = p }
+        prime_factor_dichotomy(p, d, k)
+        (d = Nat.1 and k = p) or (d = p and k = Nat.1)
+        d = Nat.1 or d = p
+    }
+}
+
+/// Distinct primes are coprime.
+theorem coprime_of_distinct_primes(p: Nat, q: Nat) {
+    p.is_prime and q.is_prime and p != q implies p.coprime(q)
+} by {
+    if p.is_prime and q.is_prime and p != q {
+        gcd_of_prime(p, q)
+        if p.gcd(q) = Nat.1 {
+            p.coprime(q)
+        } else {
+            p.divides(q)
+            prime_divisor_is_one_or_self(q, p)
+            p = Nat.1 or p = q
+            Nat.1 < p
+            p != Nat.1
+            p = q
+            false
+        }
+    }
+}
