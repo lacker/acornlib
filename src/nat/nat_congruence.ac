@@ -1,5 +1,6 @@
 from nat.basic_addition import Nat
 from nat.nat_base import mod_mod, add_mod
+from nat.nat_monoid import exp_zero
 numerals Nat
 
 attributes Nat {
@@ -231,3 +232,38 @@ theorem congr_mod_mul(a: Nat, b: Nat, c: Nat, d: Nat, n: Nat) {
         (a * b).mod(n) = (c * d).mod(n)
     }
 }
+
+/// Helper for the power-preservation induction: only the inductive
+/// implication, with the congruence hypothesis externalised.
+theorem congr_mod_pow_step(a: Nat, b: Nat, n: Nat, x: Nat) {
+    a.congr_mod(b, n) and a.pow(x).congr_mod(b.pow(x), n)
+        implies a.pow(x.suc).congr_mod(b.pow(x.suc), n)
+} by {
+    if a.congr_mod(b, n) and a.pow(x).congr_mod(b.pow(x), n) {
+        congr_mod_mul(a.pow(x), a, b.pow(x), b, n)
+        (a.pow(x) * a).congr_mod(b.pow(x) * b, n)
+        a.pow(x.suc) = a.pow(x) * a
+        b.pow(x.suc) = b.pow(x) * b
+        a.pow(x.suc).congr_mod(b.pow(x) * b, n)
+        a.pow(x.suc).congr_mod(b.pow(x.suc), n)
+    }
+}
+
+/// Congruence modulo n is preserved by raising to a natural-number power.
+theorem congr_mod_pow(a: Nat, b: Nat, n: Nat, k: Nat) {
+    a.congr_mod(b, n) implies a.pow(k).congr_mod(b.pow(k), n)
+} by {
+    let f: Nat -> Bool = function(x: Nat) {
+        a.pow(x).congr_mod(b.pow(x), n)
+    }
+    exp_zero(a)
+    exp_zero(b)
+    f(Nat.0)
+    forall(x: Nat) {
+        if f(x) {
+            congr_mod_pow_step(a, b, n, x)
+            f(x.suc)
+        }
+    }
+}
+
