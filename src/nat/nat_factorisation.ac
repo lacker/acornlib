@@ -359,3 +359,88 @@ theorem coprime_iff_no_shared_prime_factor(a: Nat, b: Nat) {
         }
     }
 }
+
+/// Forward direction (the universal part): a prime has no proper divisor.
+theorem prime_imp_no_proper_divisor_at(n: Nat, k: Nat) {
+    n.is_prime and Nat.1 < k and k < n implies not k.divides(n)
+} by {
+    if n.is_prime and Nat.1 < k and k < n {
+        if k.divides(n) {
+            prime_divisor_is_one_or_self(n, k)
+            k = Nat.1 or k = n
+            Nat.1 < k
+            k != Nat.1
+            k = n
+            k != n
+            false
+        }
+    }
+}
+
+/// Forward direction (packaged): a prime has no proper divisor strictly between 1 and itself.
+theorem prime_imp_no_proper_divisor(n: Nat) {
+    n.is_prime implies Nat.1 < n and forall(k: Nat) {
+        Nat.1 < k and k < n implies not k.divides(n)
+    }
+} by {
+    if n.is_prime {
+        Nat.1 < n
+        forall(k: Nat) {
+            prime_imp_no_proper_divisor_at(n, k)
+            Nat.1 < k and k < n implies not k.divides(n)
+        }
+        Nat.1 < n and forall(k: Nat) {
+            Nat.1 < k and k < n implies not k.divides(n)
+        }
+    }
+}
+
+/// Backward direction: if n > 1 and no number strictly between 1 and n divides n, then n is prime.
+theorem no_proper_divisor_imp_prime(n: Nat) {
+    Nat.1 < n and (forall(k: Nat) {
+        Nat.1 < k and k < n implies not k.divides(n)
+    }) implies n.is_prime
+} by {
+    if Nat.1 < n and (forall(k: Nat) {
+        Nat.1 < k and k < n implies not k.divides(n)
+    }) {
+        if not n.is_prime {
+            Nat.1 < n
+            n.is_composite
+            let (b: Nat, c: Nat) satisfy {
+                Nat.1 < b and Nat.1 < c and n = b * c
+            }
+            Nat.1 < c
+            Nat.2 <= c
+            Nat.1 <= b
+            b * Nat.2 <= b * c
+            b * Nat.2 = b + b
+            b + b <= n
+            b < b + b
+            b < n
+            let h: Bool = (Nat.1 < b and b < n) implies not b.divides(n)
+            h
+            not b.divides(n)
+            b * c = n
+            b.divides(n)
+            false
+        }
+    }
+}
+
+/// Trial-division primality test: a natural is prime iff it is greater than
+/// one and has no proper divisor (no divisor strictly between 1 and itself).
+theorem prime_iff_no_proper_divisor(n: Nat) {
+    n.is_prime = (Nat.1 < n and forall(k: Nat) {
+        Nat.1 < k and k < n implies not k.divides(n)
+    })
+} by {
+    if n.is_prime {
+        prime_imp_no_proper_divisor(n)
+    }
+    if Nat.1 < n and forall(k: Nat) {
+        Nat.1 < k and k < n implies not k.divides(n)
+    } {
+        no_proper_divisor_imp_prime(n)
+    }
+}
