@@ -206,3 +206,42 @@ theorem prime_factorisation_exists(n: Nat) {
     forall(m: Nat) { f(m) }
     f(n)
 }
+
+/// A canonical prime factorisation: a list of primes whose product is the
+/// given natural. For zero the result is the empty list (a placeholder; the
+/// universal property only constrains positive inputs).
+let prime_factorisation(n: Nat) -> factors: List[Nat] satisfy {
+    if Nat.1 <= n {
+        product[Nat](factors) = n and all_prime(factors)
+    } else {
+        factors = List.nil[Nat]
+    }
+} by {
+    if Nat.1 <= n {
+        prime_factorisation_exists(n)
+        let x: List[Nat] satisfy {
+            product[Nat](x) = n and all_prime(x)
+        }
+    } else {
+        let x: List[Nat] satisfy {
+            x = List.nil[Nat]
+        }
+    }
+}
+
+/// The factorisation of a positive natural multiplies back to itself.
+theorem prime_factorisation_product(n: Nat) {
+    Nat.1 <= n implies product[Nat](prime_factorisation(n)) = n
+}
+
+/// Every entry in the factorisation of a positive natural is prime.
+theorem prime_factorisation_all_prime(n: Nat) {
+    Nat.1 <= n implies all_prime(prime_factorisation(n))
+}
+
+/// The factorisation of zero is the empty list (the placeholder choice).
+theorem prime_factorisation_zero {
+    prime_factorisation(Nat.0) = List.nil[Nat]
+} by {
+    not (Nat.1 <= Nat.0)
+}
