@@ -1,0 +1,33 @@
+{"goal":"Int.from_nat(a) * Int.from_nat(b) = Int.from_nat(a).mul_nat(b)","proof":[]}
+{"goal":"Int.from_nat(a).mul_nat(b) = Int.from_nat(a * b)","proof":[]}
+{"goal":"mul_from_nat","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a)(n) = lib(nat.nat_base).nat_mod(b)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a, n, b)"]}
+{"goal":"a = b","proof":[]}
+{"goal":"Int.from_nat(a) = Int.from_nat(b)","proof":[]}
+{"goal":"Int.from_nat(a) - Int.from_nat(b) = 0","proof":["function(x0: Int) { x0 - x0 = 0 }(Int.from_nat(a))"]}
+{"goal":"Int.from_nat(Nat.0).divides(0)","proof":["function(x0: Int, x1: Int) { abs(x0) != abs(x1) or x0.divides(x1) }(Int.from_nat(Nat.0), Int.from_nat(Nat.0))"]}
+{"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, Int.from_nat(a), Int.from_nat(b))"]}
+{"goal":"r = lib(nat.nat_base).nat_mod(b)(n)","proof":[]}
+{"goal":"exists(k0: Nat) { k0 * n + lib(nat.nat_base).nat_mod(a)(n) = a }","proof":[]}
+{"goal":"qa * n + r = a","proof":[]}
+{"goal":"exists(k0: Nat) { k0 * n + lib(nat.nat_base).nat_mod(b)(n) = b }","proof":[]}
+{"goal":"qb * n + r = b","proof":[]}
+{"goal":"qai * ni = Int.from_nat(qa * n)","proof":[]}
+{"goal":"qbi * ni = Int.from_nat(qb * n)","proof":[]}
+{"goal":"Int.from_nat(qa * n) + ri = Int.from_nat(qa * n + r)","proof":[]}
+{"goal":"Int.from_nat(qa * n + r) = ai","proof":[]}
+{"goal":"qai * ni + ri = ai","proof":[]}
+{"goal":"Int.from_nat(qb * n) + ri = Int.from_nat(qb * n + r)","proof":[]}
+{"goal":"Int.from_nat(qb * n + r) = bi","proof":[]}
+{"goal":"qbi * ni + ri = bi","proof":[]}
+{"goal":"ai - bi = qai * ni + ri - (qbi * ni + ri)","proof":[]}
+{"goal":"qai * ni + ri - (qbi * ni + ri) = qai * ni - qbi * ni","proof":["function(x0: Int, x1: Int, x2: Int) { x0 + x1 - (x2 + x1) = x0 - x2 }(qai * ni, ri, qbi * ni)"]}
+{"goal":"ai - bi = qai * ni - qbi * ni","proof":[]}
+{"goal":"qai * ni - qbi * ni = (qai - qbi) * ni","proof":["function(x0: Int, x1: Int, x2: Int) { x0 * x1 - x2 * x1 = (x0 - x2) * x1 }(qai, ni, qbi)"]}
+{"goal":"ai - bi = (qai - qbi) * ni","proof":[]}
+{"goal":"(qai - qbi) * ni = ni * (qai - qbi)","proof":["function(x0: Int, x1: Int) { x0 * x1 = x1 * x0 }(ni, qai - qbi)"]}
+{"goal":"ni * (qai - qbi) = ai - bi","proof":[]}
+{"goal":"ni.divides(ai - bi)","proof":["function(x0: Int, x1: Int) { exists(k0: Int) { k0 * x0 = x1 } = x0.divides(x1) }(ni, ai - bi)","not exists(k0: Int) { k0 * ni = ai - bi }","function(x0: Int) { ai - bi != x0 * ni }(qai - qbi)"]}
+{"goal":"int_mod_rel(n, ai, bi)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, ai, bi)","Int.from_nat(n).divides(ai - bi)","not Int.from_nat(n).divides(ai - bi)"]}
+{"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","proof":["not int_mod_rel(n, ai, Int.from_nat(b))","int_mod_rel(n, ai, Int.from_nat(b))"]}
+{"goal":"nat_congr_mod_imp_int_mod_rel","proof":["not a.congr_mod(b, n)"]}
