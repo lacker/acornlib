@@ -10,10 +10,12 @@ in `src/ideal.ac`, split into three named sub-constraints
 No bundled `Ideal[R]` structure is introduced yet — bundle later if a use site
 requires it. Prototype includes `zero_ideal`, `unit_ideal`, `principal_ideal`,
 their `is_ideal` proofs, plus `principal_ideal_zero_eq_zero_ideal` and
-`principal_ideal_one_eq_unit_ideal`. The lattice API uses
-`ideal_subset`, `ideal_inter` (meet), `ideal_sum` (join), with `zero_ideal`
-as bottom and `unit_ideal` as top, plus the helper `is_ideal_unfold` and
-`is_ideal_from_constraints` for assembling `is_ideal` from its sub-constraints.
+`principal_ideal_one_eq_unit_ideal`. The lattice API uses `ideal_subset`,
+`ideal_inter` (meet), `ideal_sum` (join), with `zero_ideal` as bottom and
+`unit_ideal` as top. It includes GLB/LUB iff lemmas, commutativity,
+associativity, idempotence, absorption under inclusion, zero/unit identities,
+plus the helper `is_ideal_unfold` and `is_ideal_from_constraints` for
+assembling `is_ideal` from its sub-constraints.
 
 ## Roadmap
 

@@ -1,4 +1,5 @@
 from comm_ring import CommRing
+from functions import predicate_extensionality
 
 /// True if a subset of a commutative ring contains the additive identity.
 define ideal_zero_constraint[R: CommRing](contains: R -> Bool) -> Bool {
@@ -283,10 +284,42 @@ theorem ideal_subset_antisymm[R: CommRing](contains_i: R -> Bool,
         implies contains_i = contains_j
 } by {
     if ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i) {
+        ideal_subset(contains_i, contains_j) = forall(y: R) {
+            contains_i(y) implies contains_j(y)
+        }
+        ideal_subset(contains_j, contains_i) = forall(y: R) {
+            contains_j(y) implies contains_i(y)
+        }
         forall(x: R) {
+            if contains_i(x) {
+                contains_j(x)
+            }
+            if contains_j(x) {
+                contains_i(x)
+            }
             contains_i(x) = contains_j(x)
         }
+        predicate_extensionality(contains_i, contains_j)
+        contains_i = contains_j
     }
+}
+
+/// Equality of ideal predicates is equivalent to mutual inclusion.
+theorem ideal_eq_iff_subset_both[R: CommRing](contains_i: R -> Bool,
+                                              contains_j: R -> Bool) {
+    contains_i = contains_j = (ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i))
+} by {
+    if contains_i = contains_j {
+        ideal_subset_refl(contains_i)
+        ideal_subset(contains_i, contains_j)
+        ideal_subset(contains_j, contains_i)
+        ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i)
+    }
+    if ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i) {
+        ideal_subset_antisymm(contains_i, contains_j)
+        contains_i = contains_j
+    }
+    contains_i = contains_j = (ideal_subset(contains_i, contains_j) and ideal_subset(contains_j, contains_i))
 }
 
 /// The zero ideal is contained in every ideal.
@@ -434,6 +467,30 @@ theorem ideal_inter_glb[R: CommRing](contains_i: R -> Bool,
     }
 }
 
+/// Containment in an ideal intersection is equivalent to containment in both ideals.
+theorem ideal_subset_inter_iff[R: CommRing](contains_k: R -> Bool,
+                                           contains_i: R -> Bool,
+                                           contains_j: R -> Bool) {
+    ideal_subset(contains_k, ideal_inter[R](contains_i, contains_j)) =
+        (ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j))
+} by {
+    if ideal_subset(contains_k, ideal_inter[R](contains_i, contains_j)) {
+        ideal_inter_subset_left(contains_i, contains_j)
+        ideal_subset_trans(contains_k, ideal_inter[R](contains_i, contains_j), contains_i)
+        ideal_subset(contains_k, contains_i)
+        ideal_inter_subset_right(contains_i, contains_j)
+        ideal_subset_trans(contains_k, ideal_inter[R](contains_i, contains_j), contains_j)
+        ideal_subset(contains_k, contains_j)
+        ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j)
+    }
+    if ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j) {
+        ideal_inter_glb(contains_i, contains_j, contains_k)
+        ideal_subset(contains_k, ideal_inter[R](contains_i, contains_j))
+    }
+    ideal_subset(contains_k, ideal_inter[R](contains_i, contains_j)) =
+        (ideal_subset(contains_k, contains_i) and ideal_subset(contains_k, contains_j))
+}
+
 /// The intersection is commutative.
 theorem ideal_inter_comm[R: CommRing](contains_i: R -> Bool,
                                       contains_j: R -> Bool) {
@@ -444,6 +501,114 @@ theorem ideal_inter_comm[R: CommRing](contains_i: R -> Bool,
         ideal_inter[R](contains_j, contains_i)(x) = (contains_j(x) and contains_i(x))
         ideal_inter[R](contains_i, contains_j)(x) = ideal_inter[R](contains_j, contains_i)(x)
     }
+}
+
+/// The intersection of ideals is associative.
+theorem ideal_inter_assoc[R: CommRing](contains_i: R -> Bool,
+                                       contains_j: R -> Bool,
+                                       contains_k: R -> Bool) {
+    ideal_inter[R](contains_i, ideal_inter[R](contains_j, contains_k)) =
+        ideal_inter[R](ideal_inter[R](contains_i, contains_j), contains_k)
+} by {
+    forall(x: R) {
+        if ideal_inter[R](contains_i, ideal_inter[R](contains_j, contains_k))(x) {
+            contains_i(x)
+            ideal_inter[R](contains_j, contains_k)(x)
+            contains_j(x)
+            contains_k(x)
+            ideal_inter[R](contains_i, contains_j)(x)
+            ideal_inter[R](ideal_inter[R](contains_i, contains_j), contains_k)(x)
+        }
+        if ideal_inter[R](ideal_inter[R](contains_i, contains_j), contains_k)(x) {
+            ideal_inter[R](contains_i, contains_j)(x)
+            contains_k(x)
+            contains_i(x)
+            contains_j(x)
+            ideal_inter[R](contains_j, contains_k)(x)
+            ideal_inter[R](contains_i, ideal_inter[R](contains_j, contains_k))(x)
+        }
+        ideal_inter[R](contains_i, ideal_inter[R](contains_j, contains_k))(x) =
+            ideal_inter[R](ideal_inter[R](contains_i, contains_j), contains_k)(x)
+    }
+}
+
+/// The intersection of an ideal with itself is the same ideal.
+theorem ideal_inter_idempotent[R: CommRing](contains: R -> Bool) {
+    ideal_inter[R](contains, contains) = contains
+} by {
+    forall(x: R) {
+        if ideal_inter[R](contains, contains)(x) {
+            contains(x)
+        }
+        if contains(x) {
+            ideal_inter[R](contains, contains)(x)
+        }
+        ideal_inter[R](contains, contains)(x) = contains(x)
+    }
+}
+
+/// Intersecting with a larger ideal gives the smaller ideal.
+theorem ideal_inter_eq_left_of_subset[R: CommRing](contains_i: R -> Bool,
+                                                   contains_j: R -> Bool) {
+    ideal_subset(contains_i, contains_j) implies ideal_inter[R](contains_i, contains_j) = contains_i
+} by {
+    if ideal_subset(contains_i, contains_j) {
+        ideal_inter_subset_left(contains_i, contains_j)
+        ideal_inter_glb(contains_i, contains_j, contains_i)
+        ideal_subset(contains_i, ideal_inter[R](contains_i, contains_j))
+        ideal_subset_antisymm(ideal_inter[R](contains_i, contains_j), contains_i)
+        ideal_inter[R](contains_i, contains_j) = contains_i
+    }
+}
+
+/// Intersecting with a larger ideal on the left gives the smaller ideal.
+theorem ideal_inter_eq_right_of_subset[R: CommRing](contains_i: R -> Bool,
+                                                    contains_j: R -> Bool) {
+    ideal_subset(contains_j, contains_i) implies ideal_inter[R](contains_i, contains_j) = contains_j
+} by {
+    if ideal_subset(contains_j, contains_i) {
+        ideal_inter_subset_right(contains_i, contains_j)
+        ideal_inter_glb(contains_i, contains_j, contains_j)
+        ideal_subset(contains_j, ideal_inter[R](contains_i, contains_j))
+        ideal_subset_antisymm(ideal_inter[R](contains_i, contains_j), contains_j)
+        ideal_inter[R](contains_i, contains_j) = contains_j
+    }
+}
+
+/// Intersecting the zero ideal on the left gives the zero ideal.
+theorem zero_ideal_inter_left[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_inter[R](zero_ideal[R], contains) = zero_ideal[R]
+} by {
+    if is_ideal(contains) {
+        zero_ideal_subset(contains)
+        ideal_inter_eq_left_of_subset(zero_ideal[R], contains)
+    }
+}
+
+/// Intersecting the zero ideal on the right gives the zero ideal.
+theorem zero_ideal_inter_right[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_inter[R](contains, zero_ideal[R]) = zero_ideal[R]
+} by {
+    if is_ideal(contains) {
+        zero_ideal_subset(contains)
+        ideal_inter_eq_right_of_subset(contains, zero_ideal[R])
+    }
+}
+
+/// Intersecting the unit ideal on the left gives the other ideal.
+theorem unit_ideal_inter_left[R: CommRing](contains: R -> Bool) {
+    ideal_inter[R](unit_ideal[R], contains) = contains
+} by {
+    subset_unit_ideal(contains)
+    ideal_inter_eq_right_of_subset(unit_ideal[R], contains)
+}
+
+/// Intersecting the unit ideal on the right gives the other ideal.
+theorem unit_ideal_inter_right[R: CommRing](contains: R -> Bool) {
+    ideal_inter[R](contains, unit_ideal[R]) = contains
+} by {
+    subset_unit_ideal(contains)
+    ideal_inter_eq_left_of_subset(contains, unit_ideal[R])
 }
 
 /// Membership in the sum of two subsets: elements decomposable as a + b
@@ -616,6 +781,36 @@ theorem ideal_sum_lub[R: CommRing](contains_i: R -> Bool,
     }
 }
 
+/// Containment of an ideal sum is equivalent to containment of both summands.
+theorem ideal_sum_subset_iff[R: CommRing](contains_i: R -> Bool,
+                                          contains_j: R -> Bool,
+                                          contains_k: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j) and is_ideal(contains_k)
+        implies
+    (ideal_subset(ideal_sum[R](contains_i, contains_j), contains_k) =
+        (ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k)))
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) and is_ideal(contains_k) {
+        if ideal_subset(ideal_sum[R](contains_i, contains_j), contains_k) {
+            ideal_sum_subset_left(contains_i, contains_j)
+            ideal_subset(contains_i, ideal_sum[R](contains_i, contains_j))
+            ideal_subset_trans(contains_i, ideal_sum[R](contains_i, contains_j), contains_k)
+            ideal_subset(contains_i, contains_k)
+            ideal_sum_subset_right(contains_i, contains_j)
+            ideal_subset(contains_j, ideal_sum[R](contains_i, contains_j))
+            ideal_subset_trans(contains_j, ideal_sum[R](contains_i, contains_j), contains_k)
+            ideal_subset(contains_j, contains_k)
+            ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k)
+        }
+        if ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k) {
+            ideal_sum_lub(contains_i, contains_j, contains_k)
+            ideal_subset(ideal_sum[R](contains_i, contains_j), contains_k)
+        }
+        ideal_subset(ideal_sum[R](contains_i, contains_j), contains_k) =
+            (ideal_subset(contains_i, contains_k) and ideal_subset(contains_j, contains_k))
+    }
+}
+
 /// The sum is commutative.
 theorem ideal_sum_comm[R: CommRing](contains_i: R -> Bool,
                                     contains_j: R -> Bool) {
@@ -645,5 +840,153 @@ theorem ideal_sum_comm[R: CommRing](contains_i: R -> Bool,
             ideal_sum(contains_i, contains_j, x)
         }
         ideal_sum[R](contains_i, contains_j)(x) = ideal_sum[R](contains_j, contains_i)(x)
+    }
+}
+
+/// The sum of ideals is associative.
+theorem ideal_sum_assoc[R: CommRing](contains_i: R -> Bool,
+                                     contains_j: R -> Bool,
+                                     contains_k: R -> Bool) {
+    ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k)) =
+        ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)
+} by {
+    forall(x: R) {
+        if ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x) {
+            let (a: R, bc: R) satisfy {
+                contains_i(a) and ideal_sum[R](contains_j, contains_k)(bc) and x = a + bc
+            }
+            let (b: R, c: R) satisfy {
+                contains_j(b) and contains_k(c) and bc = b + c
+            }
+            x = a + (b + c)
+            a + (b + c) = (a + b) + c
+            x = (a + b) + c
+            contains_i(a) and contains_j(b) and a + b = a + b
+            exists(p: R, q: R) {
+                contains_i(p) and contains_j(q) and a + b = p + q
+            }
+            ideal_sum[R](contains_i, contains_j)(a + b)
+            ideal_sum[R](contains_i, contains_j)(a + b) and contains_k(c) and x = (a + b) + c
+            exists(u: R, v: R) {
+                ideal_sum[R](contains_i, contains_j)(u) and contains_k(v) and x = u + v
+            }
+            ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x)
+        }
+        if ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x) {
+            let (ab: R, c: R) satisfy {
+                ideal_sum[R](contains_i, contains_j)(ab) and contains_k(c) and x = ab + c
+            }
+            let (a: R, b: R) satisfy {
+                contains_i(a) and contains_j(b) and ab = a + b
+            }
+            x = (a + b) + c
+            (a + b) + c = a + (b + c)
+            x = a + (b + c)
+            contains_j(b) and contains_k(c) and b + c = b + c
+            exists(p: R, q: R) {
+                contains_j(p) and contains_k(q) and b + c = p + q
+            }
+            ideal_sum[R](contains_j, contains_k)(b + c)
+            contains_i(a) and ideal_sum[R](contains_j, contains_k)(b + c) and x = a + (b + c)
+            exists(u: R, v: R) {
+                contains_i(u) and ideal_sum[R](contains_j, contains_k)(v) and x = u + v
+            }
+            ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x)
+        }
+        ideal_sum[R](contains_i, ideal_sum[R](contains_j, contains_k))(x) =
+            ideal_sum[R](ideal_sum[R](contains_i, contains_j), contains_k)(x)
+    }
+}
+
+/// The sum of an ideal with itself is the same ideal.
+theorem ideal_sum_idempotent[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_sum[R](contains, contains) = contains
+} by {
+    if is_ideal(contains) {
+        ideal_subset_refl(contains)
+        ideal_sum_lub(contains, contains, contains)
+        ideal_subset(ideal_sum[R](contains, contains), contains)
+        ideal_sum_subset_left(contains, contains)
+        ideal_subset(contains, ideal_sum[R](contains, contains))
+        ideal_subset_antisymm(ideal_sum[R](contains, contains), contains)
+        ideal_sum[R](contains, contains) = contains
+    }
+}
+
+/// Adding a contained ideal on the right gives the larger ideal.
+theorem ideal_sum_eq_left_of_subset[R: CommRing](contains_i: R -> Bool,
+                                                 contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j) and ideal_subset(contains_j, contains_i)
+        implies ideal_sum[R](contains_i, contains_j) = contains_i
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) and ideal_subset(contains_j, contains_i) {
+        ideal_subset_refl(contains_i)
+        ideal_sum_lub(contains_i, contains_j, contains_i)
+        ideal_subset(ideal_sum[R](contains_i, contains_j), contains_i)
+        ideal_sum_subset_left(contains_i, contains_j)
+        ideal_subset(contains_i, ideal_sum[R](contains_i, contains_j))
+        ideal_subset_antisymm(ideal_sum[R](contains_i, contains_j), contains_i)
+        ideal_sum[R](contains_i, contains_j) = contains_i
+    }
+}
+
+/// Adding a contained ideal on the left gives the larger ideal.
+theorem ideal_sum_eq_right_of_subset[R: CommRing](contains_i: R -> Bool,
+                                                  contains_j: R -> Bool) {
+    is_ideal(contains_i) and is_ideal(contains_j) and ideal_subset(contains_i, contains_j)
+        implies ideal_sum[R](contains_i, contains_j) = contains_j
+} by {
+    if is_ideal(contains_i) and is_ideal(contains_j) and ideal_subset(contains_i, contains_j) {
+        ideal_subset_refl(contains_j)
+        ideal_sum_lub(contains_i, contains_j, contains_j)
+        ideal_subset(ideal_sum[R](contains_i, contains_j), contains_j)
+        ideal_sum_subset_right(contains_i, contains_j)
+        ideal_subset(contains_j, ideal_sum[R](contains_i, contains_j))
+        ideal_subset_antisymm(ideal_sum[R](contains_i, contains_j), contains_j)
+        ideal_sum[R](contains_i, contains_j) = contains_j
+    }
+}
+
+/// Adding the zero ideal on the left gives the other ideal.
+theorem zero_ideal_sum_left[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_sum[R](zero_ideal[R], contains) = contains
+} by {
+    if is_ideal(contains) {
+        zero_ideal_is_ideal[R]
+        zero_ideal_subset(contains)
+        ideal_sum_eq_right_of_subset(zero_ideal[R], contains)
+    }
+}
+
+/// Adding the zero ideal on the right gives the other ideal.
+theorem zero_ideal_sum_right[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_sum[R](contains, zero_ideal[R]) = contains
+} by {
+    if is_ideal(contains) {
+        zero_ideal_is_ideal[R]
+        zero_ideal_subset(contains)
+        ideal_sum_eq_left_of_subset(contains, zero_ideal[R])
+    }
+}
+
+/// Adding the unit ideal on the left gives the unit ideal.
+theorem unit_ideal_sum_left[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_sum[R](unit_ideal[R], contains) = unit_ideal[R]
+} by {
+    if is_ideal(contains) {
+        unit_ideal_is_ideal[R]
+        subset_unit_ideal(contains)
+        ideal_sum_eq_left_of_subset(unit_ideal[R], contains)
+    }
+}
+
+/// Adding the unit ideal on the right gives the unit ideal.
+theorem unit_ideal_sum_right[R: CommRing](contains: R -> Bool) {
+    is_ideal(contains) implies ideal_sum[R](contains, unit_ideal[R]) = unit_ideal[R]
+} by {
+    if is_ideal(contains) {
+        unit_ideal_is_ideal[R]
+        subset_unit_ideal(contains)
+        ideal_sum_eq_right_of_subset(contains, unit_ideal[R])
     }
 }
