@@ -68,7 +68,7 @@
     "nat.nat_congr_int": "4df3af6d94b70dc91f329646befda93438be6844643c58efe7e4bf3174f0c60a",
     "nat.nat_congruence": "416aa7bea2e25db05c1ffdcdc1b761180ceadbf23060e342b5958a9f39339141",
     "nat.nat_coprime": "edfce5d4379044d894a1e6586090b718e1d94cfc70bae1f9602f24bb64db49f2",
-    "nat.nat_crt": "f9d009da6d30e23fa69d1881896450f355e8d2f58d34cc54bd8f315c549db675",
+    "nat.nat_crt": "69193e6ef197da8d61f58b468ccadc39f5fed8af5daa40a1abebec229ef5749c",
     "nat.nat_gcd": "3deb2cc3223ce81cfd17f0b17865f6ee1a4032ced3b28189b324c36184fb8bd5",
     "nat.nat_lcm": "fc5cfce8095a395fa2faabe7e0eeacaee3630a9a018e1fd3ea3d65facace1ace",
     "nat.nat_modular_inverse": "aba75ca776687737f95edb79ff4612418addf161a5cb376f3221eaf16ac24cd4",
