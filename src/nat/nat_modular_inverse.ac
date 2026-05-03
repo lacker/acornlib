@@ -80,3 +80,23 @@ theorem nat_modular_inverse_exists_zero(a: Nat) {
     }
 }
 
+/// Modular inverse on the naturals: when a is coprime to n there exists a
+/// Nat b with a * b congruent to 1 modulo n.
+theorem nat_modular_inverse_exists(a: Nat, n: Nat) {
+    a.coprime(n) implies exists(b: Nat) { (a * b).congr_mod(Nat.1, n) }
+} by {
+    n = Nat.0 or n != Nat.0
+    if n = Nat.0 {
+        if a.coprime(n) {
+            a.coprime(Nat.0)
+            nat_modular_inverse_exists_zero(a)
+            let b0: Nat satisfy { (a * b0).congr_mod(Nat.1, Nat.0) }
+            (a * b0).congr_mod(Nat.1, n)
+        }
+    } else {
+        if a.coprime(n) {
+            nat_modular_inverse_exists_pos(a, n)
+        }
+    }
+}
+
