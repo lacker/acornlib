@@ -312,21 +312,21 @@
 {"goal":"list_sup_append_le_iff","proof":[]}
 {"goal":"list_meet_singleton","proof":["function[T0: MeetSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_meet[T0](x1, x0) = x1 }[S](List.nil[S], head)"]}
 {"goal":"list_join_singleton","proof":["function[T0: JoinSemilattice](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_join[T0](x1, x0) = x1 }[S](List.nil[S], head)"]}
-{"goal":"list_inf_singleton","proof":["list_inf(head, List.nil[S]) != list_meet(head, List.nil[S])"]}
-{"goal":"list_sup_singleton","proof":["list_sup(head, List.nil[S]) != list_join(head, List.nil[S])"]}
+{"goal":"list_inf_singleton","proof":[]}
+{"goal":"list_sup_singleton","proof":[]}
 {"goal":"list_meet_cons","proof":["function[T0: MeetSemilattice](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x3.meet(list_meet[T0](x0, x1)) = list_meet[T0](x3, x2) }[S](next, rest, List.cons(next, rest), head)"]}
 {"goal":"list_join_cons","proof":["function[T0: JoinSemilattice](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x3.join(list_join[T0](x0, x1)) = list_join[T0](x3, x2) }[S](next, rest, List.cons(next, rest), head)"]}
-{"goal":"list_inf_cons","proof":["list_inf(head, List.cons(next, rest)) != head.meet(list_meet(next, rest))","list_inf(head, List.cons(next, rest)) = head.meet(list_meet(next, rest))"]}
-{"goal":"list_sup_cons","proof":["list_sup(head, List.cons(next, rest)) != head.join(list_join(next, rest))","list_sup(head, List.cons(next, rest)) = head.join(list_join(next, rest))"]}
-{"goal":"list_meet_pair","proof":["list_meet(a, List.cons(b, List.nil[S])) != a.meet(list_meet(b, List.nil[S]))"]}
-{"goal":"list_join_pair","proof":["list_join(a, List.cons(b, List.nil[S])) != a.join(list_join(b, List.nil[S]))"]}
-{"goal":"list_inf_pair","proof":["list_inf(a, List.cons(b, List.nil[S])) != a.meet(list_inf(b, List.nil[S]))"]}
-{"goal":"list_sup_pair","proof":["list_sup(a, List.cons(b, List.nil[S])) != a.join(list_sup(b, List.nil[S]))"]}
-{"goal":"c <= list_inf(head, List.cons(next, rest))","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x0 <= x2) = x0 <= x1.meet(x2) }[S](c, head, list_inf(next, rest))","not c <= head.meet(list_inf(next, rest))","c <= head.meet(list_inf(next, rest))"]}
-{"goal":"le_list_inf_cons_of_le_head_of_le_tail","proof":["function[T0: MeetSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x0 <= x2) = x0 <= x1.meet(x2) }[S](c, head, list_inf(next, rest))","function[T0: MeetSemilattice](x0: T0, x1: T0, x2: List[T0]) { list_inf[T0](x0, List.cons[T0](x1, x2)) = x0.meet(list_inf[T0](x1, x2)) }[S](head, next, rest)","c <= head.meet(list_inf(next, rest))","not c <= head.meet(list_inf(next, rest))"]}
-{"goal":"list_sup(head, List.cons(next, rest)) <= c","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x2 <= x1) = x0.join(x2) <= x1 }[S](head, c, list_sup(next, rest))","not head.join(list_sup(next, rest)) <= c","head.join(list_sup(next, rest)) <= c"]}
-{"goal":"list_sup_cons_le_of_head_le_of_tail_le","proof":["function[T0: JoinSemilattice](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x2 <= x1) = x0.join(x2) <= x1 }[S](head, c, list_sup(next, rest))","function[T0: JoinSemilattice](x0: T0, x1: T0, x2: List[T0]) { list_sup[T0](x0, List.cons[T0](x1, x2)) = x0.join(list_sup[T0](x1, x2)) }[S](head, next, rest)","head.join(list_sup(next, rest)) <= c","not head.join(list_sup(next, rest)) <= c"]}
-{"goal":"le_list_inf_cons_iff","proof":["(c <= head and c <= list_inf(next, rest)) != c <= head.meet(list_inf(next, rest))"]}
-{"goal":"list_sup_cons_le_iff","proof":["(head <= c and list_sup(next, rest) <= c) != head.join(list_sup(next, rest)) <= c"]}
-{"goal":"le_list_inf_pair_iff","proof":["(c <= a and c <= b) != c <= a.meet(b)"]}
-{"goal":"list_sup_pair_le_iff","proof":["(a <= c and b <= c) != a.join(b) <= c"]}
+{"goal":"list_inf_cons","proof":[]}
+{"goal":"list_sup_cons","proof":[]}
+{"goal":"list_meet_pair","proof":[]}
+{"goal":"list_join_pair","proof":[]}
+{"goal":"list_inf_pair","proof":[]}
+{"goal":"list_sup_pair","proof":[]}
+{"goal":"c <= list_inf(head, List.cons(next, rest))","proof":[]}
+{"goal":"le_list_inf_cons_of_le_head_of_le_tail","proof":[]}
+{"goal":"list_sup(head, List.cons(next, rest)) <= c","proof":[]}
+{"goal":"list_sup_cons_le_of_head_le_of_tail_le","proof":[]}
+{"goal":"le_list_inf_cons_iff","proof":[]}
+{"goal":"list_sup_cons_le_iff","proof":[]}
+{"goal":"le_list_inf_pair_iff","proof":[]}
+{"goal":"list_sup_pair_le_iff","proof":[]}

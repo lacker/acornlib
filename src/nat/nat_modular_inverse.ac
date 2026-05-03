@@ -1,0 +1,102 @@
+from nat.nat_congruence import Nat
+from nat.nat_coprime import coprime_one_left
+from nat.nat_bezout import nat_bezout
+from nat.nat_congr_int import nat_congr_mod_iff_int_mod_rel, mul_from_nat
+from int.lattice import Int
+from int.int_base import abs, abs_from_nat
+from int.int_residue import int_has_nat_residue
+from zmod import int_mod_rel, int_mod_rel_mul_compatible, int_mod_rel_is_equivalence
+from relation_basic import is_transitive
+from ring import mul_neg_left
+numerals Int
+
+from nat.nat_gcd import gcd_zero_right
+
+/// Modular inverse on the integers: when a is coprime to n on Nat, there
+/// exists an integer b with b * Int.from_nat(a) congruent to 1 modulo n.
+theorem int_modular_inverse_exists(a: Nat, n: Nat) {
+    a.coprime(n) implies
+        exists(b: Int) { int_mod_rel(n, b * Int.from_nat(a), Int.1) }
+} by {
+    if a.coprime(n) {
+        a.gcd(n) = Nat.1
+        nat_bezout(a, n)
+        let (x: Int, y: Int) satisfy {
+            x * Int.from_nat(a) + y * Int.from_nat(n) = Int.from_nat(a.gcd(n))
+        }
+        Int.from_nat(a.gcd(n)) = Int.from_nat(Nat.1)
+        Int.from_nat(Nat.1) = Int.1
+        x * Int.from_nat(a) + y * Int.from_nat(n) = Int.1
+        x * Int.from_nat(a) - Int.1 = -(y * Int.from_nat(n))
+        mul_neg_left(y, Int.from_nat(n))
+        (-y) * Int.from_nat(n) = -(y * Int.from_nat(n))
+        x * Int.from_nat(a) - Int.1 = (-y) * Int.from_nat(n)
+        Int.from_nat(n) * (-y) = (-y) * Int.from_nat(n)
+        Int.from_nat(n) * (-y) = x * Int.from_nat(a) - Int.1
+        Int.from_nat(n).divides(x * Int.from_nat(a) - Int.1)
+        int_mod_rel(n, x * Int.from_nat(a), Int.1)
+        exists(b: Int) { int_mod_rel(n, b * Int.from_nat(a), Int.1) }
+    }
+}
+
+/// Modular inverse on the naturals when n is positive.
+theorem nat_modular_inverse_exists_pos(a: Nat, n: Nat) {
+    n != Nat.0 and a.coprime(n) implies exists(b: Nat) { (a * b).congr_mod(Nat.1, n) }
+} by {
+    if n != Nat.0 and a.coprime(n) {
+        int_modular_inverse_exists(a, n)
+        let bi: Int satisfy { int_mod_rel(n, bi * Int.from_nat(a), Int.1) }
+        int_has_nat_residue(bi, n)
+        let r: Nat satisfy { int_mod_rel(n, bi, Int.from_nat(r)) }
+        int_mod_rel_is_equivalence(n)
+        int_mod_rel(n, Int.from_nat(a), Int.from_nat(a))
+        int_mod_rel_mul_compatible(n, bi, Int.from_nat(r), Int.from_nat(a), Int.from_nat(a))
+        int_mod_rel(n, bi * Int.from_nat(a), Int.from_nat(r) * Int.from_nat(a))
+        is_transitive(int_mod_rel(n))
+        int_mod_rel(n, Int.from_nat(r) * Int.from_nat(a), bi * Int.from_nat(a))
+        int_mod_rel(n, Int.from_nat(r) * Int.from_nat(a), Int.1)
+        mul_from_nat(r, a)
+        Int.from_nat(r) * Int.from_nat(a) = Int.from_nat(r * a)
+        int_mod_rel(n, Int.from_nat(r * a), Int.1)
+        Int.from_nat(Nat.1) = Int.1
+        int_mod_rel(n, Int.from_nat(r * a), Int.from_nat(Nat.1))
+        nat_congr_mod_iff_int_mod_rel(r * a, Nat.1, n)
+        (r * a).congr_mod(Nat.1, n)
+        r * a = a * r
+        (a * r).congr_mod(Nat.1, n)
+        exists(b: Nat) { (a * b).congr_mod(Nat.1, n) }
+    }
+}
+
+/// Modular inverse on the naturals when n is zero: coprime to 0 forces a = 1.
+theorem nat_modular_inverse_exists_zero(a: Nat) {
+    a.coprime(Nat.0) implies exists(b: Nat) { (a * b).congr_mod(Nat.1, Nat.0) }
+} by {
+    if a.coprime(Nat.0) {
+        a.gcd(Nat.0) = Nat.1
+        gcd_zero_right(a)
+        a = Nat.1
+        (a * Nat.1).congr_mod(Nat.1, Nat.0)
+    }
+}
+
+/// Modular inverse on the naturals: when a is coprime to n there exists a
+/// Nat b with a * b congruent to 1 modulo n.
+theorem nat_modular_inverse_exists(a: Nat, n: Nat) {
+    a.coprime(n) implies exists(b: Nat) { (a * b).congr_mod(Nat.1, n) }
+} by {
+    n = Nat.0 or n != Nat.0
+    if n = Nat.0 {
+        if a.coprime(n) {
+            a.coprime(Nat.0)
+            nat_modular_inverse_exists_zero(a)
+            let b0: Nat satisfy { (a * b0).congr_mod(Nat.1, Nat.0) }
+            (a * b0).congr_mod(Nat.1, n)
+        }
+    } else {
+        if a.coprime(n) {
+            nat_modular_inverse_exists_pos(a, n)
+        }
+    }
+}
+
