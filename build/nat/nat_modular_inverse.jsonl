@@ -1,0 +1,14 @@
+{"goal":"a.gcd(n) = Nat.1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = Nat.1 = x0.coprime(x1) }(a, n)"]}
+{"goal":"exists(k0: Int, k1: Int) { k0 * Int.from_nat(a) + k1 * Int.from_nat(n) = Int.from_nat(a.gcd(n)) }","proof":["exists(k0: Int, k1: Int) { Int.from_nat(a.gcd(n)) = k0 * Int.from_nat(a) + k1 * Int.from_nat(n) }"]}
+{"goal":"Int.from_nat(a.gcd(n)) = Int.from_nat(Nat.1)","proof":["a.gcd(n) != Nat.1"]}
+{"goal":"Int.from_nat(Nat.1) = 1","proof":[]}
+{"goal":"x * Int.from_nat(a) + y * Int.from_nat(n) = 1","proof":["x * Int.from_nat(a) + y * Int.from_nat(n) != Int.from_nat(Nat.1)","x * Int.from_nat(a) + y * Int.from_nat(n) = Int.from_nat(Nat.1)"]}
+{"goal":"x * Int.from_nat(a) - 1 = -(y * Int.from_nat(n))","proof":["function(x0: Int, x1: Int) { x0 - (x0 + x1) = -x1 }(x * Int.from_nat(a), y * Int.from_nat(n))"]}
+{"goal":"-y * Int.from_nat(n) = -(y * Int.from_nat(n))","proof":[]}
+{"goal":"x * Int.from_nat(a) - 1 = -y * Int.from_nat(n)","proof":["x * Int.from_nat(a) - 1 != -(y * Int.from_nat(n))"]}
+{"goal":"Int.from_nat(n) * -y = -y * Int.from_nat(n)","proof":["function(x0: Int, x1: Int) { x0 * x1 = x1 * x0 }(-y, Int.from_nat(n))"]}
+{"goal":"Int.from_nat(n) * -y = x * Int.from_nat(a) - 1","proof":["x * Int.from_nat(a) - 1 != -y * Int.from_nat(n)"]}
+{"goal":"Int.from_nat(n).divides(x * Int.from_nat(a) - 1)","proof":["function(x0: Int, x1: Int) { exists(k0: Int) { k0 * x0 = x1 } = x0.divides(x1) }(Int.from_nat(n), x * Int.from_nat(a) - 1)","not exists(k0: Int) { k0 * Int.from_nat(n) = x * Int.from_nat(a) - 1 }","function(x0: Int) { x * Int.from_nat(a) - 1 != x0 * Int.from_nat(n) }(-y)"]}
+{"goal":"int_mod_rel(n, x * Int.from_nat(a), 1)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, x * Int.from_nat(a), 1)"]}
+{"goal":"exists(k0: Int) { int_mod_rel(n, k0 * Int.from_nat(a), 1) }","proof":["function(x0: Int) { not int_mod_rel(n, x0 * Int.from_nat(a), 1) }(x)"]}
+{"goal":"int_modular_inverse_exists","proof":["not a.coprime(n)"]}

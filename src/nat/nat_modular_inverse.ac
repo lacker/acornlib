@@ -1,0 +1,34 @@
+from nat.nat_coprime import Nat
+from nat.nat_bezout import nat_bezout
+from int.lattice import Int
+from int.int_base import abs, abs_from_nat
+from zmod import int_mod_rel
+from ring import mul_neg_left
+numerals Int
+
+/// Modular inverse on the integers: when a is coprime to n on Nat, there
+/// exists an integer b with b * Int.from_nat(a) congruent to 1 modulo n.
+theorem int_modular_inverse_exists(a: Nat, n: Nat) {
+    a.coprime(n) implies
+        exists(b: Int) { int_mod_rel(n, b * Int.from_nat(a), Int.1) }
+} by {
+    if a.coprime(n) {
+        a.gcd(n) = Nat.1
+        nat_bezout(a, n)
+        let (x: Int, y: Int) satisfy {
+            x * Int.from_nat(a) + y * Int.from_nat(n) = Int.from_nat(a.gcd(n))
+        }
+        Int.from_nat(a.gcd(n)) = Int.from_nat(Nat.1)
+        Int.from_nat(Nat.1) = Int.1
+        x * Int.from_nat(a) + y * Int.from_nat(n) = Int.1
+        x * Int.from_nat(a) - Int.1 = -(y * Int.from_nat(n))
+        mul_neg_left(y, Int.from_nat(n))
+        (-y) * Int.from_nat(n) = -(y * Int.from_nat(n))
+        x * Int.from_nat(a) - Int.1 = (-y) * Int.from_nat(n)
+        Int.from_nat(n) * (-y) = (-y) * Int.from_nat(n)
+        Int.from_nat(n) * (-y) = x * Int.from_nat(a) - Int.1
+        Int.from_nat(n).divides(x * Int.from_nat(a) - Int.1)
+        int_mod_rel(n, x * Int.from_nat(a), Int.1)
+        exists(b: Int) { int_mod_rel(n, b * Int.from_nat(a), Int.1) }
+    }
+}

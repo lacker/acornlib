@@ -3,7 +3,7 @@
 Goal: build a lightweight congruence-relation API on `Nat` and `Int` that downstream consumers can use without pulling in the full `Zmod[n]` quotient machinery.
 
 - [ ] Prove the congruence-class lift lemmas needed to apply algebraic structure (`Zmod[n]` already exists; this layer is the unbundled predicate API)
-- [ ] Prove modular inverse existence on `Nat`: if `gcd(a, n) = 1` and `n > 1` then there exists `b: Nat` with `(a * b).mod(n) = 1`
+- [ ] Promote modular inverse from `Int` witness to a `Nat` witness via the Nat-representative-of-an-Int-class extraction
 - [ ] Add Chinese remainder theorem statement and proof for two coprime moduli
 - [ ] Add CRT generalisation to a finite list of pairwise coprime moduli
 
@@ -13,6 +13,7 @@ Notes:
 - `src/int/int_congruence.ac` defines `Int.congr_mod(self, b, n) := int_mod_rel(n, self, b)` so the same `a.congr_mod(b, n)` method form works on both `Nat` and `Int`. The file forwards reflexivity, symmetry, transitivity, addition, and multiplication preservation from the existing `int_mod_rel_*` lemmas in `src/zmod.ac`.
 - The forward direction of the Nat-to-Int bridge lives in `src/nat/nat_congr_int.ac` as `nat_congr_mod_imp_int_mod_rel`, with helper `mul_from_nat`. It maps `Nat.congr_mod` into the existing `int_mod_rel` from `src/zmod.ac`, so any consumer with a Nat congruence fact can reuse the heavy `Zmod[n]` quotient infrastructure on the Int side. Both directions of the bridge are now landed: `int_mod_rel_imp_nat_congr_mod` (with helpers `int_from_nat_sub_eq` and `nat_divides_diff_imp_congr`) gives the converse, and `nat_congr_mod_iff_int_mod_rel` packages them together.
 - `nat_coprime_iff_int_coprime` in `src/int/int_divisibility.ac` bridges `Nat.coprime` and `Int.coprime`, so modular-inverse arguments stated on either side can use the other side's lemmas without a manual rewrap.
+- `int_modular_inverse_exists` in `src/nat/nat_modular_inverse.ac` records existence of a modular inverse as an `Int` witness: if `a.coprime(n)` on `Nat`, there exists `b: Int` with `b * Int.from_nat(a) ≡ 1 (mod n)`. The proof unpacks `nat_bezout` and rearranges the resulting linear combination. The `Nat` form is split out as a follow-up because it requires a Nat-representative-of-an-Int-class extraction (a useful primitive in its own right).
 - `src/zmod.ac` already defines `int_mod_rel(n, a, b) := Int.from_nat(n).divides(a - b)` and proves it is an equivalence congruent with addition, multiplication, and negation. The new `Nat.congr_mod` should be value-compatible with this `Int` predicate so the eventual `Zmod[n]` ring instance can be reused without rewrap.
 - Definitional choice: prefer `a.mod(n) = b.mod(n)` over the divisibility-based form on `Nat`, because subtraction on `Nat` truncates and would force ad-hoc case splits. The divisibility form is the natural one on `Int` and already exists.
 - For genericity: package each congruence lemma so it can later be re-stated as a typeclass axiom on a generic congruence-equipped commutative semiring; do not wire any of this through `Zmod[n]` itself. Consumers who want algebraic structure should keep going through `Zmod[n]`; consumers who only want `≡` reasoning use this layer.

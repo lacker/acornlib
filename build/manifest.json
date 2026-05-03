@@ -69,6 +69,7 @@
     "nat.nat_coprime": "edfce5d4379044d894a1e6586090b718e1d94cfc70bae1f9602f24bb64db49f2",
     "nat.nat_gcd": "3deb2cc3223ce81cfd17f0b17865f6ee1a4032ced3b28189b324c36184fb8bd5",
     "nat.nat_lcm": "fc5cfce8095a395fa2faabe7e0eeacaee3630a9a018e1fd3ea3d65facace1ace",
+    "nat.nat_modular_inverse": "8ac021d5c61ceb13f734c684b9691a07bc3702654254d9d4a9584c9b820a3c2f",
     "nat.nat_monoid": "b286bfa6754a68408e3d9c0fbd5bcf9a3351900da8469996f80191eba1b4e2d5",
     "neg": "11757f43d2fce637e16213e3f5f8dd2c3ceea54fe53c3392e9488dc0a4b63a29",
     "normal_subgroup": "e58b5b91a236deef59bc6c305e6ea2b75358c822e106720f4e39e7a1784dafe6",
