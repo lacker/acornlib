@@ -338,3 +338,110 @@
 {"goal":"lb.count(p) = count_prime_factor(p, b)","proof":["function(x0: Nat, x1: List[Nat], x2: Nat) { not 1 <= x0 or product[Nat](x1) != x0 or not all_prime(x1) or x1.count(x2) = count_prime_factor(x2, x0) }(b, lb, p)"]}
 {"goal":"count_prime_factor(p, a * b) = count_prime_factor(p, a) + count_prime_factor(p, b)","proof":[]}
 {"goal":"count_prime_factor_mul","proof":[]}
+{"goal":"1 < q","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(q)"]}
+{"goal":"1 <= q","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(1, q)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(q, 1)"]}
+{"goal":"all_prime(List.cons(q, List.nil[Nat]))","proof":[]}
+{"goal":"product[Nat](List.cons(q, List.nil[Nat])) = q * product[Nat](List.nil[Nat])","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](q, List.nil[Nat])"]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"product[Nat](List.cons(q, List.nil[Nat])) = q * 1","proof":[]}
+{"goal":"product[Nat](List.cons(q, List.nil[Nat])) = q","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](q, List.nil[Nat])","function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]","function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[Nat](q)"]}
+{"goal":"List.cons(q, List.nil[Nat]).count(p) = count_prime_factor(p, q)","proof":[]}
+{"goal":"q != p","proof":[]}
+{"goal":"List.nil[Nat].count(p) = 0","proof":[]}
+{"goal":"List.cons(q, List.nil[Nat]).count(p) = List.nil[Nat].count(p)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or (if x0 = x3 { 1 + x1.count(x3) } else { x1.count(x3) }) = x2.count(x3) }[Nat](q, List.nil[Nat], List.singleton(q), p)","function[T0](x0: T0) { List.cons[T0](x0, List.nil[T0]) = List.singleton[T0](x0) }[Nat](q)"]}
+{"goal":"List.cons(q, List.nil[Nat]).count(p) = 0","proof":[]}
+{"goal":"count_prime_factor(p, q) = 0","proof":[]}
+{"goal":"count_prime_factor_other_prime","proof":[]}
+{"goal":"exists(k0: Nat) { a * k0 = b }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(a, b)"]}
+{"goal":"a * 0 = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(0, a)"]}
+{"goal":"b = 0","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"c != 0","proof":[]}
+{"goal":"count_prime_factor(p, a * c) = count_prime_factor(p, a) + count_prime_factor(p, c)","proof":[]}
+{"goal":"count_prime_factor(p, b) = count_prime_factor(p, a) + count_prime_factor(p, c)","proof":[]}
+{"goal":"count_prime_factor(p, a) <= count_prime_factor(p, b)","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(count_prime_factor(p, a), count_prime_factor(p, b))","not exists(k0: Nat) { count_prime_factor(p, b) = count_prime_factor(p, a) + k0 }","function(x0: Nat) { count_prime_factor(p, a) + x0 != count_prime_factor(p, b) }(count_prime_factor(p, c))"]}
+{"goal":"divides_imp_count_prime_factor_le","proof":[]}
+{"goal":"1 <= a","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(a, 0)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, a)","function(x0: Nat) { not x0 < 0 }(a)"]}
+{"goal":"1 <= b","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(b, 0)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, b)","function(x0: Nat) { not x0 < 0 }(b)"]}
+{"goal":"product[Nat](la) = a","proof":[]}
+{"goal":"product[Nat](lb) = b","proof":[]}
+{"goal":"all_prime(la)","proof":[]}
+{"goal":"all_prime(lb)","proof":[]}
+{"goal":"count_prime_factor(x, a) = count_prime_factor(x, b)","proof":["(forall(x0: Nat) { not x0.is_prime or count_prime_factor(x0, a) = count_prime_factor(x0, b) } = true)","function(x0: Nat) { not (x0.is_prime and count_prime_factor(x0, a) != count_prime_factor(x0, b)) }(x)"]}
+{"goal":"la.count(x) = lb.count(x)","proof":["function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(a, x)","function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(b, x)"]}
+{"goal":"count_prime_factor(x, a) = 0","proof":[]}
+{"goal":"count_prime_factor(x, b) = 0","proof":[]}
+{"goal":"la.count(x) = 0","proof":["function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(a, x)"]}
+{"goal":"lb.count(x) = 0","proof":["function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(b, x)"]}
+{"goal":"la.count(x) = lb.count(x)","proof":[]}
+{"goal":"is_permutation[Nat](la, lb)","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](la, lb)","let w0: Nat satisfy { la.count(w0) != lb.count(w0) }"]}
+{"goal":"product[Nat](la) = product[Nat](lb)","proof":[]}
+{"goal":"a = b","proof":[]}
+{"goal":"count_prime_factor_ext","proof":[]}
+{"goal":"1 <= b","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(b, 0)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, b)","function(x0: Nat) { not x0 < 0 }(b)"]}
+{"goal":"all_prime(prime_factorisation(b))","proof":[]}
+{"goal":"product[Nat](prime_factorisation(b)) = b","proof":[]}
+{"goal":"prime_factorisation(b).count(head) >= 1","proof":["function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(b, head)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[Nat](prime_factorisation(b).count(head), 1)"]}
+{"goal":"prime_factorisation(b).count(head) = 0","proof":[]}
+{"goal":"false","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 <= x1 or x0 < x1 or x0 = x1 }[Nat](1, 0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[Nat](0, 1)","function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"prime_factorisation(b).contains(head)","proof":[]}
+{"goal":"head * product[Nat](prime_factorisation(b).remove_one(head)) = product[Nat](prime_factorisation(b))","proof":[]}
+{"goal":"head * product[Nat](prime_factorisation(b).remove_one(head)) = b","proof":[]}
+{"goal":"head * q = b","proof":[]}
+{"goal":"head * 0 = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(0, head)"]}
+{"goal":"b = 0","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"q != 0","proof":[]}
+{"goal":"exists(k0: Nat) { k0 != 0 and head * k0 = b }","proof":["function(x0: Nat) { not (x0 != 0 and head * x0 = b) }(q)"]}
+{"goal":"count_divisor_quotient","proof":[]}
+{"goal":"head != 0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 <= x2 or x0 < x2 }[Nat](1, head, 0)","function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(head)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 != x1 or x0 <= x1 }[Nat](head, 0)","function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"List.cons(head, tail).count(head) = 1 + tail.count(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or (if x0 = x3 { 1 + x1.count(x3) } else { x1.count(x3) }) = x2.count(x3) }[Nat](head, tail, List.cons(head, tail), head)"]}
+{"goal":"List.cons(head, tail).count(head) >= 1","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(1, List.cons(head, tail).count(head))","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[Nat](List.cons(head, tail).count(head), 1)","function(x0: Nat, x1: Nat) { x0 <= x1 = x0 <= x1 }(1, List.cons(head, tail).count(head))","function(x0: Nat, x1: Nat) { not exists(k0: Nat) { x0 + k0 = x1 } or x0 <= x1 }(1, List.cons(head, tail).count(head))","function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 != x2 or x0 <= x2 }(1, tail.count(head), List.cons(head, tail).count(head))"]}
+{"goal":"List.cons(head, tail).count(head) <= count_prime_factor(head, b)","proof":["head.is_prime and all_prime(tail) and 0 != b and forall(x0: Nat) { not x0.is_prime or List.cons(head, tail).count(x0) <= count_prime_factor(x0, b) }","head.is_prime and all_prime(tail)","function(x0: Nat) { not (x0.is_prime and not List.cons(head, tail).count(x0) <= count_prime_factor(x0, b)) }(head)"]}
+{"goal":"1 <= count_prime_factor(head, b)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not lib(relation_basic).is_transitive[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[Nat](Nat.lte, 1, List.cons(head, tail).count(head), count_prime_factor(head, b))","function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(1, List.cons(head, tail).count(head))","function(x0: Nat, x1: Nat) { not exists(k0: Nat) { x0 + k0 = x1 } or x0 <= x1 }(1, List.cons(head, tail).count(head))","function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 != x2 or x0 <= x2 }(1, tail.count(head), List.cons(head, tail).count(head))"]}
+{"goal":"exists(k0: Nat) { k0 != 0 and head * k0 = b }","proof":[]}
+{"goal":"count_prime_factor(p, head * q) = count_prime_factor(p, head) + count_prime_factor(p, q)","proof":[]}
+{"goal":"count_prime_factor(p, b) = count_prime_factor(p, head) + count_prime_factor(p, q)","proof":[]}
+{"goal":"List.cons(head, tail).count(p) <= count_prime_factor(p, b)","proof":["head.is_prime and all_prime(tail) and 0 != b and forall(x0: Nat) { not x0.is_prime or List.cons(head, tail).count(x0) <= count_prime_factor(x0, b) }","function(x0: Nat) { not (x0.is_prime and not List.cons(head, tail).count(x0) <= count_prime_factor(x0, b)) }(p)"]}
+{"goal":"count_prime_factor(head, head) = 1","proof":[]}
+{"goal":"count_prime_factor(p, head) = 1","proof":[]}
+{"goal":"1 + count_prime_factor(p, q) = count_prime_factor(p, b)","proof":[]}
+{"goal":"List.cons(head, tail).count(p) = 1 + tail.count(head)","proof":[]}
+{"goal":"p = head","proof":[]}
+{"goal":"tail.count(p) = tail.count(head)","proof":[]}
+{"goal":"1 + tail.count(p) <= 1 + count_prime_factor(p, q)","proof":[]}
+{"goal":"tail.count(p) <= count_prime_factor(p, q)","proof":["function(x0: Nat, x1: Nat) { not x0.suc <= x1.suc or x0 <= x1 }(tail.count(p), count_prime_factor(p, q))"]}
+{"goal":"head != p","proof":[]}
+{"goal":"count_prime_factor(p, head) = 0","proof":[]}
+{"goal":"count_prime_factor(p, q) = count_prime_factor(p, b)","proof":["function(x0: Nat) { 0 + x0 = x0 }(count_prime_factor(p, q))"]}
+{"goal":"List.cons(head, tail).count(p) = tail.count(p)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or (if x0 = x3 { 1 + x1.count(x3) } else { x1.count(x3) }) = x2.count(x3) }[Nat](head, tail, List.cons(head, tail), p)"]}
+{"goal":"tail.count(p) <= count_prime_factor(p, q)","proof":[]}
+{"goal":"product[Nat](tail).divides(q)","proof":["(forall(x0: Nat) { x0 = 0 or exists(k0: Nat) { k0.is_prime and not tail.count(k0) <= count_prime_factor(k0, x0) } or product[Nat](tail).divides(x0) } = true)","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or tail.count(x1) <= count_prime_factor(x1, x0) } and not product[Nat](tail).divides(x0)) }(q)","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or tail.count(x1) <= count_prime_factor(x1, x0) }) or product[Nat](tail).divides(x0) }(q)"]}
+{"goal":"product[Nat](tail).divides(q)","proof":["not forall(x0: Nat) { not x0.is_prime or tail.count(x0) <= count_prime_factor(x0, q) } or 0 = q","0 != q","let w0: Nat satisfy { w0.is_prime and not tail.count(w0) <= count_prime_factor(w0, q) }","function(x0: Nat) { not x0.is_prime or tail.count(x0) <= count_prime_factor(x0, q) }(w0)","w0.is_prime","not tail.count(w0) <= count_prime_factor(w0, q)","tail.count(w0) <= count_prime_factor(w0, q)"]}
+{"goal":"(head * product[Nat](tail)).divides(head * q)","proof":[]}
+{"goal":"(head * product[Nat](tail)).divides(b)","proof":[]}
+{"goal":"product[Nat](List.cons(head, tail)) = head * product[Nat](tail)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](head, tail)"]}
+{"goal":"product[Nat](List.cons(head, tail)).divides(b)","proof":[]}
+{"goal":"product_all_prime_divides_step","proof":[]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"1.divides(b)","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(1, b)","function(x0: Nat) { 1 * x0 = x0 }(b)","not exists(k0: Nat) { 1 * k0 = b }","function(x0: Nat) { 1 * x0 != b }(b)"]}
+{"goal":"product[Nat](List.nil[Nat]).divides(b)","proof":[]}
+{"goal":"q(List.nil[Nat])","proof":["function(x0: List[Nat]) { (not all_prime(x0) or forall(x1: Nat) { x1 = 0 or exists(k0: Nat) { k0.is_prime and not x0.count(k0) <= count_prime_factor(k0, x1) } or product[Nat](x0).divides(x1) }) = q(x0) }(List.nil[Nat])","let w0: Nat satisfy { w0 != 0 and forall(x0: Nat) { not x0.is_prime or List.nil[Nat].count(x0) <= count_prime_factor(x0, w0) } and not product[Nat](List.nil[Nat]).divides(w0) }","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or List.nil[Nat].count(x1) <= count_prime_factor(x1, x0) } and not product[Nat](List.nil[Nat]).divides(x0)) }(w0)"]}
+{"goal":"head.is_prime","proof":[]}
+{"goal":"all_prime(tail)","proof":[]}
+{"goal":"tail_ih","proof":["function(x0: List[Nat]) { (not all_prime(x0) or forall(x1: Nat) { x1 = 0 or exists(k0: Nat) { k0.is_prime and not x0.count(k0) <= count_prime_factor(k0, x1) } or product[Nat](x0).divides(x1) }) = q(x0) }(tail)"]}
+{"goal":"product[Nat](List.cons(head, tail)).divides(b)","proof":[]}
+{"goal":"q(List.cons(head, tail))","proof":["function(x0: List[Nat]) { (not all_prime(x0) or forall(x1: Nat) { x1 = 0 or exists(k0: Nat) { k0.is_prime and not x0.count(k0) <= count_prime_factor(k0, x1) } or product[Nat](x0).divides(x1) }) = q(x0) }(List.cons(head, tail))","let w0: Nat satisfy { w0 != 0 and forall(x0: Nat) { not x0.is_prime or List.cons(head, tail).count(x0) <= count_prime_factor(x0, w0) } and not product[Nat](List.cons(head, tail)).divides(w0) }","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or List.cons(head, tail).count(x1) <= count_prime_factor(x1, x0) } and not product[Nat](List.cons(head, tail)).divides(x0)) or not all_prime(List.cons(head, tail)) }(w0)"]}
+{"goal":"q(l)","proof":["not forall(x0: Nat, x1: List[Nat]) { not q(x1) or q(List.cons(x0, x1)) } or forall(x2: List[Nat]) { q(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not q(x2) or q(List.cons(x1, x2)) } or q(x0) }(l)","let w0: Nat satisfy { exists(k0: List[Nat]) { q(k0) and not q(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { q(w1) and not q(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { q(w2) and not q(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not q(x0) or q(List.cons(x1, x0)) }(w2, w0)"]}
+{"goal":"q(la)","proof":["function(x0: List[Nat]) { q(x0) }(la)"]}
+{"goal":"product_all_prime_divides","proof":["function(x0: List[Nat]) { (not all_prime(x0) or forall(x1: Nat) { x1 = 0 or exists(k0: Nat) { k0.is_prime and not x0.count(k0) <= count_prime_factor(k0, x1) } or product[Nat](x0).divides(x1) }) = q(x0) }(la)"]}
+{"goal":"1 <= a","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(a, 0)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, a)","function(x0: Nat) { not x0 < 0 }(a)"]}
+{"goal":"all_prime(prime_factorisation(a))","proof":[]}
+{"goal":"product[Nat](prime_factorisation(a)) = a","proof":[]}
+{"goal":"count_prime_factor(p, a) <= count_prime_factor(p, b)","proof":["(forall(x0: Nat) { not x0.is_prime or count_prime_factor(x0, a) <= count_prime_factor(x0, b) } = true)","function(x0: Nat) { not (x0.is_prime and not count_prime_factor(x0, a) <= count_prime_factor(x0, b)) }(p)"]}
+{"goal":"prime_factorisation(a).count(p) <= count_prime_factor(p, b)","proof":["function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(a, p)"]}
+{"goal":"product[Nat](prime_factorisation(a)).divides(b)","proof":["(forall(x0: Nat) { x0 = 0 or exists(k0: Nat) { k0.is_prime and not prime_factorisation(a).count(k0) <= count_prime_factor(k0, x0) } or product[Nat](prime_factorisation(a)).divides(x0) } = true)","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or prime_factorisation(a).count(x1) <= count_prime_factor(x1, x0) } and not product[Nat](prime_factorisation(a)).divides(x0)) }(b)","function(x0: Nat) { not (x0 != 0 and forall(x1: Nat) { not x1.is_prime or prime_factorisation(a).count(x1) <= count_prime_factor(x1, x0) }) or product[Nat](prime_factorisation(a)).divides(x0) }(b)"]}
+{"goal":"product[Nat](prime_factorisation(a)).divides(b)","proof":["not forall(x0: Nat) { not x0.is_prime or prime_factorisation(a).count(x0) <= count_prime_factor(x0, b) } or 0 = b","0 != a and 0 != b","(forall(x1: Nat) { not x1.is_prime or count_prime_factor(x1, a) <= count_prime_factor(x1, b) } = true)","let w0: Nat satisfy { w0.is_prime and not prime_factorisation(a).count(w0) <= count_prime_factor(w0, b) }","function(x0: Nat, x1: Nat) { prime_factorisation(x0).count(x1) = count_prime_factor(x1, x0) }(a, w0)","function(x0: Nat) { not (x0.is_prime and not count_prime_factor(x0, a) <= count_prime_factor(x0, b)) }(w0)","w0.is_prime and not prime_factorisation(a).count(w0) <= count_prime_factor(w0, b)"]}
+{"goal":"a.divides(b)","proof":[]}
+{"goal":"count_prime_factor_le_imp_divides","proof":[]}
+{"goal":"divides_iff_count_prime_factor_le","proof":["0 != b","0 != a","(forall(x0: Nat) { not x0.is_prime or count_prime_factor(x0, a) <= count_prime_factor(x0, b) } = true or a.divides(b))","not forall(x1: Nat) { not x1.is_prime or count_prime_factor(x1, a) <= count_prime_factor(x1, b) } or not a.divides(b)","exists(k0: Nat) { k0.is_prime and not count_prime_factor(k0, a) <= count_prime_factor(k0, b) } or a.divides(b)","let w0: Nat satisfy { w0.is_prime and not count_prime_factor(w0, a) <= count_prime_factor(w0, b) }","function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or count_prime_factor(x2, x0) <= count_prime_factor(x2, x1) or 0 = x0 or 0 = x1 }(a, b, w0)"]}
