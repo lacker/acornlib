@@ -4,7 +4,6 @@ Goal: round out the divisibility/gcd/lcm API on `Nat` and `Int` so later number-
 
 - [ ] Add `lcm_assoc` for `Nat`
 - [ ] Define `Int.gcd` universal-property packaging and basic identities (the `Int.gcd` definition already exists in `src/int/lattice.ac`; this item covers any remaining wrappers consumers will want)
-- [ ] Define `Int.lcm` and prove `gcd * lcm = |a * b|` on `Int`
 
 Notes:
 
@@ -12,4 +11,5 @@ Notes:
 - `Nat.lcm` is defined in `src/nat/nat_lcm.ac` via the equation `a.gcd(b) * a.lcm(b) = a * b` (with `lcm(0, 0) = 0` by convention). The file proves `gcd_mul_lcm`, `lcm_zero_left`/`_right`, `lcm_one_left`/`_right`, `lcm_comm`, the divisibility lemmas `lcm_divides_left`/`_right`, and the universal property `lcm_divides_of_common`. Definitional choice rationale: a single equation as the satisfy spec keeps existence proofs short and matches Mathlib's classical `lcm = a*b/gcd` formulation; the universal property is recovered as a theorem so a future `GCDMonoid`-style typeclass can reuse the same characterisation.
 - `Int.divides` and `Int.gcd` are already defined in `src/int/lattice.ac` (transitivity, gcd_div_left/right, divides_gcd, euclids_lemma all present). The reflexivity, antisymmetry-up-to-sign, additive closure (`int_divides_add`/`_sub`), sign-flip lemmas (`int_neg_divides`, `int_divides_neg`), and the `Int.coprime` predicate with `int_coprime_comm`, `int_coprime_one_left`/`_right`, and `int_coprime_divides_of_divides_mul` (Euclid's lemma in coprime form) live in `src/int/int_divisibility.ac`.
 - Bezout on `Nat` lives in `src/nat/nat_bezout.ac` as `nat_bezout`, packaged with `Int` coefficients via the existing `spans_gcd` in `src/int/lattice.ac`.
+- `Int.lcm` is defined in `src/int/int_lcm.ac` as `Int.from_nat(abs(a).lcm(abs(b)))`, mirroring the existing `Int.gcd` definition. The product identity is recorded both as `int_gcd_mul_lcm` (gcd*lcm = Int.from_nat(|a|*|b|)) and `int_gcd_mul_lcm_abs` (abs(gcd*lcm) = abs(a*b)).
 - Future direction: once a downstream consumer needs gcd/lcm generically, lift the API to a `GCDMonoid`-style typeclass parameterised by a commutative cancellative monoid; the `Nat.lcm` equation-based definition was chosen specifically so that pulling it up into a typeclass axiom is a structural rename rather than a redefinition.
