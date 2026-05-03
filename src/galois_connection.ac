@@ -1,0 +1,472 @@
+/// Galois connections between partially ordered types.
+
+from order import PartialOrder, lte_refl, lte_trans, lte_antisymm
+from order_maps import is_monotone, monotone_step
+
+/// True if `lower` is left adjoint to `upper`.
+define is_galois_connection[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) -> Bool {
+    forall(a: A, b: B) {
+        lower(a) <= b = (a <= upper(b))
+    }
+}
+
+/// A Galois connection is exactly its order-adjunction law.
+theorem galois_connection_at[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A,
+    b: B
+) {
+    is_galois_connection(lower, upper) implies
+    (lower(a) <= b = (a <= upper(b)))
+} by {
+    if is_galois_connection(lower, upper) {
+        is_galois_connection(lower, upper) = forall(x: A, y: B) {
+            lower(x) <= y = (x <= upper(y))
+        }
+        lower(a) <= b = (a <= upper(b))
+    }
+}
+
+/// The left-to-right direction of a Galois connection.
+theorem galois_connection_le_upper[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A,
+    b: B
+) {
+    is_galois_connection(lower, upper) and lower(a) <= b implies a <= upper(b)
+} by {
+    if is_galois_connection(lower, upper) and lower(a) <= b {
+        galois_connection_at(lower, upper, a, b)
+        a <= upper(b)
+    }
+}
+
+/// The right-to-left direction of a Galois connection.
+theorem galois_connection_lower_le[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A,
+    b: B
+) {
+    is_galois_connection(lower, upper) and a <= upper(b) implies lower(a) <= b
+} by {
+    if is_galois_connection(lower, upper) and a <= upper(b) {
+        galois_connection_at(lower, upper, a, b)
+        lower(a) <= b
+    }
+}
+
+/// The lower adjoint is monotone.
+theorem galois_connection_lower_monotone[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies is_monotone(lower)
+} by {
+    if is_galois_connection(lower, upper) {
+        forall(a: A, b: A) {
+            if a <= b {
+                lte_refl(lower(b))
+                lower(b) <= lower(b)
+                galois_connection_le_upper(lower, upper, b, lower(b))
+                b <= upper(lower(b))
+                lte_trans(a, b, upper(lower(b)))
+                a <= upper(lower(b))
+                galois_connection_lower_le(lower, upper, a, lower(b))
+                lower(a) <= lower(b)
+            }
+        }
+        is_monotone(lower)
+    }
+}
+
+/// The upper adjoint is monotone.
+theorem galois_connection_upper_monotone[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies is_monotone(upper)
+} by {
+    if is_galois_connection(lower, upper) {
+        forall(a: B, b: B) {
+            if a <= b {
+                lte_refl(upper(a))
+                upper(a) <= upper(a)
+                galois_connection_lower_le(lower, upper, upper(a), a)
+                lower(upper(a)) <= a
+                lte_trans(lower(upper(a)), a, b)
+                lower(upper(a)) <= b
+                galois_connection_le_upper(lower, upper, upper(a), b)
+                upper(a) <= upper(b)
+            }
+        }
+        is_monotone(upper)
+    }
+}
+
+/// The unit inequality of a Galois connection.
+theorem galois_connection_unit[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_connection(lower, upper) implies a <= upper(lower(a))
+} by {
+    if is_galois_connection(lower, upper) {
+        lte_refl(lower(a))
+        lower(a) <= lower(a)
+        galois_connection_le_upper(lower, upper, a, lower(a))
+        a <= upper(lower(a))
+    }
+}
+
+/// The counit inequality of a Galois connection.
+theorem galois_connection_counit[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_connection(lower, upper) implies lower(upper(b)) <= b
+} by {
+    if is_galois_connection(lower, upper) {
+        lte_refl(upper(b))
+        upper(b) <= upper(b)
+        galois_connection_lower_le(lower, upper, upper(b), b)
+        lower(upper(b)) <= b
+    }
+}
+
+/// The closure operator on the lower side induced by a Galois connection.
+define galois_closure[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) -> A {
+    upper(lower(a))
+}
+
+/// The kernel operator on the upper side induced by a Galois connection.
+define galois_kernel[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) -> B {
+    lower(upper(b))
+}
+
+/// The Galois closure is the upper adjoint after the lower adjoint.
+theorem galois_closure_at[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    galois_closure(lower, upper, a) = upper(lower(a))
+}
+
+/// The Galois kernel is the lower adjoint after the upper adjoint.
+theorem galois_kernel_at[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    galois_kernel(lower, upper, b) = lower(upper(b))
+}
+
+/// The Galois closure is extensive.
+theorem galois_closure_extensive[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_connection(lower, upper) implies a <= galois_closure(lower, upper, a)
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_connection_unit(lower, upper, a)
+        galois_closure_at(lower, upper, a)
+        a <= galois_closure(lower, upper, a)
+    }
+}
+
+/// The Galois kernel is reductive.
+theorem galois_kernel_reductive[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_connection(lower, upper) implies galois_kernel(lower, upper, b) <= b
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_connection_counit(lower, upper, b)
+        galois_kernel_at(lower, upper, b)
+        galois_kernel(lower, upper, b) <= b
+    }
+}
+
+/// The Galois closure is monotone.
+theorem galois_closure_monotone[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies is_monotone(galois_closure(lower, upper))
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        forall(a: A, b: A) {
+            if a <= b {
+                monotone_step(lower, a, b)
+                lower(a) <= lower(b)
+                monotone_step(upper, lower(a), lower(b))
+                upper(lower(a)) <= upper(lower(b))
+                galois_closure_at(lower, upper, a)
+                galois_closure_at(lower, upper, b)
+                galois_closure(lower, upper, a) <= galois_closure(lower, upper, b)
+            }
+        }
+        is_monotone(galois_closure(lower, upper))
+    }
+}
+
+/// The Galois kernel is monotone.
+theorem galois_kernel_monotone[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies is_monotone(galois_kernel(lower, upper))
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        forall(a: B, b: B) {
+            if a <= b {
+                monotone_step(upper, a, b)
+                upper(a) <= upper(b)
+                monotone_step(lower, upper(a), upper(b))
+                lower(upper(a)) <= lower(upper(b))
+                galois_kernel_at(lower, upper, a)
+                galois_kernel_at(lower, upper, b)
+                galois_kernel(lower, upper, a) <= galois_kernel(lower, upper, b)
+            }
+        }
+        is_monotone(galois_kernel(lower, upper))
+    }
+}
+
+/// The closure composite of a Galois connection is idempotent.
+theorem galois_closure_raw_idempotent[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_connection(lower, upper) implies upper(lower(upper(lower(a)))) = upper(lower(a))
+} by {
+    if is_galois_connection(lower, upper) {
+        let c = upper(lower(a))
+        galois_connection_unit(lower, upper, c)
+        c <= upper(lower(c))
+
+        galois_connection_counit(lower, upper, lower(a))
+        lower(upper(lower(a))) <= lower(a)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        lower(c) <= lower(a)
+        monotone_step(upper, lower(c), lower(a))
+        upper(lower(c)) <= upper(lower(a))
+        upper(lower(c)) <= c
+        lte_antisymm(upper(lower(c)), c)
+        upper(lower(c)) = c
+        upper(lower(upper(lower(a)))) = upper(lower(a))
+    }
+}
+
+/// The Galois closure is idempotent.
+theorem galois_closure_idempotent[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_connection(lower, upper) implies
+    galois_closure(lower, upper, galois_closure(lower, upper, a)) =
+    galois_closure(lower, upper, a)
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_closure_at(lower, upper, a)
+        galois_closure_at(lower, upper, galois_closure(lower, upper, a))
+        galois_closure_raw_idempotent(lower, upper, a)
+        upper(lower(upper(lower(a)))) = upper(lower(a))
+        galois_closure(lower, upper, galois_closure(lower, upper, a)) =
+        galois_closure(lower, upper, a)
+    }
+}
+
+/// The kernel composite of a Galois connection is idempotent.
+theorem galois_kernel_raw_idempotent[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_connection(lower, upper) implies lower(upper(lower(upper(b)))) = lower(upper(b))
+} by {
+    if is_galois_connection(lower, upper) {
+        let c = lower(upper(b))
+        galois_connection_counit(lower, upper, c)
+        lower(upper(c)) <= c
+
+        galois_connection_unit(lower, upper, upper(b))
+        upper(b) <= upper(lower(upper(b)))
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        upper(b) <= upper(c)
+        monotone_step(lower, upper(b), upper(c))
+        lower(upper(b)) <= lower(upper(c))
+        c <= lower(upper(c))
+        lte_antisymm(lower(upper(c)), c)
+        lower(upper(c)) = c
+        lower(upper(lower(upper(b)))) = lower(upper(b))
+    }
+}
+
+/// The Galois kernel is idempotent.
+theorem galois_kernel_idempotent[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_connection(lower, upper) implies
+    galois_kernel(lower, upper, galois_kernel(lower, upper, b)) =
+    galois_kernel(lower, upper, b)
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_kernel_at(lower, upper, b)
+        galois_kernel_at(lower, upper, galois_kernel(lower, upper, b))
+        galois_kernel_raw_idempotent(lower, upper, b)
+        lower(upper(lower(upper(b)))) = lower(upper(b))
+        galois_kernel(lower, upper, galois_kernel(lower, upper, b)) =
+        galois_kernel(lower, upper, b)
+    }
+}
+
+/// True if a Galois connection has an exact upper-side counit.
+define is_galois_insertion[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) -> Bool {
+    is_galois_connection(lower, upper) and forall(b: B) {
+        lower(upper(b)) = b
+    }
+}
+
+/// True if a Galois connection has an exact lower-side unit.
+define is_galois_coinsertion[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) -> Bool {
+    is_galois_connection(lower, upper) and forall(a: A) {
+        upper(lower(a)) = a
+    }
+}
+
+/// A Galois insertion is a Galois connection.
+theorem galois_insertion_is_connection[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_insertion(lower, upper) implies is_galois_connection(lower, upper)
+} by {
+    if is_galois_insertion(lower, upper) {
+        is_galois_insertion(lower, upper) =
+            (is_galois_connection(lower, upper) and forall(b: B) {
+                lower(upper(b)) = b
+            })
+        is_galois_connection(lower, upper)
+    }
+}
+
+/// A Galois coinsertion is a Galois connection.
+theorem galois_coinsertion_is_connection[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_coinsertion(lower, upper) implies is_galois_connection(lower, upper)
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        is_galois_coinsertion(lower, upper) =
+            (is_galois_connection(lower, upper) and forall(a: A) {
+                upper(lower(a)) = a
+            })
+        is_galois_connection(lower, upper)
+    }
+}
+
+/// The counit of a Galois insertion is equality.
+theorem galois_insertion_counit_eq[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_insertion(lower, upper) implies lower(upper(b)) = b
+} by {
+    if is_galois_insertion(lower, upper) {
+        is_galois_insertion(lower, upper) =
+            (is_galois_connection(lower, upper) and forall(y: B) {
+                lower(upper(y)) = y
+            })
+        lower(upper(b)) = b
+    }
+}
+
+/// The unit of a Galois coinsertion is equality.
+theorem galois_coinsertion_unit_eq[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_coinsertion(lower, upper) implies upper(lower(a)) = a
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        is_galois_coinsertion(lower, upper) =
+            (is_galois_connection(lower, upper) and forall(x: A) {
+                upper(lower(x)) = x
+            })
+        upper(lower(a)) = a
+    }
+}
+
+/// The kernel of a Galois insertion is the identity.
+theorem galois_insertion_kernel_eq_self[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_insertion(lower, upper) implies galois_kernel(lower, upper, b) = b
+} by {
+    if is_galois_insertion(lower, upper) {
+        galois_insertion_counit_eq(lower, upper, b)
+        galois_kernel_at(lower, upper, b)
+        galois_kernel(lower, upper, b) = b
+    }
+}
+
+/// The closure of a Galois coinsertion is the identity.
+theorem galois_coinsertion_closure_eq_self[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_coinsertion(lower, upper) implies galois_closure(lower, upper, a) = a
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        galois_coinsertion_unit_eq(lower, upper, a)
+        galois_closure_at(lower, upper, a)
+        galois_closure(lower, upper, a) = a
+    }
+}
