@@ -2,12 +2,12 @@ from nat.nat_coprime import Nat, coprime_divides_of_divides_mul
 from nat.nat_gcd import gcd_of_prime, gcd_zero_left, gcd_zero_right,
     gcd_divides_left, gcd_divides_right, gcd_nonzero_left, gcd_nonzero_right,
     gcd_comm
-from nat.nat_base import divides_self, divides_zero, has_prime_divisor, strong_induction, true_below, divides_trans, mul_cancel_left
-from list.list_base import List
+from nat.nat_base import divides_self, divides_zero, has_prime_divisor, strong_induction, true_below, divides_trans, mul_cancel_left, mul_to_zero
+from list.list_base import List, list_not_contains_impl_count_zero
 from list.list_product import product
 from list.list_permutation import is_permutation, remove_one_count_self,
     remove_one_count_other, remove_one_cons_eq, remove_one_cons_neq,
-    nil_count_zero, product_remove_one
+    nil_count_zero, product_remove_one, count_append, product_append
 numerals Nat
 
 /// Helper: if a prime is the product of two factors, one factor is 1 and the
@@ -706,4 +706,201 @@ theorem prime_factorisation_unique(l1: List[Nat], l2: List[Nat]) {
         }
     }
     List.induction(function(l: List[Nat]) { p(l) })
+}
+
+/// Concatenating two all-prime lists yields an all-prime list.
+theorem all_prime_append(left: List[Nat], right: List[Nat]) {
+    all_prime(left) and all_prime(right) implies all_prime(left + right)
+} by {
+    define p(l: List[Nat]) -> Bool {
+        all_prime(l) and all_prime(right) implies all_prime(l + right)
+    }
+    List.nil[Nat] + right = right
+    p(List.nil[Nat])
+    forall(head: Nat, tail: List[Nat]) {
+        if p(tail) {
+            if all_prime(List.cons(head, tail)) and all_prime(right) {
+                all_prime_cons_elim(head, tail)
+                head.is_prime
+                all_prime(tail)
+                all_prime(tail + right)
+                List.cons(head, tail) + right = List.cons(head, tail + right)
+                all_prime_cons_intro(head, tail + right)
+                all_prime(List.cons(head, tail + right))
+                all_prime(List.cons(head, tail) + right)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[Nat]) { p(l) })
+    forall(l: List[Nat]) { p(l) }
+    p(left)
+}
+
+/// Every entry of an all-prime list is prime.
+theorem all_prime_only_primes(list: List[Nat], x: Nat) {
+    all_prime(list) and list.contains(x) implies x.is_prime
+} by {
+    define p(l: List[Nat]) -> Bool {
+        all_prime(l) and l.contains(x) implies x.is_prime
+    }
+    not List.nil[Nat].contains(x)
+    p(List.nil[Nat])
+    forall(head: Nat, tail: List[Nat]) {
+        if p(tail) {
+            if all_prime(List.cons(head, tail)) and List.cons(head, tail).contains(x) {
+                all_prime_cons_elim(head, tail)
+                head.is_prime
+                all_prime(tail)
+                if head = x {
+                    x.is_prime
+                } else {
+                    tail.contains(x)
+                    x.is_prime
+                }
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[Nat]) { p(l) })
+    forall(l: List[Nat]) { p(l) }
+    p(list)
+}
+
+/// The multiplicity of a prime in the canonical factorisation of a natural.
+/// For non-primes, for one, and for zero, this evaluates to zero (the factorisation
+/// of zero is the empty placeholder).
+define count_prime_factor(p: Nat, n: Nat) -> Nat {
+    prime_factorisation(n).count(p)
+}
+
+/// Bridging lemma: any list witnessing a prime factorisation of a positive
+/// natural has the same prime-counts as the canonical factorisation.
+theorem count_prime_factor_invariant(p: Nat, n: Nat, list: List[Nat]) {
+    Nat.1 <= n and all_prime(list) and product[Nat](list) = n
+        implies list.count(p) = count_prime_factor(p, n)
+} by {
+    if Nat.1 <= n and all_prime(list) and product[Nat](list) = n {
+        prime_factorisation_product(n)
+        prime_factorisation_all_prime(n)
+        product[Nat](prime_factorisation(n)) = n
+        all_prime(prime_factorisation(n))
+        product[Nat](list) = product[Nat](prime_factorisation(n))
+        prime_factorisation_unique(list, prime_factorisation(n))
+        is_permutation(list, prime_factorisation(n))
+        list.count(p) = prime_factorisation(n).count(p)
+        list.count(p) = count_prime_factor(p, n)
+    }
+}
+
+/// The factorisation of one is the empty list, so the prime count of one is
+/// always zero.
+theorem count_prime_factor_one(p: Nat) {
+    count_prime_factor(p, Nat.1) = Nat.0
+} by {
+    Nat.1 <= Nat.1
+    prime_factorisation_product(Nat.1)
+    product[Nat](prime_factorisation(Nat.1)) = Nat.1
+    prime_factorisation_all_prime(Nat.1)
+    all_prime(prime_factorisation(Nat.1))
+    all_prime_product_eq_one_imp_nil(prime_factorisation(Nat.1))
+    prime_factorisation(Nat.1) = List.nil[Nat]
+    nil_count_zero[Nat](p)
+    prime_factorisation(Nat.1).count(p) = Nat.0
+}
+
+/// The prime count of a non-prime is always zero, since prime factorisations
+/// only contain primes.
+theorem count_prime_factor_non_prime(p: Nat, n: Nat) {
+    not p.is_prime implies count_prime_factor(p, n) = Nat.0
+} by {
+    if not p.is_prime {
+        if prime_factorisation(n).contains(p) {
+            if Nat.1 <= n {
+                prime_factorisation_all_prime(n)
+                all_prime(prime_factorisation(n))
+                all_prime_only_primes(prime_factorisation(n), p)
+                p.is_prime
+                false
+            } else {
+                prime_factorisation_zero
+                n = Nat.0
+                prime_factorisation(n) = List.nil[Nat]
+                not List.nil[Nat].contains(p)
+                false
+            }
+        }
+        not prime_factorisation(n).contains(p)
+        list_not_contains_impl_count_zero[Nat](prime_factorisation(n), p)
+        prime_factorisation(n).count(p) = Nat.0
+    }
+}
+
+/// The prime count of a prime in itself is one.
+theorem count_prime_factor_self(p: Nat) {
+    p.is_prime implies count_prime_factor(p, p) = Nat.1
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        Nat.1 <= p
+        all_prime_nil
+        all_prime_cons_intro(p, List.nil[Nat])
+        all_prime(List.cons(p, List.nil[Nat]))
+        product[Nat](List.cons(p, List.nil[Nat])) = p * product[Nat](List.nil[Nat])
+        product[Nat](List.nil[Nat]) = Nat.1
+        product[Nat](List.cons(p, List.nil[Nat])) = p * Nat.1
+        product[Nat](List.cons(p, List.nil[Nat])) = p
+        count_prime_factor_invariant(p, p, List.cons(p, List.nil[Nat]))
+        List.cons(p, List.nil[Nat]).count(p) = count_prime_factor(p, p)
+        nil_count_zero[Nat](p)
+        List.nil[Nat].count(p) = Nat.0
+        List.cons(p, List.nil[Nat]).count(p) = Nat.1 + List.nil[Nat].count(p)
+        List.cons(p, List.nil[Nat]).count(p) = Nat.1 + Nat.0
+        Nat.1 + Nat.0 = Nat.1
+        List.cons(p, List.nil[Nat]).count(p) = Nat.1
+        count_prime_factor(p, p) = Nat.1
+    }
+}
+
+/// Multiplicativity of the prime-multiplicity function: for nonzero a and b,
+/// the prime count of a product splits as the sum of prime counts.
+theorem count_prime_factor_mul(p: Nat, a: Nat, b: Nat) {
+    a != Nat.0 and b != Nat.0 implies
+        count_prime_factor(p, a * b) =
+            count_prime_factor(p, a) + count_prime_factor(p, b)
+} by {
+    if a != Nat.0 and b != Nat.0 {
+        Nat.1 <= a
+        Nat.1 <= b
+        let la: List[Nat] = prime_factorisation(a)
+        let lb: List[Nat] = prime_factorisation(b)
+        prime_factorisation_product(a)
+        prime_factorisation_product(b)
+        prime_factorisation_all_prime(a)
+        prime_factorisation_all_prime(b)
+        product[Nat](la) = a
+        product[Nat](lb) = b
+        all_prime(la)
+        all_prime(lb)
+        let combined: List[Nat] = la + lb
+        all_prime_append(la, lb)
+        all_prime(combined)
+        product_append[Nat](la, lb)
+        product[Nat](combined) = product[Nat](la) * product[Nat](lb)
+        product[Nat](combined) = a * b
+        if a * b = Nat.0 {
+            mul_to_zero(a, b)
+            a = Nat.0 or b = Nat.0
+            false
+        }
+        a * b != Nat.0
+        Nat.1 <= a * b
+        count_prime_factor_invariant(p, a * b, combined)
+        combined.count(p) = count_prime_factor(p, a * b)
+        count_append[Nat](la, lb, p)
+        combined.count(p) = la.count(p) + lb.count(p)
+        la.count(p) = count_prime_factor(p, a)
+        lb.count(p) = count_prime_factor(p, b)
+        count_prime_factor(p, a * b) = count_prime_factor(p, a) + count_prime_factor(p, b)
+    }
 }

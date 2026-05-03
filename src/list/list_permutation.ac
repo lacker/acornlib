@@ -376,3 +376,66 @@ theorem permutation_preserves_product[A: CommMonoid](a: List[A], b: List[A]) {
     }
     List.induction(function(l: List[A]) { p(l) })
 }
+
+/// Counts distribute over list concatenation.
+theorem count_append[T](left: List[T], right: List[T], item: T) {
+    (left + right).count(item) = left.count(item) + right.count(item)
+} by {
+    define p(l: List[T]) -> Bool {
+        (l + right).count(item) = l.count(item) + right.count(item)
+    }
+    List.nil[T] + right = right
+    List.nil[T].count(item) = Nat.0
+    Nat.0 + right.count(item) = right.count(item)
+    p(List.nil[T])
+    forall(head: T, tail: List[T]) {
+        if p(tail) {
+            List.cons(head, tail) + right = List.cons(head, tail + right)
+            if head = item {
+                List.cons(head, tail + right).count(item) = Nat.1 + (tail + right).count(item)
+                (tail + right).count(item) = tail.count(item) + right.count(item)
+                List.cons(head, tail + right).count(item) = Nat.1 + (tail.count(item) + right.count(item))
+                List.cons(head, tail).count(item) = Nat.1 + tail.count(item)
+                Nat.1 + (tail.count(item) + right.count(item)) = (Nat.1 + tail.count(item)) + right.count(item)
+                (List.cons(head, tail) + right).count(item) = List.cons(head, tail).count(item) + right.count(item)
+            } else {
+                List.cons(head, tail + right).count(item) = (tail + right).count(item)
+                (tail + right).count(item) = tail.count(item) + right.count(item)
+                List.cons(head, tail).count(item) = tail.count(item)
+                (List.cons(head, tail) + right).count(item) = List.cons(head, tail).count(item) + right.count(item)
+            }
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[T]) { p(l) })
+    forall(l: List[T]) { p(l) }
+    p(left)
+}
+
+/// The product distributes over list concatenation in a commutative monoid.
+theorem product_append[A: CommMonoid](left: List[A], right: List[A]) {
+    product[A](left + right) = product[A](left) * product[A](right)
+} by {
+    define p(l: List[A]) -> Bool {
+        product[A](l + right) = product[A](l) * product[A](right)
+    }
+    List.nil[A] + right = right
+    product[A](List.nil[A]) = A.1
+    A.1 * product[A](right) = product[A](right)
+    p(List.nil[A])
+    forall(head: A, tail: List[A]) {
+        if p(tail) {
+            List.cons(head, tail) + right = List.cons(head, tail + right)
+            product[A](List.cons(head, tail + right)) = head * product[A](tail + right)
+            product[A](tail + right) = product[A](tail) * product[A](right)
+            product[A](List.cons(head, tail + right)) = head * (product[A](tail) * product[A](right))
+            head * (product[A](tail) * product[A](right)) = (head * product[A](tail)) * product[A](right)
+            product[A](List.cons(head, tail)) = head * product[A](tail)
+            product[A](List.cons(head, tail) + right) = product[A](List.cons(head, tail)) * product[A](right)
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(l: List[A]) { p(l) })
+    forall(l: List[A]) { p(l) }
+    p(left)
+}
