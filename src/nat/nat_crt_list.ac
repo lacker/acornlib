@@ -1,5 +1,7 @@
 from nat.nat_congruence import Nat
-from list.list_base import List
+from nat.nat_base import divides_self, divides_mul
+from list.list_base import List, map
+from list.list_product import product
 from pair import Pair
 numerals Nat
 
@@ -47,4 +49,36 @@ theorem nat_crt_list_nil {
     exists(c: Nat) { satisfies_all(c, List.nil[Pair[Nat, Nat]]) }
 } by {
     satisfies_all_nil(Nat.0)
+}
+
+/// Project a system of (modulus, residue) pairs to its list of moduli.
+define system_moduli(system: List[Pair[Nat, Nat]]) -> List[Nat] {
+    match system {
+        List.nil {
+            List.nil[Nat]
+        }
+        List.cons(head, tail) {
+            List.cons(head.first, system_moduli(tail))
+        }
+    }
+}
+
+/// The combined modulus for a system: the product of all moduli.
+define system_modulus(system: List[Pair[Nat, Nat]]) -> Nat {
+    product[Nat](system_moduli(system))
+}
+
+/// The empty system has moduli list nil and combined modulus 1.
+theorem system_modulus_nil {
+    system_modulus(List.nil[Pair[Nat, Nat]]) = Nat.1
+}
+
+/// The combined modulus of a cons system factors as head modulus times
+/// the combined modulus of the tail.
+theorem system_modulus_cons(head: Pair[Nat, Nat], tail: List[Pair[Nat, Nat]]) {
+    system_modulus(List.cons(head, tail)) = head.first * system_modulus(tail)
+} by {
+    system_moduli(List.cons(head, tail)) = List.cons(head.first, system_moduli(tail))
+    product[Nat](List.cons(head.first, system_moduli(tail))) =
+        head.first * product[Nat](system_moduli(tail))
 }
