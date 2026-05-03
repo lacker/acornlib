@@ -1,14 +1,34 @@
 {"goal":"a.gcd(n) = Nat.1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = Nat.1 = x0.coprime(x1) }(a, n)"]}
-{"goal":"exists(k0: Int, k1: Int) { k0 * Int.from_nat(a) + k1 * Int.from_nat(n) = Int.from_nat(a.gcd(n)) }","proof":["exists(k0: Int, k1: Int) { Int.from_nat(a.gcd(n)) = k0 * Int.from_nat(a) + k1 * Int.from_nat(n) }"]}
-{"goal":"Int.from_nat(a.gcd(n)) = Int.from_nat(Nat.1)","proof":["a.gcd(n) != Nat.1"]}
+{"goal":"exists(k0: Int, k1: Int) { k0 * Int.from_nat(a) + k1 * Int.from_nat(n) = Int.from_nat(a.gcd(n)) }","proof":[]}
+{"goal":"Int.from_nat(a.gcd(n)) = Int.from_nat(Nat.1)","proof":[]}
 {"goal":"Int.from_nat(Nat.1) = 1","proof":[]}
-{"goal":"x * Int.from_nat(a) + y * Int.from_nat(n) = 1","proof":["x * Int.from_nat(a) + y * Int.from_nat(n) != Int.from_nat(Nat.1)","x * Int.from_nat(a) + y * Int.from_nat(n) = Int.from_nat(Nat.1)"]}
+{"goal":"x * Int.from_nat(a) + y * Int.from_nat(n) = 1","proof":[]}
 {"goal":"x * Int.from_nat(a) - 1 = -(y * Int.from_nat(n))","proof":["function(x0: Int, x1: Int) { x0 - (x0 + x1) = -x1 }(x * Int.from_nat(a), y * Int.from_nat(n))"]}
 {"goal":"-y * Int.from_nat(n) = -(y * Int.from_nat(n))","proof":[]}
-{"goal":"x * Int.from_nat(a) - 1 = -y * Int.from_nat(n)","proof":["x * Int.from_nat(a) - 1 != -(y * Int.from_nat(n))"]}
+{"goal":"x * Int.from_nat(a) - 1 = -y * Int.from_nat(n)","proof":[]}
 {"goal":"Int.from_nat(n) * -y = -y * Int.from_nat(n)","proof":["function(x0: Int, x1: Int) { x0 * x1 = x1 * x0 }(-y, Int.from_nat(n))"]}
-{"goal":"Int.from_nat(n) * -y = x * Int.from_nat(a) - 1","proof":["x * Int.from_nat(a) - 1 != -y * Int.from_nat(n)"]}
+{"goal":"Int.from_nat(n) * -y = x * Int.from_nat(a) - 1","proof":[]}
 {"goal":"Int.from_nat(n).divides(x * Int.from_nat(a) - 1)","proof":["function(x0: Int, x1: Int) { exists(k0: Int) { k0 * x0 = x1 } = x0.divides(x1) }(Int.from_nat(n), x * Int.from_nat(a) - 1)","not exists(k0: Int) { k0 * Int.from_nat(n) = x * Int.from_nat(a) - 1 }","function(x0: Int) { x * Int.from_nat(a) - 1 != x0 * Int.from_nat(n) }(-y)"]}
 {"goal":"int_mod_rel(n, x * Int.from_nat(a), 1)","proof":["function(x0: Nat, x1: Int, x2: Int) { Int.from_nat(x0).divides(x1 - x2) = int_mod_rel(x0, x1, x2) }(n, x * Int.from_nat(a), 1)"]}
 {"goal":"exists(k0: Int) { int_mod_rel(n, k0 * Int.from_nat(a), 1) }","proof":["function(x0: Int) { not int_mod_rel(n, x0 * Int.from_nat(a), 1) }(x)"]}
-{"goal":"int_modular_inverse_exists","proof":["not a.coprime(n)"]}
+{"goal":"int_modular_inverse_exists","proof":[]}
+{"goal":"exists(k0: Int) { int_mod_rel(n, k0 * Int.from_nat(a), 1) }","proof":[]}
+{"goal":"exists(k0: Nat) { int_mod_rel(n, bi, Int.from_nat(k0)) }","proof":[]}
+{"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(a))","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { lib(set).equivalence_class[T0](x0, x1) != lib(set).equivalence_class[T0](x0, x2) or not lib(relation_basic).is_equivalence[T0](x0) or x0(x1, x2) }[Int](int_mod_rel(n), Int.from_nat(a), Int.from_nat(a))"]}
+{"goal":"int_mod_rel(n, bi * Int.from_nat(a), Int.from_nat(r) * Int.from_nat(a))","proof":[]}
+{"goal":"is_transitive[Int](int_mod_rel(n))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or lib(relation_basic).is_partial_equivalence[T0](x0) }[Int](int_mod_rel(n))","function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_partial_equivalence[T0](x0) or is_transitive[T0](x0) }[Int](int_mod_rel(n))"]}
+{"goal":"int_mod_rel(n, Int.from_nat(r) * Int.from_nat(a), bi * Int.from_nat(a))","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { lib(set).equivalence_class[T0](x0, x1) != lib(set).equivalence_class[T0](x0, x2) or not lib(relation_basic).is_equivalence[T0](x0) or x0(x1, x2) }[Int](int_mod_rel(n), Int.from_nat(r) * Int.from_nat(a), bi * Int.from_nat(a))","function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(relation_basic).is_equivalence[T0](x0) or not x0(x1, x2) or lib(set).equivalence_class[T0](x0, x1) = lib(set).equivalence_class[T0](x0, x2) }[Int](int_mod_rel(n), bi * Int.from_nat(a), Int.from_nat(r) * Int.from_nat(a))"]}
+{"goal":"int_mod_rel(n, Int.from_nat(r) * Int.from_nat(a), 1)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_transitive[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[Int](int_mod_rel(n), Int.from_nat(r) * Int.from_nat(a), bi * Int.from_nat(a), 1)"]}
+{"goal":"Int.from_nat(r) * Int.from_nat(a) = Int.from_nat(r * a)","proof":[]}
+{"goal":"int_mod_rel(n, Int.from_nat(r * a), 1)","proof":[]}
+{"goal":"Int.from_nat(Nat.1) = 1","proof":[]}
+{"goal":"int_mod_rel(n, Int.from_nat(r * a), Int.from_nat(Nat.1))","proof":[]}
+{"goal":"(r * a).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"r * a = a * r","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(r, a)"]}
+{"goal":"(a * r).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, n) }","proof":["function(x0: Nat) { not (a * x0).congr_mod(Nat.1, n) }(r)"]}
+{"goal":"nat_modular_inverse_exists_pos","proof":[]}
+{"goal":"a.gcd(Nat.0) = Nat.1","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = Nat.1 = x0.coprime(x1) }(a, Nat.0)"]}
+{"goal":"a = Nat.1","proof":[]}
+{"goal":"(a * Nat.1).congr_mod(Nat.1, Nat.0)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * Nat.1, Nat.0, Nat.1)"]}
+{"goal":"nat_modular_inverse_exists_zero","proof":["(a * Nat.1).congr_mod(Nat.1, Nat.0)","function(x0: Nat) { not (a * x0).congr_mod(Nat.1, Nat.0) }(Nat.1)"]}
