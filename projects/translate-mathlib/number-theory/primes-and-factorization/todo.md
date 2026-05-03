@@ -1,0 +1,21 @@
+# Prime Numbers and Unique Factorization
+
+Goal: round out the prime-number API on `Nat` and `Int` and add prime factorisation (as a list of primes) with the fundamental theorem of arithmetic.
+
+- [ ] Add a `coprime_of_distinct_primes(p, q)`: distinct primes are coprime
+- [ ] Define `prime_factorisation(n: Nat) -> List[Nat]` (a multiset-style list of prime factors)
+- [ ] Prove the existence side of the fundamental theorem: for `n > 0`, the product of `prime_factorisation(n)` is `n`, and every entry is prime
+- [ ] Prove uniqueness side of the fundamental theorem: any two prime-factorisation lists for `n` are permutations of each other
+- [ ] Define `count_prime_factor(p, n)` (the multiplicity of prime `p` in the factorisation of `n`)
+- [ ] Prove `count_prime_factor` is multiplicative: `count_prime_factor(p, a * b) = count_prime_factor(p, a) + count_prime_factor(p, b)` for nonzero `a, b`
+- [ ] Use `count_prime_factor` to give an alternative form of the fundamental theorem and a clean GCD/LCM characterisation (`gcd(a, b) = product of p^min(v_p(a), v_p(b))`, etc.)
+- [ ] Bridge `Int.is_prime` (already in `src/int/lattice.ac`) and `Nat.is_prime` to share lemmas
+- [ ] Add primality tests: `is_prime_below(n)` (true if `n` is prime and below some bound) and a `forall_below(n, is_prime)`-style helper used by sieves
+- [ ] Prove the fundamental result that gcd-based coprimality is equivalent to "no shared prime factor"
+
+Notes:
+
+- `src/nat/nat_base.ac` already has `is_prime`, `is_composite`, `has_prime_divisor`, the infinitude theorem `exists_infinite_primes`, and Euclid's lemma form `gcd_of_prime`. `Nat.coprime` and `coprime_divides_of_divides_mul` (the modern Euclid's lemma) live in `src/nat/nat_coprime.ac`.
+- `src/int/lattice.ac` defines `Int.is_prime(a) := abs(a).is_prime` and proves `gcd_of_prime` and `euclids_lemma_prime` for `Int`.
+- For the fundamental theorem: prefer the **list-of-primes** representation as the primary one (matches `nat_crt_list` / `list_product` shape and works with the existing `pairwise_coprime` and `product[Nat]` infrastructure); derive `count_prime_factor` from it. The multiset-via-`v_p(n)` view is the natural alternative form once divisibility lattices are needed.
+- For genericity: keep prime factorisation in a new file `src/nat/nat_factorisation.ac` so the heavy structural-induction lemmas don't inflate `nat_base.ac`'s cache footprint. The downstream `Int` prime API can layer on top via the absolute-value bridge.

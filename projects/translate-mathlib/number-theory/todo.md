@@ -2,7 +2,7 @@
 
 Goal: push beyond the current arithmetic core into the standard theories that Mathlib treats as number theory.
 
-- [ ] Develop prime numbers and unique factorization in the integers
+- [ ] [Prime numbers and unique factorization](primes-and-factorization/todo.md)
 - [ ] Support arithmetic and multiplicative functions
 - [ ] Add continued fractions and their approximation theory
 - [ ] Develop quadratic residues and quadratic reciprocity
