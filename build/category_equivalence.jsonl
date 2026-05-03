@@ -34,11 +34,11 @@
 {"goal":"identity_functor[O, M](c).obj_map = identity_fn[O]","proof":[]}
 {"goal":"h.obj_map = compose[O, O, O](identity_fn[O], identity_fn[O])","proof":[]}
 {"goal":"compose[O, O, O](identity_fn[O], identity_fn[O]) = identity_fn[O]","proof":[]}
-{"goal":"h.obj_map = identity_fn[O]","proof":["let w0: O satisfy { identity_fn(w0) != h.obj_map(w0) }","function(x0: O) { compose(identity_fn[O], identity_fn[O], x0) = h.obj_map(x0) }(w0)","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T0, T1](x0, identity_fn[T0], x1) = x0(x1) }[O, O](identity_fn[O], w0)"]}
+{"goal":"h.obj_map = identity_fn[O]","proof":[]}
 {"goal":"identity_functor_self_compose_obj_map","proof":[]}
 {"goal":"h.mor_map = compose[M, M, M](identity_functor[O, M](c).mor_map, identity_functor[O, M](c).mor_map)","proof":[]}
 {"goal":"identity_functor[O, M](c).mor_map = identity_fn[M]","proof":[]}
 {"goal":"h.mor_map = compose[M, M, M](identity_fn[M], identity_fn[M])","proof":[]}
 {"goal":"compose[M, M, M](identity_fn[M], identity_fn[M]) = identity_fn[M]","proof":[]}
-{"goal":"h.mor_map = identity_fn[M]","proof":["let w0: M satisfy { identity_fn(w0) != h.mor_map(w0) }","function(x0: M) { compose(identity_fn[M], identity_fn[M], x0) = h.mor_map(x0) }(w0)","function[T0, T1](x0: T0 -> T1, x1: T0) { compose[T0, T0, T1](x0, identity_fn[T0], x1) = x0(x1) }[M, M](identity_fn[M], w0)"]}
+{"goal":"h.mor_map = identity_fn[M]","proof":[]}
 {"goal":"identity_functor_self_compose_mor_map","proof":[]}

@@ -1,0 +1,17 @@
+{"goal":"is_reflexive[Int](int_mod_rel(n))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or is_reflexive[T0](x0) }[Int](int_mod_rel(n))"]}
+{"goal":"int_congr_mod_refl","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { lib(set).equivalence_class[T0](x0, x1) != lib(set).equivalence_class[T0](x0, x2) or not lib(relation_basic).is_equivalence[T0](x0) or x0(x1, x2) }[Int](int_mod_rel(n), a, a)","function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, a)"]}
+{"goal":"is_symmetric[Int](int_mod_rel(n))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or lib(relation_basic).is_partial_equivalence[T0](x0) }[Int](int_mod_rel(n))","function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_partial_equivalence[T0](x0) or is_symmetric[T0](x0) }[Int](int_mod_rel(n))"]}
+{"goal":"int_congr_mod_symm","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not is_symmetric[T0](x0) or not x0(x1, x2) or x0(x2, x1) }[Int](int_mod_rel(n), a, b)","function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, b)","function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, b, a)"]}
+{"goal":"int_mod_rel(n, a, b)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, b)"]}
+{"goal":"int_mod_rel(n, b, c)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, b, c)"]}
+{"goal":"is_transitive[Int](int_mod_rel(n))","proof":["function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_equivalence[T0](x0) or lib(relation_basic).is_partial_equivalence[T0](x0) }[Int](int_mod_rel(n))","function[T0](x0: (T0, T0) -> Bool) { not lib(relation_basic).is_partial_equivalence[T0](x0) or is_transitive[T0](x0) }[Int](int_mod_rel(n))"]}
+{"goal":"int_mod_rel(n, a, c)","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0, x3: T0) { not is_transitive[T0](x0) or not x0(x1, x2) or not x0(x2, x3) or x0(x1, x3) }[Int](int_mod_rel(n), a, b, c)"]}
+{"goal":"int_congr_mod_trans","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, c)"]}
+{"goal":"int_mod_rel(n, a, c)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, c)"]}
+{"goal":"int_mod_rel(n, b, d)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, b, d)"]}
+{"goal":"int_mod_rel(n, a + b, c + d)","proof":[]}
+{"goal":"int_congr_mod_add","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a + b, c + d)"]}
+{"goal":"int_mod_rel(n, a, c)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a, c)"]}
+{"goal":"int_mod_rel(n, b, d)","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, b, d)"]}
+{"goal":"int_mod_rel(n, a * b, c * d)","proof":[]}
+{"goal":"int_congr_mod_mul","proof":["function(x0: Nat, x1: Int, x2: Int) { int_mod_rel(x0, x1, x2) = x1.congr_mod(x2, x0) }(n, a * b, c * d)"]}
