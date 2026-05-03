@@ -1,0 +1,42 @@
+from nat.basic_addition import Nat
+from nat.nat_base import mod_mod
+numerals Nat
+
+attributes Nat {
+    /// True if this number is congruent to b modulo n. Defined as the equality
+    /// of the two values' remainders when divided by n. This avoids the
+    /// truncating subtraction on Nat that the divisibility-based form would
+    /// require.
+    define congr_mod(self, b: Nat, n: Nat) -> Bool {
+        self.mod(n) = b.mod(n)
+    }
+}
+
+/// Congruence modulo n is reflexive.
+theorem congr_mod_refl(a: Nat, n: Nat) {
+    a.congr_mod(a, n)
+}
+
+/// Congruence modulo n is symmetric.
+theorem congr_mod_symm(a: Nat, b: Nat, n: Nat) {
+    a.congr_mod(b, n) implies b.congr_mod(a, n)
+}
+
+/// Congruence modulo n is transitive.
+theorem congr_mod_trans(a: Nat, b: Nat, c: Nat, n: Nat) {
+    a.congr_mod(b, n) and b.congr_mod(c, n) implies a.congr_mod(c, n)
+} by {
+    if a.congr_mod(b, n) and b.congr_mod(c, n) {
+        a.mod(n) = b.mod(n)
+        b.mod(n) = c.mod(n)
+        a.mod(n) = c.mod(n)
+    }
+}
+
+/// A natural is congruent to its remainder modulo n.
+theorem mod_congr_mod_self(a: Nat, n: Nat) {
+    a.mod(n).congr_mod(a, n)
+} by {
+    mod_mod(a, n)
+    a.mod(n).mod(n) = a.mod(n)
+}

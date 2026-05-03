@@ -2,7 +2,7 @@
 
 Goal: push beyond the current arithmetic core into the standard theories that Mathlib treats as number theory.
 
-- [ ] Add modular arithmetic and congruence APIs
+- [ ] [Modular arithmetic and congruences](modular-arithmetic/todo.md)
 - [ ] Develop prime numbers and unique factorization in the integers
 - [ ] Support arithmetic and multiplicative functions
 - [ ] Add continued fractions and their approximation theory
