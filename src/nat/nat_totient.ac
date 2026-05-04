@@ -1,7 +1,8 @@
-from nat.nat_coprime import Nat, coprime_one_left
-from nat.nat_gcd import gcd_zero_left
-from nat.nat_factorisation import prime_divisor_is_one_or_self
-from nat.nat_base import divides_self, divides_zero
+from nat.nat_coprime import Nat, coprime_one_left, coprime_mul_iff
+from nat.nat_gcd import gcd_zero_left, gcd_of_prime, gcd_comm, divides_gcd
+from nat.nat_factorisation import prime_divisor_is_one_or_self, coprime_of_distinct_primes
+from nat.nat_base import divides_self, divides_zero, add_imp_sub
+from nat.nat_crt import nat_coprime_combine
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -196,6 +197,18 @@ theorem totient_prime(p: Nat) {
         count_coprime_to(p, p) = p - Nat.1
         p.totient = count_coprime_to(p, p)
         p.totient = p - Nat.1
+    }
+}
+
+/// `n - 1 = pred` whenever `pred.suc = n`. Local helper to avoid pulling in
+/// `nat_fermat`.
+theorem totient_sub_one_pred(n: Nat, pred: Nat) {
+    pred.suc = n implies n - Nat.1 = pred
+} by {
+    if pred.suc = n {
+        pred.suc = pred + Nat.1
+        pred + Nat.1 = n
+        add_imp_sub(pred, Nat.1, n)
     }
 }
 
@@ -447,4 +460,464 @@ theorem coprime_partition(n: Nat, k: Nat) {
         }
     }
     f(k)
+}
+
+/// Forward: if `k` is not coprime to prime `p`, then `p` divides `k`.
+theorem not_coprime_imp_divides_prime(p: Nat, k: Nat) {
+    p.is_prime and not k.coprime(p) implies p.divides(k)
+} by {
+    if p.is_prime and not k.coprime(p) {
+        gcd_of_prime(p, k)
+        if p.gcd(k) = Nat.1 {
+            gcd_comm(p, k)
+            k.gcd(p) = Nat.1
+            k.coprime(p)
+            false
+        }
+    }
+}
+
+/// Backward: if prime `p` divides `k`, then `k` is not coprime to `p`.
+theorem divides_prime_imp_not_coprime(p: Nat, k: Nat) {
+    p.is_prime and p.divides(k) implies not k.coprime(p)
+} by {
+    if p.is_prime and p.divides(k) {
+        if k.coprime(p) {
+            gcd_comm(k, p)
+            k.gcd(p) = p.gcd(k)
+            p.gcd(k) = Nat.1
+            divides_gcd(p, p, k)
+            p.divides(p.gcd(k))
+            p.divides(Nat.1)
+            let kk: Nat satisfy { p * kk = Nat.1 }
+            p = Nat.1
+            Nat.1 < p
+            false
+        }
+    }
+}
+
+/// For prime `p`, "not coprime to `p`" and "`p` divides" agree.
+theorem not_coprime_iff_divides_prime(p: Nat, k: Nat) {
+    p.is_prime implies (not k.coprime(p) = p.divides(k))
+} by {
+    if p.is_prime {
+        if not k.coprime(p) {
+            not_coprime_imp_divides_prime(p, k)
+        }
+        if p.divides(k) {
+            divides_prime_imp_not_coprime(p, k)
+        }
+    }
+}
+
+/// Forward: `m * n` divides `k` implies both `m` and `n` divide `k`.
+theorem divides_mul_imp_each(m: Nat, n: Nat, k: Nat) {
+    (m * n).divides(k) implies m.divides(k) and n.divides(k)
+} by {
+    if (m * n).divides(k) {
+        let c: Nat satisfy { m * n * c = k }
+        m * n * c = m * (n * c)
+        k = m * (n * c)
+        m.divides(k)
+        m * n * c = n * (m * c)
+        k = n * (m * c)
+        n.divides(k)
+    }
+}
+
+
+/// Forward: if `k` is not coprime to `p * q` for distinct primes `p`, `q`, then
+/// `p` or `q` divides `k`.
+theorem not_coprime_pq_imp_div(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and not k.coprime(p * q)
+        implies p.divides(k) or q.divides(k)
+} by {
+    if p.is_prime and q.is_prime and p != q and not k.coprime(p * q) {
+        coprime_of_distinct_primes(p, q)
+        p.coprime(q)
+        coprime_mul_iff(k, p, q)
+        not (k.coprime(p) and k.coprime(q))
+        not k.coprime(p) or not k.coprime(q)
+        if not k.coprime(p) {
+            not_coprime_imp_divides_prime(p, k)
+            p.divides(k)
+        }
+        if not k.coprime(q) {
+            not_coprime_imp_divides_prime(q, k)
+            q.divides(k)
+        }
+    }
+}
+
+/// Backward: if `p` or `q` divides `k` for distinct primes `p`, `q`, then `k`
+/// is not coprime to `p * q`.
+theorem div_imp_not_coprime_pq(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and (p.divides(k) or q.divides(k))
+        implies not k.coprime(p * q)
+} by {
+    if p.is_prime and q.is_prime and p != q and (p.divides(k) or q.divides(k)) {
+        coprime_of_distinct_primes(p, q)
+        p.coprime(q)
+        coprime_mul_iff(k, p, q)
+        if p.divides(k) {
+            divides_prime_imp_not_coprime(p, k)
+            not k.coprime(p)
+            not (k.coprime(p) and k.coprime(q))
+        }
+        if q.divides(k) {
+            divides_prime_imp_not_coprime(q, k)
+            not k.coprime(q)
+            not (k.coprime(p) and k.coprime(q))
+        }
+        not k.coprime(p * q)
+    }
+}
+
+/// Recurrence: stepping `k` past a `not coprime` index adds one to the count.
+theorem count_not_coprime_suc_yes(n: Nat, k: Nat) {
+    not k.coprime(n)
+        implies count_not_coprime_to(n, k.suc) = count_not_coprime_to(n, k) + Nat.1
+}
+
+/// Recurrence: stepping `k` past a coprime index leaves the count alone.
+theorem count_not_coprime_suc_no(n: Nat, k: Nat) {
+    k.coprime(n)
+        implies count_not_coprime_to(n, k.suc) = count_not_coprime_to(n, k)
+}
+
+/// Inclusion-exclusion identity over `[0, k)`: for distinct primes `p`, `q`,
+/// the not-coprime-to-`p*q` count combined with the multiples-of-`p*q` count
+/// equals the sum of multiples of `p` and multiples of `q`.
+define ie_pq_pred(p: Nat, q: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        count_not_coprime_to(p * q, k) + count_multiples(p * q, k) =
+            count_multiples(p, k) + count_multiples(q, k)
+    }
+}
+
+/// Case both: p | k and q | k.
+theorem ie_pq_step_both(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k) and q.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k) and q.divides(k) {
+        coprime_of_distinct_primes(p, q)
+        let nc: Nat = count_not_coprime_to(p * q, k)
+        let mpq: Nat = count_multiples(p * q, k)
+        let mp: Nat = count_multiples(p, k)
+        let mq: Nat = count_multiples(q, k)
+        nc + mpq = mp + mq
+        nat_coprime_combine(p, q, k)
+        (p * q).divides(k)
+        div_imp_not_coprime_pq(p, q, k)
+        not k.coprime(p * q)
+        count_not_coprime_suc_yes(p * q, k)
+        count_not_coprime_to(p * q, k.suc) = nc + Nat.1
+        count_multiples_suc_yes(p * q, k)
+        count_multiples(p * q, k.suc) = mpq + Nat.1
+        count_multiples_suc_yes(p, k)
+        count_multiples(p, k.suc) = mp + Nat.1
+        count_multiples_suc_yes(q, k)
+        count_multiples(q, k.suc) = mq + Nat.1
+        (nc + Nat.1) + (mpq + Nat.1) = nc + mpq + Nat.2
+        (mp + Nat.1) + (mq + Nat.1) = mp + mq + Nat.2
+        count_not_coprime_to(p * q, k.suc) + count_multiples(p * q, k.suc) =
+            count_multiples(p, k.suc) + count_multiples(q, k.suc)
+    }
+}
+
+/// Case left only: p | k and not q | k.
+theorem ie_pq_step_left(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k) and not q.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k) and not q.divides(k) {
+        let nc: Nat = count_not_coprime_to(p * q, k)
+        let mpq: Nat = count_multiples(p * q, k)
+        let mp: Nat = count_multiples(p, k)
+        let mq: Nat = count_multiples(q, k)
+        nc + mpq = mp + mq
+        div_imp_not_coprime_pq(p, q, k)
+        not k.coprime(p * q)
+        count_not_coprime_suc_yes(p * q, k)
+        count_not_coprime_to(p * q, k.suc) = nc + Nat.1
+        if (p * q).divides(k) {
+            divides_mul_imp_each(p, q, k)
+            q.divides(k)
+            false
+        }
+        not (p * q).divides(k)
+        count_multiples_suc_no(p * q, k)
+        count_multiples(p * q, k.suc) = mpq
+        count_multiples_suc_yes(p, k)
+        count_multiples(p, k.suc) = mp + Nat.1
+        count_multiples_suc_no(q, k)
+        count_multiples(q, k.suc) = mq
+        (nc + Nat.1) + mpq = nc + mpq + Nat.1
+        (mp + Nat.1) + mq = mp + mq + Nat.1
+        count_not_coprime_to(p * q, k.suc) + count_multiples(p * q, k.suc) =
+            count_multiples(p, k.suc) + count_multiples(q, k.suc)
+    }
+}
+
+/// Case right only: not p | k and q | k.
+theorem ie_pq_step_right(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k) and q.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k) and q.divides(k) {
+        let nc: Nat = count_not_coprime_to(p * q, k)
+        let mpq: Nat = count_multiples(p * q, k)
+        let mp: Nat = count_multiples(p, k)
+        let mq: Nat = count_multiples(q, k)
+        nc + mpq = mp + mq
+        div_imp_not_coprime_pq(p, q, k)
+        not k.coprime(p * q)
+        count_not_coprime_suc_yes(p * q, k)
+        count_not_coprime_to(p * q, k.suc) = nc + Nat.1
+        if (p * q).divides(k) {
+            divides_mul_imp_each(p, q, k)
+            p.divides(k)
+            false
+        }
+        not (p * q).divides(k)
+        count_multiples_suc_no(p * q, k)
+        count_multiples(p * q, k.suc) = mpq
+        count_multiples_suc_no(p, k)
+        count_multiples(p, k.suc) = mp
+        count_multiples_suc_yes(q, k)
+        count_multiples(q, k.suc) = mq + Nat.1
+        (nc + Nat.1) + mpq = nc + mpq + Nat.1
+        mp + (mq + Nat.1) = mp + mq + Nat.1
+        count_not_coprime_to(p * q, k.suc) + count_multiples(p * q, k.suc) =
+            count_multiples(p, k.suc) + count_multiples(q, k.suc)
+    }
+}
+
+/// Case neither: not p | k and not q | k (so k is coprime to p*q).
+theorem ie_pq_step_neither(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k) and not q.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k) and not q.divides(k) {
+        let nc: Nat = count_not_coprime_to(p * q, k)
+        let mpq: Nat = count_multiples(p * q, k)
+        let mp: Nat = count_multiples(p, k)
+        let mq: Nat = count_multiples(q, k)
+        nc + mpq = mp + mq
+        if not k.coprime(p * q) {
+            not_coprime_pq_imp_div(p, q, k)
+            p.divides(k) or q.divides(k)
+            false
+        }
+        k.coprime(p * q)
+        count_not_coprime_suc_no(p * q, k)
+        count_not_coprime_to(p * q, k.suc) = nc
+        if (p * q).divides(k) {
+            divides_mul_imp_each(p, q, k)
+            p.divides(k)
+            false
+        }
+        not (p * q).divides(k)
+        count_multiples_suc_no(p * q, k)
+        count_multiples(p * q, k.suc) = mpq
+        count_multiples_suc_no(p, k)
+        count_multiples(p, k.suc) = mp
+        count_multiples_suc_no(q, k)
+        count_multiples(q, k.suc) = mq
+        count_not_coprime_to(p * q, k.suc) + count_multiples(p * q, k.suc) =
+            count_multiples(p, k.suc) + count_multiples(q, k.suc)
+    }
+}
+
+/// Inductive step for the inclusion-exclusion identity `ie_pq_pred`,
+/// outer-on-p case split.
+theorem ie_pq_step_p_div(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and p.divides(k) {
+        if q.divides(k) {
+            ie_pq_step_both(p, q, k)
+        } else {
+            ie_pq_step_left(p, q, k)
+        }
+    }
+}
+
+/// Inductive step for the inclusion-exclusion identity `ie_pq_pred`,
+/// outer-on-not-p case split.
+theorem ie_pq_step_not_p_div(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        and not p.divides(k) {
+        if q.divides(k) {
+            ie_pq_step_right(p, q, k)
+        } else {
+            ie_pq_step_neither(p, q, k)
+        }
+    }
+}
+
+/// Inductive step for the inclusion-exclusion identity `ie_pq_pred`.
+theorem ie_pq_step(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k)
+        implies ie_pq_pred(p, q)(k.suc)
+} by {
+    if p.is_prime and q.is_prime and p != q and ie_pq_pred(p, q)(k) {
+        if p.divides(k) {
+            ie_pq_step_p_div(p, q, k)
+        } else {
+            ie_pq_step_not_p_div(p, q, k)
+        }
+    }
+}
+
+/// Inner induction for the inclusion-exclusion identity: walks `k` upward.
+theorem ie_pq_run(p: Nat, q: Nat, k: Nat) {
+    p.is_prime and q.is_prime and p != q implies ie_pq_pred(p, q)(k)
+} by {
+    if p.is_prime and q.is_prime and p != q {
+        let f: Nat -> Bool = function(x: Nat) {
+            count_not_coprime_to(p * q, x) + count_multiples(p * q, x) =
+                count_multiples(p, x) + count_multiples(q, x)
+        }
+        forall(y: Nat) {
+            ie_pq_pred(p, q)(y) = f(y)
+            f(y) = ie_pq_pred(p, q)(y)
+        }
+        // Base.
+        count_not_coprime_to(p * q, Nat.0) = Nat.0
+        count_multiples(p * q, Nat.0) = Nat.0
+        count_multiples(p, Nat.0) = Nat.0
+        count_multiples(q, Nat.0) = Nat.0
+        f(Nat.0)
+        // Step.
+        forall(x: Nat) {
+            if f(x) {
+                ie_pq_pred(p, q)(x)
+                ie_pq_step(p, q, x)
+                ie_pq_pred(p, q)(x.suc)
+                f(x.suc)
+            }
+        }
+        f(k)
+        ie_pq_pred(p, q)(k)
+    }
+}
+
+/// `count_not_coprime_to(p * q, p * q) = p + q - 1` for distinct primes `p`, `q`.
+theorem count_not_coprime_pq_at_pq(p: Nat, q: Nat) {
+    p.is_prime and q.is_prime and p != q
+        implies count_not_coprime_to(p * q, p * q) = p + q - Nat.1
+} by {
+    if p.is_prime and q.is_prime and p != q {
+        ie_pq_run(p, q, p * q)
+        count_not_coprime_to(p * q, p * q) + count_multiples(p * q, p * q) =
+            count_multiples(p, p * q) + count_multiples(q, p * q)
+        // count_multiples(p, p*q) = q.
+        Nat.1 < p
+        p != Nat.0
+        count_multiples_div(p, q)
+        count_multiples(p, p * q) = q
+        // count_multiples(q, p*q) = p.
+        Nat.1 < q
+        q != Nat.0
+        count_multiples_div(q, p)
+        count_multiples(q, q * p) = p
+        q * p = p * q
+        count_multiples(q, p * q) = p
+        // count_multiples(p*q, p*q) = 1.
+        p * q != Nat.0
+        p * q = (p * q) * Nat.1
+        count_multiples_div(p * q, Nat.1)
+        count_multiples(p * q, (p * q) * Nat.1) = Nat.1
+        count_multiples(p * q, p * q) = Nat.1
+        // Solve: count_not_coprime_to + 1 = q + p, so = p + q - 1.
+        count_not_coprime_to(p * q, p * q) + Nat.1 = q + p
+        q + p = p + q
+        count_not_coprime_to(p * q, p * q) + Nat.1 = p + q
+        Nat.1 <= p + q
+        let pq_pred: Nat satisfy { pq_pred.suc = p + q }
+        pq_pred + Nat.1 = pq_pred.suc
+        pq_pred + Nat.1 = p + q
+        count_not_coprime_to(p * q, p * q) = pq_pred
+        // p + q - 1 = pq_pred.
+        totient_sub_one_pred(p + q, pq_pred)
+        (p + q) - Nat.1 = pq_pred
+        count_not_coprime_to(p * q, p * q) = (p + q) - Nat.1
+    }
+}
+
+/// Euler's totient at a product of distinct primes:
+///   `nat_totient(p * q) = (p - 1) * (q - 1)`.
+theorem totient_pq(p: Nat, q: Nat) {
+    p.is_prime and q.is_prime and p != q
+        implies (p * q).totient = (p - Nat.1) * (q - Nat.1)
+} by {
+    if p.is_prime and q.is_prime and p != q {
+        coprime_partition(p * q, p * q)
+        count_coprime_to(p * q, p * q) + count_not_coprime_to(p * q, p * q) = p * q
+        count_not_coprime_pq_at_pq(p, q)
+        count_not_coprime_to(p * q, p * q) = p + q - Nat.1
+        count_coprime_to(p * q, p * q) + (p + q - Nat.1) = p * q
+        // Solve for count_coprime_to: = p*q - (p + q - 1) = p*q - p - q + 1 = (p-1)(q-1).
+        Nat.1 < p
+        Nat.1 < q
+        let pp: Nat satisfy { pp.suc = p }
+        let qp: Nat satisfy { qp.suc = q }
+        // (p - 1) = pp, (q - 1) = qp.
+        totient_sub_one_pred(p, pp)
+        p - Nat.1 = pp
+        totient_sub_one_pred(q, qp)
+        q - Nat.1 = qp
+        // (p-1)*(q-1) = pp * qp.
+        // p*q = (pp+1)*(qp+1) = pp*qp + pp + qp + 1.
+        p = pp + Nat.1
+        q = qp + Nat.1
+        p * q = (pp + Nat.1) * (qp + Nat.1)
+        (pp + Nat.1) * (qp + Nat.1) = pp * qp + pp + qp + Nat.1
+        p * q = pp * qp + pp + qp + Nat.1
+        // p + q - 1 = (pp + 1) + (qp + 1) - 1 = pp + qp + 1.
+        p + q = (pp + Nat.1) + (qp + Nat.1)
+        (pp + Nat.1) + (qp + Nat.1) = pp + qp + Nat.2
+        p + q = pp + qp + Nat.2
+        // p + q - 1 = pp + qp + 1.
+        let s: Nat = pp + qp + Nat.1
+        s + Nat.1 = pp + qp + Nat.2
+        totient_sub_one_pred(p + q, s)
+        p + q - Nat.1 = s
+        // Now: count_coprime_to + (pp + qp + 1) = pp*qp + pp + qp + 1.
+        count_coprime_to(p * q, p * q) + (pp + qp + Nat.1) = pp * qp + pp + qp + Nat.1
+        // Rewrite RHS to (pp * qp) + (pp + qp + 1) and cancel via add_imp_sub.
+        pp * qp + pp + qp + Nat.1 = pp * qp + (pp + qp + Nat.1)
+        count_coprime_to(p * q, p * q) + (pp + qp + Nat.1) =
+            pp * qp + (pp + qp + Nat.1)
+        let total: Nat = pp * qp + (pp + qp + Nat.1)
+        count_coprime_to(p * q, p * q) + (pp + qp + Nat.1) = total
+        pp * qp + (pp + qp + Nat.1) = total
+        add_imp_sub(count_coprime_to(p * q, p * q), pp + qp + Nat.1, total)
+        add_imp_sub(pp * qp, pp + qp + Nat.1, total)
+        count_coprime_to(p * q, p * q) = total - (pp + qp + Nat.1)
+        pp * qp = total - (pp + qp + Nat.1)
+        count_coprime_to(p * q, p * q) = pp * qp
+        (p * q).totient = count_coprime_to(p * q, p * q)
+        (p * q).totient = pp * qp
+        (p - Nat.1) * (q - Nat.1) = pp * qp
+        (p * q).totient = (p - Nat.1) * (q - Nat.1)
+    }
 }
