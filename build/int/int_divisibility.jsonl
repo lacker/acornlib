@@ -66,6 +66,6 @@
 {"goal":"int_divides_antisymm","proof":[]}
 {"goal":"abs(Int.from_nat(n)) = n","proof":[]}
 {"goal":"is_prime(Int.from_nat(n)) = abs(Int.from_nat(n)).is_prime","proof":["function(x0: Int) { abs(x0).is_prime = is_prime(x0) }(Int.from_nat(n))"]}
-{"goal":"is_prime(Int.from_nat(n)) = n.is_prime","proof":["abs(Int.from_nat(n)).is_prime != is_prime(Int.from_nat(n))"]}
+{"goal":"is_prime(Int.from_nat(n)) = n.is_prime","proof":[]}
 {"goal":"nat_is_prime_iff_int_is_prime","proof":[]}
 {"goal":"int_is_prime_iff_abs_is_prime","proof":["function(x0: Int) { abs(x0).is_prime = is_prime(x0) }(a)"]}
