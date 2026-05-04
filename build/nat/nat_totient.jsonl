@@ -807,6 +807,27 @@
 {"goal":"product_map_scalar_pred(a)(tail)","proof":[]}
 {"goal":"product_map_scalar_pred(a)(List.cons(head, tail))","proof":[]}
 {"goal":"p(List.cons(head, tail))","proof":[]}
-{"goal":"p(z)","proof":["not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(z)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)","p(w2)","not p(List.cons(w0, w2))"]}
+{"goal":"p(z)","proof":["not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(z)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)"]}
 {"goal":"p(l)","proof":["function(x0: List[Nat]) { p(x0) }(l)"]}
 {"goal":"product_map_scalar","proof":["function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(l, a)"]}
+{"goal":"product_coprime_pred_apply","proof":["function(x0: List[Nat], x1: Nat) { (exists(k0: Nat) { k0 ∈ x0 and not k0.coprime(x1) } or product[Nat](x0).coprime(x1)) = product_coprime_pred(x1, x0) }(l, n)"]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"1.coprime(n)","proof":[]}
+{"goal":"product_coprime_nil","proof":["function(x0: List[Nat], x1: Nat) { (exists(k0: Nat) { k0 ∈ x0 and not k0.coprime(x1) } or product[Nat](x0).coprime(x1)) = product_coprime_pred(x1, x0) }(List.nil[Nat], n)"]}
+{"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[Nat](head, tail, List.cons(head, tail), head)"]}
+{"goal":"head.coprime(n)","proof":["function(x0: Nat) { not x0 ∈ List.cons(head, tail) or x0.coprime(n) }(head)"]}
+{"goal":"List.cons(head, tail).contains(x)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x0) != x3 or x1 ∈ x3 or x1 = x2 }[Nat](tail, x, head, List.cons(head, tail))"]}
+{"goal":"x.coprime(n)","proof":["function(x0: Nat) { not x0 ∈ List.cons(head, tail) or x0.coprime(n) }(x)"]}
+{"goal":"product[Nat](tail).coprime(n)","proof":["not forall(x0: Nat) { not x0 ∈ tail or x0.coprime(n) } or not product_coprime_pred(n, tail)","let w0: Nat satisfy { w0 ∈ tail and not w0.coprime(n) }","function(x0: Nat) { not x0 ∈ tail or x0.coprime(n) }(w0)"]}
+{"goal":"product[Nat](List.cons(head, tail)) = head * product[Nat](tail)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](head, tail)"]}
+{"goal":"(head * product[Nat](tail)).coprime(n)","proof":[]}
+{"goal":"product[Nat](List.cons(head, tail)).coprime(n)","proof":[]}
+{"goal":"product_coprime_cons","proof":["function(x0: List[Nat], x1: Nat) { (exists(k0: Nat) { k0 ∈ x0 and not k0.coprime(x1) } or product[Nat](x0).coprime(x1)) = product_coprime_pred(x1, x0) }(List.cons(head, tail), n)"]}
+{"goal":"p(List.nil[Nat])","proof":[]}
+{"goal":"p(List.cons(head, tail))","proof":[]}
+{"goal":"p(z)","proof":["not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(z)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)","p(w2)","not p(List.cons(w0, w2))"]}
+{"goal":"p(l)","proof":["function(x0: List[Nat]) { p(x0) }(l)"]}
+{"goal":"product_coprime_pred(n)(l)","proof":[]}
+{"goal":"product_coprime_of_all","proof":["function(x0: Nat, x1: List[Nat]) { product_coprime_pred(x0, x1) }(n, l)","not forall(x0: Nat) { not x0 ∈ l or x0.coprime(n) } or not product_coprime_pred(n, l)","let w0: Nat satisfy { w0 ∈ l and not w0.coprime(n) }","function(x0: Nat) { not x0 ∈ l or x0.coprime(n) }(w0)"]}
+{"goal":"x.coprime(n)","proof":[]}
+{"goal":"product_coprime_residues_coprime","proof":["let w0: Nat satisfy { w0 ∈ coprime_residues(n) and not w0.coprime(n) }","function(x0: Nat) { not x0 ∈ coprime_residues(n) or x0.coprime(n) }(w0)"]}

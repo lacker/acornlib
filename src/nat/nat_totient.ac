@@ -2491,3 +2491,98 @@ theorem product_map_scalar(a: Nat, l: List[Nat]) {
     forall(z: List[Nat]) { p(z) }
     p(l)
 }
+
+/// Inductive predicate for `product_coprime_of_all`.
+define product_coprime_pred(n: Nat) -> (List[Nat] -> Bool) {
+    function(l: List[Nat]) {
+        (forall(x: Nat) { l.contains(x) implies x.coprime(n) })
+            implies product[Nat](l).coprime(n)
+    }
+}
+
+/// Bridge: unfolds the predicate to its underlying implication.
+theorem product_coprime_pred_apply(n: Nat, l: List[Nat]) {
+    product_coprime_pred(n)(l)
+        and (forall(x: Nat) { l.contains(x) implies x.coprime(n) })
+        implies product[Nat](l).coprime(n)
+}
+
+/// Base case: empty list. `product(nil) = 1` is coprime to `n`.
+theorem product_coprime_nil(n: Nat) {
+    product_coprime_pred(n)(List.nil[Nat])
+} by {
+    product[Nat](List.nil[Nat]) = Nat.1
+    coprime_one_left(n)
+    Nat.1.coprime(n)
+}
+
+/// Inductive step.
+theorem product_coprime_cons(n: Nat, head: Nat, tail: List[Nat]) {
+    product_coprime_pred(n)(tail)
+        implies product_coprime_pred(n)(List.cons(head, tail))
+} by {
+    if product_coprime_pred(n)(tail) {
+        if (forall(x: Nat) {
+            List.cons(head, tail).contains(x) implies x.coprime(n)
+        }) {
+            // head is coprime to n.
+            List.cons(head, tail).contains(head)
+            head.coprime(n)
+            // every element of tail is coprime to n.
+            forall(x: Nat) {
+                if tail.contains(x) {
+                    List.cons(head, tail).contains(x)
+                    x.coprime(n)
+                }
+            }
+            // Apply IH to get product(tail) coprime n.
+            product_coprime_pred_apply(n, tail)
+            product[Nat](tail).coprime(n)
+            // product(cons(head, tail)) = head * product(tail).
+            product[Nat](List.cons(head, tail)) = head * product[Nat](tail)
+            coprime_mul_both(n, head, product[Nat](tail))
+            (head * product[Nat](tail)).coprime(n)
+            product[Nat](List.cons(head, tail)).coprime(n)
+        }
+    }
+}
+
+/// `product[Nat](L).coprime(n)` whenever every element of `L` is coprime to
+/// `n`.
+theorem product_coprime_of_all(n: Nat, l: List[Nat]) {
+    (forall(x: Nat) { l.contains(x) implies x.coprime(n) })
+        implies product[Nat](l).coprime(n)
+} by {
+    define p(x: List[Nat]) -> Bool { product_coprime_pred(n)(x) }
+    product_coprime_nil(n)
+    p(List.nil[Nat])
+    forall(head: Nat, tail: List[Nat]) {
+        if p(tail) {
+            product_coprime_cons(n, head, tail)
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(z: List[Nat]) { p(z) })
+    forall(z: List[Nat]) { p(z) }
+    p(l)
+    product_coprime_pred(n)(l)
+    if (forall(x: Nat) { l.contains(x) implies x.coprime(n) }) {
+        product_coprime_pred_apply(n, l)
+    }
+}
+
+/// `product(coprime_residues(n)).coprime(n)`. Specialisation of
+/// `product_coprime_of_all` to the units list — every element is coprime to
+/// `n` by construction (`coprime_residues_all_coprime`), so their product is
+/// too.
+theorem product_coprime_residues_coprime(n: Nat) {
+    product[Nat](coprime_residues(n)).coprime(n)
+} by {
+    forall(x: Nat) {
+        if coprime_residues(n).contains(x) {
+            coprime_residues_all_coprime(n, x)
+            x.coprime(n)
+        }
+    }
+    product_coprime_of_all(n, coprime_residues(n))
+}

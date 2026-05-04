@@ -50,6 +50,11 @@ cryptographic content.
   the Euler product argument needs once it switches from
   `mul_mod_fn(n, a)` to plain `scalar_mul_fn(a)` via the per-element
   `(a*x).mod(n) ≡ a*x (mod n)` congruence.
+- `product_coprime_of_all` and `product_coprime_residues_coprime`:
+  the Nat product of any list of `n`-coprime values is itself coprime
+  to `n`; in particular, `product(coprime_residues(n))` is coprime
+  to `n` — the cancellation factor for the final
+  `cancel_coprime` step.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
@@ -78,8 +83,8 @@ general `inverse_imp_coprime` (`a * b ≡ 1 (mod n) ⟹ b.coprime(n)`).
       `a^totient(n) * product(coprime_residues(n))`;
       (3) use `mul_mod_residues_is_permutation` +
       `permutation_preserves_product` to equate both Nat-products;
-      (4) show `product(coprime_residues(n))` is coprime to `n` and
-      cancel via `cancel_coprime`.
+      (4) cancel `product(coprime_residues(n))` via `cancel_coprime`
+      using `product_coprime_residues_coprime`.
 
 ## DSA
 
