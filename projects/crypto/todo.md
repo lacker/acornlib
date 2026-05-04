@@ -26,8 +26,11 @@ cryptographic content.
   `coprime_residues_all_coprime` and `coprime_residues_all_below`, the
   membership characterization
   `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`,
-  and `coprime_residues_mul_mem`: multiplication by a coprime unit
-  preserves membership (the membership half of "mult permutes the units").
+  `coprime_residues_mul_mem`: multiplication by a coprime unit preserves
+  membership, and `coprime_residues_mul_inj` (with the underlying
+  `mul_mod_inj_below`): the same multiplication is injective on `[0, n)`.
+  Together these are the membership and injectivity halves of
+  "multiplication by a unit permutes `coprime_residues(n)`".
   Foundation for the eventual product/permutation argument behind a
   general Euler proof.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.

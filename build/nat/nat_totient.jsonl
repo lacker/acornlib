@@ -603,11 +603,27 @@
 {"goal":"n.coprime(x)","proof":[]}
 {"goal":"n.coprime(a * x)","proof":[]}
 {"goal":"(a * x).coprime(n)","proof":[]}
-{"goal":"coprime_mul_both","proof":["not x.coprime(n) or not a.coprime(n)","x.coprime(n)","a.coprime(n)","not a.coprime(n)"]}
+{"goal":"coprime_mul_both","proof":[]}
 {"goal":"x.coprime(n)","proof":[]}
-{"goal":"(a * x).coprime(n)","proof":["not x.coprime(n) or not a.coprime(n)","not a.coprime(n)","0 != n and a.coprime(n)"]}
+{"goal":"(a * x).coprime(n)","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a * x)(n).coprime(n)","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a * x)(n) < n","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(a * x)(n) < n and lib(nat.nat_base).nat_mod(a * x)(n).coprime(n)","proof":[]}
 {"goal":"coprime_residues(n).contains(lib(nat.nat_base).nat_mod(a * x)(n))","proof":[]}
 {"goal":"coprime_residues_mul_mem","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(x)(n) = lib(nat.nat_base).nat_mod(y)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(x, n, y)"]}
+{"goal":"lib(nat.nat_base).nat_mod(x)(n) = x","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(y)(n) = y","proof":[]}
+{"goal":"x = y","proof":[]}
+{"goal":"congr_mod_below_eq","proof":[]}
+{"goal":"mul_mod_eq_imp_congr","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * x, n, a * y)"]}
+{"goal":"(a * x).congr_mod(a * y, n)","proof":[]}
+{"goal":"x.congr_mod(y, n)","proof":[]}
+{"goal":"x = y","proof":[]}
+{"goal":"mul_mod_inj_below","proof":["lib(nat.nat_base).nat_mod(a * y, n) != lib(nat.nat_base).nat_mod(a * x, n) or not y < n or not x < n or not a.coprime(n) or 0 = n","lib(nat.nat_base).nat_mod(a * y, n) = lib(nat.nat_base).nat_mod(a * x, n)","not y < n or not x < n or not a.coprime(n) or 0 = n","0 != n and a.coprime(n) and x < n and y < n","x < n","not a.coprime(n) or 0 = n","0 != n and a.coprime(n)","not a.coprime(n)"]}
+{"goal":"x < n and x.coprime(n)","proof":[]}
+{"goal":"x < n","proof":[]}
+{"goal":"y < n and y.coprime(n)","proof":[]}
+{"goal":"y < n","proof":[]}
+{"goal":"x = y","proof":["lib(nat.nat_base).nat_mod(a * y, n) != lib(nat.nat_base).nat_mod(a * x, n) or not y < n or not x < n or not a.coprime(n) or 0 = n","lib(nat.nat_base).nat_mod(a * y, n) != lib(nat.nat_base).nat_mod(a * x, n) or not a.coprime(n) or 0 = n","lib(nat.nat_base).nat_mod(a * y, n) = lib(nat.nat_base).nat_mod(a * x, n)","not a.coprime(n) or 0 = n","0 != n and a.coprime(n) and x ∈ coprime_residues(n) and y ∈ coprime_residues(n)","0 != n and a.coprime(n)","not a.coprime(n)"]}
+{"goal":"coprime_residues_mul_inj","proof":[]}

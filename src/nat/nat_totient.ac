@@ -1,7 +1,7 @@
 from nat.nat_coprime import Nat, coprime_one_left, coprime_mul_iff, coprime_mul, coprime_comm, coprime_mod_imp
 from nat.nat_gcd import gcd_zero_left, gcd_of_prime, gcd_comm, divides_gcd
 from nat.nat_factorisation import prime_divisor_is_one_or_self, coprime_of_distinct_primes
-from nat.nat_base import divides_self, divides_zero, add_imp_sub
+from nat.nat_base import divides_self, divides_zero, add_imp_sub, small_mod
 from nat.nat_crt import nat_coprime_combine, nat_congr_combine_coprime
 from nat.nat_fermat import rsa_pow_congr
 from nat.nat_modular_inverse import cancel_coprime
@@ -1871,5 +1871,67 @@ theorem coprime_residues_mul_mem(n: Nat, a: Nat, x: Nat) {
         ((a * x).mod(n)) < n and ((a * x).mod(n)).coprime(n)
         coprime_residues_contains_intro(n, (a * x).mod(n))
         coprime_residues(n).contains((a * x).mod(n))
+    }
+}
+
+/// Helper: from a congruence between two `Nat`s both below `n`, deduce equality.
+theorem congr_mod_below_eq(n: Nat, x: Nat, y: Nat) {
+    n != Nat.0 and x < n and y < n and x.congr_mod(y, n)
+        implies x = y
+} by {
+    if n != Nat.0 and x < n and y < n and x.congr_mod(y, n) {
+        x.mod(n) = y.mod(n)
+        small_mod(x, n)
+        x.mod(n) = x
+        small_mod(y, n)
+        y.mod(n) = y
+        x = y
+    }
+}
+
+/// Helper: `(a * x).mod(n) = (a * y).mod(n)` is the same as the congruence.
+theorem mul_mod_eq_imp_congr(n: Nat, a: Nat, x: Nat, y: Nat) {
+    (a * x).mod(n) = (a * y).mod(n)
+        implies (a * x).congr_mod(a * y, n)
+}
+
+/// Multiplication by a coprime unit is injective on `[0, n)`: if
+/// `(a * x) mod n = (a * y) mod n` and `x, y < n`, then `x = y`.
+/// Companion of `coprime_residues_mul_mem`; together they show the
+/// multiplication map is a bijection on `coprime_residues(n)`.
+theorem mul_mod_inj_below(n: Nat, a: Nat, x: Nat, y: Nat) {
+    n != Nat.0 and a.coprime(n) and x < n and y < n
+        and (a * x).mod(n) = (a * y).mod(n)
+        implies x = y
+} by {
+    if n != Nat.0 and a.coprime(n) and x < n and y < n
+        and (a * x).mod(n) = (a * y).mod(n) {
+        mul_mod_eq_imp_congr(n, a, x, y)
+        (a * x).congr_mod(a * y, n)
+        cancel_coprime(a, n, x, y)
+        x.congr_mod(y, n)
+        congr_mod_below_eq(n, x, y)
+        x = y
+    }
+}
+
+/// Specialisation to `coprime_residues(n)` membership.
+theorem coprime_residues_mul_inj(n: Nat, a: Nat, x: Nat, y: Nat) {
+    n != Nat.0 and a.coprime(n)
+        and coprime_residues(n).contains(x) and coprime_residues(n).contains(y)
+        and (a * x).mod(n) = (a * y).mod(n)
+        implies x = y
+} by {
+    if n != Nat.0 and a.coprime(n)
+        and coprime_residues(n).contains(x) and coprime_residues(n).contains(y)
+        and (a * x).mod(n) = (a * y).mod(n) {
+        coprime_residues_contains_imp(n, x)
+        x < n and x.coprime(n)
+        x < n
+        coprime_residues_contains_imp(n, y)
+        y < n and y.coprime(n)
+        y < n
+        mul_mod_inj_below(n, a, x, y)
+        x = y
     }
 }
