@@ -3,7 +3,6 @@
 Goal: provide finite-infimum and finite-supremum structure for ordered objects.
 
 - [ ] Decide the same-carrier API for bundled `Submodule` meet/inclusion before adding a submodule lattice operation
-- [ ] Audit remaining downstream `list_order` and interval users for concrete migrations to the shared lattice/list-infimum API
 
 Status:
 
@@ -19,3 +18,4 @@ Status:
 - `src/add_subgroup.ac` now has additive subgroup extensionality, intersection as an additive subgroup, unbundled inclusion order, greatest-lower-bound characterization for intersections, and canonical zero/full additive subgroup containment lemmas.
 - `src/ideal.ac` now has an unbundled ideal lattice API: mutual-inclusion equality, meet/intersection GLB iff, commutativity, associativity, idempotence, absorption under inclusion, zero/unit meet identities, join/sum LUB iff, commutativity, associativity, idempotence, absorption under inclusion, and zero/unit join identities.
 - `src/list/list_order.ac` now has iff bridges between list lower/upper/interval bounds and the corresponding membership-predicate bounds from `order_interval`.
+- `src/list/list_order.ac` now has recursive lower-bound, upper-bound, and interval-bound split lemmas for nil, cons, concatenation, singleton, and append, plus exported aliases connecting list minima/maxima to the shared `list_lower_bound` / `list_upper_bound` predicates.
