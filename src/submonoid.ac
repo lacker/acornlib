@@ -1,3 +1,4 @@
+from nat import Nat
 from monoid import Monoid, MonoidHom, monoid_hom_one, monoid_hom_mul
 from set import Set
 from functions import predicate_extensionality
@@ -171,6 +172,52 @@ theorem submonoid_mul_mem[M: Monoid](s: Submonoid[M], a: M, b: M) {
             s.contains(x) and s.contains(y) implies s.contains(x * y)
         }
         s.contains(a * b)
+    }
+}
+
+/// A submonoid is closed under products of three of its elements.
+theorem submonoid_mul_mul_mem[M: Monoid](s: Submonoid[M], a: M, b: M, c: M) {
+    s.contains(a) and s.contains(b) and s.contains(c) implies s.contains(a * b * c)
+} by {
+    if s.contains(a) and s.contains(b) and s.contains(c) {
+        submonoid_mul_mem(s, a, b)
+        s.contains(a * b)
+        submonoid_mul_mem(s, a * b, c)
+        s.contains(a * b * c)
+    }
+}
+
+/// A submonoid contains every natural power of each of its elements.
+theorem submonoid_pow_mem[M: Monoid](s: Submonoid[M], a: M, n: Nat) {
+    s.contains(a) implies s.contains(a.pow(n))
+} by {
+    define p(k: Nat) -> Bool {
+        s.contains(a) implies s.contains(a.pow(k))
+    }
+
+    if s.contains(a) {
+        a.pow(Nat.0) = M.1
+        submonoid_identity_constraint(s.contains)
+        s.contains(M.1)
+        s.contains(a.pow(Nat.0))
+    }
+    p(Nat.0)
+
+    forall(k: Nat) {
+        if p(k) {
+            if s.contains(a) {
+                s.contains(a.pow(k))
+                submonoid_mul_mem(s, a, a.pow(k))
+                s.contains(a * a.pow(k))
+                a.pow(k.suc) = a * a.pow(k)
+                s.contains(a.pow(k.suc))
+            }
+            p(k.suc)
+        }
+    }
+    p(n)
+    if s.contains(a) {
+        s.contains(a.pow(n))
     }
 }
 
@@ -427,6 +474,22 @@ theorem submonoid_contains_identity[M: Monoid](s: Submonoid[M]) {
     s.contains(M.1)
 }
 
+/// Membership in the identity submonoid is the same as equality to the identity element.
+theorem identity_submonoid_contains_eq[M: Monoid](m: M) {
+    identity_submonoid[M].contains(m) = (m = M.1)
+} by {
+    if identity_submonoid[M].contains(m) {
+        identity_submonoid_only_has_identity(m)
+        m = M.1
+    }
+    if m = M.1 {
+        submonoid_contains_identity(identity_submonoid[M])
+        identity_submonoid[M].contains(M.1)
+        identity_submonoid[M].contains(m)
+    }
+    identity_submonoid[M].contains(m) = (m = M.1)
+}
+
 /// The identity submonoid is contained in every submonoid.
 theorem identity_submonoid_subset[M: Monoid](s: Submonoid[M]) {
     submonoid_subset(identity_submonoid[M], s)
@@ -467,6 +530,13 @@ let full_submonoid[M: Monoid]: Submonoid[M] satisfy {
 
 theorem full_submonoid_contains_everything[M: Monoid](m: M) {
     full_submonoid[M].contains(m)
+}
+
+/// Membership in the full submonoid is always true.
+theorem full_submonoid_contains_eq[M: Monoid](m: M) {
+    full_submonoid[M].contains(m) = true
+} by {
+    full_submonoid_contains_everything(m)
 }
 
 /// Every submonoid is contained in the full submonoid.
@@ -716,5 +786,15 @@ theorem monoid_hom_kernel_contains_of_maps_to_identity[M: Monoid, N: Monoid](f: 
     if f.hom(a) = N.1 {
         monoid_hom_kernel_contains_eq(f, a)
         monoid_hom_kernel(f).contains(a)
+    }
+}
+
+/// A kernel element maps to the identity.
+theorem monoid_hom_maps_to_identity_of_kernel_contains[M: Monoid, N: Monoid](f: MonoidHom[M, N], a: M) {
+    monoid_hom_kernel(f).contains(a) implies f.hom(a) = N.1
+} by {
+    if monoid_hom_kernel(f).contains(a) {
+        monoid_hom_kernel_contains_eq(f, a)
+        f.hom(a) = N.1
     }
 }

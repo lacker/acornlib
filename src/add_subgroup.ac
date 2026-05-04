@@ -152,6 +152,23 @@ theorem add_subgroup_contains_neg[G: AddGroup](h: AddSubgroup[G], a: G) {
     }
 }
 
+/// Membership is unchanged by additive negation.
+theorem add_subgroup_contains_neg_iff[G: AddGroup](h: AddSubgroup[G], a: G) {
+    h.contains(-a) = h.contains(a)
+} by {
+    if h.contains(-a) {
+        add_subgroup_contains_neg(h, -a)
+        h.contains(--a)
+        --a = a
+        h.contains(a)
+    }
+    if h.contains(a) {
+        add_subgroup_contains_neg(h, a)
+        h.contains(-a)
+    }
+    h.contains(-a) = h.contains(a)
+}
+
 /// Closure of any additive subgroup under subtraction.
 theorem add_subgroup_contains_sub[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
     h.contains(a) and h.contains(b) implies h.contains(a - b)
@@ -162,6 +179,30 @@ theorem add_subgroup_contains_sub[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
         add_subgroup_contains_add(h, a, -b)
         h.contains(a + -b)
         a - b = a + -b
+    }
+}
+
+/// Closure of any additive subgroup under sums of three elements.
+theorem add_subgroup_contains_add_add[G: AddGroup](h: AddSubgroup[G], a: G, b: G, c: G) {
+    h.contains(a) and h.contains(b) and h.contains(c) implies h.contains(a + b + c)
+} by {
+    if h.contains(a) and h.contains(b) and h.contains(c) {
+        add_subgroup_contains_add(h, a, b)
+        h.contains(a + b)
+        add_subgroup_contains_add(h, a + b, c)
+        h.contains(a + b + c)
+    }
+}
+
+/// Closure of any additive subgroup under a negated element added on the left.
+theorem add_subgroup_contains_neg_add[G: AddGroup](h: AddSubgroup[G], a: G, b: G) {
+    h.contains(a) and h.contains(b) implies h.contains(-a + b)
+} by {
+    if h.contains(a) and h.contains(b) {
+        add_subgroup_contains_neg(h, a)
+        h.contains(-a)
+        add_subgroup_contains_add(h, -a, b)
+        h.contains(-a + b)
     }
 }
 
@@ -509,6 +550,22 @@ theorem zero_add_subgroup_only_has_zero[G: AddGroup](g: G) {
     }
 }
 
+/// Membership in the zero additive subgroup is the same as equality to zero.
+theorem zero_add_subgroup_contains_eq[G: AddGroup](g: G) {
+    zero_add_subgroup[G].contains(g) = (g = G.0)
+} by {
+    if zero_add_subgroup[G].contains(g) {
+        zero_add_subgroup_only_has_zero(g)
+        g = G.0
+    }
+    if g = G.0 {
+        add_subgroup_contains_zero(zero_add_subgroup[G])
+        zero_add_subgroup[G].contains(G.0)
+        zero_add_subgroup[G].contains(g)
+    }
+    zero_add_subgroup[G].contains(g) = (g = G.0)
+}
+
 /// The zero additive subgroup is contained in every additive subgroup.
 theorem zero_add_subgroup_subset[G: AddGroup](s: AddSubgroup[G]) {
     add_subgroup_subset(zero_add_subgroup[G], s)
@@ -557,6 +614,13 @@ let full_add_subgroup[G: AddGroup]: AddSubgroup[G] satisfy {
 /// Every element belongs to the full additive subgroup.
 theorem full_add_subgroup_contains_everything[G: AddGroup](g: G) {
     full_add_subgroup[G].contains(g)
+}
+
+/// Membership in the full additive subgroup is always true.
+theorem full_add_subgroup_contains_eq[G: AddGroup](g: G) {
+    full_add_subgroup[G].contains(g) = true
+} by {
+    full_add_subgroup_contains_everything(g)
 }
 
 /// Every additive subgroup is contained in the full additive subgroup.
@@ -1331,5 +1395,15 @@ theorem add_group_hom_kernel_contains_of_maps_to_zero[A: AddGroup, B: AddGroup](
     if f.hom(a) = B.0 {
         add_group_hom_kernel_contains_eq(f, a)
         add_group_hom_kernel(f).contains(a)
+    }
+}
+
+/// A kernel element maps to zero.
+theorem add_group_hom_maps_to_zero_of_kernel_contains[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A) {
+    add_group_hom_kernel(f).contains(a) implies f.hom(a) = B.0
+} by {
+    if add_group_hom_kernel(f).contains(a) {
+        add_group_hom_kernel_contains_eq(f, a)
+        f.hom(a) = B.0
     }
 }

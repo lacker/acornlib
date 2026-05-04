@@ -15,4 +15,4 @@ Goal: make the algebraic core broad enough that later domain libraries reuse str
 
 ## Current Focus
 
-The active branch is [morphisms](morphisms/todo.md). Its items are intended to be session-sized, so this branch is narrow enough to work from directly.
+The active branch is [subobjects](subobjects/todo.md). The remaining morphism items are deferred because they depend on a stable image API or notation/coercion design choices.

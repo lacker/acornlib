@@ -33,6 +33,22 @@
 {"goal":"submonoid_closure_constraint[M](s.contains) = forall(x0: M, x1: M) { s.contains(x0) and s.contains(x1) implies s.contains(x0 * x1) }","proof":["function[T0: Monoid](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = submonoid_closure_constraint[T0](x0) }[M](s.contains)"]}
 {"goal":"s.contains(a * b)","proof":["(forall(x0: M, x1: M) { not x0 ∈ s or not x1 ∈ s or x0 * x1 ∈ s } = true)","function(x0: M) { forall(x1: M) { not x0 ∈ s or not x1 ∈ s or x0 * x1 ∈ s } = true }(a)","function(x0: M, x1: M) { not (x0 ∈ s and x1 ∈ s and not x0 * x1 ∈ s) }(a, b)"]}
 {"goal":"submonoid_mul_mem","proof":[]}
+{"goal":"s.contains(a * b)","proof":["not b ∈ s or not a ∈ s","a ∈ s and b ∈ s","not a ∈ s"]}
+{"goal":"s.contains(a * b * c)","proof":["not a * b ∈ s or not c ∈ s","not c ∈ s"]}
+{"goal":"submonoid_mul_mul_mem","proof":["not c ∈ s or not b ∈ s or not a ∈ s","c ∈ s","not b ∈ s or not a ∈ s","a ∈ s and b ∈ s","not a ∈ s"]}
+{"goal":"a.pow(Nat.0) = M.1","proof":["function[T1: Monoid](x0: Nat, x1: T1) { Nat.0 != x0 or T1.1 = x1.pow(x0) }[M](Nat.0, a)"]}
+{"goal":"submonoid_identity_constraint[M](s.contains)","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](lib(functions).identity_fn(s).contains)","function[T0: Monoid](x0: Submonoid[T0]) { submonoid_constraint[T0](x0.contains) }[M](lib(functions).identity_fn(s))","function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[Submonoid[M]](s)","not submonoid_identity_constraint[M](lib(functions).identity_fn(s).contains)","function[T0: Monoid](x0: T0 -> Bool) { not submonoid_constraint[T0](x0) or (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) }[M](lib(functions).identity_fn(s).contains)","function[T0: Monoid](x0: T0 -> Bool) { not submonoid_constraint[T0](x0) or submonoid_identity_constraint[T0](x0) }[M](lib(functions).identity_fn(s).contains)"]}
+{"goal":"s.contains(M.1)","proof":["function[T0: Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[M](s.contains)"]}
+{"goal":"s.contains(a.pow(Nat.0))","proof":[]}
+{"goal":"p(Nat.0)","proof":["function(x0: Nat) { (not a ∈ s or a.pow(x0) ∈ s) = p(x0) }(Nat.0)","a.pow(Nat.0) ∈ s","a ∈ s and not a.pow(Nat.0) ∈ s"]}
+{"goal":"s.contains(a.pow(k))","proof":["function(x0: Nat) { (not a ∈ s or a.pow(x0) ∈ s) = p(x0) }(k)","function(x0: Nat) { not (a ∈ s and not a.pow(x0) ∈ s) or not p(x0) }(k)","function(x0: Nat) { not p(x0) or a.pow(x0) ∈ s }(k)"]}
+{"goal":"s.contains(a * a.pow(k))","proof":["not a.pow(k) ∈ s or not a ∈ s","not a.pow(k) ∈ s"]}
+{"goal":"a.pow(k.suc) = a * a.pow(k)","proof":["function[T2: Monoid](x0: Nat, x1: Nat, x2: T2) { x0.suc != x1 or x2 * x2.pow(x0) = x2.pow(x1) }[M](k, k.suc, a)"]}
+{"goal":"s.contains(a.pow(k.suc))","proof":["a * a.pow(k) ∈ s"]}
+{"goal":"p(k.suc)","proof":["function(x0: Nat) { (not a ∈ s or a.pow(x0) ∈ s) = p(x0) }(Nat.0)","function(x0: Nat) { (not a ∈ s or a.pow(x0) ∈ s) = p(x0) }(k.suc)","a.pow(Nat.0) ∈ s","a.pow(k.suc) ∈ s"]}
+{"goal":"p(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(Nat.0) or forall(x2: Nat) { x0(x2) } = true }(p)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(Nat.0) or x0(x1) }(p, n)","let w0: Nat satisfy { p(w0) and not p(w0.suc) }","function(x0: Nat) { not p(x0) or p(x0.suc) }(w0)","p(w0) and not p(w0.suc)","p(w0.suc)"]}
+{"goal":"s.contains(a.pow(n))","proof":["function(x0: Nat) { (not a ∈ s or a.pow(x0) ∈ s) = p(x0) }(n)","function(x0: Nat) { not (a ∈ s and not a.pow(x0) ∈ s) or not p(x0) }(n)","function(x0: Nat) { not p(x0) or a.pow(x0) ∈ s }(n)"]}
+{"goal":"submonoid_pow_mem","proof":["not a ∈ s"]}
 {"goal":"a.intersection(b).contains(x) = submonoid_intersection_contains(a, b, x)","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: Submonoid[T0]) { Option.some[Submonoid[T0]](submonoid_intersection[T0](x0, x1)) = Submonoid.new[T0](submonoid_intersection_contains[T0](x0, x1)) }[M](a, b)","function[T0: Monoid](x0: Submonoid[T0], x1: T0 -> Bool, x2: T0) { Option.some[Submonoid[T0]](x0) != Submonoid.new[T0](x1) or x2 ∈ x0 = x1(x2) }[M](submonoid_intersection[M](a, b), submonoid_intersection_contains[M](a, b), x)"]}
 {"goal":"submonoid_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: T0, x2: Submonoid[T0]) { (x1 ∈ x0 and x1 ∈ x2) = submonoid_intersection_contains[T0](x0, x2, x1) }[M](a, x, b)"]}
 {"goal":"submonoid_intersection_contains_eq","proof":[]}
@@ -96,6 +112,11 @@
 {"goal":"exists(k0: Submonoid[M]) { Submonoid.new[M](is_monoid_identity[M]) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0 -> Bool) { not Submonoid.constraint[T0](x0) or exists(k0: Submonoid[T0]) { Submonoid.new[T0](x0) = Option.some[Submonoid[T0]](k0) } }[M](is_monoid_identity[M])","function[T0: Monoid](x0: T0 -> Bool) { Submonoid.constraint[T0](x0) = submonoid_constraint[T0](x0) }[M](is_monoid_identity[M])","function[T0: Monoid] { submonoid_constraint[T0](is_monoid_identity[T0]) }[M]"]}
 {"goal":"identity_submonoid_only_has_identity","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: T0 -> Bool, x2: T0) { Option.some[Submonoid[T0]](x0) != Submonoid.new[T0](x1) or x2 ∈ x0 = x1(x2) }[M](identity_submonoid[M], is_monoid_identity[M], m)","function[T0: Monoid] { Option.some[Submonoid[T0]](identity_submonoid[T0]) = Submonoid.new[T0](is_monoid_identity[T0]) }[M]","function[T0: Monoid](x0: T0) { T0.1 = x0 = is_monoid_identity[T0](x0) }[M](m)"]}
 {"goal":"submonoid_contains_identity","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](s.contains)","function[T0: Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[M](s.contains)","function[T0: Monoid](x0: Submonoid[T0]) { submonoid_constraint[T0](x0.contains) }[M](s)"]}
+{"goal":"m = M.1","proof":["not m ∈ identity_submonoid[M]"]}
+{"goal":"identity_submonoid[M].contains(M.1)","proof":[]}
+{"goal":"identity_submonoid[M].contains(m)","proof":["not M.1 ∈ identity_submonoid[M]"]}
+{"goal":"identity_submonoid[M].contains(m) = (m = M.1)","proof":["m ∈ identity_submonoid[M] or M.1 = m","M.1 = m","m ∈ identity_submonoid[M]","not m ∈ identity_submonoid[M]"]}
+{"goal":"identity_submonoid_contains_eq","proof":[]}
 {"goal":"x = M.1","proof":[]}
 {"goal":"s.contains(M.1)","proof":[]}
 {"goal":"s.contains(x)","proof":[]}
@@ -107,6 +128,7 @@
 {"goal":"full_submonoid_constraint","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](full_monoid_contains[M])"]}
 {"goal":"exists(k0: Submonoid[M]) { Submonoid.new[M](full_monoid_contains[M]) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0 -> Bool) { not Submonoid.constraint[T0](x0) or exists(k0: Submonoid[T0]) { Submonoid.new[T0](x0) = Option.some[Submonoid[T0]](k0) } }[M](full_monoid_contains[M])","function[T0: Monoid](x0: T0 -> Bool) { Submonoid.constraint[T0](x0) = submonoid_constraint[T0](x0) }[M](full_monoid_contains[M])","function[T0: Monoid] { submonoid_constraint[T0](full_monoid_contains[T0]) }[M]"]}
 {"goal":"full_submonoid_contains_everything","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: T0 -> Bool, x2: T0) { Option.some[Submonoid[T0]](x0) != Submonoid.new[T0](x1) or x2 ∈ x0 = x1(x2) }[M](full_submonoid[M], full_monoid_contains[M], m)","function[T0: Monoid] { Option.some[Submonoid[T0]](full_submonoid[T0]) = Submonoid.new[T0](full_monoid_contains[T0]) }[M]","function[T0: Monoid](x0: T0) { full_monoid_contains[T0](x0) }[M](m)"]}
+{"goal":"full_submonoid_contains_eq","proof":[]}
 {"goal":"submonoid_subset_full","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: Submonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = submonoid_subset[T0](x0, x1) }[M](s, full_submonoid[M])","let w0: M satisfy { w0 ∈ s and not w0 ∈ full_submonoid[M] }","function[T0: Monoid](x0: T0) { x0 ∈ full_submonoid[T0] }[M](w0)"]}
 {"goal":"submonoid_subset[M](a, b) = forall(x0: M) { a.contains(x0) implies b.contains(x0) }","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: Submonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = submonoid_subset[T0](x0, x1) }[M](a, b)"]}
 {"goal":"submonoid_subset[M](b, a) = forall(x0: M) { b.contains(x0) implies a.contains(x0) }","proof":["function[T0: Monoid](x0: Submonoid[T0], x1: Submonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = submonoid_subset[T0](x0, x1) }[M](b, a)"]}
@@ -154,12 +176,14 @@
 {"goal":"s.contains(f.hom(a))","proof":[]}
 {"goal":"submonoid_contains_map_of_preimage_contains","proof":[]}
 {"goal":"monoid_hom_kernel[M, N](f) = submonoid_preimage[M, N](f, identity_submonoid[N])","proof":["function[T0: Monoid, T1: Monoid](x0: MonoidHom[T0, T1]) { submonoid_preimage[T0, T1](x0, identity_submonoid[T1]) = monoid_hom_kernel[T0, T1](x0) }[M, N](f)"]}
-{"goal":"identity_submonoid[N].contains(f.hom(a))","proof":["a ∈ submonoid_preimage[M, N](f, identity_submonoid[N])","not a ∈ submonoid_preimage[M, N](f, identity_submonoid[N])"]}
-{"goal":"f.hom(a) = N.1","proof":["not f.hom(a) ∈ identity_submonoid[N]"]}
+{"goal":"identity_submonoid[N].contains(f.hom(a))","proof":[]}
+{"goal":"f.hom(a) = N.1","proof":[]}
 {"goal":"identity_submonoid[N].contains(N.1)","proof":[]}
 {"goal":"identity_submonoid[N].contains(f.hom(a))","proof":[]}
 {"goal":"monoid_hom_kernel[M, N](f).contains(a)","proof":[]}
-{"goal":"monoid_hom_kernel[M, N](f).contains(a) = (f.hom(a) = N.1)","proof":["a ∈ monoid_hom_kernel[M, N](f) or f.hom(a) = N.1","not a ∈ monoid_hom_kernel[M, N](f) or f.hom(a) != N.1","a ∈ monoid_hom_kernel[M, N](f)","not a ∈ monoid_hom_kernel[M, N](f)"]}
+{"goal":"monoid_hom_kernel[M, N](f).contains(a) = (f.hom(a) = N.1)","proof":[]}
 {"goal":"monoid_hom_kernel_contains_eq","proof":[]}
 {"goal":"monoid_hom_kernel[M, N](f).contains(a)","proof":[]}
 {"goal":"monoid_hom_kernel_contains_of_maps_to_identity","proof":[]}
+{"goal":"f.hom(a) = N.1","proof":[]}
+{"goal":"monoid_hom_maps_to_identity_of_kernel_contains","proof":["not a ∈ monoid_hom_kernel[M, N](f)"]}
