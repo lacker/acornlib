@@ -1704,3 +1704,133 @@ theorem coprime_residues_all_below(n: Nat, x: Nat) {
         coprime_residues_below_all_below(n, n, x)
     }
 }
+
+/// Inductive predicate for `coprime_residues_below_contains`: every coprime
+/// `x < k` lies in the residue list.
+define cr_contains_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        forall(x: Nat) {
+            x < k and x.coprime(n) implies coprime_residues_below(n, k).contains(x)
+        }
+    }
+}
+
+/// Bridge: cr_contains_pred unfolds to its underlying forall.
+theorem cr_contains_pred_apply(n: Nat, k: Nat, x: Nat) {
+    cr_contains_pred(n)(k) and x < k and x.coprime(n)
+        implies coprime_residues_below(n, k).contains(x)
+} by {
+    if cr_contains_pred(n)(k) and x < k and x.coprime(n) {
+        cr_contains_pred(n)(k) = forall(y: Nat) {
+            y < k and y.coprime(n) implies coprime_residues_below(n, k).contains(y)
+        }
+        forall(y: Nat) {
+            y < k and y.coprime(n) implies coprime_residues_below(n, k).contains(y)
+        }
+    }
+}
+
+/// Inductive step.
+theorem cr_contains_step(n: Nat, k: Nat) {
+    cr_contains_pred(n)(k) implies cr_contains_pred(n)(k.suc)
+} by {
+    if cr_contains_pred(n)(k) {
+        forall(x: Nat) {
+            if x < k.suc and x.coprime(n) {
+                if x = k {
+                    // x = k, so k.coprime(n). Use yes-branch.
+                    k.coprime(n)
+                    coprime_residues_below_suc_yes(n, k)
+                    coprime_residues_below(n, k.suc) =
+                        List.cons(k, coprime_residues_below(n, k))
+                    List.cons(k, coprime_residues_below(n, k)).contains(k)
+                    coprime_residues_below(n, k.suc).contains(k)
+                    coprime_residues_below(n, k.suc).contains(x)
+                } else {
+                    x != k
+                    x < k
+                    cr_contains_pred_apply(n, k, x)
+                    coprime_residues_below(n, k).contains(x)
+                    if k.coprime(n) {
+                        coprime_residues_below_suc_yes(n, k)
+                        coprime_residues_below(n, k.suc) =
+                            List.cons(k, coprime_residues_below(n, k))
+                        List.cons(k, coprime_residues_below(n, k)).contains(x)
+                        coprime_residues_below(n, k.suc).contains(x)
+                    } else {
+                        coprime_residues_below_suc_no(n, k)
+                        coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+                        coprime_residues_below(n, k.suc).contains(x)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Every coprime `x < k` lies in `coprime_residues_below(n, k)`.
+theorem coprime_residues_below_contains(n: Nat, k: Nat, x: Nat) {
+    x < k and x.coprime(n)
+        implies coprime_residues_below(n, k).contains(x)
+} by {
+    let f: Nat -> Bool = function(m: Nat) {
+        forall(y: Nat) {
+            y < m and y.coprime(n) implies coprime_residues_below(n, m).contains(y)
+        }
+    }
+    forall(y: Nat) {
+        cr_contains_pred(n)(y) = f(y)
+        f(y) = cr_contains_pred(n)(y)
+    }
+    // Base.
+    forall(y: Nat) {
+        if y < Nat.0 and y.coprime(n) {
+            false
+        }
+    }
+    f(Nat.0)
+    forall(m: Nat) {
+        if f(m) {
+            cr_contains_pred(n)(m)
+            cr_contains_step(n, m)
+            cr_contains_pred(n)(m.suc)
+            f(m.suc)
+        }
+    }
+    f(k)
+}
+
+/// Forward: contained `x` lies in `[0, n)` and is coprime to `n`.
+theorem coprime_residues_contains_imp(n: Nat, x: Nat) {
+    coprime_residues(n).contains(x) implies x < n and x.coprime(n)
+} by {
+    if coprime_residues(n).contains(x) {
+        coprime_residues_all_below(n, x)
+        coprime_residues_all_coprime(n, x)
+    }
+}
+
+/// Backward: every coprime `x < n` is in `coprime_residues(n)`.
+theorem coprime_residues_contains_intro(n: Nat, x: Nat) {
+    x < n and x.coprime(n) implies coprime_residues(n).contains(x)
+} by {
+    if x < n and x.coprime(n) {
+        coprime_residues_below_contains(n, n, x)
+        coprime_residues_below(n, n).contains(x)
+        coprime_residues(n) = coprime_residues_below(n, n)
+    }
+}
+
+/// Membership characterization for `coprime_residues(n)`: `x` is contained iff
+/// `x < n` and `x` is coprime to `n`.
+theorem coprime_residues_contains_iff(n: Nat, x: Nat) {
+    coprime_residues(n).contains(x) = (x < n and x.coprime(n))
+} by {
+    if coprime_residues(n).contains(x) {
+        coprime_residues_contains_imp(n, x)
+    }
+    if x < n and x.coprime(n) {
+        coprime_residues_contains_intro(n, x)
+        coprime_residues(n).contains(x)
+    }
+}

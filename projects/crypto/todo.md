@@ -22,8 +22,10 @@ cryptographic content.
 - `count_multiples`, `count_not_coprime_to`, `coprime_partition`,
   and the inclusion-exclusion identity `ie_pq_pred`.
 - `coprime_residues(n)`: list of coprime residues in `[0, n)` with
-  `coprime_residues_length` (= `nat_totient(n)`),
-  `coprime_residues_all_coprime`, and `coprime_residues_all_below`.
+  `coprime_residues_length` (= `nat_totient(n)`), the forward results
+  `coprime_residues_all_coprime` and `coprime_residues_all_below`, and
+  the membership characterization
+  `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`.
   Foundation for the eventual product/permutation argument behind a
   general Euler proof.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
