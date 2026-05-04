@@ -410,51 +410,73 @@
 {"goal":"f(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, n)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
 {"goal":"coprime_pow_iff","proof":["function(x0: Nat) { k.coprime(p.pow(x0.suc)) = k.coprime(p) = f(x0) }(n)"]}
 {"goal":"not k.coprime(p)","proof":[]}
-{"goal":"p.divides(k)","proof":["k.coprime(p) != p.divides(k)"]}
-{"goal":"not k.coprime(p)","proof":["k.coprime(p) != p.divides(k)"]}
+{"goal":"p.divides(k)","proof":[]}
+{"goal":"not k.coprime(p)","proof":[]}
 {"goal":"not k.coprime(p.pow(n.suc))","proof":[]}
-{"goal":"not_coprime_pow_iff_divides_prime","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.coprime(x1.pow(x2.suc)) = x0.coprime(x1) }(k, p, n)","function(x0: Nat, x1: Nat) { not x0.is_prime or x1.coprime(x0) or x0.divides(x1) }(p, k)","not k.coprime(p.pow(n.suc)) or not p.divides(k)","not k.coprime(p.pow(n.suc)) or p.divides(k)","not p.divides(k) or k.coprime(p.pow(n.suc))","not p.divides(k)","not k.coprime(p.pow(n.suc))","not k.coprime(p)","k.coprime(p)"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), k) = count_multiples(p, k)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, k, n)","ppow_count_pred(p, n, k)"]}
-{"goal":"not k.coprime(p.pow(n.suc))","proof":["p.is_prime","not p.is_prime"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_not_coprime_to(p.pow(n.suc), k) + 1","proof":["k.coprime(p.pow(n.suc))"]}
-{"goal":"count_multiples(p, k.suc) = count_multiples(p, k) + 1","proof":["not p.divides(k)"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)","proof":["count_multiples(p, k) + 1 = count_multiples(p, k.suc)","count_not_coprime_to(p.pow(n.suc), k) + 1 = count_not_coprime_to(p.pow(n.suc), k.suc)","count_not_coprime_to(p.pow(n.suc), k) + 1 = count_multiples(p, k.suc)","count_not_coprime_to(p.pow(n.suc), k) + 1 != count_multiples(p, k.suc)"]}
+{"goal":"not_coprime_pow_iff_divides_prime","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.coprime(x1.pow(x2.suc)) = x0.coprime(x1) }(k, p, n)","function(x0: Nat, x1: Nat) { not x0.is_prime or x1.coprime(x0) or x0.divides(x1) }(p, k)"]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), k) = count_multiples(p, k)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, k, n)"]}
+{"goal":"not k.coprime(p.pow(n.suc))","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_not_coprime_to(p.pow(n.suc), k) + 1","proof":[]}
+{"goal":"count_multiples(p, k.suc) = count_multiples(p, k) + 1","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)","proof":[]}
 {"goal":"not p.divides(k)","proof":[]}
-{"goal":"p.divides(k)","proof":["p.is_prime","not p.is_prime"]}
+{"goal":"p.divides(k)","proof":[]}
 {"goal":"false","proof":[]}
-{"goal":"k.coprime(p.pow(n.suc))","proof":["false = true"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_not_coprime_to(p.pow(n.suc), k)","proof":["not k.coprime(p.pow(n.suc))"]}
-{"goal":"count_multiples(p, k.suc) = count_multiples(p, k)","proof":["p.divides(k)"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)","proof":["not p.divides(k)","count_multiples(p, k.suc) = count_multiples(p, k)","count_not_coprime_to(p.pow(n.suc), k.suc) = count_not_coprime_to(p.pow(n.suc), k)","count_not_coprime_to(p.pow(n.suc), k.suc) != count_multiples(p, k)","count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k)"]}
-{"goal":"ppow_count_step","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, k.suc, n)","p.is_prime","ppow_count_pred(p, n, k)","count_not_coprime_to(p.pow(n.suc), k.suc) != count_multiples(p, k.suc)","count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)"]}
+{"goal":"k.coprime(p.pow(n.suc))","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_not_coprime_to(p.pow(n.suc), k)","proof":[]}
+{"goal":"count_multiples(p, k.suc) = count_multiples(p, k)","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)","proof":[]}
+{"goal":"ppow_count_step","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, k.suc, n)"]}
 {"goal":"ppow_count_pred(p, n)(y) = f(y)","proof":["function(x0: Nat) { count_multiples(p, x0) = count_not_coprime_to(p.pow(n.suc), x0) = f(x0) }(y)","function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, y, n)"]}
 {"goal":"f(y) = ppow_count_pred(p, n)(y)","proof":[]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_not_coprime_to(x1, x0) = 0 }(0, p.pow(n.suc))","0 != Nat.zero"]}
-{"goal":"count_multiples(p, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_multiples(x1, x0) = 0 }(0, p)","0 != Nat.zero"]}
-{"goal":"f(0)","proof":["function(x0: Nat) { count_multiples(p, x0) = count_not_coprime_to(p.pow(n.suc), x0) = f(x0) }(0)","count_not_coprime_to(p.pow(n.suc), 0) = count_multiples(p, 0)","count_not_coprime_to(p.pow(n.suc), 0) != count_multiples(p, 0)"]}
-{"goal":"ppow_count_pred(p, n)(x)","proof":["function(x0: Nat) { ppow_count_pred(p, n, x0) = f(x0) }(x)"]}
-{"goal":"ppow_count_pred(p, n)(x.suc)","proof":["not ppow_count_pred(p, n, x) or not p.is_prime","not ppow_count_pred(p, n, x)"]}
-{"goal":"f(x.suc)","proof":["function(x0: Nat) { ppow_count_pred(p, n, x0) = f(x0) }(x.suc)","ppow_count_pred(p, n, x.suc)"]}
-{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)","f(w0) and not f(w0.suc)","f(w0.suc)"]}
-{"goal":"ppow_count_pred(p, n)(k)","proof":["function(x0: Nat) { ppow_count_pred(p, n, x0) = f(x0) }(k)"]}
-{"goal":"ppow_count_run","proof":["not p.is_prime"]}
-{"goal":"1 + n = n.suc","proof":["function(x0: Nat) { 1 + x0 = x0.suc }(n)"]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_not_coprime_to(x1, x0) = 0 }(0, p.pow(n.suc))"]}
+{"goal":"count_multiples(p, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_multiples(x1, x0) = 0 }(0, p)"]}
+{"goal":"f(0)","proof":["function(x0: Nat) { count_multiples(p, x0) = count_not_coprime_to(p.pow(n.suc), x0) = f(x0) }(0)"]}
+{"goal":"ppow_count_pred(p, n)(x)","proof":[]}
+{"goal":"ppow_count_pred(p, n)(x.suc)","proof":[]}
+{"goal":"f(x.suc)","proof":[]}
+{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"ppow_count_pred(p, n)(k)","proof":[]}
+{"goal":"ppow_count_run","proof":[]}
+{"goal":"1 + n = n.suc","proof":[]}
 {"goal":"p.pow(1 + n) = p.pow(1) * p.pow(n)","proof":[]}
-{"goal":"p.pow(n.suc) = p.pow(1) * p.pow(n)","proof":["p.pow(1) * p.pow(n) != p.pow(1 + n)"]}
+{"goal":"p.pow(n.suc) = p.pow(1) * p.pow(n)","proof":[]}
 {"goal":"p.pow(1) = p","proof":[]}
-{"goal":"p.pow(n.suc) = p * p.pow(n)","proof":["p.pow(1) * p.pow(n) != p.pow(n.suc)"]}
-{"goal":"ppow_split","proof":[]}
-{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)","function(x0: Nat) { not x0.is_prime or 1 < x0 }(p)"]}
-{"goal":"p != 0","proof":["function(x0: Nat) { not x0 < 0 }(1)"]}
-{"goal":"ppow_count_pred(p, n)(p.pow(n.suc))","proof":["not p.is_prime"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = count_multiples(p, p.pow(n.suc))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, p.pow(n.suc), n)","ppow_count_pred(p, n, p.pow(n.suc))"]}
 {"goal":"p.pow(n.suc) = p * p.pow(n)","proof":[]}
-{"goal":"count_multiples(p, p * p.pow(n)) = p.pow(n)","proof":["0 = p"]}
-{"goal":"count_multiples(p, p.pow(n.suc)) = p.pow(n)","proof":["count_multiples(p, p * p.pow(n)) != p.pow(n)"]}
-{"goal":"count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n)","proof":["count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) != count_multiples(p, p.pow(n.suc))"]}
+{"goal":"ppow_split","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"p != 0","proof":["function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"ppow_count_pred(p, n)(p.pow(n.suc))","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = count_multiples(p, p.pow(n.suc))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { count_multiples(x0, x1) = count_not_coprime_to(x0.pow(x2.suc), x1) = ppow_count_pred(x0, x2, x1) }(p, p.pow(n.suc), n)"]}
+{"goal":"p.pow(n.suc) = p * p.pow(n)","proof":[]}
+{"goal":"count_multiples(p, p * p.pow(n)) = p.pow(n)","proof":[]}
+{"goal":"count_multiples(p, p.pow(n.suc)) = p.pow(n)","proof":[]}
+{"goal":"count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n)","proof":[]}
 {"goal":"count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n.suc)","proof":[]}
-{"goal":"count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + p.pow(n) = p.pow(n.suc)","proof":["count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) != p.pow(n.suc)"]}
-{"goal":"count_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n.suc) - p.pow(n)","proof":["count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + p.pow(n) != p.pow(n.suc)"]}
+{"goal":"count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + p.pow(n) = p.pow(n.suc)","proof":[]}
+{"goal":"count_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n.suc) - p.pow(n)","proof":[]}
 {"goal":"p.pow(n.suc).totient = count_coprime_to(p.pow(n.suc), p.pow(n.suc))","proof":["function(x0: Nat) { x0.totient = count_coprime_to(x0, x0) }(p.pow(n.suc))"]}
-{"goal":"p.pow(n.suc).totient = p.pow(n.suc) - p.pow(n)","proof":["count_coprime_to(p.pow(n.suc), p.pow(n.suc)) != p.pow(n.suc) - p.pow(n)"]}
-{"goal":"totient_p_pow","proof":["not p.is_prime"]}
+{"goal":"p.pow(n.suc).totient = p.pow(n.suc) - p.pow(n)","proof":[]}
+{"goal":"totient_p_pow","proof":[]}
+{"goal":"0 < p","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x1 <= x2 or x0 < x2 }(0, 0.suc, p)","function(x0: Nat) { x0 < x0.suc }(0)","function(x0: Nat) { not 0 < x0 or not x0 <= p }(0.suc)","0.suc <= p","not 0.suc <= p"]}
+{"goal":"p != 0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Nat](p, 0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[Nat](p, 0)","p > 0","not p > 0"]}
+{"goal":"exists(k0: Nat) { k0.suc = p }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or 0 = x0 }(p)"]}
+{"goal":"p - 1 = pp","proof":[]}
+{"goal":"p * x = pp.suc * x","proof":[]}
+{"goal":"pp.suc * x = (pp + 1) * x","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, pp)"]}
+{"goal":"(pp + 1) * x = pp * x + 1 * x","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 + x2 * x1 = (x0 + x2) * x1 }(pp, x, 1)"]}
+{"goal":"1 * x = x","proof":["function(x0: Nat) { 1 * x0 = x0 }(x)"]}
+{"goal":"pp * x + 1 * x = pp * x + x","proof":[]}
+{"goal":"p * x = pp * x + x","proof":[]}
+{"goal":"p * x - x = pp * x","proof":[]}
+{"goal":"(p - 1) * x = pp * x","proof":[]}
+{"goal":"p * x - x = (p - 1) * x","proof":[]}
+{"goal":"mul_sub_one_factor","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"1 <= p","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(1, p)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(p, 1)"]}
+{"goal":"p.pow(n.suc).totient = p.pow(n.suc) - p.pow(n)","proof":[]}
+{"goal":"p.pow(n.suc) = p * p.pow(n)","proof":[]}
+{"goal":"p.pow(n.suc).totient = p * p.pow(n) - p.pow(n)","proof":[]}
+{"goal":"p * p.pow(n) - p.pow(n) = (p - 1) * p.pow(n)","proof":[]}
+{"goal":"p.pow(n.suc).totient = (p - 1) * p.pow(n)","proof":[]}
+{"goal":"totient_p_pow_factored","proof":[]}

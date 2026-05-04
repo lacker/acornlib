@@ -14,12 +14,17 @@ cryptographic content.
 `src/nat/nat_totient.ac` contains:
 - `nat_totient` with `totient(p) = p - 1`,
   `totient(p * q) = (p - 1) * (q - 1)` for distinct primes, and
-  `totient(p^(n.suc)) = p^(n.suc) - p^n` for any prime power
-  (`totient_p_pow`, plus the convenience corollary `totient_pp`).
+  `totient(p^(n.suc)) = p^(n.suc) - p^n` for any prime power, plus the
+  factored form `totient(p^(n.suc)) = (p - 1) * p^n`
+  (`totient_p_pow`, `totient_p_pow_factored`, plus the convenience
+  corollary `totient_pp`).
 - `coprime_pow_iff`: `k.coprime(p^(n.suc)) = k.coprime(p)` for prime `p`.
 - `count_multiples`, `count_not_coprime_to`, `coprime_partition`,
   and the inclusion-exclusion identity `ie_pq_pred`.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
+
+`src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
+prime, derived from Fermat's little theorem by canceling `m`.
 
 `src/nat/nat_modular_inverse.ac` contains `cancel_coprime` (modular
 cancellation by a coprime factor).

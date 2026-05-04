@@ -1347,3 +1347,45 @@ theorem totient_p_pow(p: Nat, n: Nat) {
         (p.pow(n.suc)).totient = p.pow(n.suc) - p.pow(n)
     }
 }
+
+/// Helper: `p * x - x = (p - 1) * x` for `p >= 1`.
+theorem mul_sub_one_factor(p: Nat, x: Nat) {
+    Nat.1 <= p implies p * x - x = (p - Nat.1) * x
+} by {
+    if Nat.1 <= p {
+        Nat.0 < p
+        p != Nat.0
+        let pp: Nat satisfy { pp.suc = p }
+        totient_sub_one_pred(p, pp)
+        p - Nat.1 = pp
+        p * x = pp.suc * x
+        pp.suc * x = (pp + Nat.1) * x
+        (pp + Nat.1) * x = pp * x + Nat.1 * x
+        Nat.1 * x = x
+        pp * x + Nat.1 * x = pp * x + x
+        p * x = pp * x + x
+        add_imp_sub(pp * x, x, p * x)
+        p * x - x = pp * x
+        (p - Nat.1) * x = pp * x
+        p * x - x = (p - Nat.1) * x
+    }
+}
+
+/// Factored form of the prime-power totient:
+///   `totient(p^(n.suc)) = (p - 1) * p^n` for prime `p`.
+theorem totient_p_pow_factored(p: Nat, n: Nat) {
+    p.is_prime implies (p.pow(n.suc)).totient = (p - Nat.1) * p.pow(n)
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        Nat.1 <= p
+        totient_p_pow(p, n)
+        (p.pow(n.suc)).totient = p.pow(n.suc) - p.pow(n)
+        ppow_split(p, n)
+        p.pow(n.suc) = p * p.pow(n)
+        (p.pow(n.suc)).totient = p * p.pow(n) - p.pow(n)
+        mul_sub_one_factor(p, p.pow(n))
+        p * p.pow(n) - p.pow(n) = (p - Nat.1) * p.pow(n)
+        (p.pow(n.suc)).totient = (p - Nat.1) * p.pow(n)
+    }
+}
