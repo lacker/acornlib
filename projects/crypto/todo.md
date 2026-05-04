@@ -44,6 +44,12 @@ cryptographic content.
   mapped list has no duplicates, and `mul_mod_residues_is_permutation`
   packages everything into
   `is_permutation(mul_mod_residues(n, a), coprime_residues(n))`.
+- `scalar_mul_fn(a)` and `product_map_scalar`:
+  `product(map(l, λx. a*x)) = a^|l| * product(l)` for Nat lists.
+  Pulls the constant factor out of every term — the algebraic shape
+  the Euler product argument needs once it switches from
+  `mul_mod_fn(n, a)` to plain `scalar_mul_fn(a)` via the per-element
+  `(a*x).mod(n) ≡ a*x (mod n)` congruence.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
@@ -62,12 +68,18 @@ general `inverse_imp_coprime` (`a * b ≡ 1 (mod n) ⟹ b.coprime(n)`).
       `m.coprime(n)`) — generalises `totient_pq` via the CRT-induced
       bijection between `[0, mn)` and `[0, m) x [0, n)`.
 - [ ] Generalise `euler_pq` to arbitrary moduli: `gcd(a, n) = 1` implies
-      `a.pow(nat_totient(n)).mod(n) = 1`. Next concrete step: take the
-      product over both sides of `mul_mod_residues_is_permutation` via
-      `permutation_preserves_product`, push `a^totient(n)` out of
-      `product(mul_mod_residues(n, a))` (each element of the mapped
-      list contributes a factor of `a` modulo `n`), and finish by
-      cancellation through `cancel_coprime`.
+      `a.pow(nat_totient(n)).mod(n) = 1`. Remaining steps:
+      (1) bridge `product(mul_mod_residues(n, a))` to
+      `product(map(coprime_residues(n), scalar_mul_fn(a)))` modulo `n`
+      via the per-element congruence `(a*x).mod(n) ≡ a*x (mod n)`
+      (needs a "products of element-wise congruent lists are congruent
+      mod n" helper);
+      (2) substitute `product_map_scalar` to get
+      `a^totient(n) * product(coprime_residues(n))`;
+      (3) use `mul_mod_residues_is_permutation` +
+      `permutation_preserves_product` to equate both Nat-products;
+      (4) show `product(coprime_residues(n))` is coprime to `n` and
+      cancel via `cancel_coprime`.
 
 ## DSA
 

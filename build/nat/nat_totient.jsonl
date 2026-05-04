@@ -756,8 +756,8 @@
 {"goal":"mul_mod_residues_unique","proof":[]}
 {"goal":"list.count(item) >= 1","proof":[]}
 {"goal":"list.count(item) <= 1","proof":[]}
-{"goal":"list.count(item) = 1","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 >= x1 or not x0 <= x1 or x0 = x1 }[Nat](list.count(item), 1)","function(x0: Nat, x1: Nat) { x0 <= x1 = x0 <= x1 }(list.count(item), 1)","not list.count(item) <= 1","list.count(item) <= 1"]}
-{"goal":"unique_count_one","proof":["not item ∈ list or not list.is_unique","list.is_unique","item ∈ list","not item ∈ list"]}
+{"goal":"list.count(item) = 1","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 >= x1 or not x0 <= x1 or x0 = x1 }[Nat](list.count(item), 1)"]}
+{"goal":"unique_count_one","proof":[]}
 {"goal":"not_contains_count_zero","proof":[]}
 {"goal":"mul_mod_residues(n, a).is_unique","proof":[]}
 {"goal":"coprime_residues(n).is_unique","proof":[]}
@@ -773,3 +773,40 @@
 {"goal":"coprime_residues(n).count(y) = 0","proof":[]}
 {"goal":"mul_mod_residues(n, a).count(y) = coprime_residues(n).count(y)","proof":[]}
 {"goal":"mul_mod_residues_is_permutation","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](mul_mod_residues(n, a), coprime_residues(n))"]}
+{"goal":"map[Nat, Nat](List.nil[Nat], scalar_mul_fn(a)) = List.nil[Nat]","proof":["function[T0, T2](x0: List[T0], x1: T0 -> T2) { List.nil[T0] != x0 or map[T0, T2](x0, x1) = List.nil[T2] }[Nat, Nat](List.nil[Nat], scalar_mul_fn(a))"]}
+{"goal":"product[Nat](List.nil[Nat]) = 1","proof":["function[T0: lib(comm_monoid).CommMonoid] { product[T0](List.nil[T0]) = T0.1 }[Nat]"]}
+{"goal":"List.nil[Nat].length = 0","proof":["function[T0](x0: List[T0]) { List.nil[T0] != x0 or 0 = x0.length }[Nat](List.nil[Nat])"]}
+{"goal":"a.pow(0) = 1","proof":[]}
+{"goal":"a.pow(List.nil[Nat].length) * product[Nat](List.nil[Nat]) = 1 * 1","proof":[]}
+{"goal":"1 * 1 = 1","proof":[]}
+{"goal":"product_map_scalar_nil","proof":["function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(List.nil[Nat], a)"]}
+{"goal":"product[Nat](map[Nat, Nat](tail, scalar_mul_fn(a))) = a.pow(tail.length) * product[Nat](tail)","proof":["function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(tail, a)"]}
+{"goal":"scalar_mul_fn(a)(head) = a * head","proof":[]}
+{"goal":"map[Nat, Nat](List.cons(head, tail), scalar_mul_fn(a)) = List.cons(scalar_mul_fn(a)(head), map[Nat, Nat](tail, scalar_mul_fn(a)))","proof":["function[T0, T4](x0: T0, x1: List[T0], x2: List[T0], x3: T0 -> T4) { List.cons[T0](x0, x1) != x2 or List.cons[T4](x3(x0), map[T0, T4](x1, x3)) = map[T0, T4](x2, x3) }[Nat, Nat](head, tail, List.cons(head, tail), scalar_mul_fn(a))"]}
+{"goal":"map[Nat, Nat](List.cons(head, tail), scalar_mul_fn(a)) = List.cons(a * head, map[Nat, Nat](tail, scalar_mul_fn(a)))","proof":[]}
+{"goal":"product[Nat](List.cons(a * head, map[Nat, Nat](tail, scalar_mul_fn(a)))) = a * head * product[Nat](map[Nat, Nat](tail, scalar_mul_fn(a)))","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](a * head, map[Nat, Nat](tail, scalar_mul_fn(a)))"]}
+{"goal":"a * head * product[Nat](map[Nat, Nat](tail, scalar_mul_fn(a))) = a * head * (a.pow(tail.length) * product[Nat](tail))","proof":[]}
+{"goal":"a * head * (a.pow(tail.length) * product[Nat](tail)) = a * head * a.pow(tail.length) * product[Nat](tail)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(a * head, a.pow(tail.length), product[Nat](tail))"]}
+{"goal":"a * head * a.pow(tail.length) = a * a.pow(tail.length) * head","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x1 * (x0 * x2) }(a, a.pow(tail.length), head)","function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(a * head, a.pow(tail.length))"]}
+{"goal":"a * a.pow(tail.length) = a.pow(tail.length) * a","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(a, a.pow(tail.length))"]}
+{"goal":"a.pow(tail.length) * a = a.pow(tail.length + 1)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1) * x0.pow(x2) = x0.pow(x1 + x2) }(a, tail.length, 1)","function(x0: Nat) { x0.pow(1) = x0 }(a)"]}
+{"goal":"tail.length + 1 = tail.length.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(tail.length, 1)"]}
+{"goal":"a.pow(tail.length) * a = a.pow(tail.length.suc)","proof":[]}
+{"goal":"a * a.pow(tail.length) = a.pow(tail.length.suc)","proof":[]}
+{"goal":"a * head * a.pow(tail.length) = a.pow(tail.length.suc) * head","proof":[]}
+{"goal":"a * head * a.pow(tail.length) * product[Nat](tail) = a.pow(tail.length.suc) * head * product[Nat](tail)","proof":[]}
+{"goal":"a.pow(tail.length.suc) * head * product[Nat](tail) = a.pow(tail.length.suc) * (head * product[Nat](tail))","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x1 * (x0 * x2) }(head, a.pow(tail.length.suc), product[Nat](tail))","function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x1 * (x0 * x2) }(a, head, a.pow(tail.length))"]}
+{"goal":"List.cons(head, tail).length = tail.length.suc","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0]) { List.cons[T0](x0, x1) != x2 or x1.length.suc = x2.length }[Nat](head, tail, List.cons(head, tail))"]}
+{"goal":"product[Nat](List.cons(head, tail)) = head * product[Nat](tail)","proof":["function[T0: lib(comm_monoid).CommMonoid](x0: T0, x1: List[T0]) { x0 * product[T0](x1) = product[T0](List.cons[T0](x0, x1)) }[Nat](head, tail)"]}
+{"goal":"a.pow(List.cons(head, tail).length) * product[Nat](List.cons(head, tail)) = a.pow(tail.length.suc) * (head * product[Nat](tail))","proof":[]}
+{"goal":"product[Nat](map[Nat, Nat](List.cons(head, tail), scalar_mul_fn(a))) = a.pow(List.cons(head, tail).length) * product[Nat](List.cons(head, tail))","proof":[]}
+{"goal":"product_map_scalar_cons","proof":["function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(List.cons(head, tail), a)"]}
+{"goal":"product_map_scalar_pred(a)(y) = p(y)","proof":["function(x0: List[Nat]) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(a))) = a.pow(x0.length) * product[Nat](x0) = p(x0) }(y)","function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(y, a)"]}
+{"goal":"p(y) = product_map_scalar_pred(a)(y)","proof":[]}
+{"goal":"p(List.nil[Nat])","proof":[]}
+{"goal":"product_map_scalar_pred(a)(tail)","proof":[]}
+{"goal":"product_map_scalar_pred(a)(List.cons(head, tail))","proof":[]}
+{"goal":"p(List.cons(head, tail))","proof":[]}
+{"goal":"p(z)","proof":["not forall(x0: Nat, x1: List[Nat]) { not p(x1) or p(List.cons(x0, x1)) } or forall(x2: List[Nat]) { p(x2) } = true","function(x0: List[Nat]) { not forall(x1: Nat, x2: List[Nat]) { not p(x2) or p(List.cons(x1, x2)) } or p(x0) }(z)","let w0: Nat satisfy { exists(k0: List[Nat]) { p(k0) and not p(List.cons(w0, k0)) } }","let w1: List[Nat] satisfy { p(w1) and not p(List.cons(w0, w1)) }","let w2: List[Nat] satisfy { p(w2) and not p(List.cons(w0, w2)) }","function(x0: List[Nat], x1: Nat) { not p(x0) or p(List.cons(x1, x0)) }(w2, w0)","p(w2)","not p(List.cons(w0, w2))"]}
+{"goal":"p(l)","proof":["function(x0: List[Nat]) { p(x0) }(l)"]}
+{"goal":"product_map_scalar","proof":["function(x0: List[Nat], x1: Nat) { product[Nat](map[Nat, Nat](x0, scalar_mul_fn(x1))) = x1.pow(x0.length) * product[Nat](x0) = product_map_scalar_pred(x1, x0) }(l, a)"]}

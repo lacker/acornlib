@@ -10,7 +10,8 @@ from nat.nat_coprime import coprime_one_right
 from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, congr_mod_mul, mod_lt, mod_congr_mod_self
 from list.list_base import List, list_contains_implies_count_geq_one, list_not_contains_impl_count_zero, unique_implies_no_duplicate
 from list.list_sum import map, map_length, map_contains, map_contains_of_contains
-from list.list_permutation import is_permutation
+from list.list_permutation import is_permutation, permutation_preserves_product
+from list.list_product import product
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -2389,4 +2390,104 @@ theorem mul_mod_residues_is_permutation(n: Nat, a: Nat) {
             }
         }
     }
+}
+
+/// Top-level scalar-multiplication function for use with `map`. Like
+/// `mul_mod_fn`, naming this avoids inline-lambda issues in `acorn check`'s
+/// certificate replay.
+define scalar_mul_fn(a: Nat) -> (Nat -> Nat) {
+    function(x: Nat) { a * x }
+}
+
+/// Inductive predicate for `product_map_scalar`.
+define product_map_scalar_pred(a: Nat) -> (List[Nat] -> Bool) {
+    function(l: List[Nat]) {
+        product[Nat](map(l, scalar_mul_fn(a))) = a.pow(l.length) * product[Nat](l)
+    }
+}
+
+/// Base case: empty list. Both sides reduce to `Nat.1`.
+theorem product_map_scalar_nil(a: Nat) {
+    product_map_scalar_pred(a)(List.nil[Nat])
+} by {
+    map(List.nil[Nat], scalar_mul_fn(a)) = List.nil[Nat]
+    product[Nat](List.nil[Nat]) = Nat.1
+    List.nil[Nat].length = Nat.0
+    exp_zero(a)
+    a.pow(Nat.0) = Nat.1
+    a.pow(List.nil[Nat].length) * product[Nat](List.nil[Nat]) = Nat.1 * Nat.1
+    Nat.1 * Nat.1 = Nat.1
+}
+
+/// Inductive step.
+theorem product_map_scalar_cons(a: Nat, head: Nat, tail: List[Nat]) {
+    product_map_scalar_pred(a)(tail)
+        implies product_map_scalar_pred(a)(List.cons(head, tail))
+} by {
+    if product_map_scalar_pred(a)(tail) {
+        product[Nat](map(tail, scalar_mul_fn(a))) = a.pow(tail.length) * product[Nat](tail)
+        // map(cons(h, t), f) = cons(f(h), map(t, f)) = cons(a*h, map(t, f)).
+        scalar_mul_fn(a)(head) = a * head
+        map(List.cons(head, tail), scalar_mul_fn(a)) =
+            List.cons(scalar_mul_fn(a)(head), map(tail, scalar_mul_fn(a)))
+        map(List.cons(head, tail), scalar_mul_fn(a)) =
+            List.cons(a * head, map(tail, scalar_mul_fn(a)))
+        // product over cons.
+        product[Nat](List.cons(a * head, map(tail, scalar_mul_fn(a)))) =
+            (a * head) * product[Nat](map(tail, scalar_mul_fn(a)))
+        // Substitute IH.
+        (a * head) * product[Nat](map(tail, scalar_mul_fn(a))) =
+            (a * head) * (a.pow(tail.length) * product[Nat](tail))
+        // Rearrange to a^(tail.length.suc) * (head * product(tail)).
+        (a * head) * (a.pow(tail.length) * product[Nat](tail)) =
+            a * head * a.pow(tail.length) * product[Nat](tail)
+        a * head * a.pow(tail.length) = a * a.pow(tail.length) * head
+        a * a.pow(tail.length) = a.pow(tail.length) * a
+        a.pow(tail.length) * a = a.pow(tail.length + Nat.1)
+        tail.length + Nat.1 = tail.length.suc
+        a.pow(tail.length) * a = a.pow(tail.length.suc)
+        a * a.pow(tail.length) = a.pow(tail.length.suc)
+        a * head * a.pow(tail.length) = a.pow(tail.length.suc) * head
+        // Combine.
+        a * head * a.pow(tail.length) * product[Nat](tail) =
+            a.pow(tail.length.suc) * head * product[Nat](tail)
+        a.pow(tail.length.suc) * head * product[Nat](tail) =
+            a.pow(tail.length.suc) * (head * product[Nat](tail))
+        // RHS shape.
+        List.cons(head, tail).length = tail.length.suc
+        product[Nat](List.cons(head, tail)) = head * product[Nat](tail)
+        a.pow(List.cons(head, tail).length) * product[Nat](List.cons(head, tail)) =
+            a.pow(tail.length.suc) * (head * product[Nat](tail))
+        // Wrap up.
+        product[Nat](map(List.cons(head, tail), scalar_mul_fn(a))) =
+            a.pow(List.cons(head, tail).length) * product[Nat](List.cons(head, tail))
+    }
+}
+
+/// `product(map(L, λx. a*x)) = a^|L| * product(L)` for Nat lists.
+/// Pulls the constant factor `a` out of every term in the list product,
+/// raised to the list length. Building block for Euler-style arguments.
+theorem product_map_scalar(a: Nat, l: List[Nat]) {
+    product[Nat](map(l, scalar_mul_fn(a))) = a.pow(l.length) * product[Nat](l)
+} by {
+    define p(x: List[Nat]) -> Bool {
+        product[Nat](map(x, scalar_mul_fn(a))) = a.pow(x.length) * product[Nat](x)
+    }
+    forall(y: List[Nat]) {
+        product_map_scalar_pred(a)(y) = p(y)
+        p(y) = product_map_scalar_pred(a)(y)
+    }
+    product_map_scalar_nil(a)
+    p(List.nil[Nat])
+    forall(head: Nat, tail: List[Nat]) {
+        if p(tail) {
+            product_map_scalar_pred(a)(tail)
+            product_map_scalar_cons(a, head, tail)
+            product_map_scalar_pred(a)(List.cons(head, tail))
+            p(List.cons(head, tail))
+        }
+    }
+    List.induction(function(z: List[Nat]) { p(z) })
+    forall(z: List[Nat]) { p(z) }
+    p(l)
 }
