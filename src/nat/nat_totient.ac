@@ -4,10 +4,10 @@ from nat.nat_factorisation import prime_divisor_is_one_or_self, coprime_of_disti
 from nat.nat_base import divides_self, divides_zero, add_imp_sub, small_mod
 from nat.nat_crt import nat_coprime_combine, nat_congr_combine_coprime
 from nat.nat_fermat import rsa_pow_congr
-from nat.nat_modular_inverse import cancel_coprime
+from nat.nat_modular_inverse import cancel_coprime, mod_inv, mod_inv_coprime, mod_inv_mul_congr_one
 from nat.nat_monoid import exp_one, exp_add, exp_zero
 from nat.nat_coprime import coprime_one_right
-from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, mod_lt
+from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, congr_mod_mul, mod_lt, mod_congr_mod_self
 from list.list_base import List
 numerals Nat
 
@@ -2018,4 +2018,94 @@ theorem coprime_residues_unique(n: Nat) {
 } by {
     coprime_residues_below_unique(n, n)
     coprime_residues(n) = coprime_residues_below(n, n)
+}
+
+/// Helper: scaling `(a*b) ≡ 1` on the right by `x` gives `(a*b)*x ≡ x` (mod n).
+theorem scale_inv_by_x(a: Nat, b: Nat, x: Nat, n: Nat) {
+    (a * b).congr_mod(Nat.1, n) implies ((a * b) * x).congr_mod(x, n)
+} by {
+    if (a * b).congr_mod(Nat.1, n) {
+        congr_mod_refl(x, n)
+        x.congr_mod(x, n)
+        congr_mod_mul(a * b, x, Nat.1, x, n)
+        ((a * b) * x).congr_mod(Nat.1 * x, n)
+        Nat.1 * x = x
+        ((a * b) * x).congr_mod(x, n)
+    }
+}
+
+/// Helper: for `b = mod_inv(a, n)` and any `x`, `(a * (b * x)).congr_mod(x, n)`.
+/// Sets up the witness `(b * x).mod(n)` for the surjectivity of multiplication
+/// by a unit.
+theorem mul_inv_x_back(a: Nat, x: Nat, n: Nat) {
+    a.coprime(n)
+        implies (a * (mod_inv(a, n) * x)).congr_mod(x, n)
+} by {
+    if a.coprime(n) {
+        mod_inv_mul_congr_one(a, n)
+        (a * mod_inv(a, n)).congr_mod(Nat.1, n)
+        scale_inv_by_x(a, mod_inv(a, n), x, n)
+        ((a * mod_inv(a, n)) * x).congr_mod(x, n)
+        a * (mod_inv(a, n) * x) = (a * mod_inv(a, n)) * x
+        (a * (mod_inv(a, n) * x)).congr_mod(x, n)
+    }
+}
+
+/// Helper: scaling a value by `(b * x).mod(n)` versus `b * x` is a congruence.
+theorem mul_mod_inner_congr(a: Nat, b: Nat, x: Nat, n: Nat) {
+    (a * (b * x).mod(n)).congr_mod(a * (b * x), n)
+} by {
+    mod_congr_mod_self(b * x, n)
+    (b * x).mod(n).congr_mod(b * x, n)
+    congr_mod_refl(a, n)
+    a.congr_mod(a, n)
+    congr_mod_mul(a, (b * x).mod(n), a, b * x, n)
+}
+
+/// Surjectivity half: for `n > 0`, `a` coprime to `n`, and `x` in
+/// `coprime_residues(n)`, there is a `y` in `coprime_residues(n)` with
+/// `(a * y).mod(n) = x`. Witness: `y = (mod_inv(a, n) * x).mod(n)`.
+theorem coprime_residues_mul_surj(n: Nat, a: Nat, x: Nat) {
+    n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(x)
+        implies exists(y: Nat) {
+            coprime_residues(n).contains(y) and (a * y).mod(n) = x
+        }
+} by {
+    if n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(x) {
+        coprime_residues_contains_imp(n, x)
+        x < n
+        x.coprime(n)
+        let b: Nat = mod_inv(a, n)
+        mod_inv_coprime(a, n)
+        b.coprime(n)
+        let y: Nat = (b * x).mod(n)
+        // y < n since n > 0.
+        mod_lt(b * x, n)
+        y < n
+        // y is coprime to n.
+        coprime_mul_both(n, b, x)
+        (b * x).coprime(n)
+        coprime_mod_imp(b * x, n)
+        ((b * x).mod(n)).coprime(n)
+        y.coprime(n)
+        // y is in coprime_residues(n).
+        coprime_residues_contains_intro(n, y)
+        coprime_residues(n).contains(y)
+        // (a * y).mod(n) = x.
+        mul_mod_inner_congr(a, b, x, n)
+        (a * y).congr_mod(a * (b * x), n)
+        mul_inv_x_back(a, x, n)
+        (a * (b * x)).congr_mod(x, n)
+        congr_mod_trans(a * y, a * (b * x), x, n)
+        (a * y).congr_mod(x, n)
+        // congr_mod is mod equality.
+        (a * y).mod(n) = x.mod(n)
+        small_mod(x, n)
+        x.mod(n) = x
+        (a * y).mod(n) = x
+        coprime_residues(n).contains(y) and (a * y).mod(n) = x
+        exists(y0: Nat) {
+            coprime_residues(n).contains(y0) and (a * y0).mod(n) = x
+        }
+    }
 }

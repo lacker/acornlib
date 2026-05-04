@@ -655,3 +655,33 @@
 {"goal":"coprime_residues_below_unique","proof":["function(x0: Nat) { coprime_residues_below(n, x0).is_unique = f(x0) }(k)"]}
 {"goal":"coprime_residues(n) = coprime_residues_below(n, n)","proof":["function(x0: Nat) { coprime_residues(x0) = coprime_residues_below(x0, x0) }(n)"]}
 {"goal":"coprime_residues_unique","proof":[]}
+{"goal":"x.congr_mod(x, n)","proof":[]}
+{"goal":"(a * b * x).congr_mod(1 * x, n)","proof":[]}
+{"goal":"1 * x = x","proof":["function(x0: Nat) { 1 * x0 = x0 }(x)"]}
+{"goal":"(a * b * x).congr_mod(x, n)","proof":[]}
+{"goal":"scale_inv_by_x","proof":["not (a * b).congr_mod(1, n)"]}
+{"goal":"(a * mod_inv(a, n)).congr_mod(1, n)","proof":["not a.coprime(n)"]}
+{"goal":"(a * mod_inv(a, n) * x).congr_mod(x, n)","proof":["not (a * mod_inv(a, n)).congr_mod(1, n)"]}
+{"goal":"a * (mod_inv(a, n) * x) = a * mod_inv(a, n) * x","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(a, mod_inv(a, n), x)"]}
+{"goal":"(a * (mod_inv(a, n) * x)).congr_mod(x, n)","proof":[]}
+{"goal":"mul_inv_x_back","proof":["not a.coprime(n)"]}
+{"goal":"lib(nat.nat_base).nat_mod(b * x)(n).congr_mod(b * x, n)","proof":[]}
+{"goal":"a.congr_mod(a, n)","proof":[]}
+{"goal":"mul_mod_inner_congr","proof":[]}
+{"goal":"x < n","proof":[]}
+{"goal":"x.coprime(n)","proof":[]}
+{"goal":"b.coprime(n)","proof":[]}
+{"goal":"y < n","proof":[]}
+{"goal":"(b * x).coprime(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(b * x)(n).coprime(n)","proof":[]}
+{"goal":"y.coprime(n)","proof":[]}
+{"goal":"coprime_residues(n).contains(y)","proof":[]}
+{"goal":"(a * y).congr_mod(a * (b * x), n)","proof":[]}
+{"goal":"(a * (b * x)).congr_mod(x, n)","proof":[]}
+{"goal":"(a * y).congr_mod(x, n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * y)(n) = lib(nat.nat_base).nat_mod(x)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * y, n, x)"]}
+{"goal":"lib(nat.nat_base).nat_mod(x)(n) = x","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * y)(n) = x","proof":[]}
+{"goal":"coprime_residues(n).contains(y) and lib(nat.nat_base).nat_mod(a * y)(n) = x","proof":[]}
+{"goal":"exists(k0: Nat) { coprime_residues(n).contains(k0) and lib(nat.nat_base).nat_mod(a * k0)(n) = x }","proof":["function(x0: Nat) { not (x0 ∈ coprime_residues(n) and lib(nat.nat_base).nat_mod(a * x0, n) = x) }(y)"]}
+{"goal":"coprime_residues_mul_surj","proof":[]}

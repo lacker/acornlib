@@ -28,11 +28,13 @@ cryptographic content.
   `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`,
   `coprime_residues_mul_mem`: multiplication by a coprime unit preserves
   membership, `coprime_residues_mul_inj` (with the underlying
-  `mul_mod_inj_below`): injectivity on `[0, n)`, and
-  `coprime_residues_unique`: the list itself has no duplicates.
-  Together these give the membership / injectivity / no-duplicates
-  bookkeeping needed for the product / permutation argument behind a
-  general Euler proof.
+  `mul_mod_inj_below`): injectivity on `[0, n)`,
+  `coprime_residues_unique`: the list itself has no duplicates, and
+  `coprime_residues_mul_surj`: the same multiplication is also
+  surjective on `coprime_residues(n)`, with explicit preimage
+  `(mod_inv(a, n) * x).mod(n)`. Together these give the membership /
+  injectivity / surjectivity / no-duplicates bookkeeping needed for the
+  product / permutation argument behind a general Euler proof.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
