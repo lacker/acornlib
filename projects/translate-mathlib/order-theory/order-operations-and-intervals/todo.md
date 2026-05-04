@@ -2,12 +2,12 @@
 
 Goal: make elementwise order manipulation routine rather than bespoke.
 
-- [ ] Audit downstream `min`/`max` users for remaining bespoke one-off lemmas
 - [ ] Decide the exact interval preimage API for plain monotone maps; order-embedding interval preimages are in place
 - [ ] Refactor existing interval-like proofs to use the shared API
 
 Status:
 
+- Downstream `min`/`max` users in the numeric lattice instances, real construction helpers, list order/lattice code, and analysis files were audited against the central `src/order.ac` API. The remaining uses are either thin instance wrappers over the generic facts or domain-specific uses of selected bounds, so no migration patch is needed.
 - `src/order_cases.ac` now includes `>=` and `>` oriented aliases for the existing `min`/`max` lower-bound and upper-bound characterizations.
 - `src/order.ac` now has central `min`/`max` commutativity aliases, associativity variants, right-commutativity, absorption variants, and two-sided plus one-sided monotonicity lemmas.
 - `src/order.ac` now has central `le`/`ge` aliases for `min`/`max` endpoint bounds, selector iff lemmas, bound characterizations, one-sided strict constructors, one-sided non-strict constructors, and common two-/three-element bound existence lemmas.
