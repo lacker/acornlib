@@ -2586,3 +2586,14 @@ theorem product_coprime_residues_coprime(n: Nat) {
     }
     product_coprime_of_all(n, coprime_residues(n))
 }
+
+
+/// Helper: rewrite `product(map(cons(h, t), f))` as `f(h) * product(map(t, f))`.
+theorem product_map_cons(f: Nat -> Nat, head: Nat, tail: List[Nat]) {
+    product[Nat](map(List.cons(head, tail), f)) =
+        f(head) * product[Nat](map(tail, f))
+} by {
+    map(List.cons(head, tail), f) = List.cons(f(head), map(tail, f))
+    product[Nat](List.cons(f(head), map(tail, f))) =
+        f(head) * product[Nat](map(tail, f))
+}

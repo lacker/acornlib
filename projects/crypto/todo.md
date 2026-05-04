@@ -55,6 +55,9 @@ cryptographic content.
   to `n`; in particular, `product(coprime_residues(n))` is coprime
   to `n` — the cancellation factor for the final
   `cancel_coprime` step.
+- `product_map_cons`: rewriting helper
+  `product(map(cons(h, t), f)) = f(h) * product(map(t, f))`. Plumbing
+  for the eventual `mul_mod`-vs-`scalar_mul` congruence step.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
