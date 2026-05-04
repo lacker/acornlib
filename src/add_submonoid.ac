@@ -1,0 +1,606 @@
+from add_monoid import AddMonoid
+from set import Set
+from functions import predicate_extensionality
+
+/// True if a subset contains the additive identity.
+define add_submonoid_zero_constraint[M: AddMonoid](contains: M -> Bool) -> Bool {
+    contains(M.0)
+}
+
+/// True if a subset is closed under addition.
+define add_submonoid_closure_constraint[M: AddMonoid](contains: M -> Bool) -> Bool {
+    forall(a: M, b: M) {
+        contains(a) and contains(b) implies contains(a + b)
+    }
+}
+
+/// True if a subset satisfies all the requirements to be an additive submonoid.
+define add_submonoid_constraint[M: AddMonoid](contains: M -> Bool) -> Bool {
+    add_submonoid_zero_constraint(contains) and add_submonoid_closure_constraint(contains)
+}
+
+/// An additive submonoid of an additive monoid, represented as a subset containing zero and closed under addition.
+structure AddSubmonoid[M: AddMonoid] {
+    /// True if the given element is a member of this additive submonoid.
+    contains: M -> Bool
+} constraint {
+    add_submonoid_constraint(contains)
+}
+
+/// Additive submonoid extensionality from equality of membership.
+theorem add_submonoid_ext[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    (forall(x: M) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: M) { a.contains(x) = b.contains(x) } {
+        a.contains = b.contains
+    }
+}
+
+/// Equal additive submonoids have equal membership predicates.
+theorem add_submonoid_eq_contains[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal additive submonoids have equal membership at every element.
+theorem add_submonoid_eq_contains_at[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M], x: M) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of additive submonoids transports predicates on additive submonoids.
+theorem add_submonoid_eq_transport_predicate[M: AddMonoid](
+    p: AddSubmonoid[M] -> Bool,
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of additive submonoids transports predicates on additive submonoids in the reverse direction.
+theorem add_submonoid_eq_transport_predicate_rev[M: AddMonoid](
+    p: AddSubmonoid[M] -> Bool,
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of additive submonoids.
+theorem add_submonoid_eq_of_contains_eq[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: M) {
+            a.contains(x) = b.contains(x)
+        }
+        add_submonoid_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of additive submonoids.
+theorem add_submonoid_eq_of_contains_at_eq[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    (forall(x: M) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: M) { a.contains(x) = b.contains(x) } {
+        add_submonoid_ext(a, b)
+    }
+}
+
+/// Membership of zero in any additive submonoid.
+theorem add_submonoid_contains_zero[M: AddMonoid](s: AddSubmonoid[M]) {
+    s.contains(M.0)
+} by {
+    add_submonoid_constraint(s.contains)
+    add_submonoid_constraint(s.contains) =
+        add_submonoid_zero_constraint(s.contains) and add_submonoid_closure_constraint(s.contains)
+    add_submonoid_zero_constraint(s.contains)
+    add_submonoid_zero_constraint(s.contains) = s.contains(M.0)
+}
+
+/// Closure of any additive submonoid under addition.
+theorem add_submonoid_contains_add[M: AddMonoid](s: AddSubmonoid[M], a: M, b: M) {
+    s.contains(a) and s.contains(b) implies s.contains(a + b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        add_submonoid_constraint(s.contains)
+        add_submonoid_constraint(s.contains) =
+            add_submonoid_zero_constraint(s.contains) and add_submonoid_closure_constraint(s.contains)
+        add_submonoid_closure_constraint(s.contains)
+        add_submonoid_closure_constraint(s.contains) = forall(x: M, y: M) {
+            s.contains(x) and s.contains(y) implies s.contains(x + y)
+        }
+        s.contains(a + b)
+    }
+}
+
+/// The common membership predicate of two additive submonoids.
+define add_submonoid_intersection_contains[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M],
+    x: M
+) -> Bool {
+    a.contains(x) and b.contains(x)
+}
+
+/// The common part of two additive submonoids contains zero.
+theorem add_submonoid_intersection_zero_constraint[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_zero_constraint(add_submonoid_intersection_contains(a, b))
+} by {
+    add_submonoid_contains_zero(a)
+    add_submonoid_contains_zero(b)
+    add_submonoid_intersection_contains(a, b, M.0)
+}
+
+/// The common part of two additive submonoids is closed under addition.
+theorem add_submonoid_intersection_closure_constraint[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_closure_constraint(add_submonoid_intersection_contains(a, b))
+} by {
+    forall(x: M, y: M) {
+        if add_submonoid_intersection_contains(a, b, x) and add_submonoid_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            add_submonoid_contains_add(a, x, y)
+            add_submonoid_contains_add(b, x, y)
+            a.contains(x + y)
+            b.contains(x + y)
+            add_submonoid_intersection_contains(a, b, x + y)
+        }
+    }
+}
+
+/// The common part of two additive submonoids is an additive submonoid.
+theorem add_submonoid_intersection_constraint[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_constraint(add_submonoid_intersection_contains(a, b))
+} by {
+    add_submonoid_intersection_zero_constraint(a, b)
+    add_submonoid_intersection_closure_constraint(a, b)
+}
+
+/// The common part of two additive submonoids.
+let add_submonoid_intersection[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) -> result: AddSubmonoid[M] satisfy {
+    AddSubmonoid.new(add_submonoid_intersection_contains(a, b)) = Option.some(result)
+} by {
+    add_submonoid_intersection_constraint(a, b)
+}
+
+attributes AddSubmonoid[M: AddMonoid] {
+    /// Additive submonoid extensionality from pointwise equality of membership.
+    let ext = add_submonoid_ext[M]
+
+    /// The subset of additive monoid elements belonging to this additive submonoid.
+    define as_set(self) -> Set[M] {
+        Set[M].new(self.contains)
+    }
+
+    /// The common part of two additive submonoids.
+    let intersection: (AddSubmonoid[M], AddSubmonoid[M]) -> AddSubmonoid[M] = add_submonoid_intersection
+}
+
+/// Membership in the intersection means membership in both additive submonoids.
+theorem add_submonoid_intersection_contains_eq[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M],
+    x: M) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    a.intersection(b).contains(x) = add_submonoid_intersection_contains(a, b, x)
+    add_submonoid_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))
+}
+
+/// The intersection is contained in the left additive submonoid.
+theorem add_submonoid_intersection_subset_left[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M],
+    x: M) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        add_submonoid_intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// The intersection is contained in the right additive submonoid.
+theorem add_submonoid_intersection_subset_right[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M],
+    x: M) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        add_submonoid_intersection_contains_eq(a, b, x)
+        b.contains(x)
+    }
+}
+
+/// Additive submonoid intersection is commutative.
+theorem add_submonoid_intersection_comm[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    a.intersection(b) = b.intersection(a)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            add_submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            add_submonoid_intersection_contains_eq(b, a, x)
+            b.intersection(a).contains(x)
+        }
+        if b.intersection(a).contains(x) {
+            add_submonoid_intersection_contains_eq(b, a, x)
+            b.contains(x)
+            a.contains(x)
+            add_submonoid_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+        }
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+    add_submonoid_ext(a.intersection(b), b.intersection(a))
+}
+
+/// Additive submonoid intersection is associative.
+theorem add_submonoid_intersection_assoc[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M],
+    c: AddSubmonoid[M]
+) {
+    a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    let lhs = a.intersection(b).intersection(c)
+    let rhs = a.intersection(b.intersection(c))
+    forall(x: M) {
+        if lhs.contains(x) {
+            add_submonoid_intersection_contains_eq(a.intersection(b), c, x)
+            a.intersection(b).contains(x)
+            c.contains(x)
+            add_submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            add_submonoid_intersection_contains_eq(b, c, x)
+            b.intersection(c).contains(x)
+            add_submonoid_intersection_contains_eq(a, b.intersection(c), x)
+            rhs.contains(x)
+        }
+        if rhs.contains(x) {
+            add_submonoid_intersection_contains_eq(a, b.intersection(c), x)
+            a.contains(x)
+            b.intersection(c).contains(x)
+            add_submonoid_intersection_contains_eq(b, c, x)
+            b.contains(x)
+            c.contains(x)
+            add_submonoid_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+            add_submonoid_intersection_contains_eq(a.intersection(b), c, x)
+            lhs.contains(x)
+        }
+        lhs.contains(x) = rhs.contains(x)
+    }
+    add_submonoid_ext(lhs, rhs)
+}
+
+/// Additive submonoid intersection is idempotent.
+theorem add_submonoid_intersection_idempotent[M: AddMonoid](a: AddSubmonoid[M]) {
+    a.intersection(a) = a
+} by {
+    forall(x: M) {
+        if a.intersection(a).contains(x) {
+            add_submonoid_intersection_contains_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            add_submonoid_intersection_contains_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    add_submonoid_ext(a.intersection(a), a)
+}
+
+/// True if every element of one additive submonoid belongs to another.
+define add_submonoid_subset[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) -> Bool {
+    forall(x: M) {
+        a.contains(x) implies b.contains(x)
+    }
+}
+
+/// Additive submonoid inclusion is reflexive.
+theorem add_submonoid_subset_refl[M: AddMonoid](a: AddSubmonoid[M]) {
+    add_submonoid_subset(a, a)
+} by {
+    forall(x: M) {
+        a.contains(x) implies a.contains(x)
+    }
+}
+
+/// Additive submonoid inclusion is transitive.
+theorem add_submonoid_subset_trans[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M],
+    c: AddSubmonoid[M]
+) {
+    add_submonoid_subset(a, b) and add_submonoid_subset(b, c) implies add_submonoid_subset(a, c)
+} by {
+    if add_submonoid_subset(a, b) and add_submonoid_subset(b, c) {
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+                c.contains(x)
+            }
+        }
+    }
+}
+
+/// The intersection of two additive submonoids is contained in the left additive submonoid.
+theorem add_submonoid_intersection_subset_left_relation[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(a.intersection(b), a)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            add_submonoid_intersection_contains_eq(a, b, x)
+            a.contains(x)
+        }
+    }
+}
+
+/// The intersection of two additive submonoids is contained in the right additive submonoid.
+theorem add_submonoid_intersection_subset_right_relation[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(a.intersection(b), b)
+} by {
+    forall(x: M) {
+        if a.intersection(b).contains(x) {
+            add_submonoid_intersection_contains_eq(a, b, x)
+            b.contains(x)
+        }
+    }
+}
+
+/// Every common additive submonoid of two additive submonoids is contained in their intersection.
+theorem add_submonoid_subset_intersection_of_subset_left_right[M: AddMonoid](
+    c: AddSubmonoid[M],
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(c, a) and add_submonoid_subset(c, b) implies add_submonoid_subset(c, a.intersection(b))
+} by {
+    if add_submonoid_subset(c, a) and add_submonoid_subset(c, b) {
+        forall(x: M) {
+            if c.contains(x) {
+                a.contains(x)
+                b.contains(x)
+                add_submonoid_intersection_contains_eq(a, b, x)
+                a.intersection(b).contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in an intersection is equivalent to containment in both additive submonoids.
+theorem add_submonoid_subset_intersection_iff[M: AddMonoid](
+    c: AddSubmonoid[M],
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(c, a.intersection(b)) = (add_submonoid_subset(c, a) and add_submonoid_subset(c, b))
+} by {
+    if add_submonoid_subset(c, a.intersection(b)) {
+        add_submonoid_intersection_subset_left_relation(a, b)
+        add_submonoid_subset_trans(c, a.intersection(b), a)
+        add_submonoid_subset(c, a)
+        add_submonoid_intersection_subset_right_relation(a, b)
+        add_submonoid_subset_trans(c, a.intersection(b), b)
+        add_submonoid_subset(c, b)
+        add_submonoid_subset(c, a) and add_submonoid_subset(c, b)
+    }
+    if add_submonoid_subset(c, a) and add_submonoid_subset(c, b) {
+        add_submonoid_subset_intersection_of_subset_left_right(c, a, b)
+        add_submonoid_subset(c, a.intersection(b))
+    }
+    add_submonoid_subset(c, a.intersection(b)) = (add_submonoid_subset(c, a) and add_submonoid_subset(c, b))
+}
+
+/// True if an element is the additive identity.
+define is_add_monoid_identity[M: AddMonoid](m: M) -> Bool {
+    m = M.0
+}
+
+/// The additive identity predicate is an additive submonoid predicate.
+theorem zero_add_submonoid_constraint[M: AddMonoid] {
+    add_submonoid_constraint(is_add_monoid_identity[M])
+} by {
+    is_add_monoid_identity(M.0)
+    add_submonoid_zero_constraint(is_add_monoid_identity[M])
+    forall(a: M, b: M) {
+        if is_add_monoid_identity(a) and is_add_monoid_identity(b) {
+            a = M.0
+            b = M.0
+            M.0 + M.0 = M.0
+            is_add_monoid_identity(a + b)
+        }
+    }
+    add_submonoid_closure_constraint(is_add_monoid_identity[M])
+}
+
+/// The additive submonoid containing only the additive identity.
+let zero_add_submonoid[M: AddMonoid]: AddSubmonoid[M] satisfy {
+    AddSubmonoid.new(is_add_monoid_identity[M]) = Option.some(zero_add_submonoid)
+}
+
+/// Only the additive identity belongs to the zero additive submonoid.
+theorem zero_add_submonoid_only_has_zero[M: AddMonoid](m: M) {
+    zero_add_submonoid[M].contains(m) implies m = M.0
+} by {
+    if zero_add_submonoid[M].contains(m) {
+        AddSubmonoid.new(is_add_monoid_identity[M]) = Option.some(zero_add_submonoid[M])
+        zero_add_submonoid[M].contains = is_add_monoid_identity[M]
+        zero_add_submonoid[M].contains(m) = is_add_monoid_identity(m)
+        is_add_monoid_identity(m)
+        m = M.0
+    }
+}
+
+/// The zero additive submonoid is contained in every additive submonoid.
+theorem zero_add_submonoid_subset[M: AddMonoid](s: AddSubmonoid[M]) {
+    add_submonoid_subset(zero_add_submonoid[M], s)
+} by {
+    forall(x: M) {
+        if zero_add_submonoid[M].contains(x) {
+            zero_add_submonoid_only_has_zero(x)
+            x = M.0
+            add_submonoid_contains_zero(s)
+            s.contains(M.0)
+            s.contains(x)
+        }
+    }
+}
+
+/// The full subset of any additive monoid is an additive submonoid.
+define full_add_monoid_contains[M: AddMonoid](a: M) -> Bool {
+    true
+}
+
+/// The full membership predicate is an additive submonoid predicate.
+theorem full_add_submonoid_constraint[M: AddMonoid] {
+    add_submonoid_constraint(full_add_monoid_contains[M])
+} by {
+    full_add_monoid_contains[M](M.0)
+    add_submonoid_zero_constraint(full_add_monoid_contains[M])
+    forall(a: M, b: M) {
+        if full_add_monoid_contains[M](a) and full_add_monoid_contains[M](b) {
+            full_add_monoid_contains[M](a + b)
+        }
+    }
+    add_submonoid_closure_constraint(full_add_monoid_contains[M])
+}
+
+/// The full additive submonoid, containing every element.
+let full_add_submonoid[M: AddMonoid]: AddSubmonoid[M] satisfy {
+    AddSubmonoid.new(full_add_monoid_contains[M]) = Option.some(full_add_submonoid)
+}
+
+/// Every element belongs to the full additive submonoid.
+theorem full_add_submonoid_contains_everything[M: AddMonoid](m: M) {
+    full_add_submonoid[M].contains(m)
+}
+
+/// Every additive submonoid is contained in the full additive submonoid.
+theorem add_submonoid_subset_full[M: AddMonoid](s: AddSubmonoid[M]) {
+    add_submonoid_subset(s, full_add_submonoid[M])
+} by {
+    forall(x: M) {
+        if s.contains(x) {
+            full_add_submonoid_contains_everything(x)
+        }
+    }
+}
+
+/// Mutual inclusion of additive submonoids forces equality.
+theorem add_submonoid_subset_antisymm[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_subset(a, b) and add_submonoid_subset(b, a) implies a = b
+} by {
+    if add_submonoid_subset(a, b) and add_submonoid_subset(b, a) {
+        add_submonoid_subset(a, b) = forall(y: M) {
+            a.contains(y) implies b.contains(y)
+        }
+        add_submonoid_subset(b, a) = forall(y: M) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of additive submonoids is equivalent to mutual inclusion.
+theorem add_submonoid_eq_iff_subset_both[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    a = b = (add_submonoid_subset(a, b) and add_submonoid_subset(b, a))
+} by {
+    if a = b {
+        add_submonoid_subset_refl(a)
+        add_submonoid_subset(a, b)
+        add_submonoid_subset(b, a)
+        add_submonoid_subset(a, b) and add_submonoid_subset(b, a)
+    }
+    if add_submonoid_subset(a, b) and add_submonoid_subset(b, a) {
+        add_submonoid_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (add_submonoid_subset(a, b) and add_submonoid_subset(b, a))
+}
+
+/// Intersecting with a larger additive submonoid gives the smaller additive submonoid.
+theorem add_submonoid_intersection_eq_left_of_subset[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(a, b) implies a.intersection(b) = a
+} by {
+    if add_submonoid_subset(a, b) {
+        add_submonoid_intersection_subset_left_relation(a, b)
+        add_submonoid_subset_intersection_of_subset_left_right(a, a, b)
+        add_submonoid_subset(a, a.intersection(b))
+        add_submonoid_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger additive submonoid on the left gives the smaller additive submonoid.
+theorem add_submonoid_intersection_eq_right_of_subset[M: AddMonoid](
+    a: AddSubmonoid[M],
+    b: AddSubmonoid[M]
+) {
+    add_submonoid_subset(b, a) implies a.intersection(b) = b
+} by {
+    if add_submonoid_subset(b, a) {
+        add_submonoid_intersection_subset_right_relation(a, b)
+        add_submonoid_subset_intersection_of_subset_left_right(b, a, b)
+        add_submonoid_subset(b, a.intersection(b))
+        add_submonoid_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// Intersecting the zero additive submonoid on the left gives the zero additive submonoid.
+theorem zero_add_submonoid_intersection_left[M: AddMonoid](s: AddSubmonoid[M]) {
+    zero_add_submonoid[M].intersection(s) = zero_add_submonoid[M]
+} by {
+    zero_add_submonoid_subset(s)
+    add_submonoid_intersection_eq_left_of_subset(zero_add_submonoid[M], s)
+}
+
+/// Intersecting the zero additive submonoid on the right gives the zero additive submonoid.
+theorem zero_add_submonoid_intersection_right[M: AddMonoid](s: AddSubmonoid[M]) {
+    s.intersection(zero_add_submonoid[M]) = zero_add_submonoid[M]
+} by {
+    zero_add_submonoid_subset(s)
+    add_submonoid_intersection_eq_right_of_subset(s, zero_add_submonoid[M])
+}
+
+/// Intersecting the full additive submonoid on the left gives the other additive submonoid.
+theorem full_add_submonoid_intersection_left[M: AddMonoid](s: AddSubmonoid[M]) {
+    full_add_submonoid[M].intersection(s) = s
+} by {
+    add_submonoid_subset_full(s)
+    add_submonoid_intersection_eq_right_of_subset(full_add_submonoid[M], s)
+}
+
+/// Intersecting the full additive submonoid on the right gives the other additive submonoid.
+theorem full_add_submonoid_intersection_right[M: AddMonoid](s: AddSubmonoid[M]) {
+    s.intersection(full_add_submonoid[M]) = s
+} by {
+    add_submonoid_subset_full(s)
+    add_submonoid_intersection_eq_left_of_subset(s, full_add_submonoid[M])
+}
