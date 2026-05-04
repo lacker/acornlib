@@ -95,7 +95,7 @@
 {"goal":"c != F.0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[F](c, F.0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[F](c, F.0)"]}
 {"goal":"F.0 <= c.inverse","proof":["function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[F](F.0, c.inverse)","function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { not x0 < x1 or x0.max(x1) = x1 }[F](F.0, c.inverse)"]}
 {"goal":"c.inverse.inverse = c","proof":["function[T0: Field](x0: T0) { x0.inverse.inverse = x0 }[F](c)"]}
-{"goal":"F.0 <= c.inverse.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse.inverse)","F.0 < c","F.0 < c.inverse.inverse","not F.0 < c.inverse.inverse"]}
+{"goal":"F.0 <= c.inverse.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse.inverse)"]}
 {"goal":"g(f(x)) = x","proof":[]}
 {"goal":"left_inverse","proof":["let w0: F satisfy { g(f(w0)) != w0 }","function(x0: F) { g(f(x0)) = x0 }(w0)"]}
 {"goal":"f(g(y)) = y","proof":[]}
@@ -114,9 +114,9 @@
 {"goal":"is_order_iso_pair[F, F](mul_right_scalar_map(c), mul_right_scalar_map(c.inverse))","proof":[]}
 {"goal":"mul_right_scalar_map_is_order_iso_pair_of_positive","proof":[]}
 {"goal":"c != F.0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[F](c, F.0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[F](c, F.0)"]}
-{"goal":"F.0 <= c.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse)","F.0 < c.inverse","not F.0 < c.inverse"]}
+{"goal":"F.0 <= c.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse)"]}
 {"goal":"c.inverse.inverse = c","proof":["function[T0: Field](x0: T0) { x0.inverse.inverse = x0 }[F](c)"]}
-{"goal":"F.0 <= c.inverse.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse.inverse)","F.0 < c","F.0 < c.inverse.inverse","not F.0 < c.inverse.inverse"]}
+{"goal":"F.0 <= c.inverse.inverse","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[F](F.0, c.inverse.inverse)"]}
 {"goal":"g(f(x)) = x","proof":[]}
 {"goal":"left_inverse","proof":["let w0: F satisfy { g(f(w0)) != w0 }","function(x0: F) { g(f(x0)) = x0 }(w0)"]}
 {"goal":"f(g(y)) = y","proof":[]}

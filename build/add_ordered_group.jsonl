@@ -4,7 +4,7 @@
 {"goal":"negative_of_negative","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not T0.lte(x0, x1) or T0.add(x2, x0) <= T0.add(x2, x1) }[G](--a, G.0, -a)","function[T0: AddGroup](x0: T0) { T0.add(x0, T0.neg(x0)) = T0.0 }[G](-a)","function[T0: AddGroup](x0: T0) { -T0.neg(x0) = x0 }[G](a)","function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.add(x0, T0.0) = x0 }[G](-a)"]}
 {"goal":"a + c <= b + c","proof":["function[T0: AddOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x0 + x2 <= x1 + x2 }[F](a, b, c)"]}
 {"goal":"b + c <= b + d","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x2 + x0 <= x2 + x1 }[F](c, d, b)"]}
-{"goal":"a + c <= b + d","proof":["function[T0: PartialOrder] { lib(relation_basic).is_transitive[T0](T0.lte) }[F]","not b + c <= b + d or not a + c <= b + c or not lib(relation_basic).is_transitive[F](F.lte)"]}
+{"goal":"a + c <= b + d","proof":["function[T0: PartialOrder] { lib(relation_basic).is_transitive[T0](T0.lte) }[F]"]}
 {"goal":"add_inequality","proof":[]}
 {"goal":"F.0 <= b + -a","proof":["function[T0: AddOrderedGroup](x0: T0, x1: T0, x2: T0) { not T0.lte(x0, x1) or T0.add(x0, x2) <= T0.add(x1, x2) }[F](a, b, -a)","function[T0: AddGroup](x0: T0) { T0.add(x0, T0.neg(x0)) = T0.0 }[F](a)"]}
 {"goal":"F.0 <= b + -a implies -b + F.0 <= -b + (b + -a)","proof":["function[T0: AddLeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not T0.lte(x0, x1) or T0.add(x2, x0) <= T0.add(x2, x1) }[F](F.0, b + -a, -b)"]}
@@ -87,9 +87,9 @@
 {"goal":"right_inverse","proof":["let w0: G satisfy { f(g(w0)) != w0 }","function(x0: G) { f(g(x0)) = x0 }(w0)"]}
 {"goal":"is_order_embedding[G, G](f)","proof":[]}
 {"goal":"is_order_embedding[G, G](g)","proof":[]}
-{"goal":"left_inverse and right_inverse","proof":["not left_inverse"]}
-{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":["not is_order_embedding[G, G](f)"]}
-{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"left_inverse and right_inverse","proof":[]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":[]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":[]}
 {"goal":"is_order_iso_pair[G, G](f, g) = (left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[G, G](g, f)"]}
 {"goal":"left_inverse = forall(x0: G) { g(f(x0)) = x0 }","proof":[]}
 {"goal":"right_inverse = forall(x0: G) { f(g(x0)) = x0 }","proof":[]}
@@ -104,9 +104,9 @@
 {"goal":"right_inverse","proof":["let w0: G satisfy { f(g(w0)) != w0 }","function(x0: G) { f(g(x0)) = x0 }(w0)"]}
 {"goal":"is_order_embedding[G, G](f)","proof":[]}
 {"goal":"is_order_embedding[G, G](g)","proof":[]}
-{"goal":"left_inverse and right_inverse","proof":["not left_inverse"]}
-{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":["not is_order_embedding[G, G](f)"]}
-{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"left_inverse and right_inverse","proof":[]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":[]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":[]}
 {"goal":"is_order_iso_pair[G, G](f, g) = (left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[G, G](g, f)"]}
 {"goal":"left_inverse = forall(x0: G) { g(f(x0)) = x0 }","proof":[]}
 {"goal":"right_inverse = forall(x0: G) { f(g(x0)) = x0 }","proof":[]}

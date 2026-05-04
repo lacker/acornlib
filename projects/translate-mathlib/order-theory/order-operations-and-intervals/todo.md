@@ -3,10 +3,10 @@
 Goal: make elementwise order manipulation routine rather than bespoke.
 
 - [ ] Decide the exact interval preimage API for plain monotone maps; order-embedding interval preimages are in place
-- [ ] Refactor existing interval-like proofs to use the shared API
 
 Status:
 
+- `src/order_iso.ac` now factors order-isomorphism and order-dual interval membership transport through the shared order-embedding and antitone interval image/preimage lemmas from `src/order_maps.ac`.
 - Downstream `min`/`max` users in the numeric lattice instances, real construction helpers, list order/lattice code, and analysis files were audited against the central `src/order.ac` API. The remaining uses are either thin instance wrappers over the generic facts or domain-specific uses of selected bounds, so no migration patch is needed.
 - `src/order_cases.ac` now includes `>=` and `>` oriented aliases for the existing `min`/`max` lower-bound and upper-bound characterizations.
 - `src/order.ac` now has central `min`/`max` commutativity aliases, associativity variants, right-commutativity, absorption variants, and two-sided plus one-sided monotonicity lemmas.
