@@ -15,6 +15,14 @@ from order_maps import is_antitone, is_strict_antitone, antitone_step, is_order_
     order_embedding_le_iff_le,
     order_embedding_reflects_lte, order_embedding_reflects_lt, order_embedding_reflects_ge,
     order_embedding_reflects_gt, identity_is_order_embedding, order_embedding_compose,
+    antitone_closed_interval_image, strict_antitone_open_interval_image,
+    antitone_left_open_interval_image, antitone_right_open_interval_image,
+    order_embedding_closed_interval_image, order_embedding_closed_interval_preimage,
+    order_embedding_closed_interval_iff, order_embedding_open_interval_image,
+    order_embedding_open_interval_preimage, order_embedding_open_interval_iff,
+    order_embedding_left_open_interval_image, order_embedding_left_open_interval_preimage,
+    order_embedding_left_open_interval_iff, order_embedding_right_open_interval_image,
+    order_embedding_right_open_interval_preimage, order_embedding_right_open_interval_iff,
     order_embedding_min_image, order_embedding_max_image
 from lattice import MeetSemilattice, JoinSemilattice, meet_lte_left, meet_lte_right,
     lte_meet_of_bounds, lte_join_left, lte_join_right, join_lte_of_bounds
@@ -2427,12 +2435,9 @@ theorem order_iso_closed_interval_image[A: LinearOrder, B: LinearOrder](e: Order
     closed_interval(a, b, x) implies closed_interval(e.map(a), e.map(b), e.map(x))
 } by {
     if closed_interval(a, b, x) {
-        a <= x
-        order_iso_apply_le(e, a, x)
-        e.map(a) <= e.map(x)
-        x <= b
-        order_iso_apply_le(e, x, b)
-        e.map(x) <= e.map(b)
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_closed_interval_image(e.map, a, b, x)
         closed_interval(e.map(a), e.map(b), e.map(x))
     }
 }
@@ -2442,12 +2447,9 @@ theorem order_iso_closed_interval_preimage[A: LinearOrder, B: LinearOrder](e: Or
     closed_interval(e.map(a), e.map(b), e.map(x)) implies closed_interval(a, b, x)
 } by {
     if closed_interval(e.map(a), e.map(b), e.map(x)) {
-        e.map(a) <= e.map(x)
-        order_iso_reflects_le(e, a, x)
-        a <= x
-        e.map(x) <= e.map(b)
-        order_iso_reflects_le(e, x, b)
-        x <= b
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_closed_interval_preimage(e.map, a, b, x)
         closed_interval(a, b, x)
     }
 }
@@ -2456,14 +2458,9 @@ theorem order_iso_closed_interval_preimage[A: LinearOrder, B: LinearOrder](e: Or
 theorem order_iso_closed_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
     closed_interval(e.map(a), e.map(b), e.map(x)) = closed_interval(a, b, x)
 } by {
-    if closed_interval(e.map(a), e.map(b), e.map(x)) {
-        order_iso_closed_interval_preimage(e, a, b, x)
-        closed_interval(a, b, x)
-    }
-    if closed_interval(a, b, x) {
-        order_iso_closed_interval_image(e, a, b, x)
-        closed_interval(e.map(a), e.map(b), e.map(x))
-    }
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    order_embedding_closed_interval_iff(e.map, a, b, x)
     closed_interval(e.map(a), e.map(b), e.map(x)) = closed_interval(a, b, x)
 }
 
@@ -2472,12 +2469,9 @@ theorem order_iso_open_interval_image[A: LinearOrder, B: LinearOrder](e: OrderIs
     open_interval(a, b, x) implies open_interval(e.map(a), e.map(b), e.map(x))
 } by {
     if open_interval(a, b, x) {
-        a < x
-        order_iso_apply_lt(e, a, x)
-        e.map(a) < e.map(x)
-        x < b
-        order_iso_apply_lt(e, x, b)
-        e.map(x) < e.map(b)
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_open_interval_image(e.map, a, b, x)
         open_interval(e.map(a), e.map(b), e.map(x))
     }
 }
@@ -2487,12 +2481,9 @@ theorem order_iso_open_interval_preimage[A: LinearOrder, B: LinearOrder](e: Orde
     open_interval(e.map(a), e.map(b), e.map(x)) implies open_interval(a, b, x)
 } by {
     if open_interval(e.map(a), e.map(b), e.map(x)) {
-        e.map(a) < e.map(x)
-        order_iso_reflects_lt(e, a, x)
-        a < x
-        e.map(x) < e.map(b)
-        order_iso_reflects_lt(e, x, b)
-        x < b
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_open_interval_preimage(e.map, a, b, x)
         open_interval(a, b, x)
     }
 }
@@ -2501,14 +2492,9 @@ theorem order_iso_open_interval_preimage[A: LinearOrder, B: LinearOrder](e: Orde
 theorem order_iso_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
     open_interval(e.map(a), e.map(b), e.map(x)) = open_interval(a, b, x)
 } by {
-    if open_interval(e.map(a), e.map(b), e.map(x)) {
-        order_iso_open_interval_preimage(e, a, b, x)
-        open_interval(a, b, x)
-    }
-    if open_interval(a, b, x) {
-        order_iso_open_interval_image(e, a, b, x)
-        open_interval(e.map(a), e.map(b), e.map(x))
-    }
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    order_embedding_open_interval_iff(e.map, a, b, x)
     open_interval(e.map(a), e.map(b), e.map(x)) = open_interval(a, b, x)
 }
 
@@ -2517,12 +2503,9 @@ theorem order_iso_left_open_interval_image[A: LinearOrder, B: LinearOrder](e: Or
     left_open_interval(a, b, x) implies left_open_interval(e.map(a), e.map(b), e.map(x))
 } by {
     if left_open_interval(a, b, x) {
-        a < x
-        order_iso_apply_lt(e, a, x)
-        e.map(a) < e.map(x)
-        x <= b
-        order_iso_apply_le(e, x, b)
-        e.map(x) <= e.map(b)
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_left_open_interval_image(e.map, a, b, x)
         left_open_interval(e.map(a), e.map(b), e.map(x))
     }
 }
@@ -2532,12 +2515,9 @@ theorem order_iso_left_open_interval_preimage[A: LinearOrder, B: LinearOrder](e:
     left_open_interval(e.map(a), e.map(b), e.map(x)) implies left_open_interval(a, b, x)
 } by {
     if left_open_interval(e.map(a), e.map(b), e.map(x)) {
-        e.map(a) < e.map(x)
-        order_iso_reflects_lt(e, a, x)
-        a < x
-        e.map(x) <= e.map(b)
-        order_iso_reflects_le(e, x, b)
-        x <= b
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_left_open_interval_preimage(e.map, a, b, x)
         left_open_interval(a, b, x)
     }
 }
@@ -2546,14 +2526,9 @@ theorem order_iso_left_open_interval_preimage[A: LinearOrder, B: LinearOrder](e:
 theorem order_iso_left_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
     left_open_interval(e.map(a), e.map(b), e.map(x)) = left_open_interval(a, b, x)
 } by {
-    if left_open_interval(e.map(a), e.map(b), e.map(x)) {
-        order_iso_left_open_interval_preimage(e, a, b, x)
-        left_open_interval(a, b, x)
-    }
-    if left_open_interval(a, b, x) {
-        order_iso_left_open_interval_image(e, a, b, x)
-        left_open_interval(e.map(a), e.map(b), e.map(x))
-    }
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    order_embedding_left_open_interval_iff(e.map, a, b, x)
     left_open_interval(e.map(a), e.map(b), e.map(x)) = left_open_interval(a, b, x)
 }
 
@@ -2562,12 +2537,9 @@ theorem order_iso_right_open_interval_image[A: LinearOrder, B: LinearOrder](e: O
     right_open_interval(a, b, x) implies right_open_interval(e.map(a), e.map(b), e.map(x))
 } by {
     if right_open_interval(a, b, x) {
-        a <= x
-        order_iso_apply_le(e, a, x)
-        e.map(a) <= e.map(x)
-        x < b
-        order_iso_apply_lt(e, x, b)
-        e.map(x) < e.map(b)
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_right_open_interval_image(e.map, a, b, x)
         right_open_interval(e.map(a), e.map(b), e.map(x))
     }
 }
@@ -2577,12 +2549,9 @@ theorem order_iso_right_open_interval_preimage[A: LinearOrder, B: LinearOrder](e
     right_open_interval(e.map(a), e.map(b), e.map(x)) implies right_open_interval(a, b, x)
 } by {
     if right_open_interval(e.map(a), e.map(b), e.map(x)) {
-        e.map(a) <= e.map(x)
-        order_iso_reflects_le(e, a, x)
-        a <= x
-        e.map(x) < e.map(b)
-        order_iso_reflects_lt(e, x, b)
-        x < b
+        order_iso_map_is_order_embedding(e)
+        is_order_embedding(e.map)
+        order_embedding_right_open_interval_preimage(e.map, a, b, x)
         right_open_interval(a, b, x)
     }
 }
@@ -2591,14 +2560,9 @@ theorem order_iso_right_open_interval_preimage[A: LinearOrder, B: LinearOrder](e
 theorem order_iso_right_open_interval_iff[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B], a: A, b: A, x: A) {
     right_open_interval(e.map(a), e.map(b), e.map(x)) = right_open_interval(a, b, x)
 } by {
-    if right_open_interval(e.map(a), e.map(b), e.map(x)) {
-        order_iso_right_open_interval_preimage(e, a, b, x)
-        right_open_interval(a, b, x)
-    }
-    if right_open_interval(a, b, x) {
-        order_iso_right_open_interval_image(e, a, b, x)
-        right_open_interval(e.map(a), e.map(b), e.map(x))
-    }
+    order_iso_map_is_order_embedding(e)
+    is_order_embedding(e.map)
+    order_embedding_right_open_interval_iff(e.map, a, b, x)
     right_open_interval(e.map(a), e.map(b), e.map(x)) = right_open_interval(a, b, x)
 }
 
@@ -2648,12 +2612,9 @@ theorem order_dual_iso_closed_interval_image[A: LinearOrder, B: LinearOrder](
     closed_interval(a, b, x) implies closed_interval(e.map(b), e.map(a), e.map(x))
 } by {
     if closed_interval(a, b, x) {
-        a <= x
-        order_dual_iso_apply_le(e, a, x)
-        e.map(x) <= e.map(a)
-        x <= b
-        order_dual_iso_apply_le(e, x, b)
-        e.map(b) <= e.map(x)
+        order_dual_iso_map_is_antitone(e)
+        is_antitone(e.map)
+        antitone_closed_interval_image(e.map, a, b, x)
         closed_interval(e.map(b), e.map(a), e.map(x))
     }
 }
@@ -2668,12 +2629,13 @@ theorem order_dual_iso_closed_interval_preimage[A: LinearOrder, B: LinearOrder](
     closed_interval(e.map(b), e.map(a), e.map(x)) implies closed_interval(a, b, x)
 } by {
     if closed_interval(e.map(b), e.map(a), e.map(x)) {
-        e.map(b) <= e.map(x)
-        order_dual_iso_reflects_le(e, x, b)
-        x <= b
-        e.map(x) <= e.map(a)
-        order_dual_iso_reflects_le(e, a, x)
-        a <= x
+        order_dual_iso_inv_is_antitone(e)
+        is_antitone(e.inv)
+        antitone_closed_interval_image(e.inv, e.map(b), e.map(a), e.map(x))
+        closed_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))
+        order_dual_iso_left_inverse(e, a)
+        order_dual_iso_left_inverse(e, b)
+        order_dual_iso_left_inverse(e, x)
         closed_interval(a, b, x)
     }
 }
@@ -2708,12 +2670,9 @@ theorem order_dual_iso_open_interval_image[A: LinearOrder, B: LinearOrder](
     open_interval(a, b, x) implies open_interval(e.map(b), e.map(a), e.map(x))
 } by {
     if open_interval(a, b, x) {
-        a < x
-        order_dual_iso_apply_lt(e, a, x)
-        e.map(x) < e.map(a)
-        x < b
-        order_dual_iso_apply_lt(e, x, b)
-        e.map(b) < e.map(x)
+        order_dual_iso_map_is_strict_antitone(e)
+        is_strict_antitone(e.map)
+        strict_antitone_open_interval_image(e.map, a, b, x)
         open_interval(e.map(b), e.map(a), e.map(x))
     }
 }
@@ -2728,12 +2687,13 @@ theorem order_dual_iso_open_interval_preimage[A: LinearOrder, B: LinearOrder](
     open_interval(e.map(b), e.map(a), e.map(x)) implies open_interval(a, b, x)
 } by {
     if open_interval(e.map(b), e.map(a), e.map(x)) {
-        e.map(b) < e.map(x)
-        order_dual_iso_reflects_lt(e, x, b)
-        x < b
-        e.map(x) < e.map(a)
-        order_dual_iso_reflects_lt(e, a, x)
-        a < x
+        order_dual_iso_inv_is_strict_antitone(e)
+        is_strict_antitone(e.inv)
+        strict_antitone_open_interval_image(e.inv, e.map(b), e.map(a), e.map(x))
+        open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))
+        order_dual_iso_left_inverse(e, a)
+        order_dual_iso_left_inverse(e, b)
+        order_dual_iso_left_inverse(e, x)
         open_interval(a, b, x)
     }
 }
@@ -2768,12 +2728,11 @@ theorem order_dual_iso_left_open_interval_image[A: LinearOrder, B: LinearOrder](
     left_open_interval(a, b, x) implies right_open_interval(e.map(b), e.map(a), e.map(x))
 } by {
     if left_open_interval(a, b, x) {
-        a < x
-        order_dual_iso_apply_lt(e, a, x)
-        e.map(x) < e.map(a)
-        x <= b
-        order_dual_iso_apply_le(e, x, b)
-        e.map(b) <= e.map(x)
+        order_dual_iso_map_is_antitone(e)
+        is_antitone(e.map)
+        order_dual_iso_map_is_strict_antitone(e)
+        is_strict_antitone(e.map)
+        antitone_left_open_interval_image(e.map, a, b, x)
         right_open_interval(e.map(b), e.map(a), e.map(x))
     }
 }
@@ -2788,12 +2747,15 @@ theorem order_dual_iso_left_open_interval_preimage[A: LinearOrder, B: LinearOrde
     right_open_interval(e.map(b), e.map(a), e.map(x)) implies left_open_interval(a, b, x)
 } by {
     if right_open_interval(e.map(b), e.map(a), e.map(x)) {
-        e.map(b) <= e.map(x)
-        order_dual_iso_reflects_le(e, x, b)
-        x <= b
-        e.map(x) < e.map(a)
-        order_dual_iso_reflects_lt(e, a, x)
-        a < x
+        order_dual_iso_inv_is_antitone(e)
+        is_antitone(e.inv)
+        order_dual_iso_inv_is_strict_antitone(e)
+        is_strict_antitone(e.inv)
+        antitone_right_open_interval_image(e.inv, e.map(b), e.map(a), e.map(x))
+        left_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))
+        order_dual_iso_left_inverse(e, a)
+        order_dual_iso_left_inverse(e, b)
+        order_dual_iso_left_inverse(e, x)
         left_open_interval(a, b, x)
     }
 }
@@ -2828,12 +2790,11 @@ theorem order_dual_iso_right_open_interval_image[A: LinearOrder, B: LinearOrder]
     right_open_interval(a, b, x) implies left_open_interval(e.map(b), e.map(a), e.map(x))
 } by {
     if right_open_interval(a, b, x) {
-        a <= x
-        order_dual_iso_apply_le(e, a, x)
-        e.map(x) <= e.map(a)
-        x < b
-        order_dual_iso_apply_lt(e, x, b)
-        e.map(b) < e.map(x)
+        order_dual_iso_map_is_antitone(e)
+        is_antitone(e.map)
+        order_dual_iso_map_is_strict_antitone(e)
+        is_strict_antitone(e.map)
+        antitone_right_open_interval_image(e.map, a, b, x)
         left_open_interval(e.map(b), e.map(a), e.map(x))
     }
 }
@@ -2848,12 +2809,15 @@ theorem order_dual_iso_right_open_interval_preimage[A: LinearOrder, B: LinearOrd
     left_open_interval(e.map(b), e.map(a), e.map(x)) implies right_open_interval(a, b, x)
 } by {
     if left_open_interval(e.map(b), e.map(a), e.map(x)) {
-        e.map(b) < e.map(x)
-        order_dual_iso_reflects_lt(e, x, b)
-        x < b
-        e.map(x) <= e.map(a)
-        order_dual_iso_reflects_le(e, a, x)
-        a <= x
+        order_dual_iso_inv_is_antitone(e)
+        is_antitone(e.inv)
+        order_dual_iso_inv_is_strict_antitone(e)
+        is_strict_antitone(e.inv)
+        antitone_left_open_interval_image(e.inv, e.map(b), e.map(a), e.map(x))
+        right_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))
+        order_dual_iso_left_inverse(e, a)
+        order_dual_iso_left_inverse(e, b)
+        order_dual_iso_left_inverse(e, x)
         right_open_interval(a, b, x)
     }
 }
