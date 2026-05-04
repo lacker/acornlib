@@ -1,9 +1,9 @@
 ---
 name: "Explicate"
-description: "Expand the valid but complicated proofs in a module to have more detailed steps, so that they are reprovable."
+description: "Expand the valid but complicated proofs in a module to have more detailed steps, so that they can be found by forced proof search."
 ---
 
-Sometimes, we have a valid proof, in the sense that its certificate can be verified. But the proof is too complicated, in the sense that the prover cannot re-discover the proof ("reprove") if we were to lose the certificate. In this situation, we often want to "explicate" the proof, ie to add more detailed steps to the .ac file so that the prover is able to re-discover the proof.
+Sometimes, we have a valid proof, in the sense that its certificate can be verified. But the proof is too complicated, in the sense that the prover cannot re-discover the proof with forced search if we were to lose the certificate. In this situation, we often want to "explicate" the proof, ie to add more detailed steps to the .ac file so that the prover is able to re-discover the proof.
 
 # Prerequisite
 
@@ -19,21 +19,21 @@ If the check fails, we won't be able to explicate.
 
 # Explicating One Module
 
-The next step is to figure out which lines we need to explicate. Run a reprove with `--fail-fast`. Once we find a line that fails, we'll know we need to explicate it.
+The next step is to figure out which lines we need to explicate. Run forced proof search with `--fail-fast`. Once we find a line that fails, we'll know we need to explicate it.
 
 ```bash
-acorn reprove MODULENAME --fail-fast
+acorn verify MODULENAME --force-search --fail-fast
 ```
 
 If there's a crash or an internal error, that's a bug in Acorn. We should stop explicating and tell the user there's an Acorn bug.
 
 If this command works, we're done with this module.
 
-If we find a line what can't be reproved, make note of the line number and go to the next step.
+If we find a line that can't be found by forced search, make note of the line number and go to the next step.
 
 # Explicating One Line
 
-Once we know a line that cannot be reproved, select the proof to see its detail.
+Once we know a line that cannot be found by forced search, select the proof to see its detail.
 
 ```bash
 acorn select MODULENAME LINENUMBER
@@ -58,8 +58,8 @@ acorn verify MODULENAME
 
 If this doesn't verify, something was bad with the code we inserted wrong. Try fixing it so that it verifies.
 
-If it does verify, we can repeat. Try reproving this module again, to see if any lines still need explication.
+If it does verify, we can repeat. Try forced proof search on this module again, to see if any lines still need explication.
 
 # Finishing
 
-When you are done explicating a module, run a reprove on that module. Ideally, it should succeed. If it doesn't, try explicating again.
+When you are done explicating a module, run forced proof search on that module. Ideally, it should succeed. If it doesn't, try explicating again.
