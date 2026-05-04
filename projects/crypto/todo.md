@@ -40,8 +40,10 @@ cryptographic content.
   `coprime_residues(n)`. `mul_mod_residues_length` (=
   `nat_totient(n)`), `mul_mod_residues_in_coprime` and
   `coprime_in_mul_mod_residues` give bidirectional element membership
-  with `coprime_residues(n)`, and `mul_mod_residues_unique` shows the
-  mapped list has no duplicates.
+  with `coprime_residues(n)`, `mul_mod_residues_unique` shows the
+  mapped list has no duplicates, and `mul_mod_residues_is_permutation`
+  packages everything into
+  `is_permutation(mul_mod_residues(n, a), coprime_residues(n))`.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
@@ -60,13 +62,12 @@ general `inverse_imp_coprime` (`a * b ≡ 1 (mod n) ⟹ b.coprime(n)`).
       `m.coprime(n)`) — generalises `totient_pq` via the CRT-induced
       bijection between `[0, mn)` and `[0, m) x [0, n)`.
 - [ ] Generalise `euler_pq` to arbitrary moduli: `gcd(a, n) = 1` implies
-      `a.pow(nat_totient(n)).mod(n) = 1`. Next concrete step: prove
-      `is_permutation(mul_mod_residues(n, a), coprime_residues(n))` from
-      length equality, bidirectional membership, and uniqueness on both
-      sides (a generic "two unique lists with same length and same
-      element set are permutations" lemma is reusable). Euler then
-      follows by `permutation_preserves_product` over the units of
-      `Z/nZ`, plus a cancellation step via `cancel_coprime`.
+      `a.pow(nat_totient(n)).mod(n) = 1`. Next concrete step: take the
+      product over both sides of `mul_mod_residues_is_permutation` via
+      `permutation_preserves_product`, push `a^totient(n)` out of
+      `product(mul_mod_residues(n, a))` (each element of the mapped
+      list contributes a factor of `a` modulo `n`), and finish by
+      cancellation through `cancel_coprime`.
 
 ## DSA
 

@@ -747,10 +747,29 @@
 {"goal":"mul_mod_residues_below_unique_pred(n, a)(k)","proof":[]}
 {"goal":"mul_mod_residues_below_unique","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (not x0 <= x1 or map[Nat, Nat](coprime_residues_below(x1, x0), mul_mod_fn(x1, x2)).is_unique) = mul_mod_residues_below_unique_pred(x1, x2, x0) }(k, n, a)"]}
 {"goal":"n <= n","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { not lib(relation_basic).is_reflexive[T0](x0) or x0(x1, x1) }[Nat](Nat.lte, n)"]}
-{"goal":"mapped.is_unique","proof":["not a.coprime(n) or map[Nat, Nat](coprime_residues_below(n, n), mul_mod_fn(n, a)).is_unique or 0 = n","0 != n","a.coprime(n)","not map[Nat, Nat](coprime_residues_below(n, n), mul_mod_fn(n, a)).is_unique","map[Nat, Nat](coprime_residues_below(n, n), mul_mod_fn(n, a)).is_unique"]}
+{"goal":"mapped.is_unique","proof":[]}
 {"goal":"coprime_residues(n) = coprime_residues_below(n, n)","proof":["function(x0: Nat) { coprime_residues(x0) = coprime_residues_below(x0, x0) }(n)"]}
-{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)) = mapped","proof":["map[Nat, Nat](coprime_residues_below(n, n), mul_mod_fn(n, a)) != mapped"]}
+{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)) = mapped","proof":[]}
 {"goal":"mul_mod_residues(n, a) = map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a))","proof":["function(x0: Nat, x1: Nat) { map[Nat, Nat](coprime_residues(x0), mul_mod_fn(x0, x1)) = mul_mod_residues(x0, x1) }(n, a)"]}
-{"goal":"mul_mod_residues(n, a) = mapped","proof":["map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)) != mul_mod_residues(n, a)"]}
+{"goal":"mul_mod_residues(n, a) = mapped","proof":[]}
 {"goal":"mul_mod_residues(n, a).is_unique","proof":[]}
-{"goal":"mul_mod_residues_unique","proof":["not a.coprime(n) or 0 = n","0 != n","a.coprime(n)","not a.coprime(n)"]}
+{"goal":"mul_mod_residues_unique","proof":[]}
+{"goal":"list.count(item) >= 1","proof":[]}
+{"goal":"list.count(item) <= 1","proof":[]}
+{"goal":"list.count(item) = 1","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 >= x1 or not x0 <= x1 or x0 = x1 }[Nat](list.count(item), 1)","function(x0: Nat, x1: Nat) { x0 <= x1 = x0 <= x1 }(list.count(item), 1)","not list.count(item) <= 1","list.count(item) <= 1"]}
+{"goal":"unique_count_one","proof":["not item ∈ list or not list.is_unique","list.is_unique","item ∈ list","not item ∈ list"]}
+{"goal":"not_contains_count_zero","proof":[]}
+{"goal":"mul_mod_residues(n, a).is_unique","proof":[]}
+{"goal":"coprime_residues(n).is_unique","proof":[]}
+{"goal":"coprime_residues(n).contains(y)","proof":[]}
+{"goal":"mul_mod_residues(n, a).count(y) = 1","proof":[]}
+{"goal":"coprime_residues(n).count(y) = 1","proof":[]}
+{"goal":"mul_mod_residues(n, a).count(y) = coprime_residues(n).count(y)","proof":[]}
+{"goal":"not mul_mod_residues(n, a).contains(y)","proof":[]}
+{"goal":"mul_mod_residues(n, a).contains(y)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"not coprime_residues(n).contains(y)","proof":[]}
+{"goal":"mul_mod_residues(n, a).count(y) = 0","proof":[]}
+{"goal":"coprime_residues(n).count(y) = 0","proof":[]}
+{"goal":"mul_mod_residues(n, a).count(y) = coprime_residues(n).count(y)","proof":[]}
+{"goal":"mul_mod_residues_is_permutation","proof":["function[T0](x0: List[T0], x1: List[T0]) { forall(x2: T0) { x0.count(x2) = x1.count(x2) } = is_permutation[T0](x0, x1) }[Nat](mul_mod_residues(n, a), coprime_residues(n))"]}

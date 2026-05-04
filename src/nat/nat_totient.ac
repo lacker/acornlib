@@ -8,8 +8,9 @@ from nat.nat_modular_inverse import cancel_coprime, mod_inv, mod_inv_coprime, mo
 from nat.nat_monoid import exp_one, exp_add, exp_zero
 from nat.nat_coprime import coprime_one_right
 from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, congr_mod_mul, mod_lt, mod_congr_mod_self
-from list.list_base import List
+from list.list_base import List, list_contains_implies_count_geq_one, list_not_contains_impl_count_zero, unique_implies_no_duplicate
 from list.list_sum import map, map_length, map_contains, map_contains_of_contains
+from list.list_permutation import is_permutation
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -2325,5 +2326,67 @@ theorem mul_mod_residues_unique(n: Nat, a: Nat) {
         mul_mod_residues(n, a) = map(coprime_residues(n), mul_mod_fn(n, a))
         mul_mod_residues(n, a) = mapped
         mul_mod_residues(n, a).is_unique
+    }
+}
+
+/// Helper: in a unique list, count is exactly one when contained.
+theorem unique_count_one(list: List[Nat], item: Nat) {
+    list.is_unique and list.contains(item) implies list.count(item) = Nat.1
+} by {
+    if list.is_unique and list.contains(item) {
+        list_contains_implies_count_geq_one(list, item)
+        list.count(item) >= Nat.1
+        unique_implies_no_duplicate(list, item)
+        list.count(item) <= Nat.1
+        list.count(item) = Nat.1
+    }
+}
+
+/// Helper: in any list, count is zero when not contained.
+theorem not_contains_count_zero(list: List[Nat], item: Nat) {
+    not list.contains(item) implies list.count(item) = Nat.0
+} by {
+    if not list.contains(item) {
+        list_not_contains_impl_count_zero(list, item)
+    }
+}
+
+/// `is_permutation(mul_mod_residues(n, a), coprime_residues(n))` for `n > 0`
+/// and `a` coprime to `n`. Combines the bidirectional membership with
+/// uniqueness on both sides: each element contributes count `0` or `1`, and
+/// the contains-statuses agree.
+theorem mul_mod_residues_is_permutation(n: Nat, a: Nat) {
+    n != Nat.0 and a.coprime(n)
+        implies is_permutation(mul_mod_residues(n, a), coprime_residues(n))
+} by {
+    if n != Nat.0 and a.coprime(n) {
+        mul_mod_residues_unique(n, a)
+        mul_mod_residues(n, a).is_unique
+        coprime_residues_unique(n)
+        coprime_residues(n).is_unique
+        forall(y: Nat) {
+            if mul_mod_residues(n, a).contains(y) {
+                mul_mod_residues_in_coprime(n, a, y)
+                coprime_residues(n).contains(y)
+                unique_count_one(mul_mod_residues(n, a), y)
+                unique_count_one(coprime_residues(n), y)
+                mul_mod_residues(n, a).count(y) = Nat.1
+                coprime_residues(n).count(y) = Nat.1
+                mul_mod_residues(n, a).count(y) = coprime_residues(n).count(y)
+            } else {
+                not mul_mod_residues(n, a).contains(y)
+                if coprime_residues(n).contains(y) {
+                    coprime_in_mul_mod_residues(n, a, y)
+                    mul_mod_residues(n, a).contains(y)
+                    false
+                }
+                not coprime_residues(n).contains(y)
+                not_contains_count_zero(mul_mod_residues(n, a), y)
+                not_contains_count_zero(coprime_residues(n), y)
+                mul_mod_residues(n, a).count(y) = Nat.0
+                coprime_residues(n).count(y) = Nat.0
+                mul_mod_residues(n, a).count(y) = coprime_residues(n).count(y)
+            }
+        }
     }
 }
