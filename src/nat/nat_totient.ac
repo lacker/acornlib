@@ -1,4 +1,4 @@
-from nat.nat_coprime import Nat, coprime_one_left, coprime_mul_iff
+from nat.nat_coprime import Nat, coprime_one_left, coprime_mul_iff, coprime_mul, coprime_comm, coprime_mod_imp
 from nat.nat_gcd import gcd_zero_left, gcd_of_prime, gcd_comm, divides_gcd
 from nat.nat_factorisation import prime_divisor_is_one_or_self, coprime_of_distinct_primes
 from nat.nat_base import divides_self, divides_zero, add_imp_sub
@@ -7,7 +7,7 @@ from nat.nat_fermat import rsa_pow_congr
 from nat.nat_modular_inverse import cancel_coprime
 from nat.nat_monoid import exp_one, exp_add, exp_zero
 from nat.nat_coprime import coprime_one_right
-from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans
+from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, mod_lt
 from list.list_base import List
 numerals Nat
 
@@ -1832,5 +1832,44 @@ theorem coprime_residues_contains_iff(n: Nat, x: Nat) {
     if x < n and x.coprime(n) {
         coprime_residues_contains_intro(n, x)
         coprime_residues(n).contains(x)
+    }
+}
+
+/// Helper: for `a` and `x` both coprime to `n`, the product is coprime to `n`.
+theorem coprime_mul_both(n: Nat, a: Nat, x: Nat) {
+    a.coprime(n) and x.coprime(n) implies (a * x).coprime(n)
+} by {
+    if a.coprime(n) and x.coprime(n) {
+        coprime_comm(a, n)
+        n.coprime(a)
+        coprime_comm(x, n)
+        n.coprime(x)
+        coprime_mul(n, a, x)
+        n.coprime(a * x)
+        coprime_comm(n, a * x)
+        (a * x).coprime(n)
+    }
+}
+
+/// For `a` coprime to `n` and `x` in `coprime_residues(n)`, the product
+/// `(a * x) mod n` is again in `coprime_residues(n)` (assuming `n > 0`).
+/// This is the membership half of "multiplication by a coprime unit
+/// permutes the units mod n".
+theorem coprime_residues_mul_mem(n: Nat, a: Nat, x: Nat) {
+    n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(x)
+        implies coprime_residues(n).contains((a * x).mod(n))
+} by {
+    if n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(x) {
+        coprime_residues_contains_imp(n, x)
+        x.coprime(n)
+        coprime_mul_both(n, a, x)
+        (a * x).coprime(n)
+        coprime_mod_imp(a * x, n)
+        ((a * x).mod(n)).coprime(n)
+        mod_lt(a * x, n)
+        (a * x).mod(n) < n
+        ((a * x).mod(n)) < n and ((a * x).mod(n)).coprime(n)
+        coprime_residues_contains_intro(n, (a * x).mod(n))
+        coprime_residues(n).contains((a * x).mod(n))
     }
 }

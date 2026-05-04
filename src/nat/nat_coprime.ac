@@ -1,6 +1,6 @@
 from nat.basic_addition import Nat
 from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides, gcd_divides_left, gcd_divides_right, divides_gcd
-from nat.nat_base import divides_mul
+from nat.nat_base import divides_mul, divides_mod, divides_unmod
 numerals Nat
 
 attributes Nat {
@@ -132,5 +132,76 @@ theorem coprime_divides_of_divides_mul(a: Nat, b: Nat, c: Nat) {
         gcd_divides(a, a * c, b * c)
         a.divides((a * c).gcd(b * c))
         a.divides(c)
+    }
+}
+
+/// Forward divisibility: `gcd(k, n)` divides `gcd(k.mod(n), n)`.
+theorem gcd_divides_gcd_mod(k: Nat, n: Nat) {
+    k.gcd(n).divides((k.mod(n)).gcd(n))
+} by {
+    let d: Nat = k.gcd(n)
+    gcd_divides_left(k, n)
+    d.divides(k)
+    gcd_divides_right(k, n)
+    d.divides(n)
+    divides_mod(k, n, d)
+    d.divides(k.mod(n))
+    divides_gcd(d, k.mod(n), n)
+}
+
+/// Backward divisibility: `gcd(k.mod(n), n)` divides `gcd(k, n)`.
+theorem gcd_mod_divides_gcd(k: Nat, n: Nat) {
+    (k.mod(n)).gcd(n).divides(k.gcd(n))
+} by {
+    let d: Nat = (k.mod(n)).gcd(n)
+    gcd_divides_left(k.mod(n), n)
+    d.divides(k.mod(n))
+    gcd_divides_right(k.mod(n), n)
+    d.divides(n)
+    divides_unmod(d, k, n)
+    d.divides(k)
+    divides_gcd(d, k, n)
+}
+
+/// Reducing a number modulo `n` preserves its coprimality with `n`.
+theorem coprime_mod_imp(k: Nat, n: Nat) {
+    k.coprime(n) implies (k.mod(n)).coprime(n)
+} by {
+    if k.coprime(n) {
+        k.gcd(n) = Nat.1
+        // (k.mod(n)).gcd(n) divides k.gcd(n) = 1, so equals 1.
+        gcd_mod_divides_gcd(k, n)
+        (k.mod(n)).gcd(n).divides(k.gcd(n))
+        (k.mod(n)).gcd(n).divides(Nat.1)
+        nat_divides_one_imp_one((k.mod(n)).gcd(n))
+        (k.mod(n)).gcd(n) = Nat.1
+    }
+}
+
+/// Reducing modulo `n` does not introduce coprimality: if the reduction is
+/// coprime to `n`, the original was already.
+theorem coprime_unmod_imp(k: Nat, n: Nat) {
+    (k.mod(n)).coprime(n) implies k.coprime(n)
+} by {
+    if (k.mod(n)).coprime(n) {
+        (k.mod(n)).gcd(n) = Nat.1
+        // k.gcd(n) divides (k.mod(n)).gcd(n) = 1, so equals 1.
+        gcd_divides_gcd_mod(k, n)
+        k.gcd(n).divides((k.mod(n)).gcd(n))
+        k.gcd(n).divides(Nat.1)
+        nat_divides_one_imp_one(k.gcd(n))
+        k.gcd(n) = Nat.1
+    }
+}
+
+/// Coprimality is invariant under modular reduction.
+theorem coprime_mod_iff(k: Nat, n: Nat) {
+    k.coprime(n) = (k.mod(n)).coprime(n)
+} by {
+    if k.coprime(n) {
+        coprime_mod_imp(k, n)
+    }
+    if (k.mod(n)).coprime(n) {
+        coprime_unmod_imp(k, n)
     }
 }

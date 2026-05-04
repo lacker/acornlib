@@ -236,11 +236,11 @@
 {"goal":"rsa_pow_run","proof":[]}
 {"goal":"rsa_pow_pred(m, p)(k)","proof":[]}
 {"goal":"rsa_pow_congr","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, k, p)"]}
-{"goal":"m.pow(p).congr_mod(m, p)","proof":["not p.is_prime"]}
-{"goal":"m * m.pow(p - 1) = m.pow(p)","proof":["not p.is_prime"]}
-{"goal":"(m * m.pow(p - 1)).congr_mod(m, p)","proof":["m * m.pow(p - 1) = m.pow(p)"]}
+{"goal":"m.pow(p).congr_mod(m, p)","proof":[]}
+{"goal":"m * m.pow(p - 1) = m.pow(p)","proof":[]}
+{"goal":"(m * m.pow(p - 1)).congr_mod(m, p)","proof":[]}
 {"goal":"m * 1 = m","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(1, m)","function(x0: Nat) { 1 * x0 = x0 }(m)"]}
-{"goal":"(m * m.pow(p - 1)).congr_mod(m * 1, p)","proof":["not (m * m.pow(p - 1)).congr_mod(m, p)"]}
-{"goal":"fermat_euler_split","proof":["not p.is_prime"]}
-{"goal":"(m * m.pow(p - 1)).congr_mod(m * 1, p)","proof":["not p.is_prime"]}
-{"goal":"fermat_euler","proof":["function(x0: Nat, x1: Nat) { not x0.is_prime or (x1 * x1.pow(x0 - 1)).congr_mod(x1 * 1, x0) }(p, m)","not (m * m.pow(p - 1)).congr_mod(m * 1, p) or not m.coprime(p) or not p.is_prime","p.is_prime","m.coprime(p)","not (m * m.pow(p - 1)).congr_mod(m * 1, p)"]}
+{"goal":"(m * m.pow(p - 1)).congr_mod(m * 1, p)","proof":[]}
+{"goal":"fermat_euler_split","proof":[]}
+{"goal":"(m * m.pow(p - 1)).congr_mod(m * 1, p)","proof":[]}
+{"goal":"fermat_euler","proof":["function(x0: Nat, x1: Nat) { not x0.is_prime or (x1 * x1.pow(x0 - 1)).congr_mod(x1 * 1, x0) }(p, m)"]}

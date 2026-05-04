@@ -593,9 +593,21 @@
 {"goal":"f(m.suc)","proof":[]}
 {"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
 {"goal":"coprime_residues_below_contains","proof":["function(x0: Nat) { cr_contains_pred(n, x0) = f(x0) }(k)","function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not cr_contains_pred(x2, x1) or not x0.coprime(x2) or x0 ∈ coprime_residues_below(x2, x1) }(x, k, n)"]}
-{"goal":"coprime_residues_contains_imp","proof":["function(x0: Nat, x1: Nat) { not x1 ∈ coprime_residues(x0) or x1 < x0 }(n, x)","x.coprime(n)","not x < n"]}
+{"goal":"coprime_residues_contains_imp","proof":["function(x0: Nat, x1: Nat) { not x1 ∈ coprime_residues(x0) or x1 < x0 }(n, x)"]}
 {"goal":"coprime_residues_below(n, n).contains(x)","proof":[]}
 {"goal":"coprime_residues(n) = coprime_residues_below(n, n)","proof":["function(x0: Nat) { coprime_residues(x0) = coprime_residues_below(x0, x0) }(n)"]}
-{"goal":"coprime_residues_contains_intro","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x0.coprime(x2) or x0 ∈ coprime_residues_below(x2, x1) }(x, n, n)","function(x0: Nat) { coprime_residues(x0) = coprime_residues_below(x0, x0) }(n)","x.coprime(n)","x < n","not x ∈ coprime_residues_below(n, n)"]}
+{"goal":"coprime_residues_contains_intro","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x0.coprime(x2) or x0 ∈ coprime_residues_below(x2, x1) }(x, n, n)"]}
 {"goal":"coprime_residues(n).contains(x)","proof":[]}
-{"goal":"coprime_residues_contains_iff","proof":["x < n and x.coprime(n) or x ∈ coprime_residues(n)","not (x < n and x.coprime(n)) or not x ∈ coprime_residues(n)","x < n and x.coprime(n)","not x ∈ coprime_residues(n)","x ∈ coprime_residues(n)"]}
+{"goal":"coprime_residues_contains_iff","proof":[]}
+{"goal":"n.coprime(a)","proof":[]}
+{"goal":"n.coprime(x)","proof":[]}
+{"goal":"n.coprime(a * x)","proof":[]}
+{"goal":"(a * x).coprime(n)","proof":[]}
+{"goal":"coprime_mul_both","proof":["not x.coprime(n) or not a.coprime(n)","x.coprime(n)","a.coprime(n)","not a.coprime(n)"]}
+{"goal":"x.coprime(n)","proof":[]}
+{"goal":"(a * x).coprime(n)","proof":["not x.coprime(n) or not a.coprime(n)","not a.coprime(n)","0 != n and a.coprime(n)"]}
+{"goal":"lib(nat.nat_base).nat_mod(a * x)(n).coprime(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * x)(n) < n","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * x)(n) < n and lib(nat.nat_base).nat_mod(a * x)(n).coprime(n)","proof":[]}
+{"goal":"coprime_residues(n).contains(lib(nat.nat_base).nat_mod(a * x)(n))","proof":[]}
+{"goal":"coprime_residues_mul_mem","proof":[]}

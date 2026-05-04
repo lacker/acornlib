@@ -23,9 +23,11 @@ cryptographic content.
   and the inclusion-exclusion identity `ie_pq_pred`.
 - `coprime_residues(n)`: list of coprime residues in `[0, n)` with
   `coprime_residues_length` (= `nat_totient(n)`), the forward results
-  `coprime_residues_all_coprime` and `coprime_residues_all_below`, and
-  the membership characterization
-  `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`.
+  `coprime_residues_all_coprime` and `coprime_residues_all_below`, the
+  membership characterization
+  `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`,
+  and `coprime_residues_mul_mem`: multiplication by a coprime unit
+  preserves membership (the membership half of "mult permutes the units").
   Foundation for the eventual product/permutation argument behind a
   general Euler proof.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
@@ -36,7 +38,8 @@ prime, derived from Fermat's little theorem by canceling `m`.
 `src/nat/nat_modular_inverse.ac` contains `cancel_coprime` (modular
 cancellation by a coprime factor).
 
-`src/nat/nat_coprime.ac` contains `coprime_mul_iff`.
+`src/nat/nat_coprime.ac` contains `coprime_mul_iff` and `coprime_mod_iff`
+(coprimality is invariant under modular reduction).
 
 - [ ] Prove totient is multiplicative on coprime arguments
       (`nat_totient(m * n) = nat_totient(m) * nat_totient(n)` when

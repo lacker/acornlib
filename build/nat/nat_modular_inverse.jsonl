@@ -85,8 +85,8 @@
 {"goal":"b * (a * x) = b * a * x","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(b, a, x)"]}
 {"goal":"b * (a * y) = b * a * y","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(b, a, y)"]}
 {"goal":"(b * a * x).congr_mod(b * a * y, n)","proof":[]}
-{"goal":"cancel_with_inverse_setup","proof":["not (a * x).congr_mod(a * y, n)"]}
-{"goal":"(b * a * x).congr_mod(b * a * y, n)","proof":["not (a * x).congr_mod(a * y, n)"]}
+{"goal":"cancel_with_inverse_setup","proof":[]}
+{"goal":"(b * a * x).congr_mod(b * a * y, n)","proof":[]}
 {"goal":"cancel_with_inverse","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat, x4: Nat) { not (x0 * x1).congr_mod(x0 * x2, x3) or (x4 * x0 * x1).congr_mod(x4 * x0 * x2, x3) }(a, x, y, n, b)"]}
 {"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, n) }","proof":[]}
 {"goal":"(a * b).congr_mod(Nat.1, n)","proof":[]}
