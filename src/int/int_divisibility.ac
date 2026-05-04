@@ -1,5 +1,6 @@
 from int.lattice import Int
-from int.int_base import abs
+from int.lattice import is_prime
+from int.int_base import abs, abs_from_nat
 from nat.nat_coprime import Nat
 from ring import mul_neg_neg, mul_neg_left
 from int.lattice import euclids_lemma
@@ -168,4 +169,21 @@ theorem int_divides_antisymm(a: Int, b: Int) {
         abs(b) <= abs(a)
         abs(a) = abs(b)
     }
+}
+
+/// Bridge: a natural is prime exactly when its embedding into Int is prime.
+theorem nat_is_prime_iff_int_is_prime(n: Nat) {
+    n.is_prime = is_prime(Int.from_nat(n))
+} by {
+    abs_from_nat(n)
+    abs(Int.from_nat(n)) = n
+    is_prime(Int.from_nat(n)) = abs(Int.from_nat(n)).is_prime
+    is_prime(Int.from_nat(n)) = n.is_prime
+}
+
+/// An integer is prime iff its absolute value is prime as a Nat. This is the
+/// definitional unfold, restated as a top-level lemma so consumers can avoid
+/// touching the underlying define.
+theorem int_is_prime_iff_abs_is_prime(a: Int) {
+    is_prime(a) = abs(a).is_prime
 }
