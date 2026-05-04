@@ -1,0 +1,61 @@
+{"goal":"m = 0 or p <= m","proof":[]}
+{"goal":"m != 0","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](0, m)"]}
+{"goal":"p <= m","proof":[]}
+{"goal":"not m < p","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(m, p)"]}
+{"goal":"false","proof":[]}
+{"goal":"prime_does_not_divide_below","proof":[]}
+{"goal":"k.suc.factorial = k.suc * k.factorial","proof":[]}
+{"goal":"p.divides(k.suc * k.factorial)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"p.gcd(k.suc) = 1","proof":[]}
+{"goal":"p.coprime(k.suc)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(p, k.suc)"]}
+{"goal":"p.divides(k.factorial)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"prime_not_divides_factorial_step","proof":[]}
+{"goal":"0.factorial = 1","proof":[]}
+{"goal":"not p.divides(0.factorial)","proof":[]}
+{"goal":"prime_no_div_fact_zero","proof":["function(x0: Nat, x1: Nat) { (not x0 < x1 or not x1.divides(x0.factorial)) = p_no_div_fact_pred(x1, x0) }(0, p)"]}
+{"goal":"k < k.suc","proof":["function(x0: Nat) { x0 < x0.suc }(k)"]}
+{"goal":"k < p","proof":["function(x0: Nat, x1: Nat) { not x0.suc < x1.suc or x0 < x1 }(k, p)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0 < x1.suc }(k.suc, p)"]}
+{"goal":"not p.divides(k.factorial)","proof":["function(x0: Nat, x1: Nat) { (not x0 < x1 or not x1.divides(x0.factorial)) = p_no_div_fact_pred(x1, x0) }(k, p)"]}
+{"goal":"0 < k.suc","proof":["function(x0: Nat, x1: Nat) { x0 < x0 + x1.suc }(0, k)","function(x0: Nat) { 0 + x0 = x0 }(k.suc)"]}
+{"goal":"not p.divides(k.suc)","proof":[]}
+{"goal":"not p.divides(k.suc.factorial)","proof":[]}
+{"goal":"prime_no_div_fact_step","proof":["function(x0: Nat, x1: Nat) { (not x0 < x1 or not x1.divides(x0.factorial)) = p_no_div_fact_pred(x1, x0) }(k.suc, p)"]}
+{"goal":"f(0)","proof":[]}
+{"goal":"f(k.suc)","proof":[]}
+{"goal":"f(m)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, m)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"m < p implies not p.divides(m.factorial)","proof":["function(x0: Nat) { p_no_div_fact_pred(p, x0) = f(x0) }(m)","function(x0: Nat, x1: Nat) { (not x0 < x1 or not x1.divides(x0.factorial)) = p_no_div_fact_pred(x1, x0) }(m, p)"]}
+{"goal":"not p.divides(m.factorial)","proof":[]}
+{"goal":"prime_does_not_divide_factorial","proof":[]}
+{"goal":"p.coprime(a)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(p, a)"]}
+{"goal":"p.divides(b)","proof":[]}
+{"goal":"prime_divides_mul","proof":["function(x0: Nat, x1: Nat) { not x0.is_prime or x0.gcd(x1) = 1 or x0.divides(x1) }(p, a)"]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"0 < p","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(p, 0)","function(x0: Nat) { not x0 < 0 }(1)","function(x0: Nat) { not x0 < 0 }(p)"]}
+{"goal":"exists(k0: Nat) { k0.suc = p }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or 0 = x0 }(p)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](0, p)"]}
+{"goal":"pred.suc.factorial = pred.suc * pred.factorial","proof":[]}
+{"goal":"p.factorial = p * pred.factorial","proof":[]}
+{"goal":"p * pred.factorial = pred.factorial * p","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(p, pred.factorial)"]}
+{"goal":"p.factorial = pred.factorial * p","proof":[]}
+{"goal":"p.divides(p.factorial)","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or x0.divides(x1.factorial) or 0 = x0 }(p, p)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](0, p)","function(x0: Nat) { x0 <= x0 }(p)"]}
+{"goal":"prime_divides_self_factorial","proof":[]}
+{"goal":"k <= p","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(k, p)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(p, k)"]}
+{"goal":"not p < k","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(k, p)"]}
+{"goal":"binom(p)(k) * k.factorial * (p - k).factorial = p.factorial","proof":["function(x0: Nat, x1: Nat) { if x0 < x1 { binom(x0, x1) = 0 } else { x0.factorial = binom(x0, x1) * x1.factorial * (x0 - x1).factorial } }(p, k)"]}
+{"goal":"p.divides(p.factorial)","proof":[]}
+{"goal":"p.divides(binom(p)(k) * k.factorial * (p - k).factorial)","proof":[]}
+{"goal":"0 < k","proof":[]}
+{"goal":"exists(k0: Nat) { k0.suc = k }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or 0 = x0 }(k)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](0, k)"]}
+{"goal":"p - k + k = p","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or x1 - x0 + x0 = x1 }(k, p)"]}
+{"goal":"p - k + kp.suc = p","proof":[]}
+{"goal":"(p - k + kp).suc = p","proof":["function(x0: Nat, x1: Nat) { x0 + x1.suc = (x0 + x1).suc }(p - k, kp)"]}
+{"goal":"p - k < (p - k + kp).suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1.suc = (x0 + x1).suc }(p - k, kp)","function(x0: Nat, x1: Nat) { x0 < x0 + x1.suc }(p - k, kp)"]}
+{"goal":"p - k < p","proof":[]}
+{"goal":"not p.divides((p - k).factorial)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"p.divides(binom(p)(k) * k.factorial)","proof":[]}
+{"goal":"not p.divides(k.factorial)","proof":[]}
+{"goal":"false","proof":[]}
+{"goal":"p.divides(binom(p)(k))","proof":[]}
+{"goal":"prime_divides_binom","proof":[]}

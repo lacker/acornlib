@@ -1,0 +1,184 @@
+from nat.nat_combo import Nat, binom
+from nat.nat_factorisation import prime_does_not_divide_one
+from nat.nat_gcd import gcd_of_prime
+from nat.nat_coprime import coprime_divides_of_divides_mul
+from nat.nat_base import factorial_step, divides_lte
+numerals Nat
+
+/// A prime never divides any natural number strictly smaller than itself.
+theorem prime_does_not_divide_below(p: Nat, m: Nat) {
+    p.is_prime and Nat.0 < m and m < p implies not p.divides(m)
+} by {
+    if p.is_prime and Nat.0 < m and m < p {
+        if p.divides(m) {
+            divides_lte(p, m)
+            m = Nat.0 or p <= m
+            not (m = Nat.0)
+            p <= m
+            not (m < p)
+            false
+        }
+    }
+}
+
+/// Step lemma for prime_does_not_divide_factorial: if p does not divide k!
+/// and p does not divide k.suc, then p does not divide k.suc.factorial.
+theorem prime_not_divides_factorial_step(p: Nat, k: Nat) {
+    p.is_prime and not p.divides(k.factorial) and not p.divides(k.suc)
+        implies not p.divides(k.suc.factorial)
+} by {
+    if p.is_prime and not p.divides(k.factorial) and not p.divides(k.suc) {
+        factorial_step(k)
+        k.suc.factorial = k.suc * k.factorial
+        if p.divides(k.suc.factorial) {
+            p.divides(k.suc * k.factorial)
+            // Prime Euclid's lemma: p | k.suc or p | k!.
+            gcd_of_prime(p, k.suc)
+            if p.divides(k.suc) {
+                false
+            } else {
+                p.gcd(k.suc) = Nat.1
+                p.coprime(k.suc)
+                coprime_divides_of_divides_mul(p, k.suc, k.factorial)
+                p.divides(k.factorial)
+                false
+            }
+        }
+    }
+}
+
+/// Inductive predicate used in prime_does_not_divide_factorial: at each Nat x,
+/// p does not divide x.factorial whenever x < p.
+define p_no_div_fact_pred(p: Nat) -> (Nat -> Bool) {
+    function(x: Nat) {
+        x < p implies not p.divides(x.factorial)
+    }
+}
+
+/// Base case for prime_does_not_divide_factorial: p does not divide 0! = 1.
+theorem prime_no_div_fact_zero(p: Nat) {
+    p.is_prime implies p_no_div_fact_pred(p)(Nat.0)
+} by {
+    if p.is_prime {
+        Nat.0.factorial = Nat.1
+        prime_does_not_divide_one(p)
+        if Nat.0 < p {
+            not p.divides(Nat.0.factorial)
+        }
+    }
+}
+
+/// Inductive step for prime_does_not_divide_factorial.
+theorem prime_no_div_fact_step(p: Nat, k: Nat) {
+    p.is_prime and p_no_div_fact_pred(p)(k) implies p_no_div_fact_pred(p)(k.suc)
+} by {
+    if p.is_prime and p_no_div_fact_pred(p)(k) {
+        if k.suc < p {
+            k < k.suc
+            k < p
+            not p.divides(k.factorial)
+            Nat.0 < k.suc
+            prime_does_not_divide_below(p, k.suc)
+            not p.divides(k.suc)
+            prime_not_divides_factorial_step(p, k)
+            not p.divides(k.suc.factorial)
+        }
+    }
+}
+
+/// A prime never divides the factorial of any natural number strictly smaller
+/// than itself.
+theorem prime_does_not_divide_factorial(p: Nat, m: Nat) {
+    p.is_prime and m < p implies not p.divides(m.factorial)
+} by {
+    if p.is_prime and m < p {
+        let f: Nat -> Bool = p_no_div_fact_pred(p)
+        prime_no_div_fact_zero(p)
+        f(Nat.0)
+        forall(k: Nat) {
+            if f(k) {
+                prime_no_div_fact_step(p, k)
+                f(k.suc)
+            }
+        }
+        f(m)
+        m < p implies not p.divides(m.factorial)
+        not p.divides(m.factorial)
+    }
+}
+
+/// Prime Euclid's lemma: if a prime divides a product, it divides at least one
+/// factor.
+theorem prime_divides_mul(p: Nat, a: Nat, b: Nat) {
+    p.is_prime and p.divides(a * b) implies p.divides(a) or p.divides(b)
+} by {
+    if p.is_prime and p.divides(a * b) {
+        gcd_of_prime(p, a)
+        if p.gcd(a) = Nat.1 {
+            p.coprime(a)
+            coprime_divides_of_divides_mul(p, a, b)
+            p.divides(b)
+        }
+    }
+}
+
+/// A prime divides p! (its own factorial).
+theorem prime_divides_self_factorial(p: Nat) {
+    p.is_prime implies p.divides(p.factorial)
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        Nat.0 < p
+        let pred: Nat satisfy { pred.suc = p }
+        factorial_step(pred)
+        pred.suc.factorial = pred.suc * pred.factorial
+        p.factorial = p * pred.factorial
+        p * pred.factorial = pred.factorial * p
+        p.factorial = pred.factorial * p
+        p.divides(p.factorial)
+    }
+}
+
+/// For prime p and 0 < k < p, the binomial coefficient binom(p, k) is divisible
+/// by p. Cornerstone lemma for the Freshman's dream:
+///   (a + b).pow(p) ≡ a.pow(p) + b.pow(p)  (mod p),
+/// from which Fermat's little theorem follows by induction on a:
+///   a.pow(p).mod(p) = a.mod(p).
+theorem prime_divides_binom(p: Nat, k: Nat) {
+    p.is_prime and Nat.0 < k and k < p implies p.divides(p.binom(k))
+} by {
+    if p.is_prime and Nat.0 < k and k < p {
+        // Defining identity for binom(p, k) when k <= p.
+        k <= p
+        not (p < k)
+        p.binom(k) * k.factorial * (p - k).factorial = p.factorial
+        // p divides p!
+        prime_divides_self_factorial(p)
+        p.divides(p.factorial)
+        p.divides(p.binom(k) * k.factorial * (p - k).factorial)
+        // Apply prime Euclid's lemma to ((p.binom(k) * k!) * (p-k)!).
+        prime_divides_mul(p, p.binom(k) * k.factorial, (p - k).factorial)
+        if p.divides((p - k).factorial) {
+            // 0 < k implies p - k < p
+            Nat.0 < k
+            let kp: Nat satisfy { kp.suc = k }
+            // p = (p - k) + k, so (p - k) + 1 <= p
+            (p - k) + k = p
+            (p - k) + kp.suc = p
+            ((p - k) + kp).suc = p
+            (p - k) < ((p - k) + kp).suc
+            (p - k) < p
+            prime_does_not_divide_factorial(p, p - k)
+            not p.divides((p - k).factorial)
+            false
+        }
+        p.divides(p.binom(k) * k.factorial)
+        prime_divides_mul(p, p.binom(k), k.factorial)
+        if p.divides(k.factorial) {
+            prime_does_not_divide_factorial(p, k)
+            not p.divides(k.factorial)
+            false
+        }
+        p.divides(p.binom(k))
+    }
+}
