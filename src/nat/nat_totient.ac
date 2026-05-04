@@ -2179,3 +2179,151 @@ theorem coprime_in_mul_mod_residues(n: Nat, a: Nat, y: Nat) {
     }
 }
 
+
+/// Inductive predicate for `mul_mod_residues_below_unique`: for `n != 0` and
+/// `a` coprime to `n`, the image of `coprime_residues_below(n, k)` under
+/// `mul_mod_fn(n, a)` is `is_unique`, provided `k <= n`.
+define mul_mod_residues_below_unique_pred(n: Nat, a: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        k <= n implies
+            map(coprime_residues_below(n, k), mul_mod_fn(n, a)).is_unique
+    }
+}
+
+/// Inductive step: walk past one more candidate, preserving uniqueness of the
+/// mapped list.
+theorem mul_mod_residues_below_unique_step(n: Nat, a: Nat, k: Nat) {
+    n != Nat.0 and a.coprime(n)
+        and mul_mod_residues_below_unique_pred(n, a)(k)
+        implies mul_mod_residues_below_unique_pred(n, a)(k.suc)
+} by {
+    if n != Nat.0 and a.coprime(n)
+        and mul_mod_residues_below_unique_pred(n, a)(k) {
+        if k.suc <= n {
+            k <= n
+            k < n
+            // IH: map(below(n, k), f) is unique.
+            map(coprime_residues_below(n, k), mul_mod_fn(n, a)).is_unique
+            if k.coprime(n) {
+                coprime_residues_below_suc_yes(n, k)
+                coprime_residues_below(n, k.suc) =
+                    List.cons(k, coprime_residues_below(n, k))
+                map(List.cons(k, coprime_residues_below(n, k)), mul_mod_fn(n, a)) =
+                    List.cons(mul_mod_fn(n, a)(k),
+                              map(coprime_residues_below(n, k), mul_mod_fn(n, a)))
+                map(coprime_residues_below(n, k.suc), mul_mod_fn(n, a)) =
+                    List.cons(mul_mod_fn(n, a)(k),
+                              map(coprime_residues_below(n, k), mul_mod_fn(n, a)))
+                // Goal: cons(f(k), tail) is unique.
+                // Need: f(k) not in tail.
+                if map(coprime_residues_below(n, k), mul_mod_fn(n, a)).contains(
+                    mul_mod_fn(n, a)(k)) {
+                    map_contains(coprime_residues_below(n, k), mul_mod_fn(n, a),
+                                 mul_mod_fn(n, a)(k))
+                    let x: Nat satisfy {
+                        coprime_residues_below(n, k).contains(x) and
+                            mul_mod_fn(n, a)(x) = mul_mod_fn(n, a)(k)
+                    }
+                    coprime_residues_below(n, k).contains(x)
+                    coprime_residues_below_all_below(n, k, x)
+                    x < k
+                    // x and k both in coprime_residues(n).
+                    // First, x: x < k < n, x.coprime(n).
+                    coprime_residues_below_all_coprime(n, k, x)
+                    x.coprime(n)
+                    x < n
+                    coprime_residues_contains_intro(n, x)
+                    coprime_residues(n).contains(x)
+                    // k: k < n, k.coprime(n).
+                    coprime_residues_contains_intro(n, k)
+                    coprime_residues(n).contains(k)
+                    // mul_mod_fn equals mul_mod.
+                    mul_mod_fn(n, a)(x) = (a * x).mod(n)
+                    mul_mod_fn(n, a)(k) = (a * k).mod(n)
+                    (a * x).mod(n) = (a * k).mod(n)
+                    coprime_residues_mul_inj(n, a, x, k)
+                    x = k
+                    // x < k contradicts x = k.
+                    x < x
+                    false
+                }
+                not map(coprime_residues_below(n, k), mul_mod_fn(n, a)).contains(
+                    mul_mod_fn(n, a)(k))
+                let mapped: List[Nat] = map(coprime_residues_below(n, k), mul_mod_fn(n, a))
+                not mapped.contains(mul_mod_fn(n, a)(k))
+                mapped.is_unique
+                cons_unique_intro(mul_mod_fn(n, a)(k), mapped)
+                List.cons(mul_mod_fn(n, a)(k), mapped).is_unique
+                map(coprime_residues_below(n, k.suc), mul_mod_fn(n, a)).is_unique
+            } else {
+                coprime_residues_below_suc_no(n, k)
+                coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+                map(coprime_residues_below(n, k.suc), mul_mod_fn(n, a)) =
+                    map(coprime_residues_below(n, k), mul_mod_fn(n, a))
+                map(coprime_residues_below(n, k.suc), mul_mod_fn(n, a)).is_unique
+            }
+        }
+    }
+}
+
+/// Inner induction over `k`.
+theorem mul_mod_residues_below_unique_run(n: Nat, a: Nat, k: Nat) {
+    n != Nat.0 and a.coprime(n) implies mul_mod_residues_below_unique_pred(n, a)(k)
+} by {
+    if n != Nat.0 and a.coprime(n) {
+        let f: Nat -> Bool = function(m: Nat) {
+            m <= n implies
+                map(coprime_residues_below(n, m), mul_mod_fn(n, a)).is_unique
+        }
+        forall(y: Nat) {
+            mul_mod_residues_below_unique_pred(n, a)(y) = f(y)
+            f(y) = mul_mod_residues_below_unique_pred(n, a)(y)
+        }
+        // Base: k = 0.
+        coprime_residues_below(n, Nat.0) = List.nil[Nat]
+        map(List.nil[Nat], mul_mod_fn(n, a)) = List.nil[Nat]
+        List.nil[Nat].unique = List.nil[Nat]
+        List.nil[Nat].is_unique
+        f(Nat.0)
+        forall(m: Nat) {
+            if f(m) {
+                mul_mod_residues_below_unique_pred(n, a)(m)
+                mul_mod_residues_below_unique_step(n, a, m)
+                mul_mod_residues_below_unique_pred(n, a)(m.suc)
+                f(m.suc)
+            }
+        }
+        f(k)
+        mul_mod_residues_below_unique_pred(n, a)(k)
+    }
+}
+
+/// `map(coprime_residues_below(n, k), mul_mod_fn(n, a))` is unique for
+/// `k <= n` (when `n != 0` and `a` coprime to `n`).
+theorem mul_mod_residues_below_unique(n: Nat, a: Nat, k: Nat) {
+    n != Nat.0 and a.coprime(n) and k <= n
+        implies map(coprime_residues_below(n, k), mul_mod_fn(n, a)).is_unique
+} by {
+    if n != Nat.0 and a.coprime(n) and k <= n {
+        mul_mod_residues_below_unique_run(n, a, k)
+        mul_mod_residues_below_unique_pred(n, a)(k)
+    }
+}
+
+/// `mul_mod_residues(n, a)` has no duplicates whenever `n > 0` and `a` is
+/// coprime to `n`.
+theorem mul_mod_residues_unique(n: Nat, a: Nat) {
+    n != Nat.0 and a.coprime(n) implies mul_mod_residues(n, a).is_unique
+} by {
+    if n != Nat.0 and a.coprime(n) {
+        n <= n
+        mul_mod_residues_below_unique(n, a, n)
+        let mapped: List[Nat] = map(coprime_residues_below(n, n), mul_mod_fn(n, a))
+        mapped.is_unique
+        coprime_residues(n) = coprime_residues_below(n, n)
+        map(coprime_residues(n), mul_mod_fn(n, a)) = mapped
+        mul_mod_residues(n, a) = map(coprime_residues(n), mul_mod_fn(n, a))
+        mul_mod_residues(n, a) = mapped
+        mul_mod_residues(n, a).is_unique
+    }
+}
