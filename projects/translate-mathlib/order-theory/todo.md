@@ -15,4 +15,4 @@ Goal: provide a broad order-theoretic language that later algebra, topology, and
 
 ## Current Focus
 
-The earliest basic-orders, lattice submodule, and interval-preimage frontiers are definition choices. The concrete list/interval lattice migration pass is complete. Product-order groundwork now exists as an unbundled `Pair` relation API, but bundled product `OrderIso` support is blocked on generic `Pair[A, B]` typeclass receiver rendering, so the next non-design execution work should continue with function-space order isomorphisms or later concrete order branches.
+The earliest basic-orders, lattice submodule, and interval-preimage frontiers are definition choices. The concrete list/interval lattice migration pass is complete. Product-order groundwork now exists as an unbundled `Pair` relation API, but bundled product `OrderIso` support is blocked on generic `Pair[A, B]` typeclass receiver rendering. Ordered group translation `OrderIso`s are now in place; positive scalar `OrderIso`s still need a proof-carrying API choice, so the next non-design execution work should continue with representative refactors or later concrete order branches.

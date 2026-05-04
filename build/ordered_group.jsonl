@@ -84,6 +84,84 @@
 {"goal":"mul_right_map_is_order_embedding","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[G, G](mul_right_map(c))","let w0: G satisfy { exists(k0: G) { w0 <= k0 != mul_right_map(c, w0) <= mul_right_map(c, k0) } }","let w1: G satisfy { w0 <= w1 != mul_right_map(c, w0) <= mul_right_map(c, w1) }","function(x0: G, x1: G) { mul_right_map(c, x0) <= mul_right_map(c, x1) = x0 <= x1 }(w0, w1)"]}
 {"goal":"mul_left_map_is_strict_monotone","proof":[]}
 {"goal":"mul_right_map_is_strict_monotone","proof":[]}
+{"goal":"mul_left_map(c.inverse, mul_left_map(c, x)) = c.inverse * mul_left_map(c, x)","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c.inverse, mul_left_map(c, x))"]}
+{"goal":"mul_left_map(c, x) = c * x","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, x)"]}
+{"goal":"c.inverse * (c * x) = c.inverse * c * x","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](c.inverse, c, x)"]}
+{"goal":"c.inverse * c = G.1","proof":["function[T0: Group](x0: T0) { x0.inverse * x0 = T0.1 }[G](c)"]}
+{"goal":"G.1 * x = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](x)"]}
+{"goal":"mul_left_map(c.inverse, mul_left_map(c, x)) = x","proof":[]}
+{"goal":"mul_left_map_left_inverse","proof":[]}
+{"goal":"mul_left_map(c, mul_left_map(c.inverse, x)) = c * mul_left_map(c.inverse, x)","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c, mul_left_map(c.inverse, x))"]}
+{"goal":"mul_left_map(c.inverse, x) = c.inverse * x","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0) { mul_left_map[T0](x0, x1) = x0 * x1 }[G](c.inverse, x)"]}
+{"goal":"c * (c.inverse * x) = c * c.inverse * x","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](c, c.inverse, x)"]}
+{"goal":"c * c.inverse = G.1","proof":["function[T0: Group](x0: T0) { x0 * x0.inverse = T0.1 }[G](c)"]}
+{"goal":"G.1 * x = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[G](x)"]}
+{"goal":"mul_left_map(c, mul_left_map(c.inverse, x)) = x","proof":[]}
+{"goal":"mul_left_map_right_inverse","proof":[]}
+{"goal":"mul_right_map(c.inverse, mul_right_map(c, x)) = mul_right_map(c, x) * c.inverse","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c.inverse, mul_right_map(c, x))"]}
+{"goal":"mul_right_map(c, x) = x * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, x)"]}
+{"goal":"x * c * c.inverse = x * (c * c.inverse)","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](x, c, c.inverse)"]}
+{"goal":"c * c.inverse = G.1","proof":["function[T0: Group](x0: T0) { x0 * x0.inverse = T0.1 }[G](c)"]}
+{"goal":"x * G.1 = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[G](x)"]}
+{"goal":"mul_right_map(c.inverse, mul_right_map(c, x)) = x","proof":[]}
+{"goal":"mul_right_map_left_inverse","proof":[]}
+{"goal":"mul_right_map(c, mul_right_map(c.inverse, x)) = mul_right_map(c.inverse, x) * c","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c, mul_right_map(c.inverse, x))"]}
+{"goal":"mul_right_map(c.inverse, x) = x * c.inverse","proof":["function[T0: OrderedGroup](x0: T0, x1: T0) { mul_right_map[T0](x0, x1) = x1 * x0 }[G](c.inverse, x)"]}
+{"goal":"x * c.inverse * c = x * (c.inverse * c)","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[G](x, c.inverse, c)"]}
+{"goal":"c.inverse * c = G.1","proof":["function[T0: Group](x0: T0) { x0.inverse * x0 = T0.1 }[G](c)"]}
+{"goal":"x * G.1 = x","proof":["function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[G](x)"]}
+{"goal":"mul_right_map(c, mul_right_map(c.inverse, x)) = x","proof":[]}
+{"goal":"mul_right_map_right_inverse","proof":[]}
+{"goal":"g(f(x)) = x","proof":["function(x0: G) { mul_left_map(c, x0) = f(x0) }(x)","function(x0: G) { mul_left_map(c.inverse, x0) = g(x0) }(mul_left_map(c, x))","g(mul_left_map(c, x)) != x","g(mul_left_map(c, x)) = x"]}
+{"goal":"left_inverse","proof":["let w0: G satisfy { g(f(w0)) != w0 }","function(x0: G) { g(f(x0)) = x0 }(w0)"]}
+{"goal":"f(g(y)) = y","proof":["function(x0: G) { mul_left_map(c, x0) = f(x0) }(mul_left_map(c.inverse, y))","function(x0: G) { mul_left_map(c.inverse, x0) = g(x0) }(y)","f(mul_left_map(c.inverse, y)) != y","f(mul_left_map(c.inverse, y)) = y"]}
+{"goal":"right_inverse","proof":["let w0: G satisfy { f(g(w0)) != w0 }","function(x0: G) { f(g(x0)) = x0 }(w0)"]}
+{"goal":"is_order_embedding[G, G](f)","proof":["mul_left_map(c) = f"]}
+{"goal":"is_order_embedding[G, G](g)","proof":["mul_left_map(c.inverse) = g"]}
+{"goal":"left_inverse and right_inverse","proof":["not left_inverse"]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"is_order_iso_pair[G, G](f, g) = (left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[G, G](g, f)"]}
+{"goal":"left_inverse = forall(x0: G) { g(f(x0)) = x0 }","proof":[]}
+{"goal":"right_inverse = forall(x0: G) { f(g(x0)) = x0 }","proof":[]}
+{"goal":"is_order_iso_pair[G, G](f, g)","proof":[]}
+{"goal":"f = mul_left_map(c)","proof":[]}
+{"goal":"g = mul_left_map(c.inverse)","proof":[]}
+{"goal":"is_order_iso_pair[G, G](mul_left_map(c), mul_left_map(c.inverse))","proof":["mul_left_map(c) = f","mul_left_map(c.inverse) = g","not is_order_iso_pair[G, G](f, mul_left_map(c.inverse))","is_order_iso_pair[G, G](f, mul_left_map(c.inverse))"]}
+{"goal":"mul_left_map_is_order_iso_pair","proof":[]}
+{"goal":"g(f(x)) = x","proof":["function(x0: G) { mul_right_map(c, x0) = f(x0) }(x)","function(x0: G) { mul_right_map(c.inverse, x0) = g(x0) }(mul_right_map(c, x))","g(mul_right_map(c, x)) != x","g(mul_right_map(c, x)) = x"]}
+{"goal":"left_inverse","proof":["let w0: G satisfy { g(f(w0)) != w0 }","function(x0: G) { g(f(x0)) = x0 }(w0)"]}
+{"goal":"f(g(y)) = y","proof":["function(x0: G) { mul_right_map(c, x0) = f(x0) }(mul_right_map(c.inverse, y))","function(x0: G) { mul_right_map(c.inverse, x0) = g(x0) }(y)","f(mul_right_map(c.inverse, y)) != y","f(mul_right_map(c.inverse, y)) = y"]}
+{"goal":"right_inverse","proof":["let w0: G satisfy { f(g(w0)) != w0 }","function(x0: G) { f(g(x0)) = x0 }(w0)"]}
+{"goal":"is_order_embedding[G, G](f)","proof":["mul_right_map(c) = f"]}
+{"goal":"is_order_embedding[G, G](g)","proof":["mul_right_map(c.inverse) = g"]}
+{"goal":"left_inverse and right_inverse","proof":["not left_inverse"]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g)","proof":["not is_order_embedding[G, G](f)"]}
+{"goal":"is_order_iso_pair[G, G](f, g) = (left_inverse and right_inverse and is_order_embedding[G, G](f) and is_order_embedding[G, G](g))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[G, G](g, f)"]}
+{"goal":"left_inverse = forall(x0: G) { g(f(x0)) = x0 }","proof":[]}
+{"goal":"right_inverse = forall(x0: G) { f(g(x0)) = x0 }","proof":[]}
+{"goal":"is_order_iso_pair[G, G](f, g)","proof":[]}
+{"goal":"f = mul_right_map(c)","proof":[]}
+{"goal":"g = mul_right_map(c.inverse)","proof":[]}
+{"goal":"is_order_iso_pair[G, G](mul_right_map(c), mul_right_map(c.inverse))","proof":["mul_right_map(c) = f","mul_right_map(c.inverse) = g","not is_order_iso_pair[G, G](f, mul_right_map(c.inverse))","is_order_iso_pair[G, G](f, mul_right_map(c.inverse))"]}
+{"goal":"mul_right_map_is_order_iso_pair","proof":[]}
+{"goal":"exists(k0: OrderIso[G, G]) { OrderIso.new[G, G](mul_left_map(c), mul_left_map(c.inverse)) = Option.some(k0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { not OrderIso.constraint[T0, T1](x0, x1) or exists(k0: OrderIso[T0, T1]) { Option.some[OrderIso[T0, T1]](k0) = OrderIso.new[T0, T1](x0, x1) } }[G, G](mul_left_map(c), mul_left_map(c.inverse))","function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { OrderIso.constraint[T0, T1](x0, x1) = is_order_iso_pair[T0, T1](x0, x1) }[G, G](mul_left_map(c), mul_left_map(c.inverse))","not OrderIso.constraint[G, G](mul_left_map(c), mul_left_map(c.inverse))","OrderIso.constraint[G, G](mul_left_map(c), mul_left_map(c.inverse))"]}
+{"goal":"e.map = mul_left_map(c)","proof":[]}
+{"goal":"e.inv = mul_left_map(c.inverse)","proof":[]}
+{"goal":"exists(k0: OrderIso[G, G]) { k0.map = mul_left_map(c) and k0.inv = mul_left_map(c.inverse) }","proof":["function(x0: OrderIso[G, G]) { not (mul_left_map(c) = x0.map and mul_left_map(c.inverse) = x0.inv) }(e)","e.map = mul_left_map(c)","mul_left_map(c.inverse) = e.inv","function(x0: OrderIso[G, G]) { mul_left_map(c.inverse) != x0.inv or mul_left_map(c) != x0.map }(e)"]}
+{"goal":"OrderIso.new[G, G](mul_left_map(c), mul_left_map(c.inverse)) = Option.some(e)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[G, G](e)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_map[T0](x0) = mul_left_order_iso[T0](x0).map and mul_left_map[T0](x0.inverse) = mul_left_order_iso[T0](x0).inv }[G](c)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_order_iso[T0](x0).map = mul_left_map[T0](x0) }[G](c)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_order_iso[T0](x0).inv = mul_left_map[T0](x0.inverse) }[G](c)"]}
+{"goal":"mul_left_order_iso_map","proof":["e.map != mul_left_map(c)","e.map = mul_left_map(c)"]}
+{"goal":"OrderIso.new[G, G](mul_left_map(c), mul_left_map(c.inverse)) = Option.some(e)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[G, G](e)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_map[T0](x0) = mul_left_order_iso[T0](x0).map and mul_left_map[T0](x0.inverse) = mul_left_order_iso[T0](x0).inv }[G](c)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_order_iso[T0](x0).map = mul_left_map[T0](x0) }[G](c)","function[T0: LeftOrderedGroup](x0: T0) { mul_left_order_iso[T0](x0).inv = mul_left_map[T0](x0.inverse) }[G](c)"]}
+{"goal":"mul_left_order_iso_inv","proof":["mul_left_map(c.inverse) != e.inv","mul_left_map(c.inverse) = e.inv"]}
+{"goal":"exists(k0: OrderIso[G, G]) { OrderIso.new[G, G](mul_right_map(c), mul_right_map(c.inverse)) = Option.some(k0) }","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { not OrderIso.constraint[T0, T1](x0, x1) or exists(k0: OrderIso[T0, T1]) { Option.some[OrderIso[T0, T1]](k0) = OrderIso.new[T0, T1](x0, x1) } }[G, G](mul_right_map(c), mul_right_map(c.inverse))","function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0) { OrderIso.constraint[T0, T1](x0, x1) = is_order_iso_pair[T0, T1](x0, x1) }[G, G](mul_right_map(c), mul_right_map(c.inverse))","not OrderIso.constraint[G, G](mul_right_map(c), mul_right_map(c.inverse))","OrderIso.constraint[G, G](mul_right_map(c), mul_right_map(c.inverse))"]}
+{"goal":"e.map = mul_right_map(c)","proof":[]}
+{"goal":"e.inv = mul_right_map(c.inverse)","proof":[]}
+{"goal":"exists(k0: OrderIso[G, G]) { k0.map = mul_right_map(c) and k0.inv = mul_right_map(c.inverse) }","proof":["function(x0: OrderIso[G, G]) { not (mul_right_map(c) = x0.map and mul_right_map(c.inverse) = x0.inv) }(e)","e.map = mul_right_map(c)","mul_right_map(c.inverse) = e.inv","function(x0: OrderIso[G, G]) { mul_right_map(c.inverse) != x0.inv or mul_right_map(c) != x0.map }(e)"]}
+{"goal":"OrderIso.new[G, G](mul_right_map(c), mul_right_map(c.inverse)) = Option.some(e)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[G, G](e)","function[T0: OrderedGroup](x0: T0) { mul_right_map[T0](x0) = mul_right_order_iso[T0](x0).map and mul_right_map[T0](x0.inverse) = mul_right_order_iso[T0](x0).inv }[G](c)","function[T0: OrderedGroup](x0: T0) { mul_right_order_iso[T0](x0).map = mul_right_map[T0](x0) }[G](c)","function[T0: OrderedGroup](x0: T0) { mul_right_order_iso[T0](x0).inv = mul_right_map[T0](x0.inverse) }[G](c)"]}
+{"goal":"mul_right_order_iso_map","proof":["e.map != mul_right_map(c)","e.map = mul_right_map(c)"]}
+{"goal":"OrderIso.new[G, G](mul_right_map(c), mul_right_map(c.inverse)) = Option.some(e)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderIso[T0, T1]) { OrderIso.new[T0, T1](x0.map, x0.inv) = Option.some[OrderIso[T0, T1]](x0) }[G, G](e)","function[T0: OrderedGroup](x0: T0) { mul_right_map[T0](x0) = mul_right_order_iso[T0](x0).map and mul_right_map[T0](x0.inverse) = mul_right_order_iso[T0](x0).inv }[G](c)","function[T0: OrderedGroup](x0: T0) { mul_right_order_iso[T0](x0).map = mul_right_map[T0](x0) }[G](c)","function[T0: OrderedGroup](x0: T0) { mul_right_order_iso[T0](x0).inv = mul_right_map[T0](x0.inverse) }[G](c)"]}
+{"goal":"mul_right_order_iso_inv","proof":["mul_right_map(c.inverse) != e.inv","mul_right_map(c.inverse) = e.inv"]}
 {"goal":"mul_left_map(c, a) <= mul_left_map(c, b)","proof":[]}
 {"goal":"c * a <= c * b","proof":["function[T0: LeftOrderedGroup](x0: T0, x1: T0, x2: T0) { not x0 <= x1 or x2 * x0 <= x2 * x1 }[G](a, b, c)"]}
 {"goal":"mul_le_mul_left","proof":[]}

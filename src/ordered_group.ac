@@ -6,6 +6,7 @@ from order_maps import is_monotone, is_strict_monotone, is_order_embedding,
     order_embedding_is_strict_monotone, order_embedding_apply_le, order_embedding_apply_lt,
     order_embedding_apply_ge, order_embedding_apply_gt, order_embedding_reflects_le,
     order_embedding_reflects_lt, order_embedding_reflects_ge, order_embedding_reflects_gt
+from order_iso import OrderIso, is_order_iso_pair, order_iso_new_map, order_iso_new_inv
 from relation_basic import antisymmetric_eq, transitive_step
 
 /// A left-ordered group is a group with a left-invariant order.
@@ -268,6 +269,202 @@ theorem mul_right_map_is_strict_monotone[G: OrderedGroup](c: G) {
 } by {
     mul_right_map_is_order_embedding(c)
     order_embedding_is_strict_monotone(mul_right_map(c))
+}
+
+/// Left multiplication by the inverse is a left inverse of left multiplication.
+theorem mul_left_map_left_inverse[G: LeftOrderedGroup](c: G, x: G) {
+    mul_left_map(c.inverse, mul_left_map(c, x)) = x
+} by {
+    mul_left_map(c.inverse, mul_left_map(c, x)) = c.inverse * mul_left_map(c, x)
+    mul_left_map(c, x) = c * x
+    c.inverse * (c * x) = c.inverse * c * x
+    c.inverse * c = G.1
+    G.1 * x = x
+    mul_left_map(c.inverse, mul_left_map(c, x)) = x
+}
+
+/// Left multiplication is a left inverse of left multiplication by the inverse.
+theorem mul_left_map_right_inverse[G: LeftOrderedGroup](c: G, x: G) {
+    mul_left_map(c, mul_left_map(c.inverse, x)) = x
+} by {
+    mul_left_map(c, mul_left_map(c.inverse, x)) = c * mul_left_map(c.inverse, x)
+    mul_left_map(c.inverse, x) = c.inverse * x
+    c * (c.inverse * x) = c * c.inverse * x
+    c * c.inverse = G.1
+    G.1 * x = x
+    mul_left_map(c, mul_left_map(c.inverse, x)) = x
+}
+
+/// Right multiplication by the inverse is a left inverse of right multiplication.
+theorem mul_right_map_left_inverse[G: OrderedGroup](c: G, x: G) {
+    mul_right_map(c.inverse, mul_right_map(c, x)) = x
+} by {
+    mul_right_map(c.inverse, mul_right_map(c, x)) = mul_right_map(c, x) * c.inverse
+    mul_right_map(c, x) = x * c
+    (x * c) * c.inverse = x * (c * c.inverse)
+    c * c.inverse = G.1
+    x * G.1 = x
+    mul_right_map(c.inverse, mul_right_map(c, x)) = x
+}
+
+/// Right multiplication is a left inverse of right multiplication by the inverse.
+theorem mul_right_map_right_inverse[G: OrderedGroup](c: G, x: G) {
+    mul_right_map(c, mul_right_map(c.inverse, x)) = x
+} by {
+    mul_right_map(c, mul_right_map(c.inverse, x)) = mul_right_map(c.inverse, x) * c
+    mul_right_map(c.inverse, x) = x * c.inverse
+    (x * c.inverse) * c = x * (c.inverse * c)
+    c.inverse * c = G.1
+    x * G.1 = x
+    mul_right_map(c, mul_right_map(c.inverse, x)) = x
+}
+
+/// Left multiplication and multiplication by the inverse form an order isomorphism pair.
+theorem mul_left_map_is_order_iso_pair[G: LeftOrderedGroup](c: G) {
+    is_order_iso_pair(mul_left_map(c), mul_left_map(c.inverse))
+} by {
+    let f = mul_left_map(c)
+    let g = mul_left_map(c.inverse)
+    let left_inverse: Bool = forall(x: G) {
+        g(f(x)) = x
+    }
+    let right_inverse: Bool = forall(y: G) {
+        f(g(y)) = y
+    }
+    forall(x: G) {
+        mul_left_map_left_inverse(c, x)
+        g(f(x)) = x
+    }
+    left_inverse
+    forall(y: G) {
+        mul_left_map_right_inverse(c, y)
+        f(g(y)) = y
+    }
+    right_inverse
+    mul_left_map_is_order_embedding(c)
+    mul_left_map_is_order_embedding(c.inverse)
+    is_order_embedding(f)
+    is_order_embedding(g)
+    left_inverse and right_inverse
+    left_inverse and right_inverse and is_order_embedding(f)
+    left_inverse and right_inverse and is_order_embedding(f) and is_order_embedding(g)
+    is_order_iso_pair(f, g) = (left_inverse and right_inverse and is_order_embedding(f) and is_order_embedding(g))
+    left_inverse = forall(x: G) {
+        g(f(x)) = x
+    }
+    right_inverse = forall(y: G) {
+        f(g(y)) = y
+    }
+    is_order_iso_pair(f, g)
+    f = mul_left_map(c)
+    g = mul_left_map(c.inverse)
+    is_order_iso_pair(mul_left_map(c), mul_left_map(c.inverse))
+}
+
+/// Right multiplication and multiplication by the inverse form an order isomorphism pair.
+theorem mul_right_map_is_order_iso_pair[G: OrderedGroup](c: G) {
+    is_order_iso_pair(mul_right_map(c), mul_right_map(c.inverse))
+} by {
+    let f = mul_right_map(c)
+    let g = mul_right_map(c.inverse)
+    let left_inverse: Bool = forall(x: G) {
+        g(f(x)) = x
+    }
+    let right_inverse: Bool = forall(y: G) {
+        f(g(y)) = y
+    }
+    forall(x: G) {
+        mul_right_map_left_inverse(c, x)
+        g(f(x)) = x
+    }
+    left_inverse
+    forall(y: G) {
+        mul_right_map_right_inverse(c, y)
+        f(g(y)) = y
+    }
+    right_inverse
+    mul_right_map_is_order_embedding(c)
+    mul_right_map_is_order_embedding(c.inverse)
+    is_order_embedding(f)
+    is_order_embedding(g)
+    left_inverse and right_inverse
+    left_inverse and right_inverse and is_order_embedding(f)
+    left_inverse and right_inverse and is_order_embedding(f) and is_order_embedding(g)
+    is_order_iso_pair(f, g) = (left_inverse and right_inverse and is_order_embedding(f) and is_order_embedding(g))
+    left_inverse = forall(x: G) {
+        g(f(x)) = x
+    }
+    right_inverse = forall(y: G) {
+        f(g(y)) = y
+    }
+    is_order_iso_pair(f, g)
+    f = mul_right_map(c)
+    g = mul_right_map(c.inverse)
+    is_order_iso_pair(mul_right_map(c), mul_right_map(c.inverse))
+}
+
+/// Left multiplication by a fixed element as an order isomorphism.
+let mul_left_order_iso[G: LeftOrderedGroup](c: G) -> result: OrderIso[G, G] satisfy {
+    result.map = mul_left_map(c) and result.inv = mul_left_map(c.inverse)
+} by {
+    mul_left_map_is_order_iso_pair(c)
+    let e: OrderIso[G, G] satisfy {
+        OrderIso[G, G].new(mul_left_map(c), mul_left_map(c.inverse)) = Option.some(e)
+    }
+    order_iso_new_map(mul_left_map(c), mul_left_map(c.inverse), e)
+    e.map = mul_left_map(c)
+    order_iso_new_inv(mul_left_map(c), mul_left_map(c.inverse), e)
+    e.inv = mul_left_map(c.inverse)
+}
+
+/// The map of the left-multiplication order isomorphism is left multiplication.
+theorem mul_left_order_iso_map[G: LeftOrderedGroup](c: G) {
+    mul_left_order_iso(c).map = mul_left_map(c)
+} by {
+    let e = mul_left_order_iso(c)
+    OrderIso[G, G].new(mul_left_map(c), mul_left_map(c.inverse)) = Option.some(e)
+    order_iso_new_map(mul_left_map(c), mul_left_map(c.inverse), e)
+}
+
+/// The inverse of the left-multiplication order isomorphism is left multiplication by the inverse.
+theorem mul_left_order_iso_inv[G: LeftOrderedGroup](c: G) {
+    mul_left_order_iso(c).inv = mul_left_map(c.inverse)
+} by {
+    let e = mul_left_order_iso(c)
+    OrderIso[G, G].new(mul_left_map(c), mul_left_map(c.inverse)) = Option.some(e)
+    order_iso_new_inv(mul_left_map(c), mul_left_map(c.inverse), e)
+}
+
+/// Right multiplication by a fixed element as an order isomorphism.
+let mul_right_order_iso[G: OrderedGroup](c: G) -> result: OrderIso[G, G] satisfy {
+    result.map = mul_right_map(c) and result.inv = mul_right_map(c.inverse)
+} by {
+    mul_right_map_is_order_iso_pair(c)
+    let e: OrderIso[G, G] satisfy {
+        OrderIso[G, G].new(mul_right_map(c), mul_right_map(c.inverse)) = Option.some(e)
+    }
+    order_iso_new_map(mul_right_map(c), mul_right_map(c.inverse), e)
+    e.map = mul_right_map(c)
+    order_iso_new_inv(mul_right_map(c), mul_right_map(c.inverse), e)
+    e.inv = mul_right_map(c.inverse)
+}
+
+/// The map of the right-multiplication order isomorphism is right multiplication.
+theorem mul_right_order_iso_map[G: OrderedGroup](c: G) {
+    mul_right_order_iso(c).map = mul_right_map(c)
+} by {
+    let e = mul_right_order_iso(c)
+    OrderIso[G, G].new(mul_right_map(c), mul_right_map(c.inverse)) = Option.some(e)
+    order_iso_new_map(mul_right_map(c), mul_right_map(c.inverse), e)
+}
+
+/// The inverse of the right-multiplication order isomorphism is right multiplication by the inverse.
+theorem mul_right_order_iso_inv[G: OrderedGroup](c: G) {
+    mul_right_order_iso(c).inv = mul_right_map(c.inverse)
+} by {
+    let e = mul_right_order_iso(c)
+    OrderIso[G, G].new(mul_right_map(c), mul_right_map(c.inverse)) = Option.some(e)
+    order_iso_new_inv(mul_right_map(c), mul_right_map(c.inverse), e)
 }
 
 /// Multiplying by a fixed element on the left preserves a non-strict comparison.
