@@ -89,13 +89,13 @@
 {"goal":"list_max(head, tail) <= upper = is_upper_bound(List.cons(head, tail), upper)","proof":[]}
 {"goal":"list_max_lte_iff_upper_bound","proof":[]}
 {"goal":"list_max_le_iff","proof":[]}
-{"goal":"list_max_is_list_upper_bound","proof":["not is_upper_bound(List.cons(head, tail), list_max(head, tail))"]}
-{"goal":"list_max(head, tail) <= upper = list_upper_bound(List.cons(head, tail), upper)","proof":["list_max(head, tail) <= upper != is_upper_bound(List.cons(head, tail), upper)"]}
+{"goal":"list_max_is_list_upper_bound","proof":[]}
+{"goal":"list_max(head, tail) <= upper = list_upper_bound(List.cons(head, tail), upper)","proof":[]}
 {"goal":"list_max_le_iff_list_upper_bound","proof":[]}
-{"goal":"item <= list_max(head, tail)","proof":["not is_upper_bound(List.cons(head, tail), list_max(head, tail)) or not item ∈ List.cons(head, tail)","not is_upper_bound(List.cons(head, tail), list_max(head, tail))"]}
-{"goal":"contains_lte_list_max","proof":["not item ∈ List.cons(head, tail)"]}
+{"goal":"item <= list_max(head, tail)","proof":[]}
+{"goal":"contains_lte_list_max","proof":[]}
 {"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[T](head, tail, List.cons(head, tail), head)"]}
-{"goal":"head_lte_list_max","proof":["not head ∈ List.cons(head, tail)"]}
+{"goal":"head_lte_list_max","proof":[]}
 {"goal":"list_has_upper_bound","proof":["function(x0: T) { not is_upper_bound(List.cons(head, tail), x0) }(list_max(head, tail))","function[T0: LinearOrder](x0: T0, x1: List[T0]) { is_upper_bound[T0](List.cons[T0](x0, x1), list_max[T0](x0, x1)) }[T](head, tail)"]}
 {"goal":"not List.nil[T].contains(c)","proof":["function[T0](x0: List[T0], x1: T0) { not x1 ∈ x0 or List.nil[T0] != x0 }[T](List.nil[T], c)"]}
 {"goal":"p(List.nil[T])","proof":["function(x0: List[T]) { c ∈ x0 or p(x0) }(List.nil[T])"]}
@@ -128,7 +128,7 @@
 {"goal":"lower <= x","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[T](tail, lower)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = lib(order_interval).is_lower_bound[T0](x0, x1) }[T](tail.contains, lower)","function[T0: LinearOrder](x0: T0 -> Bool, x1: T0, x2: T0) { not lib(order_interval).is_lower_bound[T0](x0, x1) or not x0(x2) or x1 <= x2 }[T](tail.contains, lower, x)"]}
 {"goal":"list_lower_bound(List.cons(head, tail), lower)","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[T](List.cons(head, tail), lower)","let w0: T satisfy { w0 ∈ List.cons(head, tail) and not lower <= w0 }","function(x0: T) { not x0 ∈ List.cons(head, tail) or lower <= x0 }(w0)"]}
 {"goal":"list_lower_bound(List.cons(head, tail), lower) = forall(x0: T) { List.cons(head, tail).contains(x0) implies lower <= x0 }","proof":["function[T0: lib(order).PartialOrder](x0: List[T0], x1: T0) { forall(x2: T0) { not x2 ∈ x0 or x1 <= x2 } = list_lower_bound[T0](x0, x1) }[T](List.cons(head, tail), lower)"]}
-{"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[T](head, tail, List.cons(head, tail), head)","let w0[T0: LinearOrder](arg0: T0, arg1: T0, arg2: T0) -> w0_result: T0 satisfy { arg0 >= w0_result and arg1 >= w0_result and arg2 >= w0_result }"]}
+{"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[T](head, tail, List.cons(head, tail), head)"]}
 {"goal":"lower <= head","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: List[T0], x2: T0) { not list_lower_bound[T0](List.cons[T0](x0, x1), x2) or x2 <= x0 }[T](head, tail, lower)"]}
 {"goal":"List.cons(head, tail).contains(x)","proof":["function[T0](x0: List[T0], x1: T0, x2: T0, x3: List[T0]) { not x1 ∈ x0 or List.cons[T0](x2, x0) != x3 or x1 ∈ x3 or x1 = x2 }[T](tail, x, head, List.cons(head, tail))"]}
 {"goal":"lower <= x","proof":["(forall(x0: T) { not x0 ∈ List.cons(head, tail) or lower <= x0 } = true)","function(x0: T) { not (x0 ∈ List.cons(head, tail) and not lower <= x0) }(x)"]}
@@ -292,13 +292,13 @@
 {"goal":"lower <= list_min(head, tail) = is_lower_bound(List.cons(head, tail), lower)","proof":[]}
 {"goal":"lte_list_min_iff_lower_bound","proof":[]}
 {"goal":"le_list_min_iff","proof":[]}
-{"goal":"list_min_is_list_lower_bound","proof":["not is_lower_bound(List.cons(head, tail), list_min(head, tail))"]}
-{"goal":"lower <= list_min(head, tail) = list_lower_bound(List.cons(head, tail), lower)","proof":["lower <= list_min(head, tail) != is_lower_bound(List.cons(head, tail), lower)"]}
+{"goal":"list_min_is_list_lower_bound","proof":[]}
+{"goal":"lower <= list_min(head, tail) = list_lower_bound(List.cons(head, tail), lower)","proof":[]}
 {"goal":"le_list_min_iff_list_lower_bound","proof":[]}
-{"goal":"list_min(head, tail) <= item","proof":["not is_lower_bound(List.cons(head, tail), list_min(head, tail)) or not item ∈ List.cons(head, tail)","not is_lower_bound(List.cons(head, tail), list_min(head, tail))"]}
-{"goal":"list_min_lte_contains","proof":["not item ∈ List.cons(head, tail)"]}
-{"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[T](head, tail, List.cons(head, tail), head)","let w0[T0: LinearOrder](arg0: T0, arg1: T0, arg2: T0) -> w0_result: T0 satisfy { w0_result <= arg0 and w0_result <= arg1 and w0_result <= arg2 }"]}
-{"goal":"list_min_lte_head","proof":["not head ∈ List.cons(head, tail)"]}
+{"goal":"list_min(head, tail) <= item","proof":[]}
+{"goal":"list_min_lte_contains","proof":[]}
+{"goal":"List.cons(head, tail).contains(head)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x0 != x3 or x3 ∈ x2 }[T](head, tail, List.cons(head, tail), head)"]}
+{"goal":"list_min_lte_head","proof":[]}
 {"goal":"list_min(h, List.nil[T] + List.cons(n, r)) = list_min(h, List.cons(n, r))","proof":["function[T0](x0: List[T0], x1: List[T0]) { List.nil[T0] != x0 or x0 + x1 = x1 }[T](List.nil[T], List.cons(n, r))"]}
 {"goal":"list_min(h, List.cons(n, r)) = h.min(list_min(n, r))","proof":["function[T0: LinearOrder](x0: T0, x1: List[T0], x2: List[T0], x3: T0) { List.cons[T0](x0, x1) != x2 or x3.min(list_min[T0](x0, x1)) = list_min[T0](x3, x2) }[T](n, r, List.cons(n, r), h)"]}
 {"goal":"list_min(h, List.nil[T]) = h","proof":["function[T0: LinearOrder](x0: List[T0], x1: T0) { List.nil[T0] != x0 or list_min[T0](x1, x0) = x1 }[T](List.nil[T], h)"]}

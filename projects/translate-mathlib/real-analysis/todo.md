@@ -2,7 +2,7 @@
 
 Goal: extend the current real library into the standard theorem toolkit used across undergraduate and graduate analysis.
 
-- [ ] Expand the sequence and series library
+- [ ] Add subsequence, limsup/liminf, and Cauchy-criterion APIs for sequences and series
 - [ ] Add continuity theorems on intervals and subsets
 - [ ] Develop one-variable differentiation
 - [ ] Prove the mean value theorem and Taylor-style results

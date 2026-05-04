@@ -6,7 +6,7 @@ from list.list_sum import map_add, sum_add, partial_scalar_mul, partial_add, par
 from add_semigroup import add_fn
 from semigroup import mul_fn
 from real.real_set import Real
-from real.real_seq import cauchy_bound, tail_bound, add_seq, neg_rat_seq, converges_imp_converges_to, eventual_ub, eventual_lb, lt_converges_to_imp_lb, gt_converges_to_imp_ub, eventual_eq, eq_converges, eq_imp_limit
+from real.real_seq import cauchy_bound, tail_bound, add_seq, neg_rat_seq, converges_imp_converges_to, eventual_ub, eventual_lb, lt_converges_to_imp_lb, gt_converges_to_imp_ub, eventual_eq, eq_converges, eq_imp_limit, converges_to_unique
 from real.real_ring import converges, converges_to, limit, lift_seq, mul_nonneg, mul_abs
 from real.real_base import lte_add_right, close_imp_bounds
 
@@ -122,6 +122,13 @@ define is_upper_bound(a: Nat -> Real, b: Real) -> Bool {
     }
 }
 
+/// A sequence has an upper bound if some real number bounds every term from above.
+define has_upper_bound_seq(a: Nat -> Real) -> Bool {
+    exists(ub: Real) {
+        is_upper_bound(a, ub)
+    }
+}
+
 define is_least_upper_bound(a: Nat -> Real, l: Real) -> Bool {
     is_upper_bound(a, l) and forall(x: Real) {
         x < l implies not is_upper_bound(a, x)
@@ -131,6 +138,13 @@ define is_least_upper_bound(a: Nat -> Real, l: Real) -> Bool {
 define is_lower_bound(a: Nat -> Real, b: Real) -> Bool {
     forall(n: Nat) {
         b <= a(n)
+    }
+}
+
+/// A sequence has a lower bound if some real number bounds every term from below.
+define has_lower_bound_seq(a: Nat -> Real) -> Bool {
+    exists(lb: Real) {
+        is_lower_bound(a, lb)
     }
 }
 
@@ -327,6 +341,18 @@ theorem monotone_convergence_principle(a: Nat -> Real, b: Real) {
             } or cauchy_bound(a, n, eps)
             cauchy_bound(a, n, eps)
         }
+    }
+}
+
+/// An increasing sequence with an upper bound converges.
+theorem increasing_bounded_above_converges(a: Nat -> Real) {
+    is_increasing(a) and has_upper_bound_seq(a) implies converges(a)
+} by {
+    if is_increasing(a) and has_upper_bound_seq(a) {
+        let ub: Real satisfy {
+            is_upper_bound(a, ub)
+        }
+        converges(a)
     }
 }
 
@@ -1106,6 +1132,165 @@ theorem neg_seq_converges_converse(a: Nat -> Real) {
         neg_seq(neg_seq(a), n) = a(n)
     }
     neg_seq(neg_seq(a)) = a
+}
+
+/// A sequence is decreasing if every term is at most the preceding term.
+define is_decreasing_seq(a: Nat -> Real) -> Bool {
+    forall(n: Nat) {
+        a(n.suc) <= a(n)
+    }
+}
+
+/// Negation changes decreasing sequences into increasing sequences.
+theorem decreasing_neg_increasing(a: Nat -> Real) {
+    is_decreasing_seq(a) implies is_increasing(neg_seq(a))
+} by {
+    forall(n: Nat) {
+        if is_decreasing_seq(a) {
+            a(n.suc) <= a(n)
+            -a(n) <= -a(n.suc)
+            neg_seq(a, n) = -a(n)
+            neg_seq(a, n.suc) = -a(n.suc)
+            neg_seq(a, n) <= neg_seq(a, n.suc)
+        }
+    }
+}
+
+/// A decreasing sequence stays below each earlier term.
+theorem distant_decreasing(a: Nat -> Real, m: Nat, n: Nat) {
+    is_decreasing_seq(a) and m <= n implies a(n) <= a(m)
+} by {
+    if is_decreasing_seq(a) and m <= n {
+        is_increasing(neg_seq(a))
+        neg_seq(a, m) <= neg_seq(a, n)
+        neg_seq(a, m) = -a(m)
+        neg_seq(a, n) = -a(n)
+        -a(m) <= -a(n)
+        a(n) <= a(m)
+    }
+}
+
+/// The first term of an increasing sequence is a lower bound.
+theorem increasing_lower_bound_first(a: Nat -> Real) {
+    is_increasing(a) implies is_lower_bound(a, a(Nat.0))
+} by {
+    forall(n: Nat) {
+        if is_increasing(a) {
+            Nat.0 <= n
+            a(Nat.0) <= a(n)
+        }
+    }
+}
+
+/// The first term of a decreasing sequence is an upper bound.
+theorem decreasing_upper_bound_first(a: Nat -> Real) {
+    is_decreasing_seq(a) implies is_upper_bound(a, a(Nat.0))
+} by {
+    forall(n: Nat) {
+        if is_decreasing_seq(a) {
+            Nat.0 <= n
+            a(n) <= a(Nat.0)
+        }
+    }
+}
+
+/// Negation changes increasing sequences into decreasing sequences.
+theorem increasing_neg_decreasing(a: Nat -> Real) {
+    is_increasing(a) implies is_decreasing_seq(neg_seq(a))
+} by {
+    forall(n: Nat) {
+        if is_increasing(a) {
+            a(n) <= a(n.suc)
+            -a(n.suc) <= -a(n)
+            neg_seq(a, n) = -a(n)
+            neg_seq(a, n.suc) = -a(n.suc)
+            neg_seq(a, n.suc) <= neg_seq(a, n)
+        }
+    }
+}
+
+/// A lower bound for a sequence is an upper bound for its negation.
+theorem lower_bound_neg_upper_bound(a: Nat -> Real, lb: Real) {
+    is_lower_bound(a, lb) implies is_upper_bound(neg_seq(a), -lb)
+} by {
+    forall(n: Nat) {
+        if is_lower_bound(a, lb) {
+            lb <= a(n)
+            -a(n) <= -lb
+            neg_seq(a, n) = -a(n)
+            neg_seq(a, n) <= -lb
+        }
+    }
+}
+
+/// An upper bound for a sequence is a lower bound for its negation.
+theorem upper_bound_neg_lower_bound(a: Nat -> Real, ub: Real) {
+    is_upper_bound(a, ub) implies is_lower_bound(neg_seq(a), -ub)
+} by {
+    forall(n: Nat) {
+        if is_upper_bound(a, ub) {
+            a(n) <= ub
+            -ub <= -a(n)
+            neg_seq(a, n) = -a(n)
+            -ub <= neg_seq(a, n)
+        }
+    }
+}
+
+/// A decreasing sequence with a lower bound converges.
+theorem decreasing_bounded_below_converges(a: Nat -> Real, lb: Real) {
+    is_decreasing_seq(a) and is_lower_bound(a, lb) implies converges(a)
+} by {
+    if is_decreasing_seq(a) and is_lower_bound(a, lb) {
+        is_increasing(neg_seq(a))
+        is_upper_bound(neg_seq(a), -lb)
+        converges(neg_seq(a))
+        converges(a)
+    }
+}
+
+/// A decreasing sequence with a lower bound converges.
+theorem decreasing_has_lower_bound_converges(a: Nat -> Real) {
+    is_decreasing_seq(a) and has_lower_bound_seq(a) implies converges(a)
+} by {
+    if is_decreasing_seq(a) and has_lower_bound_seq(a) {
+        let lb: Real satisfy {
+            is_lower_bound(a, lb)
+        }
+        converges(a)
+    }
+}
+
+/// The limit of a negated sequence is the negation of the limit.
+theorem limit_neg_seq(a: Nat -> Real) {
+    converges(a) implies limit(neg_seq(a)) = -limit(a)
+} by {
+    if converges(a) {
+        converges(neg_seq(a))
+        converges_to(neg_seq(a), -limit(a))
+        converges_to(neg_seq(a), limit(neg_seq(a)))
+        converges_to_unique(neg_seq(a), -limit(a), limit(neg_seq(a)))
+        limit(neg_seq(a)) = -limit(a)
+    }
+}
+
+/// A convergent decreasing sequence is bounded below by its limit.
+theorem decreasing_convergent_bounded_by_limit(a: Nat -> Real) {
+    is_decreasing_seq(a) and converges(a)
+    implies is_lower_bound(a, limit(a))
+} by {
+    if is_decreasing_seq(a) and converges(a) {
+        is_increasing(neg_seq(a))
+        converges(neg_seq(a))
+        is_upper_bound(neg_seq(a), limit(neg_seq(a)))
+        limit(neg_seq(a)) = -limit(a)
+        forall(n: Nat) {
+            neg_seq(a, n) <= limit(neg_seq(a))
+            neg_seq(a, n) = -a(n)
+            -a(n) <= -limit(a)
+            limit(a) <= a(n)
+        }
+    }
 }
 
 theorem conv_add_imp_conv_right(a: Nat -> Real, b: Nat -> Real) {
