@@ -132,3 +132,34 @@
 {"goal":"identity_submonoid_intersection_right","proof":[]}
 {"goal":"full_submonoid_intersection_left","proof":[]}
 {"goal":"full_submonoid_intersection_right","proof":[]}
+{"goal":"f.hom(M.1) = N.1","proof":[]}
+{"goal":"s.contains(N.1)","proof":[]}
+{"goal":"s.contains(f.hom(M.1))","proof":[]}
+{"goal":"submonoid_preimage_contains[M, N](f, s, M.1)","proof":["function[T0: Monoid, T2: Monoid](x0: Submonoid[T0], x1: MonoidHom[T2, T0], x2: T2) { x1.hom(x2) ∈ x0 = submonoid_preimage_contains[T2, T0](x1, x0, x2) }[N, M](s, f, M.1)"]}
+{"goal":"submonoid_preimage_identity_constraint","proof":["function[T0: Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[M](submonoid_preimage_contains[M, N](f, s))"]}
+{"goal":"s.contains(f.hom(a))","proof":["function[T0: Monoid, T2: Monoid](x0: Submonoid[T0], x1: MonoidHom[T2, T0], x2: T2) { x1.hom(x2) ∈ x0 = submonoid_preimage_contains[T2, T0](x1, x0, x2) }[N, M](s, f, a)"]}
+{"goal":"s.contains(f.hom(b))","proof":["function[T0: Monoid, T2: Monoid](x0: Submonoid[T0], x1: MonoidHom[T2, T0], x2: T2) { x1.hom(x2) ∈ x0 = submonoid_preimage_contains[T2, T0](x1, x0, x2) }[N, M](s, f, b)"]}
+{"goal":"s.contains(f.hom(a) * f.hom(b))","proof":[]}
+{"goal":"f.hom(a * b) = f.hom(a) * f.hom(b)","proof":[]}
+{"goal":"s.contains(f.hom(a * b))","proof":[]}
+{"goal":"submonoid_preimage_contains[M, N](f, s, a * b)","proof":["function[T0: Monoid, T2: Monoid](x0: Submonoid[T0], x1: MonoidHom[T2, T0], x2: T2) { x1.hom(x2) ∈ x0 = submonoid_preimage_contains[T2, T0](x1, x0, x2) }[N, M](s, f, a * b)"]}
+{"goal":"submonoid_preimage_closure_constraint","proof":["function[T0: Monoid](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = submonoid_closure_constraint[T0](x0) }[M](submonoid_preimage_contains[M, N](f, s))","let w0: M satisfy { exists(k0: M) { submonoid_preimage_contains[M, N](f, s, w0) and submonoid_preimage_contains[M, N](f, s, k0) and not submonoid_preimage_contains[M, N](f, s, w0 * k0) } }","let w1: M satisfy { submonoid_preimage_contains[M, N](f, s, w0) and submonoid_preimage_contains[M, N](f, s, w1) and not submonoid_preimage_contains[M, N](f, s, w0 * w1) }","let w2: M satisfy { submonoid_preimage_contains[M, N](f, s, w0) and submonoid_preimage_contains[M, N](f, s, w2) and not submonoid_preimage_contains[M, N](f, s, w0 * w2) }","function(x0: M, x1: M) { not submonoid_preimage_contains[M, N](f, s, x0) or not submonoid_preimage_contains[M, N](f, s, x1) or submonoid_preimage_contains[M, N](f, s, x0 * x1) }(w0, w2)"]}
+{"goal":"submonoid_preimage_constraint","proof":["function[T0: Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[M](submonoid_preimage_contains[M, N](f, s))"]}
+{"goal":"exists(k0: Submonoid[M]) { Submonoid.new[M](submonoid_preimage_contains[M, N](f, s)) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0 -> Bool) { not Submonoid.constraint[T0](x0) or exists(k0: Submonoid[T0]) { Submonoid.new[T0](x0) = Option.some[Submonoid[T0]](k0) } }[M](submonoid_preimage_contains[M, N](f, s))"]}
+{"goal":"submonoid_preimage[M, N](f, s).contains(a) = submonoid_preimage_contains[M, N](f, s, a)","proof":["function[T0: Monoid, T1: Monoid](x0: MonoidHom[T0, T1], x1: Submonoid[T1]) { Option.some[Submonoid[T0]](submonoid_preimage[T0, T1](x0, x1)) = Submonoid.new[T0](submonoid_preimage_contains[T0, T1](x0, x1)) }[M, N](f, s)","function[T0: Monoid](x0: Submonoid[T0], x1: T0 -> Bool, x2: T0) { Option.some[Submonoid[T0]](x0) != Submonoid.new[T0](x1) or x2 ∈ x0 = x1(x2) }[M](submonoid_preimage[M, N](f, s), submonoid_preimage_contains[M, N](f, s), a)"]}
+{"goal":"submonoid_preimage_contains[M, N](f, s, a) = s.contains(f.hom(a))","proof":["function[T0: Monoid, T2: Monoid](x0: Submonoid[T0], x1: MonoidHom[T2, T0], x2: T2) { x1.hom(x2) ∈ x0 = submonoid_preimage_contains[T2, T0](x1, x0, x2) }[N, M](s, f, a)"]}
+{"goal":"submonoid_preimage_contains_eq","proof":[]}
+{"goal":"submonoid_preimage[M, N](f, s).contains(a)","proof":[]}
+{"goal":"submonoid_preimage_contains_of_contains_map","proof":[]}
+{"goal":"s.contains(f.hom(a))","proof":[]}
+{"goal":"submonoid_contains_map_of_preimage_contains","proof":[]}
+{"goal":"monoid_hom_kernel[M, N](f) = submonoid_preimage[M, N](f, identity_submonoid[N])","proof":["function[T0: Monoid, T1: Monoid](x0: MonoidHom[T0, T1]) { submonoid_preimage[T0, T1](x0, identity_submonoid[T1]) = monoid_hom_kernel[T0, T1](x0) }[M, N](f)"]}
+{"goal":"identity_submonoid[N].contains(f.hom(a))","proof":["a ∈ submonoid_preimage[M, N](f, identity_submonoid[N])","not a ∈ submonoid_preimage[M, N](f, identity_submonoid[N])"]}
+{"goal":"f.hom(a) = N.1","proof":["not f.hom(a) ∈ identity_submonoid[N]"]}
+{"goal":"identity_submonoid[N].contains(N.1)","proof":[]}
+{"goal":"identity_submonoid[N].contains(f.hom(a))","proof":[]}
+{"goal":"monoid_hom_kernel[M, N](f).contains(a)","proof":[]}
+{"goal":"monoid_hom_kernel[M, N](f).contains(a) = (f.hom(a) = N.1)","proof":["a ∈ monoid_hom_kernel[M, N](f) or f.hom(a) = N.1","not a ∈ monoid_hom_kernel[M, N](f) or f.hom(a) != N.1","a ∈ monoid_hom_kernel[M, N](f)","not a ∈ monoid_hom_kernel[M, N](f)"]}
+{"goal":"monoid_hom_kernel_contains_eq","proof":[]}
+{"goal":"monoid_hom_kernel[M, N](f).contains(a)","proof":[]}
+{"goal":"monoid_hom_kernel_contains_of_maps_to_identity","proof":[]}

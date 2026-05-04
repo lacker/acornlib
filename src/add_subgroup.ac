@@ -1,5 +1,5 @@
 from add_comm_group import AddCommGroup
-from add_group import AddGroup
+from add_group import AddGroup, AddGroupHom, add_group_hom_zero, add_group_hom_add, add_group_hom_neg
 from functions import predicate_extensionality
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
@@ -1173,4 +1173,163 @@ theorem add_subgroup_quotient_add_comm[G: AddCommGroup](h: AddSubgroup[G], a: G,
     add_subgroup_quotient_add(h,
         quotient_over_mk(add_subgroup_quotient_relation(h), b),
         quotient_over_mk(add_subgroup_quotient_relation(h), a))
+}
+
+/// The inverse image membership predicate of an additive subgroup under an additive group homomorphism.
+define add_subgroup_preimage_contains[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    a: A
+) -> Bool {
+    s.contains(f.hom(a))
+}
+
+/// The inverse image of an additive subgroup contains zero.
+theorem add_subgroup_preimage_zero_constraint[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B]
+) {
+    add_zero_constraint(add_subgroup_preimage_contains(f, s))
+} by {
+    add_group_hom_zero(f)
+    f.hom(A.0) = B.0
+    add_subgroup_contains_zero(s)
+    s.contains(B.0)
+    s.contains(f.hom(A.0))
+    add_subgroup_preimage_contains(f, s, A.0)
+}
+
+/// The inverse image of an additive subgroup is closed under addition.
+theorem add_subgroup_preimage_closure_constraint[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B]
+) {
+    add_closure_constraint(add_subgroup_preimage_contains(f, s))
+} by {
+    forall(a: A, b: A) {
+        if add_subgroup_preimage_contains(f, s, a) and add_subgroup_preimage_contains(f, s, b) {
+            s.contains(f.hom(a))
+            s.contains(f.hom(b))
+            add_subgroup_contains_add(s, f.hom(a), f.hom(b))
+            s.contains(f.hom(a) + f.hom(b))
+            add_group_hom_add(f, a, b)
+            f.hom(a + b) = f.hom(a) + f.hom(b)
+            s.contains(f.hom(a + b))
+            add_subgroup_preimage_contains(f, s, a + b)
+        }
+    }
+}
+
+/// The inverse image of an additive subgroup is closed under negation.
+theorem add_subgroup_preimage_neg_constraint[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B]
+) {
+    neg_constraint(add_subgroup_preimage_contains(f, s))
+} by {
+    forall(a: A) {
+        if add_subgroup_preimage_contains(f, s, a) {
+            s.contains(f.hom(a))
+            add_subgroup_contains_neg(s, f.hom(a))
+            s.contains(-f.hom(a))
+            add_group_hom_neg(f, a)
+            f.hom(-a) = -f.hom(a)
+            s.contains(f.hom(-a))
+            add_subgroup_preimage_contains(f, s, -a)
+        }
+    }
+}
+
+/// The inverse image of an additive subgroup is an additive subgroup.
+theorem add_subgroup_preimage_constraint[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B]
+) {
+    add_subgroup_constraint(add_subgroup_preimage_contains(f, s))
+} by {
+    add_subgroup_preimage_zero_constraint(f, s)
+    add_subgroup_preimage_closure_constraint(f, s)
+    add_subgroup_preimage_neg_constraint(f, s)
+}
+
+/// The inverse image of an additive subgroup under an additive group homomorphism.
+let add_subgroup_preimage[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], s: AddSubgroup[B]) -> result: AddSubgroup[A] satisfy {
+    AddSubgroup.new(add_subgroup_preimage_contains(f, s)) = Option.some(result)
+} by {
+    add_subgroup_preimage_constraint(f, s)
+}
+
+/// Membership in an inverse image means the mapped element belongs to the target additive subgroup.
+theorem add_subgroup_preimage_contains_eq[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    a: A
+) {
+    add_subgroup_preimage(f, s).contains(a) = s.contains(f.hom(a))
+} by {
+    add_subgroup_preimage(f, s).contains(a) = add_subgroup_preimage_contains(f, s, a)
+    add_subgroup_preimage_contains(f, s, a) = s.contains(f.hom(a))
+}
+
+/// Membership in a preimage follows from membership of the mapped element.
+theorem add_subgroup_preimage_contains_of_contains_map[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    a: A
+) {
+    s.contains(f.hom(a)) implies add_subgroup_preimage(f, s).contains(a)
+} by {
+    if s.contains(f.hom(a)) {
+        add_subgroup_preimage_contains_eq(f, s, a)
+        add_subgroup_preimage(f, s).contains(a)
+    }
+}
+
+/// Membership in the target follows from membership in the preimage.
+theorem add_subgroup_contains_map_of_preimage_contains[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    a: A
+) {
+    add_subgroup_preimage(f, s).contains(a) implies s.contains(f.hom(a))
+} by {
+    if add_subgroup_preimage(f, s).contains(a) {
+        add_subgroup_preimage_contains_eq(f, s, a)
+        s.contains(f.hom(a))
+    }
+}
+
+/// The kernel of an additive group homomorphism as an additive subgroup.
+define add_group_hom_kernel[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) -> AddSubgroup[A] {
+    add_subgroup_preimage(f, zero_add_subgroup[B])
+}
+
+/// Membership in the kernel means the homomorphism maps the element to zero.
+theorem add_group_hom_kernel_contains_eq[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A) {
+    add_group_hom_kernel(f).contains(a) = (f.hom(a) = B.0)
+} by {
+    add_group_hom_kernel(f) = add_subgroup_preimage(f, zero_add_subgroup[B])
+    add_subgroup_preimage_contains_eq(f, zero_add_subgroup[B], a)
+    if add_group_hom_kernel(f).contains(a) {
+        zero_add_subgroup[B].contains(f.hom(a))
+        zero_add_subgroup_only_has_zero(f.hom(a))
+        f.hom(a) = B.0
+    }
+    if f.hom(a) = B.0 {
+        add_subgroup_contains_zero(zero_add_subgroup[B])
+        zero_add_subgroup[B].contains(B.0)
+        zero_add_subgroup[B].contains(f.hom(a))
+        add_group_hom_kernel(f).contains(a)
+    }
+    add_group_hom_kernel(f).contains(a) = (f.hom(a) = B.0)
+}
+
+/// An element belongs to the kernel when its image is zero.
+theorem add_group_hom_kernel_contains_of_maps_to_zero[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B], a: A) {
+    f.hom(a) = B.0 implies add_group_hom_kernel(f).contains(a)
+} by {
+    if f.hom(a) = B.0 {
+        add_group_hom_kernel_contains_eq(f, a)
+        add_group_hom_kernel(f).contains(a)
+    }
 }
