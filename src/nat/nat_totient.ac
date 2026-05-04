@@ -2,7 +2,11 @@ from nat.nat_coprime import Nat, coprime_one_left, coprime_mul_iff
 from nat.nat_gcd import gcd_zero_left, gcd_of_prime, gcd_comm, divides_gcd
 from nat.nat_factorisation import prime_divisor_is_one_or_self, coprime_of_distinct_primes
 from nat.nat_base import divides_self, divides_zero, add_imp_sub
-from nat.nat_crt import nat_coprime_combine
+from nat.nat_crt import nat_coprime_combine, nat_congr_combine_coprime
+from nat.nat_fermat import rsa_pow_congr
+from nat.nat_modular_inverse import cancel_coprime
+from nat.nat_monoid import exp_one, exp_add
+from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -919,5 +923,85 @@ theorem totient_pq(p: Nat, q: Nat) {
         (p * q).totient = pp * qp
         (p - Nat.1) * (q - Nat.1) = pp * qp
         (p * q).totient = (p - Nat.1) * (q - Nat.1)
+    }
+}
+
+/// For distinct primes `p`, `q` and any `m`,
+///   `m^((p - 1) * (q - 1) + 1) ≡ m  (mod p * q)`.
+/// Combines `rsa_pow_congr` mod `p` and mod `q` via the CRT.
+theorem rsa_pow_congr_pq(p: Nat, q: Nat, m: Nat) {
+    p.is_prime and q.is_prime and p != q
+        implies m.pow((p - Nat.1) * (q - Nat.1) + Nat.1).congr_mod(m, p * q)
+} by {
+    if p.is_prime and q.is_prime and p != q {
+        // Mod p: with k = q - 1, m^((q - 1) * (p - 1) + 1) ≡ m (mod p).
+        rsa_pow_congr(p, m, q - Nat.1)
+        m.pow((q - Nat.1) * (p - Nat.1) + Nat.1).congr_mod(m, p)
+        (q - Nat.1) * (p - Nat.1) = (p - Nat.1) * (q - Nat.1)
+        (q - Nat.1) * (p - Nat.1) + Nat.1 = (p - Nat.1) * (q - Nat.1) + Nat.1
+        m.pow((p - Nat.1) * (q - Nat.1) + Nat.1).congr_mod(m, p)
+        // Mod q: with k = p - 1, m^((p - 1) * (q - 1) + 1) ≡ m (mod q).
+        rsa_pow_congr(q, m, p - Nat.1)
+        m.pow((p - Nat.1) * (q - Nat.1) + Nat.1).congr_mod(m, q)
+        // Combine via coprime CRT.
+        coprime_of_distinct_primes(p, q)
+        p.coprime(q)
+        nat_congr_combine_coprime(p, q,
+            m.pow((p - Nat.1) * (q - Nat.1) + Nat.1), m)
+        m.pow((p - Nat.1) * (q - Nat.1) + Nat.1).congr_mod(m, p * q)
+    }
+}
+
+/// Helper: m^((p-1)(q-1) + 1) = m * m^((p-1)(q-1)).
+theorem rsa_pow_split_one(m: Nat, p: Nat, q: Nat) {
+    m.pow((p - Nat.1) * (q - Nat.1) + Nat.1) =
+        m * m.pow((p - Nat.1) * (q - Nat.1))
+} by {
+    let e: Nat = (p - Nat.1) * (q - Nat.1)
+    exp_add(m, e, Nat.1)
+    m.pow(e + Nat.1) = m.pow(e) * m.pow(Nat.1)
+    exp_one(m)
+    m.pow(Nat.1) = m
+    m.pow(e + Nat.1) = m.pow(e) * m
+    m.pow(e) * m = m * m.pow(e)
+    m.pow(e + Nat.1) = m * m.pow(e)
+}
+
+/// Helper: rewrite `m * 1` as `m` and produce `m * m^e ≡ m * 1` from
+/// `m * m^e ≡ m` after one extra rewrite.
+theorem rsa_pow_one_rhs(m: Nat, n: Nat, e: Nat) {
+    (m * m.pow(e)).congr_mod(m, n)
+        implies (m * m.pow(e)).congr_mod(m * Nat.1, n)
+} by {
+    if (m * m.pow(e)).congr_mod(m, n) {
+        m * Nat.1 = m
+    }
+}
+
+/// Euler's theorem at a product of distinct primes:
+///   `gcd(m, p * q) = 1` implies `m.pow((p * q).totient) ≡ 1  (mod p * q)`.
+theorem euler_pq(p: Nat, q: Nat, m: Nat) {
+    p.is_prime and q.is_prime and p != q and m.coprime(p * q)
+        implies m.pow((p * q).totient).congr_mod(Nat.1, p * q)
+} by {
+    if p.is_prime and q.is_prime and p != q and m.coprime(p * q) {
+        // Identify totient(p*q) with (p-1)*(q-1).
+        totient_pq(p, q)
+        (p * q).totient = (p - Nat.1) * (q - Nat.1)
+        // From rsa_pow_congr_pq: m^((p-1)(q-1) + 1) ≡ m (mod p*q).
+        rsa_pow_congr_pq(p, q, m)
+        m.pow((p - Nat.1) * (q - Nat.1) + Nat.1).congr_mod(m, p * q)
+        // Rewrite LHS as m * m^((p-1)(q-1)).
+        rsa_pow_split_one(m, p, q)
+        m.pow((p - Nat.1) * (q - Nat.1) + Nat.1) =
+            m * m.pow((p - Nat.1) * (q - Nat.1))
+        (m * m.pow((p - Nat.1) * (q - Nat.1))).congr_mod(m, p * q)
+        // Rewrite RHS as m * 1.
+        rsa_pow_one_rhs(m, p * q, (p - Nat.1) * (q - Nat.1))
+        (m * m.pow((p - Nat.1) * (q - Nat.1))).congr_mod(m * Nat.1, p * q)
+        // Cancel m using its coprimality.
+        cancel_coprime(m, p * q, m.pow((p - Nat.1) * (q - Nat.1)), Nat.1)
+        m.pow((p - Nat.1) * (q - Nat.1)).congr_mod(Nat.1, p * q)
+        m.pow((p * q).totient).congr_mod(Nat.1, p * q)
     }
 }

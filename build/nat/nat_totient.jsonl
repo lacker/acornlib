@@ -303,14 +303,38 @@
 {"goal":"p + q - 1 = s","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 != x2 or x2 - x1 = x0 }(s, 1, p + q)"]}
 {"goal":"count_coprime_to(p * q, p * q) + (pp + qp + 1) = pp * qp + pp + qp + 1","proof":[]}
 {"goal":"pp * qp + pp + qp + 1 = pp * qp + (pp + qp + 1)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(pp * qp, pp + qp, 1)","function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(pp * qp, pp, qp)"]}
-{"goal":"count_coprime_to(p * q, p * q) + (pp + qp + 1) = pp * qp + (pp + qp + 1)","proof":["count_coprime_to(p * q, p * q) + (pp + qp + 1) != pp * qp + pp + qp + 1"]}
-{"goal":"count_coprime_to(p * q, p * q) + (pp + qp + 1) = total","proof":["count_coprime_to(p * q, p * q) + (pp + qp + 1) != pp * qp + (pp + qp + 1)"]}
+{"goal":"count_coprime_to(p * q, p * q) + (pp + qp + 1) = pp * qp + (pp + qp + 1)","proof":[]}
+{"goal":"count_coprime_to(p * q, p * q) + (pp + qp + 1) = total","proof":[]}
 {"goal":"pp * qp + (pp + qp + 1) = total","proof":[]}
-{"goal":"count_coprime_to(p * q, p * q) = total - (pp + qp + 1)","proof":["count_coprime_to(p * q, p * q) + (pp + qp + 1) != total"]}
-{"goal":"pp * qp = total - (pp + qp + 1)","proof":["pp * qp + (pp + qp + 1) != total"]}
-{"goal":"count_coprime_to(p * q, p * q) = pp * qp","proof":["total - (pp + qp + 1) != count_coprime_to(p * q, p * q)"]}
+{"goal":"count_coprime_to(p * q, p * q) = total - (pp + qp + 1)","proof":[]}
+{"goal":"pp * qp = total - (pp + qp + 1)","proof":[]}
+{"goal":"count_coprime_to(p * q, p * q) = pp * qp","proof":[]}
 {"goal":"(p * q).totient = count_coprime_to(p * q, p * q)","proof":["function(x0: Nat) { x0.totient = count_coprime_to(x0, x0) }(p * q)"]}
 {"goal":"(p * q).totient = pp * qp","proof":[]}
 {"goal":"(p - 1) * (q - 1) = pp * qp","proof":[]}
 {"goal":"(p * q).totient = (p - 1) * (q - 1)","proof":[]}
 {"goal":"totient_pq","proof":[]}
+{"goal":"m.pow((q - 1) * (p - 1) + 1).congr_mod(m, p)","proof":["not p.is_prime","p.is_prime and q.is_prime"]}
+{"goal":"(q - 1) * (p - 1) = (p - 1) * (q - 1)","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(q - 1, p - 1)"]}
+{"goal":"(q - 1) * (p - 1) + 1 = (p - 1) * (q - 1) + 1","proof":["(q - 1) * (p - 1) != (p - 1) * (q - 1)"]}
+{"goal":"m.pow((p - 1) * (q - 1) + 1).congr_mod(m, p)","proof":["not m.pow((q - 1) * (p - 1) + 1).congr_mod(m, p)"]}
+{"goal":"m.pow((p - 1) * (q - 1) + 1).congr_mod(m, q)","proof":["not q.is_prime","p.is_prime and q.is_prime"]}
+{"goal":"p.coprime(q)","proof":["not q.is_prime or not p.is_prime or q = p","q != p","not q.is_prime or not p.is_prime","p.is_prime and q.is_prime","not p.is_prime"]}
+{"goal":"m.pow((p - 1) * (q - 1) + 1).congr_mod(m, p * q)","proof":["not m.pow((p - 1) * (q - 1) + 1).congr_mod(m, q) or not m.pow((p - 1) * (q - 1) + 1).congr_mod(m, p) or not p.coprime(q)","not m.pow((p - 1) * (q - 1) + 1).congr_mod(m, p)"]}
+{"goal":"rsa_pow_congr_pq","proof":["not q.is_prime or not p.is_prime or q = p","q != p","not q.is_prime or not p.is_prime","p.is_prime and q.is_prime","not p.is_prime"]}
+{"goal":"m.pow(e + 1) = m.pow(e) * m.pow(1)","proof":[]}
+{"goal":"m.pow(1) = m","proof":[]}
+{"goal":"m.pow(e + 1) = m.pow(e) * m","proof":["m.pow(e) * m.pow(1) != m.pow(e + 1)"]}
+{"goal":"m.pow(e) * m = m * m.pow(e)","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(m, m.pow(e))"]}
+{"goal":"m.pow(e + 1) = m * m.pow(e)","proof":["m.pow(e + 1) != m.pow(e) * m"]}
+{"goal":"rsa_pow_split_one","proof":["m * m.pow((p - 1) * (q - 1)) != m.pow(e + 1)","m * m.pow((p - 1) * (q - 1)) = m.pow(e + 1)"]}
+{"goal":"m * 1 = m","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(1, m)","function(x0: Nat) { 1 * x0 = x0 }(m)"]}
+{"goal":"rsa_pow_one_rhs","proof":["m * 1 = m"]}
+{"goal":"(p * q).totient = (p - 1) * (q - 1)","proof":["not q.is_prime or not p.is_prime or q = p","p.is_prime and q.is_prime and p != q","not q.is_prime or not p.is_prime","q.is_prime","p.is_prime","not p.is_prime"]}
+{"goal":"m.pow((p - 1) * (q - 1) + 1).congr_mod(m, p * q)","proof":["not q.is_prime or not p.is_prime or q = p","p.is_prime and q.is_prime and p != q","not q.is_prime or not p.is_prime","q.is_prime","p.is_prime","not p.is_prime"]}
+{"goal":"m.pow((p - 1) * (q - 1) + 1) = m * m.pow((p - 1) * (q - 1))","proof":[]}
+{"goal":"(m * m.pow((p - 1) * (q - 1))).congr_mod(m, p * q)","proof":[]}
+{"goal":"(m * m.pow((p - 1) * (q - 1))).congr_mod(m * 1, p * q)","proof":["not (m * m.pow((p - 1) * (q - 1))).congr_mod(m, p * q)"]}
+{"goal":"m.pow((p - 1) * (q - 1)).congr_mod(1, p * q)","proof":["not (m * m.pow((p - 1) * (q - 1))).congr_mod(m * 1, p * q) or not m.coprime(p * q)","(m * m.pow((p - 1) * (q - 1))).congr_mod(m * 1, p * q)","m.coprime(p * q)","not m.coprime(p * q)"]}
+{"goal":"m.pow((p * q).totient).congr_mod(1, p * q)","proof":["not m.pow((p - 1) * (q - 1)).congr_mod(1, p * q)"]}
+{"goal":"euler_pq","proof":["not m.coprime(p * q) or not q.is_prime or not p.is_prime or q = p","m.coprime(p * q)","not q.is_prime or not p.is_prime or q = p","p.is_prime and q.is_prime and p != q","not q.is_prime or not p.is_prime","q.is_prime","p.is_prime","not p.is_prime"]}

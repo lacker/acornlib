@@ -11,11 +11,15 @@ and the existing CRT (`nat_congr_combine_coprime`); the items below are not
 required for it. They support the textbook formulation and downstream
 cryptographic content.
 
-`src/nat/nat_totient.ac` already contains:
+`src/nat/nat_totient.ac` contains:
 - `nat_totient` with `totient(p) = p - 1` and
   `totient(p * q) = (p - 1) * (q - 1)` for distinct primes.
 - `count_multiples`, `count_not_coprime_to`, `coprime_partition`,
   and the inclusion-exclusion identity `ie_pq_pred`.
+- `euler_pq`: Euler's theorem at `p * q` for distinct primes.
+
+`src/nat/nat_modular_inverse.ac` contains `cancel_coprime` (modular
+cancellation by a coprime factor).
 
 `src/nat/nat_coprime.ac` contains `coprime_mul_iff`.
 
@@ -23,7 +27,7 @@ cryptographic content.
       (`nat_totient(m * n) = nat_totient(m) * nat_totient(n)` when
       `m.coprime(n)`) — generalises `totient_pq` via the CRT-induced
       bijection between `[0, mn)` and `[0, m) x [0, n)`.
-- [ ] Prove Euler's theorem: `gcd(a, n) = 1` implies
+- [ ] Generalise `euler_pq` to arbitrary moduli: `gcd(a, n) = 1` implies
       `a.pow(nat_totient(n)).mod(n) = 1`. Standard route: multiplication
       by `a` permutes the units in `Z/n`, take the product and cancel.
 

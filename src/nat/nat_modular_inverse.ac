@@ -214,3 +214,135 @@ theorem mod_inv_correct(a: Nat, n: Nat) {
 theorem mod_inv_mul_congr_one(a: Nat, n: Nat) {
     a.coprime(n) implies (a * mod_inv(a, n)).congr_mod(Nat.1, n)
 }
+
+/// Helper: multiplying both sides of `a * x ≡ a * y` on the left by a fresh
+/// factor `c` gives `c * (a * x) ≡ c * (a * y)` (mod n).
+theorem mul_left_compat(a: Nat, x: Nat, y: Nat, n: Nat, c: Nat) {
+    (a * x).congr_mod(a * y, n)
+        implies (c * (a * x)).congr_mod(c * (a * y), n)
+} by {
+    if (a * x).congr_mod(a * y, n) {
+        congr_mod_refl(c, n)
+        c.congr_mod(c, n)
+        congr_mod_mul(c, a * x, c, a * y, n)
+    }
+}
+
+/// Helper: when `c ≡ 1 (mod n)`, `c * x ≡ 1 * x = x (mod n)`.
+theorem mul_one_congr_left(c: Nat, n: Nat, x: Nat) {
+    c.congr_mod(Nat.1, n) implies (c * x).congr_mod(x, n)
+} by {
+    if c.congr_mod(Nat.1, n) {
+        congr_mod_refl(x, n)
+        x.congr_mod(x, n)
+        congr_mod_mul(c, x, Nat.1, x, n)
+        (c * x).congr_mod(Nat.1 * x, n)
+        Nat.1 * x = x
+        (c * x).congr_mod(x, n)
+    }
+}
+
+/// Helper: from `(b * a) ≡ 1 (mod n)`, both `(b * a) * x ≡ x` and
+/// `(b * a) * y ≡ y` hold modulo `n`, and so `x ≡ (b * a) * x` and
+/// `(b * a) * y ≡ y`.
+theorem cancel_coprime_pin(b: Nat, a: Nat, n: Nat, x: Nat, y: Nat) {
+    (b * a).congr_mod(Nat.1, n)
+        implies x.congr_mod((b * a) * x, n) and ((b * a) * y).congr_mod(y, n)
+} by {
+    if (b * a).congr_mod(Nat.1, n) {
+        mul_one_congr_left(b * a, n, x)
+        ((b * a) * x).congr_mod(x, n)
+        congr_mod_symm((b * a) * x, x, n)
+        x.congr_mod((b * a) * x, n)
+        mul_one_congr_left(b * a, n, y)
+        ((b * a) * y).congr_mod(y, n)
+    }
+}
+
+/// First step of cancel_one_chain: from `c ≡ 1` and `c*x ≡ c*y`, deduce
+/// `x ≡ c * y` (mod n).
+theorem cancel_one_chain_left(c: Nat, n: Nat, x: Nat, y: Nat) {
+    c.congr_mod(Nat.1, n) and (c * x).congr_mod(c * y, n)
+        implies x.congr_mod(c * y, n)
+} by {
+    if c.congr_mod(Nat.1, n) and (c * x).congr_mod(c * y, n) {
+        mul_one_congr_left(c, n, x)
+        (c * x).congr_mod(x, n)
+        congr_mod_symm(c * x, x, n)
+        x.congr_mod(c * x, n)
+        congr_mod_trans(x, c * x, c * y, n)
+    }
+}
+
+/// Second step of cancel_one_chain: from `x ≡ c * y` and `c ≡ 1`, deduce
+/// `x ≡ y` (mod n).
+theorem cancel_one_chain_right(c: Nat, n: Nat, x: Nat, y: Nat) {
+    c.congr_mod(Nat.1, n) and x.congr_mod(c * y, n)
+        implies x.congr_mod(y, n)
+} by {
+    if c.congr_mod(Nat.1, n) and x.congr_mod(c * y, n) {
+        mul_one_congr_left(c, n, y)
+        (c * y).congr_mod(y, n)
+        congr_mod_trans(x, c * y, y, n)
+    }
+}
+
+/// Cancellation core: if `c ≡ 1 (mod n)` and `c * x ≡ c * y (mod n)`, then
+/// `x ≡ y (mod n)`.
+theorem cancel_one_chain(c: Nat, n: Nat, x: Nat, y: Nat) {
+    c.congr_mod(Nat.1, n) and (c * x).congr_mod(c * y, n)
+        implies x.congr_mod(y, n)
+} by {
+    if c.congr_mod(Nat.1, n) and (c * x).congr_mod(c * y, n) {
+        cancel_one_chain_left(c, n, x, y)
+        x.congr_mod(c * y, n)
+        cancel_one_chain_right(c, n, x, y)
+    }
+}
+
+/// Helper: from `a * x ≡ a * y` and any `b`, derive `(b * a) * x ≡ (b * a) * y`
+/// (mod n) by multiplying on the left and re-associating.
+theorem cancel_with_inverse_setup(a: Nat, b: Nat, n: Nat, x: Nat, y: Nat) {
+    (a * x).congr_mod(a * y, n)
+        implies ((b * a) * x).congr_mod((b * a) * y, n)
+} by {
+    if (a * x).congr_mod(a * y, n) {
+        mul_left_compat(a, x, y, n, b)
+        (b * (a * x)).congr_mod(b * (a * y), n)
+        b * (a * x) = (b * a) * x
+        b * (a * y) = (b * a) * y
+        ((b * a) * x).congr_mod((b * a) * y, n)
+    }
+}
+
+/// Cancellation by an explicit inverse: if `b * a ≡ 1 (mod n)` and
+/// `a * x ≡ a * y (mod n)`, then `x ≡ y (mod n)`.
+theorem cancel_with_inverse(a: Nat, b: Nat, n: Nat, x: Nat, y: Nat) {
+    (b * a).congr_mod(Nat.1, n) and (a * x).congr_mod(a * y, n)
+        implies x.congr_mod(y, n)
+} by {
+    if (b * a).congr_mod(Nat.1, n) and (a * x).congr_mod(a * y, n) {
+        cancel_with_inverse_setup(a, b, n, x, y)
+        ((b * a) * x).congr_mod((b * a) * y, n)
+        cancel_one_chain(b * a, n, x, y)
+    }
+}
+
+/// Modular cancellation: if `a` is coprime to `n`, then `a * x ≡ a * y (mod n)`
+/// implies `x ≡ y (mod n)`. The standard proof multiplies both sides by an
+/// inverse of `a` modulo `n` and collapses the resulting `1 * x` and `1 * y`.
+theorem cancel_coprime(a: Nat, n: Nat, x: Nat, y: Nat) {
+    a.coprime(n) and (a * x).congr_mod(a * y, n)
+        implies x.congr_mod(y, n)
+} by {
+    if a.coprime(n) and (a * x).congr_mod(a * y, n) {
+        nat_modular_inverse_exists(a, n)
+        let b: Nat satisfy { (a * b).congr_mod(Nat.1, n) }
+        (a * b).congr_mod(Nat.1, n)
+        b * a = a * b
+        (b * a).congr_mod(Nat.1, n)
+        (a * x).congr_mod(a * y, n)
+        cancel_with_inverse(a, b, n, x, y)
+        x.congr_mod(y, n)
+    }
+}
