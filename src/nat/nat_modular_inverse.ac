@@ -1,5 +1,5 @@
 from nat.nat_congruence import Nat, congr_mod_mul, congr_mod_trans, congr_mod_symm, congr_mod_refl
-from nat.nat_coprime import coprime_one_left
+from nat.nat_coprime import coprime_one_left, coprime_one_right, coprime_comm, coprime_mod_iff, coprime_mul_imp_right
 from nat.nat_bezout import nat_bezout
 from nat.nat_congr_int import nat_congr_mod_iff_int_mod_rel, mul_from_nat
 from int.lattice import Int
@@ -344,5 +344,58 @@ theorem cancel_coprime(a: Nat, n: Nat, x: Nat, y: Nat) {
         (a * x).congr_mod(a * y, n)
         cancel_with_inverse(a, b, n, x, y)
         x.congr_mod(y, n)
+    }
+}
+
+/// Helper: from `a * b ≡ 1 (mod n)`, derive `(a * b).coprime(n)` via the
+/// invariance of coprimality under modular reduction.
+theorem inverse_imp_product_coprime(a: Nat, b: Nat, n: Nat) {
+    (a * b).congr_mod(Nat.1, n) implies (a * b).coprime(n)
+} by {
+    if (a * b).congr_mod(Nat.1, n) {
+        (a * b).mod(n) = Nat.1.mod(n)
+        coprime_one_left(n)
+        Nat.1.coprime(n)
+        coprime_mod_iff(Nat.1, n)
+        (Nat.1.mod(n)).coprime(n)
+        (a * b).mod(n).coprime(n)
+        coprime_mod_iff(a * b, n)
+        (a * b).coprime(n)
+    }
+}
+
+/// Helper: split (a * b).coprime(n) into b.coprime(n) via commutativity and
+/// coprime_mul_imp_right.
+theorem product_coprime_imp_right(a: Nat, b: Nat, n: Nat) {
+    (a * b).coprime(n) implies b.coprime(n)
+} by {
+    if (a * b).coprime(n) {
+        coprime_comm(a * b, n)
+        n.coprime(a * b)
+        coprime_mul_imp_right(n, a, b)
+        n.coprime(b)
+        coprime_comm(n, b)
+    }
+}
+
+/// If `a * b ≡ 1 (mod n)` then `b` is coprime to `n`.
+theorem inverse_imp_coprime(a: Nat, b: Nat, n: Nat) {
+    (a * b).congr_mod(Nat.1, n) implies b.coprime(n)
+} by {
+    if (a * b).congr_mod(Nat.1, n) {
+        inverse_imp_product_coprime(a, b, n)
+        (a * b).coprime(n)
+        product_coprime_imp_right(a, b, n)
+    }
+}
+
+/// `mod_inv(a, n)` is coprime to `n` whenever `a` is.
+theorem mod_inv_coprime(a: Nat, n: Nat) {
+    a.coprime(n) implies (mod_inv(a, n)).coprime(n)
+} by {
+    if a.coprime(n) {
+        mod_inv_mul_congr_one(a, n)
+        (a * mod_inv(a, n)).congr_mod(Nat.1, n)
+        inverse_imp_coprime(a, mod_inv(a, n), n)
     }
 }

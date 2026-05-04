@@ -627,31 +627,31 @@
 {"goal":"y < n","proof":[]}
 {"goal":"x = y","proof":[]}
 {"goal":"coprime_residues_mul_inj","proof":[]}
-{"goal":"tail.unique = tail","proof":["function[T0](x0: List[T0]) { x0.unique = x0 = x0.is_unique }[Nat](tail)","tail.is_unique"]}
-{"goal":"List.cons(head, tail).unique = List.cons(head, tail.unique)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0]) { List.cons[T0](x0, x1) != x2 or (if x0 ∈ x1 { x1.unique } else { List.cons[T0](x0, x1.unique) }) = x2.unique }[Nat](head, tail, List.cons(head, tail))","not head ∈ tail","function[T0](x0: T0, x1: List[T0], x2: List[T0]) { List.cons[T0](x0, x1) != x2 or List.cons[T0](x0, x1.unique) = x2.unique or x0 ∈ x1 }[Nat](head, tail, List.cons(head, tail))"]}
-{"goal":"List.cons(head, tail.unique) = List.cons(head, tail)","proof":["tail.unique != tail"]}
-{"goal":"List.cons(head, tail).unique = List.cons(head, tail)","proof":["List.cons(head, tail).unique != List.cons(head, tail.unique)"]}
-{"goal":"cons_unique_intro","proof":["function[T0](x0: List[T0]) { x0.unique = x0 = x0.is_unique }[Nat](List.cons(head, tail))","tail.is_unique","not head ∈ tail","List.cons(head, tail).unique = List.cons(head, tail)","List.cons(head, tail).unique != List.cons(head, tail)"]}
+{"goal":"tail.unique = tail","proof":["function[T0](x0: List[T0]) { x0.unique = x0 = x0.is_unique }[Nat](tail)"]}
+{"goal":"List.cons(head, tail).unique = List.cons(head, tail.unique)","proof":["function[T0](x0: T0, x1: List[T0], x2: List[T0]) { List.cons[T0](x0, x1) != x2 or (if x0 ∈ x1 { x1.unique } else { List.cons[T0](x0, x1.unique) }) = x2.unique }[Nat](head, tail, List.cons(head, tail))"]}
+{"goal":"List.cons(head, tail.unique) = List.cons(head, tail)","proof":[]}
+{"goal":"List.cons(head, tail).unique = List.cons(head, tail)","proof":[]}
+{"goal":"cons_unique_intro","proof":["function[T0](x0: List[T0]) { x0.unique = x0 = x0.is_unique }[Nat](List.cons(head, tail))"]}
 {"goal":"coprime_residues_below(n, k).is_unique","proof":["function(x0: Nat, x1: Nat) { coprime_residues_below(x0, x1).is_unique = cr_unique_pred(x0, x1) }(n, k)"]}
-{"goal":"coprime_residues_below(n, k.suc) = List.cons(k, coprime_residues_below(n, k))","proof":["not k.coprime(n)"]}
-{"goal":"k < k","proof":["not k ∈ coprime_residues_below(n, k)"]}
+{"goal":"coprime_residues_below(n, k.suc) = List.cons(k, coprime_residues_below(n, k))","proof":[]}
+{"goal":"k < k","proof":[]}
 {"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(k, k)"]}
-{"goal":"not coprime_residues_below(n, k).contains(k)","proof":["false = true"]}
-{"goal":"List.cons(k, coprime_residues_below(n, k)).is_unique","proof":["not coprime_residues_below(n, k).is_unique or k ∈ coprime_residues_below(n, k)","k ∈ coprime_residues_below(n, k)"]}
-{"goal":"coprime_residues_below(n, k.suc).is_unique","proof":["List.cons(k, coprime_residues_below(n, k)).is_unique","List.cons(k, coprime_residues_below(n, k)) = coprime_residues_below(n, k.suc)"]}
-{"goal":"coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)","proof":["k.coprime(n)"]}
-{"goal":"coprime_residues_below(n, k.suc).is_unique","proof":["not k.coprime(n)","coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)","not coprime_residues_below(n, k).is_unique"]}
-{"goal":"cr_unique_step","proof":["function(x0: Nat, x1: Nat) { coprime_residues_below(x0, x1).is_unique = cr_unique_pred(x0, x1) }(n, k.suc)","coprime_residues_below(n, k.suc).is_unique"]}
+{"goal":"not coprime_residues_below(n, k).contains(k)","proof":[]}
+{"goal":"List.cons(k, coprime_residues_below(n, k)).is_unique","proof":[]}
+{"goal":"coprime_residues_below(n, k.suc).is_unique","proof":[]}
+{"goal":"coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)","proof":[]}
+{"goal":"coprime_residues_below(n, k.suc).is_unique","proof":[]}
+{"goal":"cr_unique_step","proof":["function(x0: Nat, x1: Nat) { coprime_residues_below(x0, x1).is_unique = cr_unique_pred(x0, x1) }(n, k.suc)"]}
 {"goal":"cr_unique_pred(n)(y) = f(y)","proof":["function(x0: Nat) { coprime_residues_below(n, x0).is_unique = f(x0) }(y)","function(x0: Nat, x1: Nat) { coprime_residues_below(x0, x1).is_unique = cr_unique_pred(x0, x1) }(n, y)"]}
 {"goal":"f(y) = cr_unique_pred(n)(y)","proof":[]}
-{"goal":"coprime_residues_below(n, 0) = List.nil[Nat]","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or List.nil[Nat] = coprime_residues_below(x1, x0) }(0, n)","0 != Nat.zero"]}
+{"goal":"coprime_residues_below(n, 0) = List.nil[Nat]","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or List.nil[Nat] = coprime_residues_below(x1, x0) }(0, n)"]}
 {"goal":"List.nil[Nat].unique = List.nil[Nat]","proof":["function[T0](x0: List[T0]) { List.nil[T0] != x0 or x0.unique = List.nil[T0] }[Nat](List.nil[Nat])"]}
 {"goal":"List.nil[Nat].is_unique","proof":["function[T0](x0: List[T0]) { x0.unique = x0 = x0.is_unique }[Nat](List.nil[Nat])"]}
-{"goal":"f(0)","proof":["function(x0: Nat) { coprime_residues_below(n, x0).is_unique = f(x0) }(0)","coprime_residues_below(n, 0).is_unique","not coprime_residues_below(n, 0).is_unique"]}
-{"goal":"cr_unique_pred(n)(m)","proof":["function(x0: Nat) { cr_unique_pred(n, x0) = f(x0) }(m)"]}
-{"goal":"cr_unique_pred(n)(m.suc)","proof":["not cr_unique_pred(n, m)"]}
-{"goal":"f(m.suc)","proof":["function(x0: Nat) { cr_unique_pred(n, x0) = f(x0) }(m.suc)","cr_unique_pred(n, m.suc)"]}
-{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)","f(w0) and not f(w0.suc)","f(w0.suc)"]}
+{"goal":"f(0)","proof":["function(x0: Nat) { coprime_residues_below(n, x0).is_unique = f(x0) }(0)"]}
+{"goal":"cr_unique_pred(n)(m)","proof":[]}
+{"goal":"cr_unique_pred(n)(m.suc)","proof":[]}
+{"goal":"f(m.suc)","proof":[]}
+{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
 {"goal":"coprime_residues_below_unique","proof":["function(x0: Nat) { coprime_residues_below(n, x0).is_unique = f(x0) }(k)"]}
 {"goal":"coprime_residues(n) = coprime_residues_below(n, n)","proof":["function(x0: Nat) { coprime_residues(x0) = coprime_residues_below(x0, x0) }(n)"]}
-{"goal":"coprime_residues_unique","proof":["not coprime_residues_below(n, n).is_unique"]}
+{"goal":"coprime_residues_unique","proof":[]}

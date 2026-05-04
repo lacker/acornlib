@@ -82,7 +82,7 @@
     "nat.nat_fermat": "04239c0492141cc94e0cb462a176dd8dabe28301acfe49e0318b01bded269dd4",
     "nat.nat_gcd": "3deb2cc3223ce81cfd17f0b17865f6ee1a4032ced3b28189b324c36184fb8bd5",
     "nat.nat_lcm": "fc5cfce8095a395fa2faabe7e0eeacaee3630a9a018e1fd3ea3d65facace1ace",
-    "nat.nat_modular_inverse": "a906f10981b69e937dd504c6c8ddcc3ce244ac574fe38b74490e85fd162f086b",
+    "nat.nat_modular_inverse": "413ec86b408ae8a8d860360d8dea578575f3b40ce26d2f4fb5be0a03f3d68475",
     "nat.nat_monoid": "b286bfa6754a68408e3d9c0fbd5bcf9a3351900da8469996f80191eba1b4e2d5",
     "nat.nat_pairwise_coprime": "de618b47adb4e9f0d75cb55b1524b48e9f7131144c77483a1da92d59f2047b9b",
     "nat.nat_totient": "847268ed1afe4a8c9a7ba49dd4fa3e4882e2224dc66753c842fab0daaa38a608",

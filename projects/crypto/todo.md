@@ -39,7 +39,9 @@ cryptographic content.
 prime, derived from Fermat's little theorem by canceling `m`.
 
 `src/nat/nat_modular_inverse.ac` contains `cancel_coprime` (modular
-cancellation by a coprime factor).
+cancellation by a coprime factor) and `mod_inv_coprime`
+(`mod_inv(a, n).coprime(n)` whenever `a.coprime(n)`), via the more
+general `inverse_imp_coprime` (`a * b ≡ 1 (mod n) ⟹ b.coprime(n)`).
 
 `src/nat/nat_coprime.ac` contains `coprime_mul_iff` and `coprime_mod_iff`
 (coprimality is invariant under modular reduction).
