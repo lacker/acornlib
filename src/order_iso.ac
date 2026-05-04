@@ -9,7 +9,7 @@ from order_interval import closed_interval, open_interval, left_open_interval, r
     bounded_by_interval_imp_lower_bound, bounded_by_interval_imp_upper_bound,
     lower_bound_imp_bounded_below, upper_bound_imp_bounded_above,
     bounded_by_interval_imp_bounded
-from order_maps import is_order_embedding, order_embedding_apply_le,
+from order_maps import is_antitone, is_strict_antitone, antitone_step, is_order_embedding, order_embedding_apply_le,
     order_embedding_apply_lt, order_embedding_apply_ge, order_embedding_apply_gt,
     order_embedding_le_iff_le,
     order_embedding_reflects_lte, order_embedding_reflects_lt, order_embedding_reflects_ge,
@@ -195,6 +195,532 @@ structure OrderIso[A: PartialOrder, B: PartialOrder] {
     inv: B -> A
 } constraint {
     is_order_iso_pair(map, inv)
+}
+
+/// True if two maps are inverse order-reversing maps.
+define is_order_dual_iso_pair[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) -> Bool {
+    forall(a: A) {
+        g(f(a)) = a
+    } and forall(b: B) {
+        f(g(b)) = b
+    } and is_antitone(f) and is_antitone(g)
+}
+
+/// An order-dual isomorphism pair has a left inverse.
+theorem order_dual_iso_pair_left_inverse[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, a: A) {
+    is_order_dual_iso_pair(f, g) implies g(f(a)) = a
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        is_order_dual_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_antitone(f) and is_antitone(g))
+        g(f(a)) = a
+    }
+}
+
+/// An order-dual isomorphism pair has a right inverse.
+theorem order_dual_iso_pair_right_inverse[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, b: B) {
+    is_order_dual_iso_pair(f, g) implies f(g(b)) = b
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        is_order_dual_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_antitone(f) and is_antitone(g))
+        f(g(b)) = b
+    }
+}
+
+/// The forward map of an order-dual isomorphism pair is antitone.
+theorem order_dual_iso_pair_map_is_antitone[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_dual_iso_pair(f, g) implies is_antitone(f)
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        is_order_dual_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_antitone(f) and is_antitone(g))
+        is_antitone(f)
+    }
+}
+
+/// The inverse map of an order-dual isomorphism pair is antitone.
+theorem order_dual_iso_pair_inv_is_antitone[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_dual_iso_pair(f, g) implies is_antitone(g)
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        is_order_dual_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_antitone(f) and is_antitone(g))
+        is_antitone(g)
+    }
+}
+
+/// Reversing an order-dual isomorphism pair gives an order-dual isomorphism pair.
+theorem order_dual_iso_pair_swap[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_dual_iso_pair(f, g) implies is_order_dual_iso_pair(g, f)
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        is_order_dual_iso_pair(f, g) = (forall(x: A) {
+            g(f(x)) = x
+        } and forall(y: B) {
+            f(g(y)) = y
+        } and is_antitone(f) and is_antitone(g))
+        forall(b: B) {
+            f(g(b)) = b
+        }
+        forall(a: A) {
+            g(f(a)) = a
+        }
+        is_antitone(g)
+        is_antitone(f)
+        is_order_dual_iso_pair(g, f) = (forall(x: B) {
+            f(g(x)) = x
+        } and forall(y: A) {
+            g(f(y)) = y
+        } and is_antitone(g) and is_antitone(f))
+        is_order_dual_iso_pair(g, f)
+    }
+}
+
+/// An order-dual isomorphism pair reverses non-strict order.
+theorem order_dual_iso_pair_apply_le[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) and x <= y implies f(y) <= f(x)
+} by {
+    if is_order_dual_iso_pair(f, g) and x <= y {
+        order_dual_iso_pair_map_is_antitone(f, g)
+        antitone_step(f, x, y)
+        f(y) <= f(x)
+    }
+}
+
+/// An order-dual isomorphism pair reflects reversed non-strict order.
+theorem order_dual_iso_pair_reflects_le[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) and f(y) <= f(x) implies x <= y
+} by {
+    if is_order_dual_iso_pair(f, g) and f(y) <= f(x) {
+        order_dual_iso_pair_inv_is_antitone(f, g)
+        antitone_step(g, f(y), f(x))
+        g(f(x)) <= g(f(y))
+        order_dual_iso_pair_left_inverse(f, g, x)
+        order_dual_iso_pair_left_inverse(f, g, y)
+        g(f(x)) = x
+        g(f(y)) = y
+        x <= y
+    }
+}
+
+/// An order-dual isomorphism pair reverses and reflects non-strict order.
+theorem order_dual_iso_pair_le_iff_ge[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) implies (f(x) <= f(y) = (x >= y))
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        if f(x) <= f(y) {
+            order_dual_iso_pair_reflects_le(f, g, y, x)
+            y <= x
+            x >= y
+        }
+        if x >= y {
+            y <= x
+            order_dual_iso_pair_apply_le(f, g, y, x)
+            f(x) <= f(y)
+        }
+        f(x) <= f(y) = (x >= y)
+    }
+}
+
+/// An order-dual isomorphism pair reverses strict order.
+theorem order_dual_iso_pair_apply_lt[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) and x < y implies f(y) < f(x)
+} by {
+    if is_order_dual_iso_pair(f, g) and x < y {
+        x <= y
+        order_dual_iso_pair_apply_le(f, g, x, y)
+        f(y) <= f(x)
+        if f(y) = f(x) {
+            g(f(y)) = g(f(x))
+            order_dual_iso_pair_left_inverse(f, g, y)
+            order_dual_iso_pair_left_inverse(f, g, x)
+            y = x
+            x = y
+            x != y
+            false
+        }
+        f(y) != f(x)
+        f(y) < f(x)
+    }
+}
+
+/// An order-dual isomorphism pair reflects reversed strict order.
+theorem order_dual_iso_pair_reflects_lt[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) and f(y) < f(x) implies x < y
+} by {
+    if is_order_dual_iso_pair(f, g) and f(y) < f(x) {
+        f(y) <= f(x)
+        order_dual_iso_pair_reflects_le(f, g, x, y)
+        x <= y
+        if x = y {
+            f(x) = f(y)
+            f(y) = f(x)
+            f(y) != f(x)
+            false
+        }
+        x != y
+        x < y
+    }
+}
+
+/// An order-dual isomorphism pair reverses and reflects strict order.
+theorem order_dual_iso_pair_lt_iff_gt[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, x: A, y: A) {
+    is_order_dual_iso_pair(f, g) implies (f(x) < f(y) = (x > y))
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        if f(x) < f(y) {
+            order_dual_iso_pair_reflects_lt(f, g, y, x)
+            y < x
+            x > y
+        }
+        if x > y {
+            y < x
+            order_dual_iso_pair_apply_lt(f, g, y, x)
+            f(x) < f(y)
+        }
+        f(x) < f(y) = (x > y)
+    }
+}
+
+/// The forward map of an order-dual isomorphism pair is strictly antitone.
+theorem order_dual_iso_pair_map_is_strict_antitone[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_dual_iso_pair(f, g) implies is_strict_antitone(f)
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        forall(x: A, y: A) {
+            if x < y {
+                order_dual_iso_pair_apply_lt(f, g, x, y)
+                f(y) < f(x)
+            }
+        }
+    }
+}
+
+/// The inverse map of an order-dual isomorphism pair is strictly antitone.
+theorem order_dual_iso_pair_inv_is_strict_antitone[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A) {
+    is_order_dual_iso_pair(f, g) implies is_strict_antitone(g)
+} by {
+    if is_order_dual_iso_pair(f, g) {
+        order_dual_iso_pair_swap(f, g)
+        order_dual_iso_pair_map_is_strict_antitone(g, f)
+        is_strict_antitone(g)
+    }
+}
+
+/// An order-dual isomorphism with explicit inverse data.
+structure OrderDualIso[A: PartialOrder, B: PartialOrder] {
+    /// The order-reversing map.
+    map: A -> B
+
+    /// The inverse order-reversing map.
+    inv: B -> A
+} constraint {
+    is_order_dual_iso_pair(map, inv)
+}
+
+/// Construction of an order-dual isomorphism remembers the underlying map.
+theorem order_dual_iso_new_map[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, e: OrderDualIso[A, B]) {
+    OrderDualIso[A, B].new(f, g) = Option.some(e) implies e.map = f
+}
+
+/// Construction of an order-dual isomorphism remembers the inverse map.
+theorem order_dual_iso_new_inv[A: PartialOrder, B: PartialOrder](f: A -> B, g: B -> A, e: OrderDualIso[A, B]) {
+    OrderDualIso[A, B].new(f, g) = Option.some(e) implies e.inv = g
+}
+
+/// Every order-dual isomorphism is reconstructed from its maps.
+theorem order_dual_iso_new_self[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    OrderDualIso[A, B].new(e.map, e.inv) = Option.some(e)
+}
+
+/// Equality of options containing order-dual isomorphisms is equality of order-dual isomorphisms.
+theorem order_dual_iso_some_injective[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], h: OrderDualIso[A, B]) {
+    Option.some(e) = Option.some(h) implies e = h
+}
+
+/// Order-dual isomorphisms are equal when their maps and inverse maps are equal.
+theorem order_dual_iso_ext[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], h: OrderDualIso[A, B]) {
+    e.map = h.map and e.inv = h.inv implies e = h
+} by {
+    if e.map = h.map and e.inv = h.inv {
+        OrderDualIso[A, B].new(e.map, e.inv) = Option.some(e)
+        OrderDualIso[A, B].new(h.map, h.inv) = Option.some(h)
+        Option.some(e) = Option.some(h)
+        order_dual_iso_some_injective(e, h)
+    }
+}
+
+/// Equal order-dual isomorphisms have equal underlying maps.
+theorem order_dual_iso_eq_map[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], h: OrderDualIso[A, B]) {
+    e = h implies e.map = h.map
+}
+
+/// Equal order-dual isomorphisms have equal inverse maps.
+theorem order_dual_iso_eq_inv[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], h: OrderDualIso[A, B]) {
+    e = h implies e.inv = h.inv
+}
+
+/// The inverse map is a left inverse of the map.
+theorem order_dual_iso_left_inverse[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], a: A) {
+    e.inv(e.map(a)) = a
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    is_order_dual_iso_pair(e.map, e.inv)
+    order_dual_iso_pair_left_inverse(e.map, e.inv, a)
+}
+
+/// The inverse map is a right inverse of the map.
+theorem order_dual_iso_right_inverse[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], b: B) {
+    e.map(e.inv(b)) = b
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    is_order_dual_iso_pair(e.map, e.inv)
+    order_dual_iso_pair_right_inverse(e.map, e.inv, b)
+}
+
+/// The underlying map of an order-dual isomorphism is antitone.
+theorem order_dual_iso_map_is_antitone[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    is_antitone(e.map)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_map_is_antitone(e.map, e.inv)
+}
+
+/// The inverse map of an order-dual isomorphism is antitone.
+theorem order_dual_iso_inv_is_antitone[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    is_antitone(e.inv)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_inv_is_antitone(e.map, e.inv)
+}
+
+/// An order-dual isomorphism reverses non-strict order.
+theorem order_dual_iso_apply_le[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    x <= y implies e.map(y) <= e.map(x)
+} by {
+    if x <= y {
+        OrderDualIso[A, B].constraint(e.map, e.inv)
+        order_dual_iso_pair_apply_le(e.map, e.inv, x, y)
+        e.map(y) <= e.map(x)
+    }
+}
+
+/// An order-dual isomorphism reflects reversed non-strict order.
+theorem order_dual_iso_reflects_le[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    e.map(y) <= e.map(x) implies x <= y
+} by {
+    if e.map(y) <= e.map(x) {
+        OrderDualIso[A, B].constraint(e.map, e.inv)
+        order_dual_iso_pair_reflects_le(e.map, e.inv, x, y)
+        x <= y
+    }
+}
+
+/// An order-dual isomorphism reverses and reflects non-strict order.
+theorem order_dual_iso_le_iff_ge[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    e.map(x) <= e.map(y) = (x >= y)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_le_iff_ge(e.map, e.inv, x, y)
+}
+
+/// An order-dual isomorphism reverses strict order.
+theorem order_dual_iso_apply_lt[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    x < y implies e.map(y) < e.map(x)
+} by {
+    if x < y {
+        OrderDualIso[A, B].constraint(e.map, e.inv)
+        order_dual_iso_pair_apply_lt(e.map, e.inv, x, y)
+        e.map(y) < e.map(x)
+    }
+}
+
+/// An order-dual isomorphism reflects reversed strict order.
+theorem order_dual_iso_reflects_lt[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    e.map(y) < e.map(x) implies x < y
+} by {
+    if e.map(y) < e.map(x) {
+        OrderDualIso[A, B].constraint(e.map, e.inv)
+        order_dual_iso_pair_reflects_lt(e.map, e.inv, x, y)
+        x < y
+    }
+}
+
+/// An order-dual isomorphism reverses and reflects strict order.
+theorem order_dual_iso_lt_iff_gt[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B], x: A, y: A) {
+    e.map(x) < e.map(y) = (x > y)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_lt_iff_gt(e.map, e.inv, x, y)
+}
+
+/// The underlying map of an order-dual isomorphism is strictly antitone.
+theorem order_dual_iso_map_is_strict_antitone[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    is_strict_antitone(e.map)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_map_is_strict_antitone(e.map, e.inv)
+}
+
+/// The inverse map of an order-dual isomorphism is strictly antitone.
+theorem order_dual_iso_inv_is_strict_antitone[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    is_strict_antitone(e.inv)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_inv_is_strict_antitone(e.map, e.inv)
+}
+
+/// The inverse of an order-dual isomorphism.
+let order_dual_iso_inverse[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) -> result: OrderDualIso[B, A] satisfy {
+    OrderDualIso[B, A].new(e.inv, e.map) = Option.some(result)
+} by {
+    OrderDualIso[A, B].constraint(e.map, e.inv)
+    order_dual_iso_pair_swap(e.map, e.inv)
+}
+
+/// The inverse order-dual isomorphism has the original inverse map.
+theorem order_dual_iso_inverse_map[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    order_dual_iso_inverse(e).map = e.inv
+} by {
+    let h = order_dual_iso_inverse(e)
+    OrderDualIso[B, A].new(e.inv, e.map) = Option.some(h)
+    order_dual_iso_new_map(e.inv, e.map, h)
+}
+
+/// The inverse order-dual isomorphism has the original map as inverse.
+theorem order_dual_iso_inverse_inv[A: PartialOrder, B: PartialOrder](e: OrderDualIso[A, B]) {
+    order_dual_iso_inverse(e).inv = e.map
+} by {
+    let h = order_dual_iso_inverse(e)
+    OrderDualIso[B, A].new(e.inv, e.map) = Option.some(h)
+    order_dual_iso_new_inv(e.inv, e.map, h)
+}
+
+/// Composing two order-dual isomorphism pairs gives an order isomorphism pair.
+theorem order_dual_iso_pair_compose_dual[A: PartialOrder, B: PartialOrder, C: PartialOrder](
+    f: B -> C,
+    g: C -> B,
+    h: A -> B,
+    k: B -> A
+) {
+    is_order_dual_iso_pair(f, g) and is_order_dual_iso_pair(h, k) implies
+    is_order_iso_pair(compose(f, h), compose(k, g))
+} by {
+    if is_order_dual_iso_pair(f, g) and is_order_dual_iso_pair(h, k) {
+        let fh = compose(f, h)
+        let kg = compose(k, g)
+        forall(a: A) {
+            kg(fh(a)) = compose(k, g, fh(a))
+            compose(k, g, fh(a)) = k(g(fh(a)))
+            fh(a) = compose(f, h)(a)
+            compose(f, h, a) = f(h(a))
+            g(fh(a)) = g(f(h(a)))
+            order_dual_iso_pair_left_inverse(f, g, h(a))
+            g(f(h(a))) = h(a)
+            k(g(fh(a))) = k(h(a))
+            order_dual_iso_pair_left_inverse(h, k, a)
+            k(h(a)) = a
+            kg(fh(a)) = a
+        }
+        forall(c: C) {
+            fh(kg(c)) = compose(f, h, kg(c))
+            compose(f, h, kg(c)) = f(h(kg(c)))
+            kg(c) = compose(k, g)(c)
+            compose(k, g, c) = k(g(c))
+            h(kg(c)) = h(k(g(c)))
+            order_dual_iso_pair_right_inverse(h, k, g(c))
+            h(k(g(c))) = g(c)
+            f(h(kg(c))) = f(g(c))
+            order_dual_iso_pair_right_inverse(f, g, c)
+            f(g(c)) = c
+            fh(kg(c)) = c
+        }
+        forall(x: A, y: A) {
+            if fh(x) <= fh(y) {
+                fh(x) = f(h(x))
+                fh(y) = f(h(y))
+                f(h(x)) <= f(h(y))
+                order_dual_iso_pair_reflects_le(f, g, h(y), h(x))
+                h(y) <= h(x)
+                order_dual_iso_pair_reflects_le(h, k, x, y)
+                x <= y
+            }
+            if x <= y {
+                order_dual_iso_pair_apply_le(h, k, x, y)
+                h(y) <= h(x)
+                order_dual_iso_pair_apply_le(f, g, h(y), h(x))
+                f(h(x)) <= f(h(y))
+                fh(x) = f(h(x))
+                fh(y) = f(h(y))
+                fh(x) <= fh(y)
+            }
+            fh(x) <= fh(y) = (x <= y)
+        }
+        forall(x: C, y: C) {
+            if kg(x) <= kg(y) {
+                kg(x) = k(g(x))
+                kg(y) = k(g(y))
+                k(g(x)) <= k(g(y))
+                order_dual_iso_pair_swap(h, k)
+                order_dual_iso_pair_reflects_le(k, h, g(y), g(x))
+                g(y) <= g(x)
+                order_dual_iso_pair_swap(f, g)
+                order_dual_iso_pair_reflects_le(g, f, x, y)
+                x <= y
+            }
+            if x <= y {
+                order_dual_iso_pair_swap(f, g)
+                order_dual_iso_pair_apply_le(g, f, x, y)
+                g(y) <= g(x)
+                order_dual_iso_pair_swap(h, k)
+                order_dual_iso_pair_apply_le(k, h, g(y), g(x))
+                k(g(x)) <= k(g(y))
+                kg(x) = k(g(x))
+                kg(y) = k(g(y))
+                kg(x) <= kg(y)
+            }
+            kg(x) <= kg(y) = (x <= y)
+        }
+        is_order_embedding(fh)
+        is_order_embedding(kg)
+        is_order_iso_pair(fh, kg) = (forall(a: A) {
+            kg(fh(a)) = a
+        } and forall(c: C) {
+            fh(kg(c)) = c
+        } and is_order_embedding(fh) and is_order_embedding(kg))
+        forall(a: A) {
+            kg(fh(a)) = a
+        }
+        forall(c: C) {
+            fh(kg(c)) = c
+        }
+        is_order_embedding(fh) and is_order_embedding(kg)
+        (forall(c: C) {
+            fh(kg(c)) = c
+        } and is_order_embedding(fh) and is_order_embedding(kg))
+        (forall(a: A) {
+            kg(fh(a)) = a
+        } and forall(c: C) {
+            fh(kg(c)) = c
+        } and is_order_embedding(fh) and is_order_embedding(kg))
+        is_order_iso_pair(fh, kg)
+        fh = compose(f, h)
+        kg = compose(k, g)
+        is_order_iso_pair(compose(f, h), compose(k, g))
+    }
 }
 
 /// The image predicate transported by an order isomorphism.
