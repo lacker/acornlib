@@ -1,0 +1,695 @@
+from ring import Ring
+from add_subgroup import AddSubgroup, add_zero_constraint, add_closure_constraint, neg_constraint,
+    add_subgroup_constraint, add_subgroup_contains_zero, add_subgroup_contains_add,
+    add_subgroup_contains_neg, add_subgroup_contains_sub
+from submonoid import Submonoid, submonoid_identity_constraint, submonoid_closure_constraint,
+    submonoid_constraint, submonoid_contains_identity, submonoid_mul_mem
+from set import Set
+from functions import predicate_extensionality
+
+/// True if a subset contains the additive identity.
+define subring_zero_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    contains(R.0)
+}
+
+/// True if a subset contains the multiplicative identity.
+define subring_one_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    contains(R.1)
+}
+
+/// True if a subset is closed under addition.
+define subring_add_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    forall(a: R, b: R) {
+        contains(a) and contains(b) implies contains(a + b)
+    }
+}
+
+/// True if a subset is closed under additive negation.
+define subring_neg_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    forall(a: R) {
+        contains(a) implies contains(-a)
+    }
+}
+
+/// True if a subset is closed under multiplication.
+define subring_mul_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    forall(a: R, b: R) {
+        contains(a) and contains(b) implies contains(a * b)
+    }
+}
+
+/// True if a subset satisfies all the requirements to be a subring.
+define subring_constraint[R: Ring](contains: R -> Bool) -> Bool {
+    subring_zero_constraint(contains) and subring_one_constraint(contains) and
+        subring_add_constraint(contains) and subring_neg_constraint(contains) and
+        subring_mul_constraint(contains)
+}
+
+/// A subring of a ring, represented as a subset containing zero and one and closed under ring operations.
+structure Subring[R: Ring] {
+    /// True if the given element is a member of this subring.
+    contains: R -> Bool
+} constraint {
+    subring_constraint(contains)
+}
+
+/// Subring extensionality from equality of membership.
+theorem subring_ext[R: Ring](a: Subring[R], b: Subring[R]) {
+    (forall(x: R) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: R) { a.contains(x) = b.contains(x) } {
+        a.contains = b.contains
+    }
+}
+
+/// Equal subrings have equal membership predicates.
+theorem subring_eq_contains[R: Ring](a: Subring[R], b: Subring[R]) {
+    a = b implies a.contains = b.contains
+}
+
+/// Equal subrings have equal membership at every element.
+theorem subring_eq_contains_at[R: Ring](a: Subring[R], b: Subring[R], x: R) {
+    a = b implies a.contains(x) = b.contains(x)
+} by {
+    if a = b {
+        a.contains = b.contains
+        a.contains(x) = b.contains(x)
+    }
+}
+
+/// Equality of subrings transports predicates on subrings.
+theorem subring_eq_transport_predicate[R: Ring](
+    p: Subring[R] -> Bool,
+    a: Subring[R],
+    b: Subring[R]
+) {
+    a = b and p(a) implies p(b)
+}
+
+/// Equality of subrings transports predicates on subrings in the reverse direction.
+theorem subring_eq_transport_predicate_rev[R: Ring](
+    p: Subring[R] -> Bool,
+    a: Subring[R],
+    b: Subring[R]
+) {
+    a = b and p(b) implies p(a)
+}
+
+/// Equality of membership predicates determines equality of subrings.
+theorem subring_eq_of_contains_eq[R: Ring](a: Subring[R], b: Subring[R]) {
+    a.contains = b.contains implies a = b
+} by {
+    if a.contains = b.contains {
+        forall(x: R) {
+            a.contains(x) = b.contains(x)
+        }
+        subring_ext(a, b)
+    }
+}
+
+/// Pointwise equality of membership determines equality of subrings.
+theorem subring_eq_of_contains_at_eq[R: Ring](a: Subring[R], b: Subring[R]) {
+    (forall(x: R) { a.contains(x) = b.contains(x) }) implies a = b
+} by {
+    if forall(x: R) { a.contains(x) = b.contains(x) } {
+        subring_ext(a, b)
+    }
+}
+
+/// Membership of zero in any subring.
+theorem subring_contains_zero[R: Ring](s: Subring[R]) {
+    s.contains(R.0)
+} by {
+    subring_constraint(s.contains)
+    subring_zero_constraint(s.contains)
+    subring_zero_constraint(s.contains) = s.contains(R.0)
+}
+
+/// Membership of one in any subring.
+theorem subring_contains_one[R: Ring](s: Subring[R]) {
+    s.contains(R.1)
+} by {
+    subring_constraint(s.contains)
+    subring_one_constraint(s.contains)
+    subring_one_constraint(s.contains) = s.contains(R.1)
+}
+
+/// Closure of any subring under addition.
+theorem subring_contains_add[R: Ring](s: Subring[R], a: R, b: R) {
+    s.contains(a) and s.contains(b) implies s.contains(a + b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subring_constraint(s.contains)
+        subring_add_constraint(s.contains)
+        subring_add_constraint(s.contains) = forall(x: R, y: R) {
+            s.contains(x) and s.contains(y) implies s.contains(x + y)
+        }
+        s.contains(a + b)
+    }
+}
+
+/// Closure of any subring under additive negation.
+theorem subring_contains_neg[R: Ring](s: Subring[R], a: R) {
+    s.contains(a) implies s.contains(-a)
+} by {
+    if s.contains(a) {
+        subring_constraint(s.contains)
+        subring_neg_constraint(s.contains)
+        subring_neg_constraint(s.contains) = forall(x: R) {
+            s.contains(x) implies s.contains(-x)
+        }
+        s.contains(-a)
+    }
+}
+
+/// Closure of any subring under subtraction.
+theorem subring_contains_sub[R: Ring](s: Subring[R], a: R, b: R) {
+    s.contains(a) and s.contains(b) implies s.contains(a - b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subring_contains_neg(s, b)
+        s.contains(-b)
+        subring_contains_add(s, a, -b)
+        s.contains(a + -b)
+        a - b = a + -b
+    }
+}
+
+/// Closure of any subring under multiplication.
+theorem subring_contains_mul[R: Ring](s: Subring[R], a: R, b: R) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subring_constraint(s.contains)
+        subring_mul_constraint(s.contains)
+        subring_mul_constraint(s.contains) = forall(x: R, y: R) {
+            s.contains(x) and s.contains(y) implies s.contains(x * y)
+        }
+        s.contains(a * b)
+    }
+}
+
+/// The common membership predicate of two subrings.
+define subring_intersection_contains[R: Ring](a: Subring[R], b: Subring[R], x: R) -> Bool {
+    a.contains(x) and b.contains(x)
+}
+
+/// The common part of two subrings contains zero.
+theorem subring_intersection_zero_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_zero_constraint(subring_intersection_contains(a, b))
+} by {
+    subring_contains_zero(a)
+    subring_contains_zero(b)
+    subring_intersection_contains(a, b, R.0)
+}
+
+/// The common part of two subrings contains one.
+theorem subring_intersection_one_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_one_constraint(subring_intersection_contains(a, b))
+} by {
+    subring_contains_one(a)
+    subring_contains_one(b)
+    subring_intersection_contains(a, b, R.1)
+}
+
+/// The common part of two subrings is closed under addition.
+theorem subring_intersection_add_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_add_constraint(subring_intersection_contains(a, b))
+} by {
+    forall(x: R, y: R) {
+        if subring_intersection_contains(a, b, x) and subring_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            subring_contains_add(a, x, y)
+            subring_contains_add(b, x, y)
+            a.contains(x + y)
+            b.contains(x + y)
+            subring_intersection_contains(a, b, x + y)
+        }
+    }
+}
+
+/// The common part of two subrings is closed under additive negation.
+theorem subring_intersection_neg_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_neg_constraint(subring_intersection_contains(a, b))
+} by {
+    forall(x: R) {
+        if subring_intersection_contains(a, b, x) {
+            a.contains(x)
+            b.contains(x)
+            subring_contains_neg(a, x)
+            subring_contains_neg(b, x)
+            a.contains(-x)
+            b.contains(-x)
+            subring_intersection_contains(a, b, -x)
+        }
+    }
+}
+
+/// The common part of two subrings is closed under multiplication.
+theorem subring_intersection_mul_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_mul_constraint(subring_intersection_contains(a, b))
+} by {
+    forall(x: R, y: R) {
+        if subring_intersection_contains(a, b, x) and subring_intersection_contains(a, b, y) {
+            a.contains(x)
+            b.contains(x)
+            a.contains(y)
+            b.contains(y)
+            subring_contains_mul(a, x, y)
+            subring_contains_mul(b, x, y)
+            a.contains(x * y)
+            b.contains(x * y)
+            subring_intersection_contains(a, b, x * y)
+        }
+    }
+}
+
+/// The common part of two subrings is a subring.
+theorem subring_intersection_constraint[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_constraint(subring_intersection_contains(a, b))
+} by {
+    subring_intersection_zero_constraint(a, b)
+    subring_intersection_one_constraint(a, b)
+    subring_intersection_add_constraint(a, b)
+    subring_intersection_neg_constraint(a, b)
+    subring_intersection_mul_constraint(a, b)
+}
+
+/// The common part of two subrings.
+let subring_intersection[R: Ring](a: Subring[R], b: Subring[R]) -> result: Subring[R] satisfy {
+    Subring.new(subring_intersection_contains(a, b)) = Option.some(result)
+} by {
+    subring_intersection_constraint(a, b)
+}
+
+attributes Subring[R: Ring] {
+    /// Subring extensionality from pointwise equality of membership.
+    let ext = subring_ext[R]
+
+    /// The subset of ring elements belonging to this subring.
+    define as_set(self) -> Set[R] {
+        Set[R].new(self.contains)
+    }
+
+    /// The common part of two subrings.
+    let intersection: (Subring[R], Subring[R]) -> Subring[R] = subring_intersection
+}
+
+/// Membership in the intersection means membership in both subrings.
+theorem subring_intersection_contains_eq[R: Ring](a: Subring[R], b: Subring[R], x: R) {
+    a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    a.intersection(b).contains(x) = subring_intersection_contains(a, b, x)
+    subring_intersection_contains(a, b, x) = (a.contains(x) and b.contains(x))
+}
+
+/// The intersection is contained in the left subring.
+theorem subring_intersection_subset_left[R: Ring](a: Subring[R], b: Subring[R], x: R) {
+    a.intersection(b).contains(x) implies a.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subring_intersection_contains_eq(a, b, x)
+        a.contains(x)
+    }
+}
+
+/// The intersection is contained in the right subring.
+theorem subring_intersection_subset_right[R: Ring](a: Subring[R], b: Subring[R], x: R) {
+    a.intersection(b).contains(x) implies b.contains(x)
+} by {
+    if a.intersection(b).contains(x) {
+        subring_intersection_contains_eq(a, b, x)
+        b.contains(x)
+    }
+}
+
+/// Subring intersection is commutative.
+theorem subring_intersection_comm[R: Ring](a: Subring[R], b: Subring[R]) {
+    a.intersection(b) = b.intersection(a)
+} by {
+    forall(x: R) {
+        if a.intersection(b).contains(x) {
+            subring_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subring_intersection_contains_eq(b, a, x)
+            b.intersection(a).contains(x)
+        }
+        if b.intersection(a).contains(x) {
+            subring_intersection_contains_eq(b, a, x)
+            b.contains(x)
+            a.contains(x)
+            subring_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+        }
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+    subring_ext(a.intersection(b), b.intersection(a))
+}
+
+/// Subring intersection is associative.
+theorem subring_intersection_assoc[R: Ring](a: Subring[R], b: Subring[R], c: Subring[R]) {
+    a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    let lhs = a.intersection(b).intersection(c)
+    let rhs = a.intersection(b.intersection(c))
+    forall(x: R) {
+        if lhs.contains(x) {
+            subring_intersection_contains_eq(a.intersection(b), c, x)
+            a.intersection(b).contains(x)
+            c.contains(x)
+            subring_intersection_contains_eq(a, b, x)
+            a.contains(x)
+            b.contains(x)
+            subring_intersection_contains_eq(b, c, x)
+            b.intersection(c).contains(x)
+            subring_intersection_contains_eq(a, b.intersection(c), x)
+            rhs.contains(x)
+        }
+        if rhs.contains(x) {
+            subring_intersection_contains_eq(a, b.intersection(c), x)
+            a.contains(x)
+            b.intersection(c).contains(x)
+            subring_intersection_contains_eq(b, c, x)
+            b.contains(x)
+            c.contains(x)
+            subring_intersection_contains_eq(a, b, x)
+            a.intersection(b).contains(x)
+            subring_intersection_contains_eq(a.intersection(b), c, x)
+            lhs.contains(x)
+        }
+        lhs.contains(x) = rhs.contains(x)
+    }
+    subring_ext(lhs, rhs)
+}
+
+/// Subring intersection is idempotent.
+theorem subring_intersection_idempotent[R: Ring](a: Subring[R]) {
+    a.intersection(a) = a
+} by {
+    forall(x: R) {
+        if a.intersection(a).contains(x) {
+            subring_intersection_contains_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            subring_intersection_contains_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    subring_ext(a.intersection(a), a)
+}
+
+/// True if every element of one subring belongs to another.
+define subring_subset[R: Ring](a: Subring[R], b: Subring[R]) -> Bool {
+    forall(x: R) {
+        a.contains(x) implies b.contains(x)
+    }
+}
+
+/// Subring inclusion is reflexive.
+theorem subring_subset_refl[R: Ring](a: Subring[R]) {
+    subring_subset(a, a)
+} by {
+    forall(x: R) {
+        a.contains(x) implies a.contains(x)
+    }
+}
+
+/// Subring inclusion is transitive.
+theorem subring_subset_trans[R: Ring](a: Subring[R], b: Subring[R], c: Subring[R]) {
+    subring_subset(a, b) and subring_subset(b, c) implies subring_subset(a, c)
+} by {
+    if subring_subset(a, b) and subring_subset(b, c) {
+        forall(x: R) {
+            if a.contains(x) {
+                b.contains(x)
+                c.contains(x)
+            }
+        }
+    }
+}
+
+/// The intersection of two subrings is contained in the left subring.
+theorem subring_intersection_subset_left_relation[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(a.intersection(b), a)
+} by {
+    forall(x: R) {
+        if a.intersection(b).contains(x) {
+            subring_intersection_contains_eq(a, b, x)
+            a.contains(x)
+        }
+    }
+}
+
+/// The intersection of two subrings is contained in the right subring.
+theorem subring_intersection_subset_right_relation[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(a.intersection(b), b)
+} by {
+    forall(x: R) {
+        if a.intersection(b).contains(x) {
+            subring_intersection_contains_eq(a, b, x)
+            b.contains(x)
+        }
+    }
+}
+
+/// Every common subring of two subrings is contained in their intersection.
+theorem subring_subset_intersection_of_subset_left_right[R: Ring](
+    c: Subring[R],
+    a: Subring[R],
+    b: Subring[R]
+) {
+    subring_subset(c, a) and subring_subset(c, b) implies subring_subset(c, a.intersection(b))
+} by {
+    if subring_subset(c, a) and subring_subset(c, b) {
+        forall(x: R) {
+            if c.contains(x) {
+                a.contains(x)
+                b.contains(x)
+                subring_intersection_contains_eq(a, b, x)
+                a.intersection(b).contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in an intersection is equivalent to containment in both subrings.
+theorem subring_subset_intersection_iff[R: Ring](c: Subring[R], a: Subring[R], b: Subring[R]) {
+    subring_subset(c, a.intersection(b)) = (subring_subset(c, a) and subring_subset(c, b))
+} by {
+    if subring_subset(c, a.intersection(b)) {
+        subring_intersection_subset_left_relation(a, b)
+        subring_subset_trans(c, a.intersection(b), a)
+        subring_subset(c, a)
+        subring_intersection_subset_right_relation(a, b)
+        subring_subset_trans(c, a.intersection(b), b)
+        subring_subset(c, b)
+        subring_subset(c, a) and subring_subset(c, b)
+    }
+    if subring_subset(c, a) and subring_subset(c, b) {
+        subring_subset_intersection_of_subset_left_right(c, a, b)
+        subring_subset(c, a.intersection(b))
+    }
+    subring_subset(c, a.intersection(b)) = (subring_subset(c, a) and subring_subset(c, b))
+}
+
+/// Mutual inclusion of subrings forces equality.
+theorem subring_subset_antisymm[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(a, b) and subring_subset(b, a) implies a = b
+} by {
+    if subring_subset(a, b) and subring_subset(b, a) {
+        subring_subset(a, b) = forall(y: R) {
+            a.contains(y) implies b.contains(y)
+        }
+        subring_subset(b, a) = forall(y: R) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: R) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+        a.contains = b.contains
+        a = b
+    }
+}
+
+/// Equality of subrings is equivalent to mutual inclusion.
+theorem subring_eq_iff_subset_both[R: Ring](a: Subring[R], b: Subring[R]) {
+    a = b = (subring_subset(a, b) and subring_subset(b, a))
+} by {
+    if a = b {
+        subring_subset_refl(a)
+        subring_subset(a, b)
+        subring_subset(b, a)
+        subring_subset(a, b) and subring_subset(b, a)
+    }
+    if subring_subset(a, b) and subring_subset(b, a) {
+        subring_subset_antisymm(a, b)
+        a = b
+    }
+    a = b = (subring_subset(a, b) and subring_subset(b, a))
+}
+
+/// Intersecting with a larger subring gives the smaller subring.
+theorem subring_intersection_eq_left_of_subset[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(a, b) implies a.intersection(b) = a
+} by {
+    if subring_subset(a, b) {
+        subring_intersection_subset_left_relation(a, b)
+        subring_subset_intersection_of_subset_left_right(a, a, b)
+        subring_subset(a, a.intersection(b))
+        subring_subset_antisymm(a.intersection(b), a)
+        a.intersection(b) = a
+    }
+}
+
+/// Intersecting with a larger subring on the left gives the smaller subring.
+theorem subring_intersection_eq_right_of_subset[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(b, a) implies a.intersection(b) = b
+} by {
+    if subring_subset(b, a) {
+        subring_intersection_subset_right_relation(a, b)
+        subring_subset_intersection_of_subset_left_right(b, a, b)
+        subring_subset(b, a.intersection(b))
+        subring_subset_antisymm(a.intersection(b), b)
+        a.intersection(b) = b
+    }
+}
+
+/// The full membership predicate is a subring predicate.
+define full_subring_contains[R: Ring](a: R) -> Bool {
+    true
+}
+
+/// The full subset of any ring is a subring.
+theorem full_subring_constraint[R: Ring] {
+    subring_constraint(full_subring_contains[R])
+} by {
+    full_subring_contains[R](R.0)
+    full_subring_contains[R](R.1)
+    subring_zero_constraint(full_subring_contains[R])
+    subring_one_constraint(full_subring_contains[R])
+    forall(a: R, b: R) {
+        if full_subring_contains[R](a) and full_subring_contains[R](b) {
+            full_subring_contains[R](a + b)
+            full_subring_contains[R](a * b)
+        }
+    }
+    subring_add_constraint(full_subring_contains[R])
+    forall(a: R) {
+        if full_subring_contains[R](a) {
+            full_subring_contains[R](-a)
+        }
+    }
+    subring_neg_constraint(full_subring_contains[R])
+    subring_mul_constraint(full_subring_contains[R])
+}
+
+/// The full subring, containing every element.
+let full_subring[R: Ring]: Subring[R] satisfy {
+    Subring.new(full_subring_contains[R]) = Option.some(full_subring)
+}
+
+/// Every element belongs to the full subring.
+theorem full_subring_contains_everything[R: Ring](a: R) {
+    full_subring[R].contains(a)
+}
+
+/// Every subring is contained in the full subring.
+theorem subring_subset_full[R: Ring](s: Subring[R]) {
+    subring_subset(s, full_subring[R])
+} by {
+    forall(x: R) {
+        if s.contains(x) {
+            full_subring_contains_everything(x)
+        }
+    }
+}
+
+/// Intersecting the full subring on the left gives the other subring.
+theorem full_subring_intersection_left[R: Ring](s: Subring[R]) {
+    full_subring[R].intersection(s) = s
+} by {
+    subring_subset_full(s)
+    subring_intersection_eq_right_of_subset(full_subring[R], s)
+}
+
+/// Intersecting the full subring on the right gives the other subring.
+theorem full_subring_intersection_right[R: Ring](s: Subring[R]) {
+    s.intersection(full_subring[R]) = s
+} by {
+    subring_subset_full(s)
+    subring_intersection_eq_left_of_subset(s, full_subring[R])
+}
+
+/// The additive subgroup predicate associated to a subring.
+theorem subring_add_subgroup_constraint[R: Ring](s: Subring[R]) {
+    add_subgroup_constraint(s.contains)
+} by {
+    subring_contains_zero(s)
+    add_zero_constraint(s.contains)
+    forall(a: R, b: R) {
+        if s.contains(a) and s.contains(b) {
+            subring_contains_add(s, a, b)
+            s.contains(a + b)
+        }
+    }
+    add_closure_constraint(s.contains)
+    forall(a: R) {
+        if s.contains(a) {
+            subring_contains_neg(s, a)
+            s.contains(-a)
+        }
+    }
+    neg_constraint(s.contains)
+}
+
+/// The additive subgroup associated to a subring.
+let subring_to_add_subgroup[R: Ring](s: Subring[R]) -> result: AddSubgroup[R] satisfy {
+    AddSubgroup.new(s.contains) = Option.some(result)
+} by {
+    subring_add_subgroup_constraint(s)
+}
+
+/// The additive subgroup associated to a subring has the same membership predicate.
+theorem subring_to_add_subgroup_contains[R: Ring](s: Subring[R]) {
+    subring_to_add_subgroup(s).contains = s.contains
+}
+
+/// The multiplicative submonoid predicate associated to a subring.
+theorem subring_submonoid_constraint[R: Ring](s: Subring[R]) {
+    submonoid_constraint(s.contains)
+} by {
+    subring_contains_one(s)
+    submonoid_identity_constraint(s.contains)
+    forall(a: R, b: R) {
+        if s.contains(a) and s.contains(b) {
+            subring_contains_mul(s, a, b)
+            s.contains(a * b)
+        }
+    }
+    submonoid_closure_constraint(s.contains)
+}
+
+/// The multiplicative submonoid associated to a subring.
+let subring_to_submonoid[R: Ring](s: Subring[R]) -> result: Submonoid[R] satisfy {
+    Submonoid.new(s.contains) = Option.some(result)
+} by {
+    subring_submonoid_constraint(s)
+}
+
+/// The multiplicative submonoid associated to a subring has the same membership predicate.
+theorem subring_to_submonoid_contains[R: Ring](s: Subring[R]) {
+    subring_to_submonoid(s).contains = s.contains
+}

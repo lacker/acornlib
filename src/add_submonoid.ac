@@ -1,4 +1,4 @@
-from add_monoid import AddMonoid
+from add_monoid import AddMonoid, AddMonoidHom, add_monoid_hom_zero, add_monoid_hom_add
 from set import Set
 from functions import predicate_extensionality
 
@@ -603,4 +603,107 @@ theorem full_add_submonoid_intersection_right[M: AddMonoid](s: AddSubmonoid[M]) 
 } by {
     add_submonoid_subset_full(s)
     add_submonoid_intersection_eq_left_of_subset(s, full_add_submonoid[M])
+}
+
+/// The inverse image membership predicate of an additive submonoid under an additive monoid homomorphism.
+define add_submonoid_preimage_contains[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    a: A
+) -> Bool {
+    s.contains(f.hom(a))
+}
+
+/// The inverse image of an additive submonoid contains zero.
+theorem add_submonoid_preimage_zero_constraint[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B]
+) {
+    add_submonoid_zero_constraint(add_submonoid_preimage_contains(f, s))
+} by {
+    add_monoid_hom_zero(f)
+    f.hom(A.0) = B.0
+    add_submonoid_contains_zero(s)
+    s.contains(B.0)
+    s.contains(f.hom(A.0))
+    add_submonoid_preimage_contains(f, s, A.0)
+}
+
+/// The inverse image of an additive submonoid is closed under addition.
+theorem add_submonoid_preimage_closure_constraint[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B]
+) {
+    add_submonoid_closure_constraint(add_submonoid_preimage_contains(f, s))
+} by {
+    forall(a: A, b: A) {
+        if add_submonoid_preimage_contains(f, s, a) and add_submonoid_preimage_contains(f, s, b) {
+            s.contains(f.hom(a))
+            s.contains(f.hom(b))
+            add_submonoid_contains_add(s, f.hom(a), f.hom(b))
+            s.contains(f.hom(a) + f.hom(b))
+            add_monoid_hom_add(f, a, b)
+            f.hom(a + b) = f.hom(a) + f.hom(b)
+            s.contains(f.hom(a + b))
+            add_submonoid_preimage_contains(f, s, a + b)
+        }
+    }
+}
+
+/// The inverse image of an additive submonoid is an additive submonoid.
+theorem add_submonoid_preimage_constraint[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B]
+) {
+    add_submonoid_constraint(add_submonoid_preimage_contains(f, s))
+} by {
+    add_submonoid_preimage_zero_constraint(f, s)
+    add_submonoid_preimage_closure_constraint(f, s)
+}
+
+/// The inverse image of an additive submonoid under an additive monoid homomorphism.
+let add_submonoid_preimage[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B], s: AddSubmonoid[B]) -> result: AddSubmonoid[A] satisfy {
+    AddSubmonoid.new(add_submonoid_preimage_contains(f, s)) = Option.some(result)
+} by {
+    add_submonoid_preimage_constraint(f, s)
+}
+
+/// Membership in an inverse image means the mapped element belongs to the target additive submonoid.
+theorem add_submonoid_preimage_contains_eq[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    a: A
+) {
+    add_submonoid_preimage(f, s).contains(a) = s.contains(f.hom(a))
+} by {
+    add_submonoid_preimage(f, s).contains(a) = add_submonoid_preimage_contains(f, s, a)
+    add_submonoid_preimage_contains(f, s, a) = s.contains(f.hom(a))
+}
+
+/// Membership in a preimage follows from membership of the mapped element.
+theorem add_submonoid_preimage_contains_of_contains_map[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    a: A
+) {
+    s.contains(f.hom(a)) implies add_submonoid_preimage(f, s).contains(a)
+} by {
+    if s.contains(f.hom(a)) {
+        add_submonoid_preimage_contains_eq(f, s, a)
+        add_submonoid_preimage(f, s).contains(a)
+    }
+}
+
+/// Membership in the target follows from membership in the preimage.
+theorem add_submonoid_contains_map_of_preimage_contains[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    a: A
+) {
+    add_submonoid_preimage(f, s).contains(a) implies s.contains(f.hom(a))
+} by {
+    if add_submonoid_preimage(f, s).contains(a) {
+        add_submonoid_preimage_contains_eq(f, s, a)
+        s.contains(f.hom(a))
+    }
 }
