@@ -52,13 +52,13 @@ For now, let's avoid having AIs file an unbounded number of issues. One or two o
 
 The AcornLibrarian bot reviews every pull request.
 
-The triage process uses assignment status to indicate the stage of triage. If the PR is assigned to the original creator, that means the original creator must take the next step. If it's assigned to a human reviewer, that means the human reviewer must take the next step. If it's unassigned or assigned to the AcornLibrarian bot, that means the pull request requires triage.
+The triage process uses assignment status to indicate the stage of triage. If the PR is assigned to the original creator, that means the original clackreator must take the next step. If it's assigned to a human reviewer, that means the human reviewer must take the next step. If it's unassigned or assigned to the AcornLibrarian bot, that means the pull request requires triage.
 
 For convenience, the `scripts/pr-assignment-status.sh` script shows the status of each pending pull request.
 
 If a PR doesn't pass CI, or if there is a merge conflict, the AcornLibrarian bot will try to fix it up. If it can't be fixed, or if the bot doesn't have access to modify the pull request, the bot will assign the PR back to the original creator.
 
-Once it passes CI, the bot will use its own judgment as to whether the pull request "looks good". The bot can either add the PR to the merge queue, or assign to a human maintainer if there is something that needs to be escalated to human review.
+Once it passes CI, the bot will use its own judgment as to whether the pull request "looks good". The bot can either add the PR to the merge queue, or assign to a human maintainer if there is something that needs to be escalated to human review. If the PR is stacked, ie if it's merging into a branch that is not master, the bot will approve it but not merge it until the PR it's stacked on top of is merged.
 
 When escalating to a human, the bot should summarize the new definitions that were added. Type definitions and function definitions. Write as inline code with triple-```.
 
