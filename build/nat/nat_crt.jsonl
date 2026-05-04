@@ -97,3 +97,8 @@
 {"goal":"x.congr_mod(c, p)","proof":[]}
 {"goal":"x.congr_mod(a, m) and x.congr_mod(b, n) and x.congr_mod(c, p)","proof":[]}
 {"goal":"nat_crt_three_moduli","proof":[]}
+{"goal":"int_mod_rel(m, Int.from_nat(a), Int.from_nat(b))","proof":["not a.congr_mod(b, m)","m.coprime(n) and a.congr_mod(b, m)"]}
+{"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","proof":["not a.congr_mod(b, n)"]}
+{"goal":"int_mod_rel(m * n, Int.from_nat(a), Int.from_nat(b))","proof":["not int_mod_rel(n, Int.from_nat(a), Int.from_nat(b)) or not int_mod_rel(m, Int.from_nat(a), Int.from_nat(b)) or not m.coprime(n)","not m.coprime(n)","m.coprime(n) and a.congr_mod(b, m)"]}
+{"goal":"a.congr_mod(b, m * n)","proof":[]}
+{"goal":"nat_congr_combine_coprime","proof":["not a.congr_mod(b, n) or not a.congr_mod(b, m) or not m.coprime(n)","a.congr_mod(b, n)","not a.congr_mod(b, m) or not m.coprime(n)","m.coprime(n) and a.congr_mod(b, m)","not a.congr_mod(b, m)"]}

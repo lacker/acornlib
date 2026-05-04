@@ -6,13 +6,16 @@ No current blockers.
 
 ## RSA
 
+The headline `rsa_correctness` is proven directly from Fermat's little theorem
+and the existing CRT (`nat_congr_combine_coprime`), so the totient/Euler
+roadmap below is no longer required for RSA itself. It remains useful for
+the textbook formulation and as a stepping stone toward later cryptographic
+content.
+
 - [ ] Define `nat_totient` (Euler's totient function) on `Nat`.
 - [ ] Prove `totient(p) = p - 1` for prime `p`.
 - [ ] Prove `totient(p * q) = (p - 1) * (q - 1)` for distinct primes `p`, `q`.
 - [ ] Prove Euler's theorem: `gcd(a, n) = 1` implies `a.pow(totient(n)).mod(n) = 1`.
-- [ ] Prove Chinese remainder theorem for two coprime moduli over `Nat` or `Int`.
-- [ ] Uncomment and prove `rsa_correctness` in `src/crypto/rsa.ac`.
-- [ ] Handle the `gcd(m, p*q) != 1` case in RSA correctness (uses CRT directly).
 
 ## DSA
 

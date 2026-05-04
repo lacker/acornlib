@@ -172,15 +172,67 @@
 {"goal":"fermat_pred_unfold","proof":["function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(a, p)"]}
 {"goal":"f(y) = fermat_pred(p)(y)","proof":["function(x0: Nat) { x0.pow(p).congr_mod(x0, p) = f(x0) }(y)","function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(y, p)"]}
 {"goal":"fermat_pred(p)(y) = f(y)","proof":[]}
-{"goal":"fermat_pred(p)(0)","proof":["not p.is_prime"]}
+{"goal":"fermat_pred(p)(0)","proof":[]}
 {"goal":"f(0)","proof":[]}
-{"goal":"fermat_pred(p)(x)","proof":["function(x0: Nat) { fermat_pred(p, x0) = f(x0) }(x)"]}
-{"goal":"fermat_pred(p)(x.suc)","proof":["not fermat_pred(p, x) or not p.is_prime","not p.is_prime"]}
+{"goal":"fermat_pred(p)(x)","proof":[]}
+{"goal":"fermat_pred(p)(x.suc)","proof":[]}
 {"goal":"f(x.suc)","proof":[]}
 {"goal":"f(a)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, a)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
 {"goal":"fermat_pred(p)(a)","proof":[]}
-{"goal":"fermats_little_run","proof":["not p.is_prime"]}
-{"goal":"fermat_pred(p)(a)","proof":["not p.is_prime"]}
+{"goal":"fermats_little_run","proof":[]}
+{"goal":"fermat_pred(p)(a)","proof":[]}
 {"goal":"a.pow(p).congr_mod(a, p)","proof":[]}
 {"goal":"fermats_little_congr","proof":[]}
 {"goal":"fermats_little","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a.pow(p), p, a)"]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"exists(k0: Nat) { k0.suc = p }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or Nat.zero = x0 }(p)","function(x0: Nat) { not x0 < Nat.zero }(1)"]}
+{"goal":"p - 1 = pp","proof":[]}
+{"goal":"pp + 1 = pp.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, pp)"]}
+{"goal":"pp + 1 = p","proof":[]}
+{"goal":"m.pow(pp + 1) = m.pow(pp) * m.pow(1)","proof":[]}
+{"goal":"m.pow(p) = m.pow(pp) * m.pow(1)","proof":[]}
+{"goal":"m.pow(1) = m","proof":[]}
+{"goal":"m.pow(p) = m.pow(pp) * m","proof":[]}
+{"goal":"m * m.pow(pp) = m.pow(pp) * m","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(m, m.pow(pp))"]}
+{"goal":"m * m.pow(p - 1) = m.pow(p)","proof":[]}
+{"goal":"mul_pow_pred_eq_pow","proof":[]}
+{"goal":"0 * (p - 1) = 0","proof":["function(x0: Nat) { 0 * x0 = 0 }(p - 1)"]}
+{"goal":"0 + 1 = 1","proof":["function(x0: Nat) { x0 + 1 = x0.suc }(0)"]}
+{"goal":"0 * (p - 1) + 1 = 1","proof":[]}
+{"goal":"m.pow(1) = m","proof":[]}
+{"goal":"m.pow(0 * (p - 1) + 1) = m","proof":[]}
+{"goal":"rsa_pow_base","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, 0, p)"]}
+{"goal":"m.pow(k * (p - 1) + 1).congr_mod(m, p)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, k, p)"]}
+{"goal":"k.suc = k + 1","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, k)"]}
+{"goal":"k.suc * (p - 1) = (k + 1) * (p - 1)","proof":[]}
+{"goal":"(k + 1) * (p - 1) = k * (p - 1) + 1 * (p - 1)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 + x2 * x1 = (x0 + x2) * x1 }(k, p - 1, 1)"]}
+{"goal":"1 * (p - 1) = p - 1","proof":["function(x0: Nat) { 1 * x0 = x0 }(p - 1)"]}
+{"goal":"k.suc * (p - 1) = k * (p - 1) + (p - 1)","proof":[]}
+{"goal":"k.suc * (p - 1) + 1 = k * (p - 1) + (p - 1) + 1","proof":[]}
+{"goal":"k * (p - 1) + (p - 1) + 1 = k * (p - 1) + (p - 1 + 1)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(k * (p - 1), p - 1, 1)"]}
+{"goal":"p - 1 + 1 = 1 + (p - 1)","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(p - 1, 1)"]}
+{"goal":"k * (p - 1) + (p - 1 + 1) = k * (p - 1) + (1 + (p - 1))","proof":[]}
+{"goal":"k * (p - 1) + (1 + (p - 1)) = k * (p - 1) + 1 + (p - 1)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(k * (p - 1), 1, p - 1)"]}
+{"goal":"k.suc * (p - 1) + 1 = k * (p - 1) + 1 + (p - 1)","proof":[]}
+{"goal":"k.suc * (p - 1) + 1 = k * (p - 1) + 1 + (p - 1)","proof":[]}
+{"goal":"m.pow(k * (p - 1) + 1 + (p - 1)) = m.pow(k * (p - 1) + 1) * m.pow(p - 1)","proof":[]}
+{"goal":"m.pow(k.suc * (p - 1) + 1) = m.pow(k * (p - 1) + 1) * m.pow(p - 1)","proof":[]}
+{"goal":"(m.pow(k * (p - 1) + 1) * m.pow(p - 1)).congr_mod(m * m.pow(p - 1), p)","proof":[]}
+{"goal":"m.pow(k.suc * (p - 1) + 1).congr_mod(m * m.pow(p - 1), p)","proof":[]}
+{"goal":"m * m.pow(p - 1) = m.pow(p)","proof":[]}
+{"goal":"m.pow(k.suc * (p - 1) + 1).congr_mod(m.pow(p), p)","proof":[]}
+{"goal":"m.pow(p).congr_mod(m, p)","proof":[]}
+{"goal":"m.pow(k.suc * (p - 1) + 1).congr_mod(m, p)","proof":[]}
+{"goal":"rsa_pow_step","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, k.suc, p)"]}
+{"goal":"rsa_pow_pred(m, p)(y) = f(y)","proof":["function(x0: Nat) { m.pow(x0 * (p - 1) + 1).congr_mod(m, p) = f(x0) }(y)","function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, y, p)"]}
+{"goal":"f(y) = rsa_pow_pred(m, p)(y)","proof":[]}
+{"goal":"rsa_pow_pred(m, p)(0)","proof":[]}
+{"goal":"f(0)","proof":[]}
+{"goal":"rsa_pow_pred(m, p)(x)","proof":[]}
+{"goal":"rsa_pow_pred(m, p)(x.suc)","proof":[]}
+{"goal":"f(x.suc)","proof":[]}
+{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"rsa_pow_pred(m, p)(k)","proof":["function(x0: Nat) { rsa_pow_pred(m, p, x0) = f(x0) }(k)"]}
+{"goal":"rsa_pow_run","proof":["not p.is_prime"]}
+{"goal":"rsa_pow_pred(m, p)(k)","proof":["not p.is_prime"]}
+{"goal":"rsa_pow_congr","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.pow(x1 * (x2 - 1) + 1).congr_mod(x0, x2) = rsa_pow_pred(x0, x2, x1) }(m, k, p)","rsa_pow_pred(m, p, k)"]}
