@@ -2,7 +2,8 @@
 
 from functions import compose, identity_fn, function_extensionality,
     is_injective_fn, is_surjective_fn, is_bijection_fn
-from order import PartialOrder, LinearOrder, lt_trans
+from order import PartialOrder, LinearOrder, lt_trans, min_eq_left_of_lte, min_eq_right_of_gte,
+    max_eq_left_of_gte, max_eq_right_of_lte
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval,
     is_lower_bound, is_upper_bound, is_bounded_below, is_bounded_above, is_bounded_by_interval,
     is_bounded, lower_bound_step, upper_bound_step, bounds_imp_bounded_by_interval,
@@ -730,6 +731,24 @@ define order_iso_image_predicate[A: PartialOrder, B: PartialOrder](e: OrderIso[A
 
 /// The preimage predicate transported by an order isomorphism.
 define order_iso_preimage_predicate[A: PartialOrder, B: PartialOrder](e: OrderIso[A, B], q: B -> Bool, x: A) -> Bool {
+    q(e.map(x))
+}
+
+/// The image predicate transported by an order-dual isomorphism.
+define order_dual_iso_image_predicate[A: PartialOrder, B: PartialOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    y: B
+) -> Bool {
+    p(e.inv(y))
+}
+
+/// The preimage predicate transported by an order-dual isomorphism.
+define order_dual_iso_preimage_predicate[A: PartialOrder, B: PartialOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    x: A
+) -> Bool {
     q(e.map(x))
 }
 
@@ -1728,6 +1747,542 @@ theorem order_iso_preimage_bounded[A: LinearOrder, B: LinearOrder](
     }
 }
 
+/// The dual image predicate holds at the image of exactly the original points.
+theorem order_dual_iso_image_predicate_map[A: PartialOrder, B: PartialOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    x: A
+) {
+    order_dual_iso_image_predicate(e, p, e.map(x)) = p(x)
+} by {
+    order_dual_iso_left_inverse(e, x)
+    e.inv(e.map(x)) = x
+    order_dual_iso_image_predicate(e, p, e.map(x)) = p(e.inv(e.map(x)))
+    order_dual_iso_image_predicate(e, p, e.map(x)) = p(x)
+}
+
+/// The dual preimage predicate holds at the inverse image of exactly the original points.
+theorem order_dual_iso_preimage_predicate_inv[A: PartialOrder, B: PartialOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    y: B
+) {
+    order_dual_iso_preimage_predicate(e, q, e.inv(y)) = q(y)
+} by {
+    order_dual_iso_right_inverse(e, y)
+    e.map(e.inv(y)) = y
+    order_dual_iso_preimage_predicate(e, q, e.inv(y)) = q(e.map(e.inv(y)))
+    order_dual_iso_preimage_predicate(e, q, e.inv(y)) = q(y)
+}
+
+/// An order-dual isomorphism carries a lower bound to an upper bound of the image predicate.
+theorem order_dual_iso_image_lower_bound_to_upper_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A
+) {
+    is_lower_bound(p, a) implies is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a))
+} by {
+    if is_lower_bound(p, a) {
+        forall(y: B) {
+            if order_dual_iso_image_predicate(e, p, y) {
+                p(e.inv(y))
+                lower_bound_step(p, a, e.inv(y))
+                a <= e.inv(y)
+                order_dual_iso_apply_le(e, a, e.inv(y))
+                e.map(e.inv(y)) <= e.map(a)
+                order_dual_iso_right_inverse(e, y)
+                e.map(e.inv(y)) = y
+                y <= e.map(a)
+            }
+        }
+    }
+}
+
+/// An order-dual isomorphism carries an upper bound to a lower bound of the image predicate.
+theorem order_dual_iso_image_upper_bound_to_lower_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    b: A
+) {
+    is_upper_bound(p, b) implies is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b))
+} by {
+    if is_upper_bound(p, b) {
+        forall(y: B) {
+            if order_dual_iso_image_predicate(e, p, y) {
+                p(e.inv(y))
+                upper_bound_step(p, b, e.inv(y))
+                e.inv(y) <= b
+                order_dual_iso_apply_le(e, e.inv(y), b)
+                e.map(b) <= e.map(e.inv(y))
+                order_dual_iso_right_inverse(e, y)
+                e.map(e.inv(y)) = y
+                e.map(b) <= y
+            }
+        }
+    }
+}
+
+/// An image upper bound under an order-dual isomorphism reflects to a lower bound.
+theorem order_dual_iso_reflects_image_upper_bound_to_lower_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A
+) {
+    is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a)) implies is_lower_bound(p, a)
+} by {
+    if is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a)) {
+        forall(x: A) {
+            if p(x) {
+                order_dual_iso_image_predicate_map(e, p, x)
+                order_dual_iso_image_predicate(e, p, e.map(x))
+                upper_bound_step(order_dual_iso_image_predicate(e, p), e.map(a), e.map(x))
+                e.map(x) <= e.map(a)
+                order_dual_iso_reflects_le(e, a, x)
+                a <= x
+            }
+        }
+    }
+}
+
+/// An image lower bound under an order-dual isomorphism reflects to an upper bound.
+theorem order_dual_iso_reflects_image_lower_bound_to_upper_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    b: A
+) {
+    is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b)) implies is_upper_bound(p, b)
+} by {
+    if is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b)) {
+        forall(x: A) {
+            if p(x) {
+                order_dual_iso_image_predicate_map(e, p, x)
+                order_dual_iso_image_predicate(e, p, e.map(x))
+                lower_bound_step(order_dual_iso_image_predicate(e, p), e.map(b), e.map(x))
+                e.map(b) <= e.map(x)
+                order_dual_iso_reflects_le(e, x, b)
+                x <= b
+            }
+        }
+    }
+}
+
+/// Lower bounds become upper bounds under image predicates for order-dual isomorphisms.
+theorem order_dual_iso_image_lower_bound_upper_bound_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A
+) {
+    is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a)) = is_lower_bound(p, a)
+} by {
+    if is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a)) {
+        order_dual_iso_reflects_image_upper_bound_to_lower_bound(e, p, a)
+        is_lower_bound(p, a)
+    }
+    if is_lower_bound(p, a) {
+        order_dual_iso_image_lower_bound_to_upper_bound(e, p, a)
+        is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a))
+    }
+    is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a)) = is_lower_bound(p, a)
+}
+
+/// Upper bounds become lower bounds under image predicates for order-dual isomorphisms.
+theorem order_dual_iso_image_upper_bound_lower_bound_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    b: A
+) {
+    is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b)) = is_upper_bound(p, b)
+} by {
+    if is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b)) {
+        order_dual_iso_reflects_image_lower_bound_to_upper_bound(e, p, b)
+        is_upper_bound(p, b)
+    }
+    if is_upper_bound(p, b) {
+        order_dual_iso_image_upper_bound_to_lower_bound(e, p, b)
+        is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b))
+    }
+    is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b)) = is_upper_bound(p, b)
+}
+
+/// An order-dual isomorphism carries interval bounds to reversed interval bounds of the image predicate.
+theorem order_dual_iso_image_bounded_by_interval[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A,
+    b: A
+) {
+    is_bounded_by_interval(p, a, b) implies
+    is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+} by {
+    if is_bounded_by_interval(p, a, b) {
+        bounded_by_interval_imp_upper_bound(p, a, b)
+        is_upper_bound(p, b)
+        order_dual_iso_image_upper_bound_to_lower_bound(e, p, b)
+        is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b))
+        bounded_by_interval_imp_lower_bound(p, a, b)
+        is_lower_bound(p, a)
+        order_dual_iso_image_lower_bound_to_upper_bound(e, p, a)
+        is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a))
+        bounds_imp_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+        is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+    }
+}
+
+/// Reversed interval bounds of image predicates reflect through an order-dual isomorphism.
+theorem order_dual_iso_reflects_image_bounded_by_interval[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A,
+    b: A
+) {
+    is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a)) implies
+    is_bounded_by_interval(p, a, b)
+} by {
+    if is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a)) {
+        bounded_by_interval_imp_upper_bound(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+        is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a))
+        order_dual_iso_reflects_image_upper_bound_to_lower_bound(e, p, a)
+        is_lower_bound(p, a)
+        bounded_by_interval_imp_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+        is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b))
+        order_dual_iso_reflects_image_lower_bound_to_upper_bound(e, p, b)
+        is_upper_bound(p, b)
+        bounds_imp_bounded_by_interval(p, a, b)
+        is_bounded_by_interval(p, a, b)
+    }
+}
+
+/// Interval bounds are preserved and reflected with reversed endpoints under an order-dual isomorphism.
+theorem order_dual_iso_image_bounded_by_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool,
+    a: A,
+    b: A
+) {
+    is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a)) =
+    is_bounded_by_interval(p, a, b)
+} by {
+    if is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a)) {
+        order_dual_iso_reflects_image_bounded_by_interval(e, p, a, b)
+        is_bounded_by_interval(p, a, b)
+    }
+    if is_bounded_by_interval(p, a, b) {
+        order_dual_iso_image_bounded_by_interval(e, p, a, b)
+        is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+    }
+    is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a)) =
+    is_bounded_by_interval(p, a, b)
+}
+
+/// Boundedness below becomes boundedness above for image predicates under an order-dual isomorphism.
+theorem order_dual_iso_image_bounded_below_to_bounded_above[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool
+) {
+    is_bounded_below(p) implies is_bounded_above(order_dual_iso_image_predicate(e, p))
+} by {
+    if is_bounded_below(p) {
+        let a: A satisfy {
+            is_lower_bound(p, a)
+        }
+        order_dual_iso_image_lower_bound_to_upper_bound(e, p, a)
+        is_upper_bound(order_dual_iso_image_predicate(e, p), e.map(a))
+        upper_bound_imp_bounded_above(order_dual_iso_image_predicate(e, p), e.map(a))
+        is_bounded_above(order_dual_iso_image_predicate(e, p))
+    }
+}
+
+/// Boundedness above becomes boundedness below for image predicates under an order-dual isomorphism.
+theorem order_dual_iso_image_bounded_above_to_bounded_below[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool
+) {
+    is_bounded_above(p) implies is_bounded_below(order_dual_iso_image_predicate(e, p))
+} by {
+    if is_bounded_above(p) {
+        let b: A satisfy {
+            is_upper_bound(p, b)
+        }
+        order_dual_iso_image_upper_bound_to_lower_bound(e, p, b)
+        is_lower_bound(order_dual_iso_image_predicate(e, p), e.map(b))
+        lower_bound_imp_bounded_below(order_dual_iso_image_predicate(e, p), e.map(b))
+        is_bounded_below(order_dual_iso_image_predicate(e, p))
+    }
+}
+
+/// Boundedness is preserved by image predicates under an order-dual isomorphism.
+theorem order_dual_iso_image_bounded[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    p: A -> Bool
+) {
+    is_bounded(p) implies is_bounded(order_dual_iso_image_predicate(e, p))
+} by {
+    if is_bounded(p) {
+        let (a: A, b: A) satisfy {
+            is_bounded_by_interval(p, a, b)
+        }
+        order_dual_iso_image_bounded_by_interval(e, p, a, b)
+        is_bounded_by_interval(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+        bounded_by_interval_imp_bounded(order_dual_iso_image_predicate(e, p), e.map(b), e.map(a))
+        is_bounded(order_dual_iso_image_predicate(e, p))
+    }
+}
+
+/// An order-dual isomorphism carries a lower bound backward to an upper bound of the preimage predicate.
+theorem order_dual_iso_preimage_lower_bound_to_upper_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B
+) {
+    is_lower_bound(q, a) implies is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+} by {
+    if is_lower_bound(q, a) {
+        forall(x: A) {
+            if order_dual_iso_preimage_predicate(e, q, x) {
+                q(e.map(x))
+                lower_bound_step(q, a, e.map(x))
+                a <= e.map(x)
+                order_dual_iso_apply_le(order_dual_iso_inverse(e), a, e.map(x))
+                e.inv(e.map(x)) <= e.inv(a)
+                order_dual_iso_left_inverse(e, x)
+                e.inv(e.map(x)) = x
+                x <= e.inv(a)
+            }
+        }
+    }
+}
+
+/// An order-dual isomorphism carries an upper bound backward to a lower bound of the preimage predicate.
+theorem order_dual_iso_preimage_upper_bound_to_lower_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    b: B
+) {
+    is_upper_bound(q, b) implies is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+} by {
+    if is_upper_bound(q, b) {
+        forall(x: A) {
+            if order_dual_iso_preimage_predicate(e, q, x) {
+                q(e.map(x))
+                upper_bound_step(q, b, e.map(x))
+                e.map(x) <= b
+                order_dual_iso_apply_le(order_dual_iso_inverse(e), e.map(x), b)
+                e.inv(b) <= e.inv(e.map(x))
+                order_dual_iso_left_inverse(e, x)
+                e.inv(e.map(x)) = x
+                e.inv(b) <= x
+            }
+        }
+    }
+}
+
+/// A preimage upper bound under an order-dual isomorphism reflects to a lower bound.
+theorem order_dual_iso_reflects_preimage_upper_bound_to_lower_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B
+) {
+    is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a)) implies is_lower_bound(q, a)
+} by {
+    if is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a)) {
+        forall(y: B) {
+            if q(y) {
+                order_dual_iso_preimage_predicate_inv(e, q, y)
+                order_dual_iso_preimage_predicate(e, q, e.inv(y))
+                upper_bound_step(order_dual_iso_preimage_predicate(e, q), e.inv(a), e.inv(y))
+                e.inv(y) <= e.inv(a)
+                order_dual_iso_reflects_le(order_dual_iso_inverse(e), a, y)
+                a <= y
+            }
+        }
+    }
+}
+
+/// A preimage lower bound under an order-dual isomorphism reflects to an upper bound.
+theorem order_dual_iso_reflects_preimage_lower_bound_to_upper_bound[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    b: B
+) {
+    is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b)) implies is_upper_bound(q, b)
+} by {
+    if is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b)) {
+        forall(y: B) {
+            if q(y) {
+                order_dual_iso_preimage_predicate_inv(e, q, y)
+                order_dual_iso_preimage_predicate(e, q, e.inv(y))
+                lower_bound_step(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(y))
+                e.inv(b) <= e.inv(y)
+                order_dual_iso_reflects_le(order_dual_iso_inverse(e), y, b)
+                y <= b
+            }
+        }
+    }
+}
+
+/// Lower bounds become upper bounds under preimage predicates for order-dual isomorphisms.
+theorem order_dual_iso_preimage_lower_bound_upper_bound_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B
+) {
+    is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a)) = is_lower_bound(q, a)
+} by {
+    if is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a)) {
+        order_dual_iso_reflects_preimage_upper_bound_to_lower_bound(e, q, a)
+        is_lower_bound(q, a)
+    }
+    if is_lower_bound(q, a) {
+        order_dual_iso_preimage_lower_bound_to_upper_bound(e, q, a)
+        is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+    }
+    is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a)) = is_lower_bound(q, a)
+}
+
+/// Upper bounds become lower bounds under preimage predicates for order-dual isomorphisms.
+theorem order_dual_iso_preimage_upper_bound_lower_bound_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    b: B
+) {
+    is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b)) = is_upper_bound(q, b)
+} by {
+    if is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b)) {
+        order_dual_iso_reflects_preimage_lower_bound_to_upper_bound(e, q, b)
+        is_upper_bound(q, b)
+    }
+    if is_upper_bound(q, b) {
+        order_dual_iso_preimage_upper_bound_to_lower_bound(e, q, b)
+        is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+    }
+    is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b)) = is_upper_bound(q, b)
+}
+
+/// An order-dual isomorphism carries interval bounds backward to reversed interval bounds of the preimage predicate.
+theorem order_dual_iso_preimage_bounded_by_interval[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B,
+    b: B
+) {
+    is_bounded_by_interval(q, a, b) implies
+    is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+} by {
+    if is_bounded_by_interval(q, a, b) {
+        bounded_by_interval_imp_upper_bound(q, a, b)
+        is_upper_bound(q, b)
+        order_dual_iso_preimage_upper_bound_to_lower_bound(e, q, b)
+        is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+        bounded_by_interval_imp_lower_bound(q, a, b)
+        is_lower_bound(q, a)
+        order_dual_iso_preimage_lower_bound_to_upper_bound(e, q, a)
+        is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+        bounds_imp_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+        is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+    }
+}
+
+/// Reversed interval bounds of preimage predicates reflect through an order-dual isomorphism.
+theorem order_dual_iso_reflects_preimage_bounded_by_interval[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B,
+    b: B
+) {
+    is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a)) implies
+    is_bounded_by_interval(q, a, b)
+} by {
+    if is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a)) {
+        bounded_by_interval_imp_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+        is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+        order_dual_iso_reflects_preimage_upper_bound_to_lower_bound(e, q, a)
+        is_lower_bound(q, a)
+        bounded_by_interval_imp_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+        is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+        order_dual_iso_reflects_preimage_lower_bound_to_upper_bound(e, q, b)
+        is_upper_bound(q, b)
+        bounds_imp_bounded_by_interval(q, a, b)
+        is_bounded_by_interval(q, a, b)
+    }
+}
+
+/// Interval bounds are preserved and reflected by preimage predicates with reversed endpoints under an order-dual isomorphism.
+theorem order_dual_iso_preimage_bounded_by_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool,
+    a: B,
+    b: B
+) {
+    is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a)) =
+    is_bounded_by_interval(q, a, b)
+} by {
+    if is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a)) {
+        order_dual_iso_reflects_preimage_bounded_by_interval(e, q, a, b)
+        is_bounded_by_interval(q, a, b)
+    }
+    if is_bounded_by_interval(q, a, b) {
+        order_dual_iso_preimage_bounded_by_interval(e, q, a, b)
+        is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+    }
+    is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a)) =
+    is_bounded_by_interval(q, a, b)
+}
+
+/// Boundedness below becomes boundedness above for preimage predicates under an order-dual isomorphism.
+theorem order_dual_iso_preimage_bounded_below_to_bounded_above[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool
+) {
+    is_bounded_below(q) implies is_bounded_above(order_dual_iso_preimage_predicate(e, q))
+} by {
+    if is_bounded_below(q) {
+        let a: B satisfy {
+            is_lower_bound(q, a)
+        }
+        order_dual_iso_preimage_lower_bound_to_upper_bound(e, q, a)
+        is_upper_bound(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+        upper_bound_imp_bounded_above(order_dual_iso_preimage_predicate(e, q), e.inv(a))
+        is_bounded_above(order_dual_iso_preimage_predicate(e, q))
+    }
+}
+
+/// Boundedness above becomes boundedness below for preimage predicates under an order-dual isomorphism.
+theorem order_dual_iso_preimage_bounded_above_to_bounded_below[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool
+) {
+    is_bounded_above(q) implies is_bounded_below(order_dual_iso_preimage_predicate(e, q))
+} by {
+    if is_bounded_above(q) {
+        let b: B satisfy {
+            is_upper_bound(q, b)
+        }
+        order_dual_iso_preimage_upper_bound_to_lower_bound(e, q, b)
+        is_lower_bound(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+        lower_bound_imp_bounded_below(order_dual_iso_preimage_predicate(e, q), e.inv(b))
+        is_bounded_below(order_dual_iso_preimage_predicate(e, q))
+    }
+}
+
+/// Boundedness is preserved by preimage predicates under an order-dual isomorphism.
+theorem order_dual_iso_preimage_bounded[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    q: B -> Bool
+) {
+    is_bounded(q) implies is_bounded(order_dual_iso_preimage_predicate(e, q))
+} by {
+    if is_bounded(q) {
+        let (a: B, b: B) satisfy {
+            is_bounded_by_interval(q, a, b)
+        }
+        order_dual_iso_preimage_bounded_by_interval(e, q, a, b)
+        is_bounded_by_interval(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+        bounded_by_interval_imp_bounded(order_dual_iso_preimage_predicate(e, q), e.inv(b), e.inv(a))
+        is_bounded(order_dual_iso_preimage_predicate(e, q))
+    }
+}
+
 /// The identity map as an order isomorphism.
 let identity_order_iso[A: PartialOrder](anchor: A) -> result: OrderIso[A, A] satisfy {
     result.map = identity_fn[A] and result.inv = identity_fn[A]
@@ -2081,6 +2636,318 @@ theorem order_iso_inv_max_image[A: LinearOrder, B: LinearOrder](e: OrderIso[A, B
     order_iso_inv_is_order_embedding(e)
     order_embedding_max_image(e.inv, a, b)
     e.inv(a.max(b)) = e.inv(a).max(e.inv(b))
+}
+
+/// An order-dual isomorphism sends closed-interval membership to reversed closed-interval membership.
+theorem order_dual_iso_closed_interval_image[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    closed_interval(a, b, x) implies closed_interval(e.map(b), e.map(a), e.map(x))
+} by {
+    if closed_interval(a, b, x) {
+        a <= x
+        order_dual_iso_apply_le(e, a, x)
+        e.map(x) <= e.map(a)
+        x <= b
+        order_dual_iso_apply_le(e, x, b)
+        e.map(b) <= e.map(x)
+        closed_interval(e.map(b), e.map(a), e.map(x))
+    }
+}
+
+/// An order-dual isomorphism reflects reversed closed-interval membership.
+theorem order_dual_iso_closed_interval_preimage[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    closed_interval(e.map(b), e.map(a), e.map(x)) implies closed_interval(a, b, x)
+} by {
+    if closed_interval(e.map(b), e.map(a), e.map(x)) {
+        e.map(b) <= e.map(x)
+        order_dual_iso_reflects_le(e, x, b)
+        x <= b
+        e.map(x) <= e.map(a)
+        order_dual_iso_reflects_le(e, a, x)
+        a <= x
+        closed_interval(a, b, x)
+    }
+}
+
+/// An order-dual isomorphism preserves and reflects closed intervals with reversed endpoints.
+theorem order_dual_iso_closed_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    closed_interval(e.map(b), e.map(a), e.map(x)) = closed_interval(a, b, x)
+} by {
+    if closed_interval(e.map(b), e.map(a), e.map(x)) {
+        order_dual_iso_closed_interval_preimage(e, a, b, x)
+        closed_interval(a, b, x)
+    }
+    if closed_interval(a, b, x) {
+        order_dual_iso_closed_interval_image(e, a, b, x)
+        closed_interval(e.map(b), e.map(a), e.map(x))
+    }
+    closed_interval(e.map(b), e.map(a), e.map(x)) = closed_interval(a, b, x)
+}
+
+/// An order-dual isomorphism sends open-interval membership to reversed open-interval membership.
+theorem order_dual_iso_open_interval_image[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    open_interval(a, b, x) implies open_interval(e.map(b), e.map(a), e.map(x))
+} by {
+    if open_interval(a, b, x) {
+        a < x
+        order_dual_iso_apply_lt(e, a, x)
+        e.map(x) < e.map(a)
+        x < b
+        order_dual_iso_apply_lt(e, x, b)
+        e.map(b) < e.map(x)
+        open_interval(e.map(b), e.map(a), e.map(x))
+    }
+}
+
+/// An order-dual isomorphism reflects reversed open-interval membership.
+theorem order_dual_iso_open_interval_preimage[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    open_interval(e.map(b), e.map(a), e.map(x)) implies open_interval(a, b, x)
+} by {
+    if open_interval(e.map(b), e.map(a), e.map(x)) {
+        e.map(b) < e.map(x)
+        order_dual_iso_reflects_lt(e, x, b)
+        x < b
+        e.map(x) < e.map(a)
+        order_dual_iso_reflects_lt(e, a, x)
+        a < x
+        open_interval(a, b, x)
+    }
+}
+
+/// An order-dual isomorphism preserves and reflects open intervals with reversed endpoints.
+theorem order_dual_iso_open_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    open_interval(e.map(b), e.map(a), e.map(x)) = open_interval(a, b, x)
+} by {
+    if open_interval(e.map(b), e.map(a), e.map(x)) {
+        order_dual_iso_open_interval_preimage(e, a, b, x)
+        open_interval(a, b, x)
+    }
+    if open_interval(a, b, x) {
+        order_dual_iso_open_interval_image(e, a, b, x)
+        open_interval(e.map(b), e.map(a), e.map(x))
+    }
+    open_interval(e.map(b), e.map(a), e.map(x)) = open_interval(a, b, x)
+}
+
+/// An order-dual isomorphism sends left-open interval membership to reversed right-open interval membership.
+theorem order_dual_iso_left_open_interval_image[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    left_open_interval(a, b, x) implies right_open_interval(e.map(b), e.map(a), e.map(x))
+} by {
+    if left_open_interval(a, b, x) {
+        a < x
+        order_dual_iso_apply_lt(e, a, x)
+        e.map(x) < e.map(a)
+        x <= b
+        order_dual_iso_apply_le(e, x, b)
+        e.map(b) <= e.map(x)
+        right_open_interval(e.map(b), e.map(a), e.map(x))
+    }
+}
+
+/// An order-dual isomorphism reflects reversed right-open interval membership to left-open membership.
+theorem order_dual_iso_left_open_interval_preimage[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    right_open_interval(e.map(b), e.map(a), e.map(x)) implies left_open_interval(a, b, x)
+} by {
+    if right_open_interval(e.map(b), e.map(a), e.map(x)) {
+        e.map(b) <= e.map(x)
+        order_dual_iso_reflects_le(e, x, b)
+        x <= b
+        e.map(x) < e.map(a)
+        order_dual_iso_reflects_lt(e, a, x)
+        a < x
+        left_open_interval(a, b, x)
+    }
+}
+
+/// An order-dual isomorphism identifies left-open intervals with reversed right-open intervals.
+theorem order_dual_iso_left_open_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    right_open_interval(e.map(b), e.map(a), e.map(x)) = left_open_interval(a, b, x)
+} by {
+    if right_open_interval(e.map(b), e.map(a), e.map(x)) {
+        order_dual_iso_left_open_interval_preimage(e, a, b, x)
+        left_open_interval(a, b, x)
+    }
+    if left_open_interval(a, b, x) {
+        order_dual_iso_left_open_interval_image(e, a, b, x)
+        right_open_interval(e.map(b), e.map(a), e.map(x))
+    }
+    right_open_interval(e.map(b), e.map(a), e.map(x)) = left_open_interval(a, b, x)
+}
+
+/// An order-dual isomorphism sends right-open interval membership to reversed left-open interval membership.
+theorem order_dual_iso_right_open_interval_image[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    right_open_interval(a, b, x) implies left_open_interval(e.map(b), e.map(a), e.map(x))
+} by {
+    if right_open_interval(a, b, x) {
+        a <= x
+        order_dual_iso_apply_le(e, a, x)
+        e.map(x) <= e.map(a)
+        x < b
+        order_dual_iso_apply_lt(e, x, b)
+        e.map(b) < e.map(x)
+        left_open_interval(e.map(b), e.map(a), e.map(x))
+    }
+}
+
+/// An order-dual isomorphism reflects reversed left-open interval membership to right-open membership.
+theorem order_dual_iso_right_open_interval_preimage[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    left_open_interval(e.map(b), e.map(a), e.map(x)) implies right_open_interval(a, b, x)
+} by {
+    if left_open_interval(e.map(b), e.map(a), e.map(x)) {
+        e.map(b) < e.map(x)
+        order_dual_iso_reflects_lt(e, x, b)
+        x < b
+        e.map(x) <= e.map(a)
+        order_dual_iso_reflects_le(e, a, x)
+        a <= x
+        right_open_interval(a, b, x)
+    }
+}
+
+/// An order-dual isomorphism identifies right-open intervals with reversed left-open intervals.
+theorem order_dual_iso_right_open_interval_iff[A: LinearOrder, B: LinearOrder](
+    e: OrderDualIso[A, B],
+    a: A,
+    b: A,
+    x: A
+) {
+    left_open_interval(e.map(b), e.map(a), e.map(x)) = right_open_interval(a, b, x)
+} by {
+    if left_open_interval(e.map(b), e.map(a), e.map(x)) {
+        order_dual_iso_right_open_interval_preimage(e, a, b, x)
+        right_open_interval(a, b, x)
+    }
+    if right_open_interval(a, b, x) {
+        order_dual_iso_right_open_interval_image(e, a, b, x)
+        left_open_interval(e.map(b), e.map(a), e.map(x))
+    }
+    left_open_interval(e.map(b), e.map(a), e.map(x)) = right_open_interval(a, b, x)
+}
+
+/// An order-dual isomorphism sends binary minima to binary maxima.
+theorem order_dual_iso_min_image[A: LinearOrder, B: LinearOrder](e: OrderDualIso[A, B], a: A, b: A) {
+    e.map(a.min(b)) = e.map(a).max(e.map(b))
+} by {
+    if a <= b {
+        min_eq_left_of_lte(a, b)
+        a.min(b) = a
+        order_dual_iso_apply_le(e, a, b)
+        e.map(b) <= e.map(a)
+        e.map(a) >= e.map(b)
+        max_eq_left_of_gte(e.map(a), e.map(b))
+        e.map(a).max(e.map(b)) = e.map(a)
+        e.map(a.min(b)) = e.map(a).max(e.map(b))
+    } else {
+        b <= a
+        a >= b
+        min_eq_right_of_gte(a, b)
+        a.min(b) = b
+        order_dual_iso_apply_le(e, b, a)
+        e.map(a) <= e.map(b)
+        max_eq_right_of_lte(e.map(a), e.map(b))
+        e.map(a).max(e.map(b)) = e.map(b)
+        e.map(a.min(b)) = e.map(a).max(e.map(b))
+    }
+}
+
+/// An order-dual isomorphism sends binary maxima to binary minima.
+theorem order_dual_iso_max_image[A: LinearOrder, B: LinearOrder](e: OrderDualIso[A, B], a: A, b: A) {
+    e.map(a.max(b)) = e.map(a).min(e.map(b))
+} by {
+    if a <= b {
+        max_eq_right_of_lte(a, b)
+        a.max(b) = b
+        order_dual_iso_apply_le(e, a, b)
+        e.map(b) <= e.map(a)
+        e.map(a) >= e.map(b)
+        min_eq_right_of_gte(e.map(a), e.map(b))
+        e.map(a).min(e.map(b)) = e.map(b)
+        e.map(a.max(b)) = e.map(a).min(e.map(b))
+    } else {
+        b <= a
+        a >= b
+        max_eq_left_of_gte(a, b)
+        a.max(b) = a
+        order_dual_iso_apply_le(e, b, a)
+        e.map(a) <= e.map(b)
+        min_eq_left_of_lte(e.map(a), e.map(b))
+        e.map(a).min(e.map(b)) = e.map(a)
+        e.map(a.max(b)) = e.map(a).min(e.map(b))
+    }
+}
+
+/// The inverse of an order-dual isomorphism sends binary minima to binary maxima.
+theorem order_dual_iso_inv_min_image[A: LinearOrder, B: LinearOrder](e: OrderDualIso[A, B], a: B, b: B) {
+    e.inv(a.min(b)) = e.inv(a).max(e.inv(b))
+} by {
+    order_dual_iso_min_image(order_dual_iso_inverse(e), a, b)
+    order_dual_iso_inverse_map(e)
+    order_dual_iso_inverse(e).map = e.inv
+    e.inv(a.min(b)) = e.inv(a).max(e.inv(b))
+}
+
+/// The inverse of an order-dual isomorphism sends binary maxima to binary minima.
+theorem order_dual_iso_inv_max_image[A: LinearOrder, B: LinearOrder](e: OrderDualIso[A, B], a: B, b: B) {
+    e.inv(a.max(b)) = e.inv(a).min(e.inv(b))
+} by {
+    order_dual_iso_max_image(order_dual_iso_inverse(e), a, b)
+    order_dual_iso_inverse_map(e)
+    order_dual_iso_inverse(e).map = e.inv
+    e.inv(a.max(b)) = e.inv(a).min(e.inv(b))
 }
 
 /// An order isomorphism preserves binary infima.
