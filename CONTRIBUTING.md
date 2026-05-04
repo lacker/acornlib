@@ -24,6 +24,8 @@ Most pull requests will be AI-reviewed. Some areas will be escalated to human re
 * Tricky decisions
 * Touching any file outside of src, build, and projects
 
+Adding a new subfolder within a project doesn't require human review per se. Just adding a new top-level project.
+
 What counts as a "tricky decision" is subjective. Most tricky decisions are around definitions. If there is one obvious best way to define something, it isn't tricky. If there are multiple ways to define something and you had to choose one, then it's a tricky decision. If your pull request makes a tricky decision, please mention it in the pull request comment.
 
 The definition of theorems and the method of proof for a theorem never count as tricky decisions, because nothing else is dependent on them. You can always add more theorems or change a proof without affecting anything downstream.
@@ -57,6 +59,8 @@ For convenience, the `scripts/pr-assignment-status.sh` script shows the status o
 If a PR doesn't pass CI, or if there is a merge conflict, the AcornLibrarian bot will try to fix it up. If it can't be fixed, or if the bot doesn't have access to modify the pull request, the bot will assign the PR back to the original creator.
 
 Once it passes CI, the bot will use its own judgment as to whether the pull request "looks good". The bot can either add the PR to the merge queue, or assign to a human maintainer if there is something that needs to be escalated to human review.
+
+When escalating to a human, the bot should summarize the new definitions that were added. Type definitions and function definitions. Write as inline code with triple-```.
 
 Once a human maintainer approves, the human may or may not add to the merge queue. The bot will take care of fixing any merge conflicts that subsequently arise, and getting the PR added to the merge queue.
 
