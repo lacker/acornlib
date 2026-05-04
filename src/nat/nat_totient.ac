@@ -1,7 +1,7 @@
 from nat.nat_coprime import Nat, coprime_one_left
 from nat.nat_gcd import gcd_zero_left
 from nat.nat_factorisation import prime_divisor_is_one_or_self
-from nat.nat_base import divides_self
+from nat.nat_base import divides_self, divides_zero
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -197,4 +197,254 @@ theorem totient_prime(p: Nat) {
         p.totient = count_coprime_to(p, p)
         p.totient = p - Nat.1
     }
+}
+
+/// The number of natural numbers in `[0, k)` divisible by `d`.
+/// Used for inclusion-exclusion-style counts that feed into totient identities.
+define count_multiples(d: Nat, k: Nat) -> Nat {
+    match k {
+        Nat.zero {
+            Nat.0
+        }
+        Nat.suc(j) {
+            if d.divides(j) {
+                count_multiples(d, j) + Nat.1
+            } else {
+                count_multiples(d, j)
+            }
+        }
+    }
+}
+
+/// Recurrence: stepping `k` past a multiple of `d` adds one to the count.
+theorem count_multiples_suc_yes(d: Nat, k: Nat) {
+    d.divides(k) implies count_multiples(d, k.suc) = count_multiples(d, k) + Nat.1
+}
+
+/// Recurrence: stepping `k` past a non-multiple of `d` leaves the count alone.
+theorem count_multiples_suc_no(d: Nat, k: Nat) {
+    not d.divides(k) implies count_multiples(d, k.suc) = count_multiples(d, k)
+}
+
+/// Within an aligned block, `d` divides `k + j` only when `j = 0`. For
+/// `0 < j < d`, the offset `j` is too small to bridge two multiples of `d`.
+theorem count_multiples_block_no_div(d: Nat, k: Nat, j: Nat) {
+    d != Nat.0 and d.divides(k) and Nat.0 < j and j < d
+        implies not d.divides(k + j)
+} by {
+    if d != Nat.0 and d.divides(k) and Nat.0 < j and j < d {
+        if d.divides(k + j) {
+            let qq: Nat satisfy { d * qq = k + j }
+            let qp: Nat satisfy { d * qp = k }
+            d * qq = d * qp + j
+            // qp < qq because d * qp < d * qp + j = d * qq.
+            d * qp < d * qp + j
+            d * qp < d * qq
+            qp < qq
+            let dq: Nat satisfy { qp + dq = qq and dq != Nat.0 }
+            d * (qp + dq) = d * qp + d * dq
+            d * qp + d * dq = d * qp + j
+            d * dq = j
+            d <= d * dq
+            d <= j
+            false
+        }
+    }
+}
+
+/// Inductive predicate for `count_multiples_block_aligned`. It tracks the
+/// offset `j` from the starting multiple `k`. For any `j` in `[0, d]`, the
+/// count of multiples of `d` in `[0, k + j)` exceeds the count in `[0, k)`
+/// by `0` if `j = 0` and by `1` otherwise.
+define block_aligned_pred(d: Nat, k: Nat) -> (Nat -> Bool) {
+    function(j: Nat) {
+        j <= d and Nat.0 < j
+            implies count_multiples(d, k + j) = count_multiples(d, k) + Nat.1
+    }
+}
+
+/// Inductive step for the block-aligned recurrence.
+theorem block_aligned_step(d: Nat, k: Nat, j: Nat) {
+    d != Nat.0 and d.divides(k) and block_aligned_pred(d, k)(j)
+        implies block_aligned_pred(d, k)(j.suc)
+} by {
+    if d != Nat.0 and d.divides(k) and block_aligned_pred(d, k)(j) {
+        if j.suc <= d and Nat.0 < j.suc {
+            j <= d
+            j < d
+            k + j.suc = (k + j).suc
+            if j = Nat.0 {
+                // Stepping past k itself adds one to the count.
+                k + j = k
+                d.divides(k + j)
+                count_multiples_suc_yes(d, k + j)
+                count_multiples(d, (k + j).suc) = count_multiples(d, k + j) + Nat.1
+                k + j = k
+                count_multiples(d, k + j) = count_multiples(d, k)
+                count_multiples(d, k + j.suc) = count_multiples(d, k) + Nat.1
+            } else {
+                Nat.0 < j
+                count_multiples(d, k + j) = count_multiples(d, k) + Nat.1
+                count_multiples_block_no_div(d, k, j)
+                not d.divides(k + j)
+                count_multiples_suc_no(d, k + j)
+                count_multiples(d, (k + j).suc) = count_multiples(d, k + j)
+                count_multiples(d, k + j.suc) = count_multiples(d, k) + Nat.1
+            }
+        }
+    }
+}
+
+/// Walking `d` steps forward through `count_multiples(d, _)` adds exactly one
+/// when `d > 0` and `d` divides the starting index. The next multiple is the
+/// only multiple of `d` in `[k, k + d)`, which produces the increment.
+theorem count_multiples_block_aligned(d: Nat, k: Nat) {
+    d != Nat.0 and d.divides(k)
+        implies count_multiples(d, k + d) = count_multiples(d, k) + Nat.1
+} by {
+    if d != Nat.0 and d.divides(k) {
+        let g: Nat -> Bool = function(j: Nat) {
+            j <= d and Nat.0 < j implies count_multiples(d, k + j) = count_multiples(d, k) + Nat.1
+        }
+        forall(y: Nat) {
+            block_aligned_pred(d, k)(y) = g(y)
+            g(y) = block_aligned_pred(d, k)(y)
+        }
+        // Base: vacuous since not (0 < 0).
+        if Nat.0 <= d and Nat.0 < Nat.0 {
+            false
+        }
+        g(Nat.0)
+        // Step.
+        forall(j: Nat) {
+            if g(j) {
+                block_aligned_pred(d, k)(j)
+                block_aligned_step(d, k, j)
+                block_aligned_pred(d, k)(j.suc)
+                g(j.suc)
+            }
+        }
+        // Conclude at j = d.
+        Nat.0 < d
+        d <= d
+        g(d)
+        count_multiples(d, k + d) = count_multiples(d, k) + Nat.1
+    }
+}
+
+/// Predicate version of `count_multiples_div`.
+define count_multiples_div_pred(d: Nat) -> (Nat -> Bool) {
+    function(q: Nat) {
+        d != Nat.0 implies count_multiples(d, d * q) = q
+    }
+}
+
+/// Walking `q` aligned blocks of length `d` starting from zero gives count `q`.
+theorem count_multiples_div(d: Nat, q: Nat) {
+    d != Nat.0 implies count_multiples(d, d * q) = q
+} by {
+    let f: Nat -> Bool = function(x: Nat) {
+        d != Nat.0 implies count_multiples(d, d * x) = x
+    }
+    forall(y: Nat) {
+        count_multiples_div_pred(d)(y) = f(y)
+        f(y) = count_multiples_div_pred(d)(y)
+    }
+    // Base.
+    d * Nat.0 = Nat.0
+    count_multiples(d, Nat.0) = Nat.0
+    if d != Nat.0 {
+        count_multiples(d, d * Nat.0) = Nat.0
+    }
+    f(Nat.0)
+    // Step.
+    forall(x: Nat) {
+        if f(x) {
+            if d != Nat.0 {
+                count_multiples(d, d * x) = x
+                // d * x.suc = d * x + d.
+                d * x.suc = d * x + d
+                // d divides d * x.
+                d.divides(d * x)
+                count_multiples_block_aligned(d, d * x)
+                count_multiples(d, d * x + d) = count_multiples(d, d * x) + Nat.1
+                count_multiples(d, d * x.suc) = x + Nat.1
+                count_multiples(d, d * x.suc) = x.suc
+            }
+            f(x.suc)
+        }
+    }
+    f(q)
+}
+
+/// Counterpart to `count_coprime_to`: the number of natural numbers in
+/// `[0, k)` that are NOT coprime to `n`. Together with `count_coprime_to` it
+/// partitions `[0, k)`.
+define count_not_coprime_to(n: Nat, k: Nat) -> Nat {
+    match k {
+        Nat.zero {
+            Nat.0
+        }
+        Nat.suc(j) {
+            if j.coprime(n) {
+                count_not_coprime_to(n, j)
+            } else {
+                count_not_coprime_to(n, j) + Nat.1
+            }
+        }
+    }
+}
+
+/// Inductive predicate for the coprime/non-coprime conservation law.
+define coprime_partition_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        count_coprime_to(n, k) + count_not_coprime_to(n, k) = k
+    }
+}
+
+/// Conservation: the coprime and not-coprime counts in `[0, k)` add up to `k`.
+theorem coprime_partition(n: Nat, k: Nat) {
+    count_coprime_to(n, k) + count_not_coprime_to(n, k) = k
+} by {
+    let f: Nat -> Bool = function(x: Nat) {
+        count_coprime_to(n, x) + count_not_coprime_to(n, x) = x
+    }
+    forall(y: Nat) {
+        coprime_partition_pred(n)(y) = f(y)
+        f(y) = coprime_partition_pred(n)(y)
+    }
+    // Base.
+    count_coprime_to(n, Nat.0) = Nat.0
+    count_not_coprime_to(n, Nat.0) = Nat.0
+    f(Nat.0)
+    // Step.
+    forall(x: Nat) {
+        if f(x) {
+            count_coprime_to(n, x) + count_not_coprime_to(n, x) = x
+            let a: Nat = count_coprime_to(n, x)
+            let b: Nat = count_not_coprime_to(n, x)
+            a + b = x
+            if x.coprime(n) {
+                count_coprime_to(n, x.suc) = a + Nat.1
+                count_not_coprime_to(n, x.suc) = b
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = (a + Nat.1) + b
+                (a + Nat.1) + b = a + (Nat.1 + b)
+                Nat.1 + b = b + Nat.1
+                a + (Nat.1 + b) = a + (b + Nat.1)
+                a + (b + Nat.1) = (a + b) + Nat.1
+                (a + Nat.1) + b = (a + b) + Nat.1
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x + Nat.1
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x.suc
+            } else {
+                count_coprime_to(n, x.suc) = a
+                count_not_coprime_to(n, x.suc) = b + Nat.1
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = a + (b + Nat.1)
+                a + (b + Nat.1) = (a + b) + Nat.1
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x + Nat.1
+                count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x.suc
+            }
+            f(x.suc)
+        }
+    }
+    f(k)
 }

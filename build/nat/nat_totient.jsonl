@@ -68,3 +68,87 @@
 {"goal":"p.totient = count_coprime_to(p, p)","proof":["function(x0: Nat) { x0.totient = count_coprime_to(x0, x0) }(p)"]}
 {"goal":"p.totient = p - 1","proof":[]}
 {"goal":"totient_prime","proof":[]}
+{"goal":"count_multiples_suc_yes","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x2.divides(x0) { count_multiples(x2, x0) + 1 } else { count_multiples(x2, x0) }) = count_multiples(x2, x1) }(k, k.suc, d)"]}
+{"goal":"count_multiples_suc_no","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x2.divides(x0) { count_multiples(x2, x0) + 1 } else { count_multiples(x2, x0) }) = count_multiples(x2, x1) }(k, k.suc, d)"]}
+{"goal":"exists(k0: Nat) { d * k0 = k + j }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(d, k + j)"]}
+{"goal":"exists(k0: Nat) { d * k0 = k }","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 * k0 = x1 } = x0.divides(x1) }(d, k)"]}
+{"goal":"d * qq = d * qp + j","proof":[]}
+{"goal":"d * qp < d * qp + j","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { not x0 <= x1 or not x2 <= x3 or x0 + x2 <= x1 + x3 }(d * qp, d * qp, 0.suc, j)","function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x1 <= x2 or x0 < x2 }(d * qp, d * qp + 0.suc, d * qp + j)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, j)","function(x0: Nat, x1: Nat) { x0 < x0 + x1.suc }(d * qp, 0)","function(x0: Nat) { x0 <= x0 }(d * qp)"]}
+{"goal":"d * qp < d * qq","proof":[]}
+{"goal":"qp < qq","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 * x1 < x0 * x2 or x1 < x2 or 0 = x0 }(d, qp, qq)"]}
+{"goal":"exists(k0: Nat) { qp + k0 = qq and k0 != 0 }","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or exists(k0: Nat) { x0 + k0 = x1 and k0 != 0 } }(qp, qq)"]}
+{"goal":"d * (qp + dq) = d * qp + d * dq","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 + x0 * x2 = x0 * (x1 + x2) }(d, qp, dq)"]}
+{"goal":"d * qp + d * dq = d * qp + j","proof":[]}
+{"goal":"d * dq = j","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 != x0 + x2 or x1 = x2 }(d * qp, d * dq, j)"]}
+{"goal":"d <= d * dq","proof":["function(x0: Nat, x1: Nat) { x0 <= x0 * x1 or 0 = x1 }(d, dq)"]}
+{"goal":"d <= j","proof":[]}
+{"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(j, d)"]}
+{"goal":"count_multiples_block_no_div","proof":[]}
+{"goal":"j <= d","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0 < x1.suc }(d, j)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(d, j.suc)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(d, j)"]}
+{"goal":"j < d","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x1 <= x2 or x0 < x2 }(j, j.suc, d)","function(x0: Nat) { x0 < x0.suc }(j)"]}
+{"goal":"k + j.suc = (k + j).suc","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (x2 + x0).suc = x2 + x1 }(j, j.suc, k)"]}
+{"goal":"k + j = k","proof":["function(x0: Nat, x1: Nat) { 0 != x0 or x1 + x0 = x1 }(j, k)"]}
+{"goal":"d.divides(k + j)","proof":[]}
+{"goal":"count_multiples(d, (k + j).suc) = count_multiples(d, k + j) + 1","proof":[]}
+{"goal":"k + j = k","proof":[]}
+{"goal":"count_multiples(d, k + j) = count_multiples(d, k)","proof":[]}
+{"goal":"count_multiples(d, k + j.suc) = count_multiples(d, k) + 1","proof":[]}
+{"goal":"0 < j","proof":["function(x0: Nat, x1: Nat) { not x0 < x1.suc or x0 < x1 or x0 = x1 }(0, j)"]}
+{"goal":"count_multiples(d, k + j) = count_multiples(d, k) + 1","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (not x0 <= x1 or not 0 < x0 or count_multiples(x1, x2 + x0) = count_multiples(x1, x2) + 1) = block_aligned_pred(x1, x2, x0) }(j, d, k)"]}
+{"goal":"not d.divides(k + j)","proof":[]}
+{"goal":"count_multiples(d, (k + j).suc) = count_multiples(d, k + j)","proof":[]}
+{"goal":"count_multiples(d, k + j.suc) = count_multiples(d, k) + 1","proof":[]}
+{"goal":"block_aligned_step","proof":["function(x0: Nat) { 0 != x0.suc }(j)","function(x0: Nat, x1: Nat, x2: Nat) { (not x0 <= x1 or (x0 != 0 or count_multiples(x1, x2 + x0) = count_multiples(x1, x2) and (not 0 < x0 or count_multiples(x1, x2 + x0) = count_multiples(x1, x2) + 1))) = block_aligned_pred(x1, x2, x0) }(j.suc, d, k)"]}
+{"goal":"block_aligned_pred(d, k)(y) = g(y)","proof":["function(x0: Nat) { (not x0 <= d or not 0 < x0 or count_multiples(d, k + x0) = count_multiples(d, k) + 1) = g(x0) }(y)","function(x0: Nat, x1: Nat, x2: Nat) { (not x0 <= x1 or not 0 < x0 or count_multiples(x1, x2 + x0) = count_multiples(x1, x2) + 1) = block_aligned_pred(x1, x2, x0) }(y, d, k)"]}
+{"goal":"g(y) = block_aligned_pred(d, k)(y)","proof":[]}
+{"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(0, 0)"]}
+{"goal":"g(0)","proof":["function(x0: Nat) { (not x0 <= d or not 0 < x0 or count_multiples(d, k + x0) = count_multiples(d, k) + 1) = g(x0) }(0)"]}
+{"goal":"block_aligned_pred(d, k)(j)","proof":[]}
+{"goal":"block_aligned_pred(d, k)(j.suc)","proof":[]}
+{"goal":"g(j.suc)","proof":[]}
+{"goal":"0 < d","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(0, d)","function(x0: Nat) { not x0 <= 0 or 0 = x0 }(d)"]}
+{"goal":"d <= d","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { not lib(relation_basic).is_reflexive[T0](x0) or x0(x1, x1) }[Nat](Nat.lte, d)"]}
+{"goal":"g(d)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(g)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(g, d)","let w0: Nat satisfy { g(w0) and not g(w0.suc) }","function(x0: Nat) { not g(x0) or g(x0.suc) }(w0)"]}
+{"goal":"count_multiples(d, k + d) = count_multiples(d, k) + 1","proof":["function(x0: Nat) { (not x0 <= d or (x0 != 0 or count_multiples(d, k + x0) = count_multiples(d, k) and (not 0 < x0 or count_multiples(d, k + x0) = count_multiples(d, k) + 1))) = g(x0) }(d)"]}
+{"goal":"count_multiples_block_aligned","proof":[]}
+{"goal":"count_multiples_div_pred(d)(y) = f(y)","proof":["function(x0: Nat) { (0 = d or count_multiples(d, d * x0) = x0) = f(x0) }(y)","function(x0: Nat, x1: Nat) { (x0 = 0 or count_multiples(x0, x0 * x1) = x1) = count_multiples_div_pred(x0, x1) }(d, y)"]}
+{"goal":"f(y) = count_multiples_div_pred(d)(y)","proof":[]}
+{"goal":"d * 0 = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or x1 * x0 = 0 }(0, d)"]}
+{"goal":"count_multiples(d, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_multiples(x1, x0) = 0 }(0, d)"]}
+{"goal":"count_multiples(d, d * 0) = 0","proof":[]}
+{"goal":"f(0)","proof":["function(x0: Nat) { (0 = d or count_multiples(d, d * x0) = x0) = f(x0) }(0)"]}
+{"goal":"count_multiples(d, d * x) = x","proof":["function(x0: Nat) { (0 = d or count_multiples(d, d * x0) = x0) = f(x0) }(x)"]}
+{"goal":"d * x.suc = d * x + d","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or x2 * x0 + x2 = x2 * x1 }(x, x.suc, d)"]}
+{"goal":"d.divides(d * x)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.divides(x1) or x0.divides(x1 * x2) }(d, d, x)","function(x0: Nat) { x0.divides(x0) }(d)"]}
+{"goal":"count_multiples(d, d * x + d) = count_multiples(d, d * x) + 1","proof":[]}
+{"goal":"count_multiples(d, d * x.suc) = x + 1","proof":[]}
+{"goal":"count_multiples(d, d * x.suc) = x.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(x, 1)"]}
+{"goal":"f(x.suc)","proof":["function(x0: Nat) { (0 = d or count_multiples(d, d * x0) = x0) = f(x0) }(x.suc)"]}
+{"goal":"f(q)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, q)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"count_multiples_div","proof":["function(x0: Nat) { (0 = d or count_multiples(d, d * x0) = x0) = f(x0) }(q)"]}
+{"goal":"coprime_partition_pred(n)(y) = f(y)","proof":["function(x0: Nat) { count_coprime_to(n, x0) + count_not_coprime_to(n, x0) = x0 = f(x0) }(y)","function(x0: Nat, x1: Nat) { count_coprime_to(x0, x1) + count_not_coprime_to(x0, x1) = x1 = coprime_partition_pred(x0, x1) }(n, y)"]}
+{"goal":"f(y) = coprime_partition_pred(n)(y)","proof":[]}
+{"goal":"count_coprime_to(n, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_coprime_to(x1, x0) = 0 }(0, n)"]}
+{"goal":"count_not_coprime_to(n, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_not_coprime_to(x1, x0) = 0 }(0, n)"]}
+{"goal":"f(0)","proof":["function(x0: Nat) { count_coprime_to(n, x0) + count_not_coprime_to(n, x0) = x0 = f(x0) }(0)","function(x0: Nat) { x0 + 0 = x0 }(count_coprime_to(n, 0))"]}
+{"goal":"count_coprime_to(n, x) + count_not_coprime_to(n, x) = x","proof":["function(x0: Nat) { count_coprime_to(n, x0) + count_not_coprime_to(n, x0) = x0 = f(x0) }(x)"]}
+{"goal":"a + b = x","proof":["count_coprime_to(n, x) + b != x","count_coprime_to(n, x) + b = x"]}
+{"goal":"count_coprime_to(n, x.suc) = a + 1","proof":["function(x0: Nat, x1: Nat) { not x0.coprime(x1) or count_coprime_to(x1, x0) + 1 = count_coprime_to(x1, x0.suc) }(x, n)","count_coprime_to(n, x) + 1 != count_coprime_to(n, x.suc)","count_coprime_to(n, x) + 1 = count_coprime_to(n, x.suc)"]}
+{"goal":"count_not_coprime_to(n, x.suc) = b","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x0.coprime(x2) { count_not_coprime_to(x2, x0) } else { count_not_coprime_to(x2, x0) + 1 }) = count_not_coprime_to(x2, x1) }(x, x.suc, n)","count_not_coprime_to(n, x.suc) != count_not_coprime_to(n, x)","function(x0: Nat, x1: Nat, x2: Nat) { not x0.coprime(x1) or x0.suc != x2 or count_not_coprime_to(x1, x0) = count_not_coprime_to(x1, x2) }(x, n, x.suc)"]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = a + 1 + b","proof":[]}
+{"goal":"a + 1 + b = a + (1 + b)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(a, 1, b)"]}
+{"goal":"1 + b = b + 1","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(b, 1)"]}
+{"goal":"a + (1 + b) = a + (b + 1)","proof":["b + 1 != 1 + b"]}
+{"goal":"a + (b + 1) = a + b + 1","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(a, b, 1)"]}
+{"goal":"a + 1 + b = a + b + 1","proof":["a + (1 + b) = a + b + 1","a + (1 + b) != a + b + 1"]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x + 1","proof":[]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(x, 1)"]}
+{"goal":"count_coprime_to(n, x.suc) = a","proof":["function(x0: Nat, x1: Nat) { count_coprime_to(x0, x1.suc) = count_coprime_to(x0, x1) or x1.coprime(x0) }(n, x)","count_coprime_to(n, x.suc) != count_coprime_to(n, x)","count_coprime_to(n, x.suc) = count_coprime_to(n, x)"]}
+{"goal":"count_not_coprime_to(n, x.suc) = b + 1","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x0.coprime(x2) { count_not_coprime_to(x2, x0) } else { count_not_coprime_to(x2, x0) + 1 }) = count_not_coprime_to(x2, x1) }(x, x.suc, n)","count_not_coprime_to(n, x) + 1 != count_not_coprime_to(n, x.suc)","function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or count_not_coprime_to(x2, x0) + 1 = count_not_coprime_to(x2, x1) or x0.coprime(x2) }(x, x.suc, n)"]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = a + (b + 1)","proof":[]}
+{"goal":"a + (b + 1) = a + b + 1","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(a, b, 1)"]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x + 1","proof":[]}
+{"goal":"count_coprime_to(n, x.suc) + count_not_coprime_to(n, x.suc) = x.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(x, 1)"]}
+{"goal":"f(x.suc)","proof":["function(x0: Nat) { count_coprime_to(n, x0) + count_not_coprime_to(n, x0) = x0 = f(x0) }(x.suc)"]}
+{"goal":"f(k)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, k)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"coprime_partition","proof":["function(x0: Nat) { count_coprime_to(n, x0) + count_not_coprime_to(n, x0) = x0 = f(x0) }(k)"]}
