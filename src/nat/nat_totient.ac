@@ -8,6 +8,7 @@ from nat.nat_modular_inverse import cancel_coprime
 from nat.nat_monoid import exp_one, exp_add, exp_zero
 from nat.nat_coprime import coprime_one_right
 from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans
+from list.list_base import List
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -1387,5 +1388,319 @@ theorem totient_p_pow_factored(p: Nat, n: Nat) {
         mul_sub_one_factor(p, p.pow(n))
         p * p.pow(n) - p.pow(n) = (p - Nat.1) * p.pow(n)
         (p.pow(n.suc)).totient = (p - Nat.1) * p.pow(n)
+    }
+}
+
+/// The list of natural numbers in `[0, k)` that are coprime to `n`, in
+/// descending order. Mirror of `count_coprime_to` shaped to allow product /
+/// permutation arguments downstream (e.g. for general Euler).
+define coprime_residues_below(n: Nat, k: Nat) -> List[Nat] {
+    match k {
+        Nat.zero {
+            List.nil[Nat]
+        }
+        Nat.suc(j) {
+            if j.coprime(n) {
+                List.cons(j, coprime_residues_below(n, j))
+            } else {
+                coprime_residues_below(n, j)
+            }
+        }
+    }
+}
+
+/// The full coprime-residue list for modulus `n`: integers in `[0, n)`
+/// coprime to `n`. Has length `nat_totient(n)`.
+define coprime_residues(n: Nat) -> List[Nat] {
+    coprime_residues_below(n, n)
+}
+
+/// Recurrence: stepping past a coprime index conses it onto the residue list.
+theorem coprime_residues_below_suc_yes(n: Nat, k: Nat) {
+    k.coprime(n)
+        implies coprime_residues_below(n, k.suc) =
+            List.cons(k, coprime_residues_below(n, k))
+}
+
+/// Recurrence: stepping past a non-coprime index leaves the residue list alone.
+theorem coprime_residues_below_suc_no(n: Nat, k: Nat) {
+    not k.coprime(n)
+        implies coprime_residues_below(n, k.suc) =
+            coprime_residues_below(n, k)
+}
+
+/// Inductive predicate for `coprime_residues_below_length`.
+define coprime_residues_length_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        coprime_residues_below(n, k).length = count_coprime_to(n, k)
+    }
+}
+
+/// Inductive step: the list length and the count grow together at each k.
+theorem coprime_residues_length_step(n: Nat, k: Nat) {
+    coprime_residues_length_pred(n)(k)
+        implies coprime_residues_length_pred(n)(k.suc)
+} by {
+    if coprime_residues_length_pred(n)(k) {
+        coprime_residues_below(n, k).length = count_coprime_to(n, k)
+        if k.coprime(n) {
+            coprime_residues_below_suc_yes(n, k)
+            coprime_residues_below(n, k.suc) =
+                List.cons(k, coprime_residues_below(n, k))
+            coprime_residues_below(n, k.suc).length =
+                coprime_residues_below(n, k).length.suc
+            count_coprime_to_suc_yes(n, k)
+            count_coprime_to(n, k.suc) = count_coprime_to(n, k) + Nat.1
+            count_coprime_to(n, k) + Nat.1 = count_coprime_to(n, k).suc
+            coprime_residues_below(n, k.suc).length = count_coprime_to(n, k.suc)
+        } else {
+            coprime_residues_below_suc_no(n, k)
+            coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+            count_coprime_to_suc_no(n, k)
+            count_coprime_to(n, k.suc) = count_coprime_to(n, k)
+            coprime_residues_below(n, k.suc).length = count_coprime_to(n, k.suc)
+        }
+    }
+}
+
+/// `coprime_residues_below(n, k).length = count_coprime_to(n, k)` by induction.
+theorem coprime_residues_below_length(n: Nat, k: Nat) {
+    coprime_residues_below(n, k).length = count_coprime_to(n, k)
+} by {
+    let f: Nat -> Bool = function(x: Nat) {
+        coprime_residues_below(n, x).length = count_coprime_to(n, x)
+    }
+    forall(y: Nat) {
+        coprime_residues_length_pred(n)(y) = f(y)
+        f(y) = coprime_residues_length_pred(n)(y)
+    }
+    coprime_residues_below(n, Nat.0).length = Nat.0
+    count_coprime_to(n, Nat.0) = Nat.0
+    f(Nat.0)
+    forall(x: Nat) {
+        if f(x) {
+            coprime_residues_length_pred(n)(x)
+            coprime_residues_length_step(n, x)
+            coprime_residues_length_pred(n)(x.suc)
+            f(x.suc)
+        }
+    }
+    f(k)
+}
+
+/// `coprime_residues(n).length = nat_totient(n)`.
+theorem coprime_residues_length(n: Nat) {
+    coprime_residues(n).length = n.totient
+} by {
+    coprime_residues_below_length(n, n)
+    coprime_residues_below(n, n).length = count_coprime_to(n, n)
+    coprime_residues(n).length = coprime_residues_below(n, n).length
+    coprime_residues(n).length = count_coprime_to(n, n)
+    n.totient = count_coprime_to(n, n)
+    coprime_residues(n).length = n.totient
+}
+
+/// Inductive predicate for `coprime_residues_below_all_coprime`.
+define cr_all_coprime_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        forall(x: Nat) {
+            coprime_residues_below(n, k).contains(x) implies x.coprime(n)
+        }
+    }
+}
+
+/// Bridge: cr_all_coprime_pred unfolds to its underlying forall.
+theorem cr_all_coprime_pred_apply(n: Nat, k: Nat, x: Nat) {
+    cr_all_coprime_pred(n)(k) and coprime_residues_below(n, k).contains(x)
+        implies x.coprime(n)
+} by {
+    if cr_all_coprime_pred(n)(k) and coprime_residues_below(n, k).contains(x) {
+        cr_all_coprime_pred(n)(k) = forall(y: Nat) {
+            coprime_residues_below(n, k).contains(y) implies y.coprime(n)
+        }
+        forall(y: Nat) {
+            coprime_residues_below(n, k).contains(y) implies y.coprime(n)
+        }
+    }
+}
+
+/// Inductive step.
+theorem cr_all_coprime_step(n: Nat, k: Nat) {
+    cr_all_coprime_pred(n)(k) implies cr_all_coprime_pred(n)(k.suc)
+} by {
+    if cr_all_coprime_pred(n)(k) {
+        forall(x: Nat) {
+            if coprime_residues_below(n, k.suc).contains(x) {
+                if k.coprime(n) {
+                    coprime_residues_below_suc_yes(n, k)
+                    coprime_residues_below(n, k.suc) =
+                        List.cons(k, coprime_residues_below(n, k))
+                    List.cons(k, coprime_residues_below(n, k)).contains(x)
+                    if x = k {
+                        x.coprime(n)
+                    } else {
+                        x != k
+                        coprime_residues_below(n, k).contains(x)
+                        cr_all_coprime_pred_apply(n, k, x)
+                        x.coprime(n)
+                    }
+                } else {
+                    coprime_residues_below_suc_no(n, k)
+                    coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+                    coprime_residues_below(n, k).contains(x)
+                    cr_all_coprime_pred_apply(n, k, x)
+                    x.coprime(n)
+                }
+            }
+        }
+    }
+}
+
+/// Every element of `coprime_residues_below(n, k)` is coprime to `n`.
+theorem coprime_residues_below_all_coprime(n: Nat, k: Nat, x: Nat) {
+    coprime_residues_below(n, k).contains(x) implies x.coprime(n)
+} by {
+    let f: Nat -> Bool = function(m: Nat) {
+        forall(y: Nat) {
+            coprime_residues_below(n, m).contains(y) implies y.coprime(n)
+        }
+    }
+    forall(y: Nat) {
+        cr_all_coprime_pred(n)(y) = f(y)
+        f(y) = cr_all_coprime_pred(n)(y)
+    }
+    // Base.
+    forall(y: Nat) {
+        if coprime_residues_below(n, Nat.0).contains(y) {
+            coprime_residues_below(n, Nat.0) = List.nil[Nat]
+            List.nil[Nat].contains(y)
+            false
+        }
+    }
+    f(Nat.0)
+    forall(m: Nat) {
+        if f(m) {
+            cr_all_coprime_pred(n)(m)
+            cr_all_coprime_step(n, m)
+            cr_all_coprime_pred(n)(m.suc)
+            f(m.suc)
+        }
+    }
+    f(k)
+}
+
+/// Every element of `coprime_residues(n)` is coprime to `n`.
+theorem coprime_residues_all_coprime(n: Nat, x: Nat) {
+    coprime_residues(n).contains(x) implies x.coprime(n)
+} by {
+    if coprime_residues(n).contains(x) {
+        coprime_residues(n) = coprime_residues_below(n, n)
+        coprime_residues_below(n, n).contains(x)
+        coprime_residues_below_all_coprime(n, n, x)
+    }
+}
+
+/// Inductive predicate for `coprime_residues_below_all_below`.
+define cr_all_below_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        forall(x: Nat) {
+            coprime_residues_below(n, k).contains(x) implies x < k
+        }
+    }
+}
+
+/// Bridge: cr_all_below_pred unfolds to its underlying forall.
+theorem cr_all_below_pred_apply(n: Nat, k: Nat, x: Nat) {
+    cr_all_below_pred(n)(k) and coprime_residues_below(n, k).contains(x)
+        implies x < k
+} by {
+    if cr_all_below_pred(n)(k) and coprime_residues_below(n, k).contains(x) {
+        cr_all_below_pred(n)(k) = forall(y: Nat) {
+            coprime_residues_below(n, k).contains(y) implies y < k
+        }
+        forall(y: Nat) {
+            coprime_residues_below(n, k).contains(y) implies y < k
+        }
+    }
+}
+
+/// Inductive step: contained values are below the cap, recursively.
+theorem cr_all_below_step(n: Nat, k: Nat) {
+    cr_all_below_pred(n)(k) implies cr_all_below_pred(n)(k.suc)
+} by {
+    if cr_all_below_pred(n)(k) {
+        forall(x: Nat) {
+            if coprime_residues_below(n, k.suc).contains(x) {
+                if k.coprime(n) {
+                    coprime_residues_below_suc_yes(n, k)
+                    coprime_residues_below(n, k.suc) =
+                        List.cons(k, coprime_residues_below(n, k))
+                    List.cons(k, coprime_residues_below(n, k)).contains(x)
+                    if x = k {
+                        k < k.suc
+                        x < k.suc
+                    } else {
+                        x != k
+                        coprime_residues_below(n, k).contains(x)
+                        cr_all_below_pred_apply(n, k, x)
+                        x < k
+                        k < k.suc
+                        x < k.suc
+                    }
+                } else {
+                    coprime_residues_below_suc_no(n, k)
+                    coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+                    coprime_residues_below(n, k).contains(x)
+                    cr_all_below_pred_apply(n, k, x)
+                    x < k
+                    k < k.suc
+                    x < k.suc
+                }
+            }
+        }
+    }
+}
+
+/// Every element of `coprime_residues_below(n, k)` is `< k`.
+theorem coprime_residues_below_all_below(n: Nat, k: Nat, x: Nat) {
+    coprime_residues_below(n, k).contains(x) implies x < k
+} by {
+    let f: Nat -> Bool = function(m: Nat) {
+        forall(y: Nat) {
+            coprime_residues_below(n, m).contains(y) implies y < m
+        }
+    }
+    forall(y: Nat) {
+        cr_all_below_pred(n)(y) = f(y)
+        f(y) = cr_all_below_pred(n)(y)
+    }
+    // Base.
+    forall(y: Nat) {
+        if coprime_residues_below(n, Nat.0).contains(y) {
+            coprime_residues_below(n, Nat.0) = List.nil[Nat]
+            List.nil[Nat].contains(y)
+            false
+        }
+    }
+    f(Nat.0)
+    forall(m: Nat) {
+        if f(m) {
+            cr_all_below_pred(n)(m)
+            cr_all_below_step(n, m)
+            cr_all_below_pred(n)(m.suc)
+            f(m.suc)
+        }
+    }
+    f(k)
+}
+
+/// Every element of `coprime_residues(n)` is `< n`.
+theorem coprime_residues_all_below(n: Nat, x: Nat) {
+    coprime_residues(n).contains(x) implies x < n
+} by {
+    if coprime_residues(n).contains(x) {
+        coprime_residues(n) = coprime_residues_below(n, n)
+        coprime_residues_below(n, n).contains(x)
+        coprime_residues_below_all_below(n, n, x)
     }
 }
