@@ -35,6 +35,12 @@ cryptographic content.
   `(mod_inv(a, n) * x).mod(n)`. Together these give the membership /
   injectivity / surjectivity / no-duplicates bookkeeping needed for the
   product / permutation argument behind a general Euler proof.
+- `mul_mod_fn(n, a)` and `mul_mod_residues(n, a)`: the named function
+  `x -> (a*x).mod(n)` and the corresponding mapped list over
+  `coprime_residues(n)`. `mul_mod_residues_length` (=
+  `nat_totient(n)`), `mul_mod_residues_in_coprime` and
+  `coprime_in_mul_mod_residues` give bidirectional element membership
+  with `coprime_residues(n)`.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
 `src/nat/nat_fermat.ac` contains `fermat_euler`: Euler's theorem at a
@@ -54,10 +60,14 @@ general `inverse_imp_coprime` (`a * b ≡ 1 (mod n) ⟹ b.coprime(n)`).
       bijection between `[0, mn)` and `[0, m) x [0, n)`.
 - [ ] Generalise `euler_pq` to arbitrary moduli: `gcd(a, n) = 1` implies
       `a.pow(nat_totient(n)).mod(n) = 1`. Next concrete step: prove
-      `is_permutation(map(coprime_residues(n), λx. (a * x).mod(n)),
-      coprime_residues(n))` from the existing membership / injectivity /
-      uniqueness lemmas plus a length-equal-image-equal argument. Then
-      take the product over both sides and cancel via `cancel_coprime`.
+      `mul_mod_residues(n, a).is_unique` from `coprime_residues_unique`
+      plus `coprime_residues_mul_inj` (a generic
+      "map of unique by injective is unique" lemma would also work).
+      Then `is_permutation(mul_mod_residues(n, a), coprime_residues(n))`
+      follows by length + bidirectional membership + uniqueness, and
+      Euler follows by taking the product (using
+      `permutation_preserves_product`) and canceling via
+      `cancel_coprime`.
 
 ## DSA
 

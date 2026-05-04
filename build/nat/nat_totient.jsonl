@@ -659,12 +659,12 @@
 {"goal":"(a * b * x).congr_mod(1 * x, n)","proof":[]}
 {"goal":"1 * x = x","proof":["function(x0: Nat) { 1 * x0 = x0 }(x)"]}
 {"goal":"(a * b * x).congr_mod(x, n)","proof":[]}
-{"goal":"scale_inv_by_x","proof":["not (a * b).congr_mod(1, n)"]}
-{"goal":"(a * mod_inv(a, n)).congr_mod(1, n)","proof":["not a.coprime(n)"]}
-{"goal":"(a * mod_inv(a, n) * x).congr_mod(x, n)","proof":["not (a * mod_inv(a, n)).congr_mod(1, n)"]}
+{"goal":"scale_inv_by_x","proof":[]}
+{"goal":"(a * mod_inv(a, n)).congr_mod(1, n)","proof":[]}
+{"goal":"(a * mod_inv(a, n) * x).congr_mod(x, n)","proof":[]}
 {"goal":"a * (mod_inv(a, n) * x) = a * mod_inv(a, n) * x","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(a, mod_inv(a, n), x)"]}
 {"goal":"(a * (mod_inv(a, n) * x)).congr_mod(x, n)","proof":[]}
-{"goal":"mul_inv_x_back","proof":["not a.coprime(n)"]}
+{"goal":"mul_inv_x_back","proof":[]}
 {"goal":"lib(nat.nat_base).nat_mod(b * x)(n).congr_mod(b * x, n)","proof":[]}
 {"goal":"a.congr_mod(a, n)","proof":[]}
 {"goal":"mul_mod_inner_congr","proof":[]}
@@ -685,3 +685,21 @@
 {"goal":"coprime_residues(n).contains(y) and lib(nat.nat_base).nat_mod(a * y)(n) = x","proof":[]}
 {"goal":"exists(k0: Nat) { coprime_residues(n).contains(k0) and lib(nat.nat_base).nat_mod(a * k0)(n) = x }","proof":["function(x0: Nat) { not (x0 ∈ coprime_residues(n) and lib(nat.nat_base).nat_mod(a * x0, n) = x) }(y)"]}
 {"goal":"coprime_residues_mul_surj","proof":[]}
+{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).length = coprime_residues(n).length","proof":[]}
+{"goal":"coprime_residues(n).length = n.totient","proof":[]}
+{"goal":"mul_mod_residues_length","proof":["function(x0: Nat, x1: Nat) { map[Nat, Nat](coprime_residues(x0), mul_mod_fn(x0, x1)) = mul_mod_residues(x0, x1) }(n, a)","map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).length = n.totient","map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).length != n.totient"]}
+{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).contains(y)","proof":["function(x0: Nat, x1: Nat) { map[Nat, Nat](coprime_residues(x0), mul_mod_fn(x0, x1)) = mul_mod_residues(x0, x1) }(n, a)","y ∈ mul_mod_residues(n, a)","not y ∈ mul_mod_residues(n, a)"]}
+{"goal":"exists(k0: Nat) { coprime_residues(n).contains(k0) and mul_mod_fn(n, a)(k0) = y }","proof":["not y ∈ map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a))"]}
+{"goal":"coprime_residues(n).contains(x)","proof":[]}
+{"goal":"mul_mod_fn(n, a)(x) = lib(nat.nat_base).nat_mod(a * x)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0 * x1, x2) = mul_mod_fn(x2, x0, x1) }(a, x, n)"]}
+{"goal":"lib(nat.nat_base).nat_mod(a * x)(n) = y","proof":[]}
+{"goal":"coprime_residues(n).contains(lib(nat.nat_base).nat_mod(a * x)(n))","proof":[]}
+{"goal":"coprime_residues(n).contains(y)","proof":[]}
+{"goal":"mul_mod_residues_in_coprime","proof":[]}
+{"goal":"exists(k0: Nat) { coprime_residues(n).contains(k0) and lib(nat.nat_base).nat_mod(a * k0)(n) = y }","proof":[]}
+{"goal":"coprime_residues(n).contains(x)","proof":[]}
+{"goal":"mul_mod_fn(n, a)(x) = lib(nat.nat_base).nat_mod(a * x)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0 * x1, x2) = mul_mod_fn(x2, x0, x1) }(a, x, n)"]}
+{"goal":"mul_mod_fn(n, a)(x) = y","proof":["lib(nat.nat_base).nat_mod(a * x, n) != y","lib(nat.nat_base).nat_mod(a * x, n) = y"]}
+{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).contains(mul_mod_fn(n, a)(x))","proof":["not x ∈ coprime_residues(n)"]}
+{"goal":"map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a)).contains(y)","proof":["not mul_mod_fn(n, a, x) ∈ map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a))"]}
+{"goal":"coprime_in_mul_mod_residues","proof":["function(x0: Nat, x1: Nat) { map[Nat, Nat](coprime_residues(x0), mul_mod_fn(x0, x1)) = mul_mod_residues(x0, x1) }(n, a)","y ∈ coprime_residues(n)","0 != n and a.coprime(n)","not y ∈ map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a))","y ∈ map[Nat, Nat](coprime_residues(n), mul_mod_fn(n, a))"]}

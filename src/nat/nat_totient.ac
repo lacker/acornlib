@@ -9,6 +9,7 @@ from nat.nat_monoid import exp_one, exp_add, exp_zero
 from nat.nat_coprime import coprime_one_right
 from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans, congr_mod_mul, mod_lt, mod_congr_mod_self
 from list.list_base import List
+from list.list_sum import map, map_length, map_contains, map_contains_of_contains
 numerals Nat
 
 /// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
@@ -2109,3 +2110,72 @@ theorem coprime_residues_mul_surj(n: Nat, a: Nat, x: Nat) {
         }
     }
 }
+
+/// Top-level point function `x -> (a * x).mod(n)` so that `map` clients
+/// don't have to inline the lambda. Using a named function rather than an
+/// anonymous one inside `define mul_mod_residues` keeps the equational
+/// `mul_mod_residues(n, a) = map(coprime_residues(n), mul_mod_fn(n, a))`
+/// reflexive under `acorn check`'s certificate replay.
+define mul_mod_fn(n: Nat, a: Nat) -> (Nat -> Nat) {
+    function(x: Nat) { (a * x).mod(n) }
+}
+
+/// The map `x -> (a * x).mod(n)` applied to every element of
+/// `coprime_residues(n)`. By multiplication-by-unit membership and
+/// surjectivity, this list has the same elements as `coprime_residues(n)`.
+define mul_mod_residues(n: Nat, a: Nat) -> List[Nat] {
+    map(coprime_residues(n), mul_mod_fn(n, a))
+}
+
+/// Length of `mul_mod_residues` matches `coprime_residues`, which is
+/// `nat_totient(n)`.
+theorem mul_mod_residues_length(n: Nat, a: Nat) {
+    mul_mod_residues(n, a).length = n.totient
+} by {
+    map_length(coprime_residues(n), mul_mod_fn(n, a))
+    map(coprime_residues(n), mul_mod_fn(n, a)).length = coprime_residues(n).length
+    coprime_residues_length(n)
+    coprime_residues(n).length = n.totient
+}
+
+/// Forward inclusion: every element of `mul_mod_residues(n, a)` lies in
+/// `coprime_residues(n)` (assuming `n > 0` and `a` coprime to `n`).
+theorem mul_mod_residues_in_coprime(n: Nat, a: Nat, y: Nat) {
+    n != Nat.0 and a.coprime(n) and mul_mod_residues(n, a).contains(y)
+        implies coprime_residues(n).contains(y)
+} by {
+    if n != Nat.0 and a.coprime(n) and mul_mod_residues(n, a).contains(y) {
+        map(coprime_residues(n), mul_mod_fn(n, a)).contains(y)
+        map_contains(coprime_residues(n), mul_mod_fn(n, a), y)
+        let x: Nat satisfy {
+            coprime_residues(n).contains(x) and mul_mod_fn(n, a)(x) = y
+        }
+        coprime_residues(n).contains(x)
+        mul_mod_fn(n, a)(x) = (a * x).mod(n)
+        (a * x).mod(n) = y
+        coprime_residues_mul_mem(n, a, x)
+        coprime_residues(n).contains((a * x).mod(n))
+        coprime_residues(n).contains(y)
+    }
+}
+
+/// Backward inclusion: every element of `coprime_residues(n)` is in
+/// `mul_mod_residues(n, a)` (assuming `n > 0` and `a` coprime to `n`).
+theorem coprime_in_mul_mod_residues(n: Nat, a: Nat, y: Nat) {
+    n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(y)
+        implies mul_mod_residues(n, a).contains(y)
+} by {
+    if n != Nat.0 and a.coprime(n) and coprime_residues(n).contains(y) {
+        coprime_residues_mul_surj(n, a, y)
+        let x: Nat satisfy {
+            coprime_residues(n).contains(x) and (a * x).mod(n) = y
+        }
+        coprime_residues(n).contains(x)
+        mul_mod_fn(n, a)(x) = (a * x).mod(n)
+        mul_mod_fn(n, a)(x) = y
+        map_contains_of_contains(coprime_residues(n), mul_mod_fn(n, a), x)
+        map(coprime_residues(n), mul_mod_fn(n, a)).contains(mul_mod_fn(n, a)(x))
+        map(coprime_residues(n), mul_mod_fn(n, a)).contains(y)
+    }
+}
+
