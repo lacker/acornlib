@@ -5,7 +5,8 @@ from nat.nat_base import divides_self, divides_zero, add_imp_sub
 from nat.nat_crt import nat_coprime_combine, nat_congr_combine_coprime
 from nat.nat_fermat import rsa_pow_congr
 from nat.nat_modular_inverse import cancel_coprime
-from nat.nat_monoid import exp_one, exp_add
+from nat.nat_monoid import exp_one, exp_add, exp_zero
+from nat.nat_coprime import coprime_one_right
 from nat.nat_congruence import congr_mod_refl, congr_mod_symm, congr_mod_trans
 numerals Nat
 
@@ -1003,5 +1004,346 @@ theorem euler_pq(p: Nat, q: Nat, m: Nat) {
         cancel_coprime(m, p * q, m.pow((p - Nat.1) * (q - Nat.1)), Nat.1)
         m.pow((p - Nat.1) * (q - Nat.1)).congr_mod(Nat.1, p * q)
         m.pow((p * q).totient).congr_mod(Nat.1, p * q)
+    }
+}
+
+/// Forward: for prime `p`, "not coprime to `p * p`" implies `p` divides.
+theorem not_coprime_pp_imp_divides(p: Nat, k: Nat) {
+    p.is_prime and not k.coprime(p * p) implies p.divides(k)
+} by {
+    if p.is_prime and not k.coprime(p * p) {
+        coprime_mul_iff(k, p, p)
+        not (k.coprime(p) and k.coprime(p))
+        not k.coprime(p)
+        not_coprime_imp_divides_prime(p, k)
+    }
+}
+
+/// Backward: for prime `p`, "p divides k" implies "not coprime to p * p".
+theorem divides_imp_not_coprime_pp(p: Nat, k: Nat) {
+    p.is_prime and p.divides(k) implies not k.coprime(p * p)
+} by {
+    if p.is_prime and p.divides(k) {
+        coprime_mul_iff(k, p, p)
+        divides_prime_imp_not_coprime(p, k)
+        not k.coprime(p)
+        not (k.coprime(p) and k.coprime(p))
+    }
+}
+
+/// Inductive predicate for the prime-square count equivalence.
+define pp_count_pred(p: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        count_not_coprime_to(p * p, k) = count_multiples(p, k)
+    }
+}
+
+/// Inductive step: for prime `p`, `count_not_coprime_to(p * p, _)` and
+/// `count_multiples(p, _)` advance in lockstep.
+theorem pp_count_step(p: Nat, k: Nat) {
+    p.is_prime and pp_count_pred(p)(k)
+        implies pp_count_pred(p)(k.suc)
+} by {
+    if p.is_prime and pp_count_pred(p)(k) {
+        count_not_coprime_to(p * p, k) = count_multiples(p, k)
+        if p.divides(k) {
+            divides_imp_not_coprime_pp(p, k)
+            not k.coprime(p * p)
+            count_not_coprime_suc_yes(p * p, k)
+            count_not_coprime_to(p * p, k.suc) = count_not_coprime_to(p * p, k) + Nat.1
+            count_multiples_suc_yes(p, k)
+            count_multiples(p, k.suc) = count_multiples(p, k) + Nat.1
+            count_not_coprime_to(p * p, k.suc) = count_multiples(p, k.suc)
+        } else {
+            not p.divides(k)
+            if not k.coprime(p * p) {
+                not_coprime_pp_imp_divides(p, k)
+                p.divides(k)
+                false
+            }
+            k.coprime(p * p)
+            count_not_coprime_suc_no(p * p, k)
+            count_not_coprime_to(p * p, k.suc) = count_not_coprime_to(p * p, k)
+            count_multiples_suc_no(p, k)
+            count_multiples(p, k.suc) = count_multiples(p, k)
+            count_not_coprime_to(p * p, k.suc) = count_multiples(p, k.suc)
+        }
+    }
+}
+
+/// Inner induction for the prime-square count equivalence.
+theorem pp_count_run(p: Nat, k: Nat) {
+    p.is_prime implies pp_count_pred(p)(k)
+} by {
+    if p.is_prime {
+        let f: Nat -> Bool = function(x: Nat) {
+            count_not_coprime_to(p * p, x) = count_multiples(p, x)
+        }
+        forall(y: Nat) {
+            pp_count_pred(p)(y) = f(y)
+            f(y) = pp_count_pred(p)(y)
+        }
+        // Base.
+        count_not_coprime_to(p * p, Nat.0) = Nat.0
+        count_multiples(p, Nat.0) = Nat.0
+        f(Nat.0)
+        // Step.
+        forall(x: Nat) {
+            if f(x) {
+                pp_count_pred(p)(x)
+                pp_count_step(p, x)
+                pp_count_pred(p)(x.suc)
+                f(x.suc)
+            }
+        }
+        f(k)
+        pp_count_pred(p)(k)
+    }
+}
+
+/// `count_not_coprime_to(p * p, k) = count_multiples(p, k)` for prime `p`.
+theorem pp_count_eq(p: Nat, k: Nat) {
+    p.is_prime
+        implies count_not_coprime_to(p * p, k) = count_multiples(p, k)
+} by {
+    if p.is_prime {
+        pp_count_run(p, k)
+        pp_count_pred(p)(k)
+    }
+}
+
+/// Euler's totient at the square of a prime: `totient(p * p) = p * p - p`.
+theorem totient_pp(p: Nat) {
+    p.is_prime implies (p * p).totient = p * p - p
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        p != Nat.0
+        // count_not_coprime_to(p * p, p * p) = count_multiples(p, p * p) = p.
+        pp_count_eq(p, p * p)
+        count_not_coprime_to(p * p, p * p) = count_multiples(p, p * p)
+        count_multiples_div(p, p)
+        count_multiples(p, p * p) = p
+        count_not_coprime_to(p * p, p * p) = p
+        // count_coprime_to(p * p, p * p) + p = p * p, so = p * p - p.
+        coprime_partition(p * p, p * p)
+        count_coprime_to(p * p, p * p) + count_not_coprime_to(p * p, p * p) = p * p
+        count_coprime_to(p * p, p * p) + p = p * p
+        // Solve via add_imp_sub.
+        add_imp_sub(count_coprime_to(p * p, p * p), p, p * p)
+        count_coprime_to(p * p, p * p) = p * p - p
+        (p * p).totient = count_coprime_to(p * p, p * p)
+        (p * p).totient = p * p - p
+    }
+}
+
+/// Inductive predicate for `coprime_pow_iff`: at each `n`, coprimality with
+/// `p^(n.suc)` agrees with coprimality with `p`.
+define coprime_pow_pred(k: Nat, p: Nat) -> (Nat -> Bool) {
+    function(n: Nat) {
+        k.coprime(p.pow(n.suc)) = k.coprime(p)
+    }
+}
+
+/// Base case: `k.coprime(p^1) = k.coprime(p)` since `p^1 = p`.
+theorem coprime_pow_base(k: Nat, p: Nat) {
+    coprime_pow_pred(k, p)(Nat.0)
+} by {
+    exp_one(p)
+    p.pow(Nat.1) = p
+    Nat.0.suc = Nat.1
+    p.pow(Nat.0.suc) = p
+    k.coprime(p.pow(Nat.0.suc)) = k.coprime(p)
+}
+
+/// Inductive step: from `k.coprime(p^n.suc) = k.coprime(p)`, deduce the same
+/// for `n.suc.suc`.
+theorem coprime_pow_step(k: Nat, p: Nat, n: Nat) {
+    coprime_pow_pred(k, p)(n) implies coprime_pow_pred(k, p)(n.suc)
+} by {
+    if coprime_pow_pred(k, p)(n) {
+        k.coprime(p.pow(n.suc)) = k.coprime(p)
+        // p^(n.suc.suc) = p * p^(n.suc).
+        exp_add(p, Nat.1, n.suc)
+        Nat.1 + n.suc = n.suc.suc
+        p.pow(Nat.1 + n.suc) = p.pow(Nat.1) * p.pow(n.suc)
+        p.pow(n.suc.suc) = p.pow(Nat.1) * p.pow(n.suc)
+        exp_one(p)
+        p.pow(Nat.1) = p
+        p.pow(n.suc.suc) = p * p.pow(n.suc)
+        // Coprime split.
+        coprime_mul_iff(k, p, p.pow(n.suc))
+        if k.coprime(p * p.pow(n.suc)) {
+            k.coprime(p) and k.coprime(p.pow(n.suc))
+            k.coprime(p)
+        }
+        if k.coprime(p) {
+            k.coprime(p.pow(n.suc))
+            k.coprime(p) and k.coprime(p.pow(n.suc))
+            k.coprime(p * p.pow(n.suc))
+        }
+        k.coprime(p * p.pow(n.suc)) = k.coprime(p)
+        k.coprime(p.pow(n.suc.suc)) = k.coprime(p)
+    }
+}
+
+/// For prime `p` and `n >= 1`, `k.coprime(p^n) = k.coprime(p)`. Stated using
+/// `n.suc` so the precondition `n >= 1` is automatic.
+theorem coprime_pow_iff(k: Nat, p: Nat, n: Nat) {
+    k.coprime(p.pow(n.suc)) = k.coprime(p)
+} by {
+    let f: Nat -> Bool = function(x: Nat) {
+        k.coprime(p.pow(x.suc)) = k.coprime(p)
+    }
+    forall(y: Nat) {
+        coprime_pow_pred(k, p)(y) = f(y)
+        f(y) = coprime_pow_pred(k, p)(y)
+    }
+    coprime_pow_base(k, p)
+    coprime_pow_pred(k, p)(Nat.0)
+    f(Nat.0)
+    forall(x: Nat) {
+        if f(x) {
+            coprime_pow_pred(k, p)(x)
+            coprime_pow_step(k, p, x)
+            coprime_pow_pred(k, p)(x.suc)
+            f(x.suc)
+        }
+    }
+    f(n)
+}
+
+/// For prime `p` and `n >= 1`: "not coprime to `p^n`" iff `p` divides.
+theorem not_coprime_pow_iff_divides_prime(p: Nat, n: Nat, k: Nat) {
+    p.is_prime
+        implies (not k.coprime(p.pow(n.suc)) = p.divides(k))
+} by {
+    if p.is_prime {
+        coprime_pow_iff(k, p, n)
+        // k.coprime(p^(n.suc)) = k.coprime(p).
+        not_coprime_iff_divides_prime(p, k)
+        // not k.coprime(p) = p.divides(k).
+        if not k.coprime(p.pow(n.suc)) {
+            not k.coprime(p)
+            p.divides(k)
+        }
+        if p.divides(k) {
+            not k.coprime(p)
+            not k.coprime(p.pow(n.suc))
+        }
+    }
+}
+
+/// Inductive predicate for the prime-power count equivalence.
+define ppow_count_pred(p: Nat, n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        count_not_coprime_to(p.pow(n.suc), k) = count_multiples(p, k)
+    }
+}
+
+/// Inductive step.
+theorem ppow_count_step(p: Nat, n: Nat, k: Nat) {
+    p.is_prime and ppow_count_pred(p, n)(k)
+        implies ppow_count_pred(p, n)(k.suc)
+} by {
+    if p.is_prime and ppow_count_pred(p, n)(k) {
+        count_not_coprime_to(p.pow(n.suc), k) = count_multiples(p, k)
+        not_coprime_pow_iff_divides_prime(p, n, k)
+        if p.divides(k) {
+            not k.coprime(p.pow(n.suc))
+            count_not_coprime_suc_yes(p.pow(n.suc), k)
+            count_not_coprime_to(p.pow(n.suc), k.suc) =
+                count_not_coprime_to(p.pow(n.suc), k) + Nat.1
+            count_multiples_suc_yes(p, k)
+            count_multiples(p, k.suc) = count_multiples(p, k) + Nat.1
+            count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)
+        } else {
+            not p.divides(k)
+            if not k.coprime(p.pow(n.suc)) {
+                p.divides(k)
+                false
+            }
+            k.coprime(p.pow(n.suc))
+            count_not_coprime_suc_no(p.pow(n.suc), k)
+            count_not_coprime_to(p.pow(n.suc), k.suc) =
+                count_not_coprime_to(p.pow(n.suc), k)
+            count_multiples_suc_no(p, k)
+            count_multiples(p, k.suc) = count_multiples(p, k)
+            count_not_coprime_to(p.pow(n.suc), k.suc) = count_multiples(p, k.suc)
+        }
+    }
+}
+
+/// Inner induction for the prime-power count equivalence.
+theorem ppow_count_run(p: Nat, n: Nat, k: Nat) {
+    p.is_prime implies ppow_count_pred(p, n)(k)
+} by {
+    if p.is_prime {
+        let f: Nat -> Bool = function(x: Nat) {
+            count_not_coprime_to(p.pow(n.suc), x) = count_multiples(p, x)
+        }
+        forall(y: Nat) {
+            ppow_count_pred(p, n)(y) = f(y)
+            f(y) = ppow_count_pred(p, n)(y)
+        }
+        count_not_coprime_to(p.pow(n.suc), Nat.0) = Nat.0
+        count_multiples(p, Nat.0) = Nat.0
+        f(Nat.0)
+        forall(x: Nat) {
+            if f(x) {
+                ppow_count_pred(p, n)(x)
+                ppow_count_step(p, n, x)
+                ppow_count_pred(p, n)(x.suc)
+                f(x.suc)
+            }
+        }
+        f(k)
+        ppow_count_pred(p, n)(k)
+    }
+}
+
+/// Helper: `p^(n.suc) = p * p^n`, exposing the leading factor for
+/// `count_multiples_div`.
+theorem ppow_split(p: Nat, n: Nat) {
+    p.pow(n.suc) = p * p.pow(n)
+} by {
+    exp_add(p, Nat.1, n)
+    Nat.1 + n = n.suc
+    p.pow(Nat.1 + n) = p.pow(Nat.1) * p.pow(n)
+    p.pow(n.suc) = p.pow(Nat.1) * p.pow(n)
+    exp_one(p)
+    p.pow(Nat.1) = p
+    p.pow(n.suc) = p * p.pow(n)
+}
+
+/// Euler's totient at a prime power:
+///   `totient(p^(n.suc)) = p^(n.suc) - p^n` for prime `p`.
+theorem totient_p_pow(p: Nat, n: Nat) {
+    p.is_prime implies (p.pow(n.suc)).totient = p.pow(n.suc) - p.pow(n)
+} by {
+    if p.is_prime {
+        Nat.1 < p
+        p != Nat.0
+        ppow_count_run(p, n, p.pow(n.suc))
+        ppow_count_pred(p, n)(p.pow(n.suc))
+        count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) =
+            count_multiples(p, p.pow(n.suc))
+        // count_multiples(p, p * p^n) = p^n.
+        ppow_split(p, n)
+        p.pow(n.suc) = p * p.pow(n)
+        count_multiples_div(p, p.pow(n))
+        count_multiples(p, p * p.pow(n)) = p.pow(n)
+        count_multiples(p, p.pow(n.suc)) = p.pow(n)
+        count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n)
+        // Apply coprime_partition.
+        coprime_partition(p.pow(n.suc), p.pow(n.suc))
+        count_coprime_to(p.pow(n.suc), p.pow(n.suc)) +
+            count_not_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n.suc)
+        count_coprime_to(p.pow(n.suc), p.pow(n.suc)) + p.pow(n) = p.pow(n.suc)
+        add_imp_sub(count_coprime_to(p.pow(n.suc), p.pow(n.suc)),
+            p.pow(n), p.pow(n.suc))
+        count_coprime_to(p.pow(n.suc), p.pow(n.suc)) = p.pow(n.suc) - p.pow(n)
+        (p.pow(n.suc)).totient = count_coprime_to(p.pow(n.suc), p.pow(n.suc))
+        (p.pow(n.suc)).totient = p.pow(n.suc) - p.pow(n)
     }
 }

@@ -12,8 +12,11 @@ required for it. They support the textbook formulation and downstream
 cryptographic content.
 
 `src/nat/nat_totient.ac` contains:
-- `nat_totient` with `totient(p) = p - 1` and
-  `totient(p * q) = (p - 1) * (q - 1)` for distinct primes.
+- `nat_totient` with `totient(p) = p - 1`,
+  `totient(p * q) = (p - 1) * (q - 1)` for distinct primes, and
+  `totient(p^(n.suc)) = p^(n.suc) - p^n` for any prime power
+  (`totient_p_pow`, plus the convenience corollary `totient_pp`).
+- `coprime_pow_iff`: `k.coprime(p^(n.suc)) = k.coprime(p)` for prime `p`.
 - `count_multiples`, `count_not_coprime_to`, `coprime_partition`,
   and the inclusion-exclusion identity `ie_pq_pred`.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
