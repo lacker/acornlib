@@ -1,5 +1,6 @@
 from nat.basic_addition import Nat
-from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides, gcd_divides_left, gcd_divides_right
+from nat.nat_gcd import gcd_comm, gcd_one_left, gcd_one_right, gcd_mult_right, gcd_divides, gcd_divides_left, gcd_divides_right, divides_gcd
+from nat.nat_base import divides_mul
 numerals Nat
 
 attributes Nat {
@@ -58,6 +59,61 @@ theorem coprime_mul(a: Nat, b: Nat, c: Nat) {
         let k: Nat satisfy { d * k = 1 }
         d = 1
         a.gcd(b * c) = 1
+    }
+}
+
+/// Helper: any divisor of 1 in Nat equals 1.
+theorem nat_divides_one_imp_one(d: Nat) {
+    d.divides(Nat.1) implies d = Nat.1
+} by {
+    if d.divides(Nat.1) {
+        let k: Nat satisfy { d * k = Nat.1 }
+    }
+}
+
+/// Forward half: if `a` is coprime to `b * c`, it is coprime to `b`.
+theorem coprime_mul_imp_left(a: Nat, b: Nat, c: Nat) {
+    a.coprime(b * c) implies a.coprime(b)
+} by {
+    if a.coprime(b * c) {
+        let dab: Nat = a.gcd(b)
+        gcd_divides_left(a, b)
+        dab.divides(a)
+        gcd_divides_right(a, b)
+        dab.divides(b)
+        divides_mul(b, c, dab)
+        dab.divides(b * c)
+        divides_gcd(dab, a, b * c)
+        dab.divides(a.gcd(b * c))
+        a.gcd(b * c) = Nat.1
+        dab.divides(Nat.1)
+        nat_divides_one_imp_one(dab)
+        dab = Nat.1
+        a.gcd(b) = Nat.1
+    }
+}
+
+/// Forward half: if `a` is coprime to `b * c`, it is coprime to `c`.
+theorem coprime_mul_imp_right(a: Nat, b: Nat, c: Nat) {
+    a.coprime(b * c) implies a.coprime(c)
+} by {
+    if a.coprime(b * c) {
+        b * c = c * b
+        a.coprime(c * b)
+        coprime_mul_imp_left(a, c, b)
+    }
+}
+
+/// Coprimality with the product of `b` and `c` decomposes into coprimality
+/// with each factor.
+theorem coprime_mul_iff(a: Nat, b: Nat, c: Nat) {
+    a.coprime(b * c) implies (a.coprime(b) and a.coprime(c))
+} by {
+    if a.coprime(b * c) {
+        coprime_mul_imp_left(a, b, c)
+        a.coprime(b)
+        coprime_mul_imp_right(a, b, c)
+        a.coprime(c)
     }
 }
 

@@ -1,0 +1,200 @@
+from nat.nat_coprime import Nat, coprime_one_left
+from nat.nat_gcd import gcd_zero_left
+from nat.nat_factorisation import prime_divisor_is_one_or_self
+from nat.nat_base import divides_self
+numerals Nat
+
+/// The number of natural numbers in `[0, k)` that are coprime to `n`. Used to
+/// build Euler's totient via `nat_totient(n) = count_coprime_to(n, n)`.
+define count_coprime_to(n: Nat, k: Nat) -> Nat {
+    match k {
+        Nat.zero {
+            Nat.0
+        }
+        Nat.suc(j) {
+            if j.coprime(n) {
+                count_coprime_to(n, j) + Nat.1
+            } else {
+                count_coprime_to(n, j)
+            }
+        }
+    }
+}
+
+attributes Nat {
+    /// Euler's totient: the number of natural numbers in `[0, n)` that are
+    /// coprime to `n`. Reduces to `n - 1` for prime `n` and to
+    /// `(p - 1) * (q - 1)` for distinct primes `p`, `q`.
+    define totient(self) -> Nat {
+        count_coprime_to(self, self)
+    }
+}
+
+/// Recurrence: `count_coprime_to(n, k.suc)` is `count_coprime_to(n, k) + 1` when
+/// `k` is coprime to `n`.
+theorem count_coprime_to_suc_yes(n: Nat, k: Nat) {
+    k.coprime(n)
+        implies count_coprime_to(n, k.suc) = count_coprime_to(n, k) + Nat.1
+}
+
+/// Recurrence: `count_coprime_to(n, k.suc)` equals `count_coprime_to(n, k)` when
+/// `k` is not coprime to `n`.
+theorem count_coprime_to_suc_no(n: Nat, k: Nat) {
+    not k.coprime(n)
+        implies count_coprime_to(n, k.suc) = count_coprime_to(n, k)
+}
+
+/// Inductive predicate for `totient_prime`: `count_coprime_to(p, k)` equals
+/// `k - 1` for `1 <= k <= p` when `p` is prime.
+define totient_prime_pred(p: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        Nat.1 <= k and k <= p implies count_coprime_to(p, k) = k - Nat.1
+    }
+}
+
+/// Base case for the prime-totient recurrence: `count_coprime_to(p, 1) = 0`.
+theorem totient_prime_base(p: Nat) {
+    p.is_prime implies totient_prime_pred(p)(Nat.1)
+} by {
+    if p.is_prime {
+        if Nat.1 <= Nat.1 and Nat.1 <= p {
+            // Nat.0 not coprime to prime p (gcd(0, p) = p != 1).
+            gcd_zero_left(p)
+            Nat.0.gcd(p) = p
+            Nat.1 < p
+            p != Nat.1
+            not Nat.0.coprime(p)
+            count_coprime_to_suc_no(p, Nat.0)
+            count_coprime_to(p, Nat.1) = count_coprime_to(p, Nat.0)
+            count_coprime_to(p, Nat.0) = Nat.0
+            count_coprime_to(p, Nat.1) = Nat.0
+            Nat.1 - Nat.1 = Nat.0
+            count_coprime_to(p, Nat.1) = Nat.1 - Nat.1
+        }
+    }
+}
+
+/// For prime `p` and `1 <= k < p`, `k` is coprime to `p`.
+theorem coprime_below_prime(p: Nat, k: Nat) {
+    p.is_prime and Nat.1 <= k and k < p implies k.coprime(p)
+} by {
+    if p.is_prime and Nat.1 <= k and k < p {
+        // gcd(k, p) divides p prime, so it's 1 or p; cannot be p since k < p.
+        let d: Nat = k.gcd(p)
+        // d divides p (gcd_divides_right gives this).
+        // d divides k as well, so d <= k < p (so d != p).
+        // d > 0 since p > 0.
+        d.divides(p)
+        d.divides(k)
+        prime_divisor_is_one_or_self(p, d)
+        d = Nat.1 or d = p
+        if d = p {
+            // p divides k, but k < p and k > 0 contradicts.
+            p.divides(k)
+            k != Nat.0
+            // p <= k contradicts k < p.
+            false
+        }
+        d = Nat.1
+        k.gcd(p) = Nat.1
+        k.coprime(p)
+    }
+}
+
+/// Inductive step for the prime-totient recurrence.
+theorem totient_prime_step(p: Nat, k: Nat) {
+    p.is_prime and totient_prime_pred(p)(k) implies totient_prime_pred(p)(k.suc)
+} by {
+    if p.is_prime and totient_prime_pred(p)(k) {
+        if Nat.1 <= k.suc and k.suc <= p {
+            if k = Nat.0 {
+                // Reduces to the base case.
+                totient_prime_base(p)
+                totient_prime_pred(p)(Nat.1)
+                Nat.1 <= Nat.1
+                Nat.1 <= p
+                count_coprime_to(p, Nat.1) = Nat.1 - Nat.1
+                k.suc = Nat.1
+                k.suc - Nat.1 = Nat.1 - Nat.1
+                count_coprime_to(p, k.suc) = k.suc - Nat.1
+            } else {
+                Nat.1 <= k
+                k <= k.suc
+                k.suc <= p
+                k <= p
+                count_coprime_to(p, k) = k - Nat.1
+                // k is in [1, p) since k < k.suc <= p.
+                k < k.suc
+                k <= p
+                k != p or k = p
+                if k = p {
+                    // k.suc = p.suc > p contradicts k.suc <= p.
+                    false
+                }
+                k != p
+                k < p
+                coprime_below_prime(p, k)
+                k.coprime(p)
+                count_coprime_to_suc_yes(p, k)
+                count_coprime_to(p, k.suc) = count_coprime_to(p, k) + Nat.1
+                count_coprime_to(p, k.suc) = (k - Nat.1) + Nat.1
+                // k - 1 + 1 = k since k >= 1.
+                Nat.1 <= k
+                let kp: Nat satisfy { kp.suc = k }
+                k - Nat.1 = kp
+                kp + Nat.1 = kp.suc
+                (k - Nat.1) + Nat.1 = k
+                count_coprime_to(p, k.suc) = k
+                // Goal: count_coprime_to(p, k.suc) = k.suc - 1 = k.
+                k.suc - Nat.1 = k
+                count_coprime_to(p, k.suc) = k.suc - Nat.1
+            }
+        }
+    }
+}
+
+/// Inner induction for `totient_prime`: walks the recurrence up to `n = p`.
+theorem totient_prime_run(p: Nat, n: Nat) {
+    p.is_prime implies totient_prime_pred(p)(n)
+} by {
+    if p.is_prime {
+        let f: Nat -> Bool = function(x: Nat) {
+            Nat.1 <= x and x <= p implies count_coprime_to(p, x) = x - Nat.1
+        }
+        forall(y: Nat) {
+            totient_prime_pred(p)(y) = f(y)
+            f(y) = totient_prime_pred(p)(y)
+        }
+        // Base at 0: vacuous since not (1 <= 0).
+        if Nat.1 <= Nat.0 {
+            false
+        }
+        not (Nat.1 <= Nat.0)
+        f(Nat.0)
+        forall(x: Nat) {
+            if f(x) {
+                totient_prime_pred(p)(x)
+                totient_prime_step(p, x)
+                totient_prime_pred(p)(x.suc)
+                f(x.suc)
+            }
+        }
+        f(n)
+        totient_prime_pred(p)(n)
+    }
+}
+
+/// Euler's totient at a prime: `totient(p) = p - 1`.
+theorem totient_prime(p: Nat) {
+    p.is_prime implies p.totient = p - Nat.1
+} by {
+    if p.is_prime {
+        totient_prime_run(p, p)
+        totient_prime_pred(p)(p)
+        Nat.1 <= p
+        p <= p
+        count_coprime_to(p, p) = p - Nat.1
+        p.totient = count_coprime_to(p, p)
+        p.totient = p - Nat.1
+    }
+}

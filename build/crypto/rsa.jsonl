@@ -17,10 +17,10 @@
 {"goal":"m.pow(k * (p - 1) * (q - 1) + 1).congr_mod(m, q)","proof":[]}
 {"goal":"m.pow(e * d).congr_mod(m, q)","proof":[]}
 {"goal":"rsa_pow_mod_q","proof":[]}
-{"goal":"p.is_prime","proof":["p.is_prime and q.is_prime and p != q and lib(nat.nat_base).nat_mod(e * d, (p - 1) * (q - 1)) = 1","p.is_prime and q.is_prime"]}
-{"goal":"q.is_prime","proof":["p.is_prime and q.is_prime and p != q and lib(nat.nat_base).nat_mod(e * d, (p - 1) * (q - 1)) = 1","p.is_prime and q.is_prime"]}
-{"goal":"p != q","proof":["p.is_prime and q.is_prime and p != q and lib(nat.nat_base).nat_mod(e * d, (p - 1) * (q - 1)) = 1"]}
-{"goal":"lib(nat.nat_base).nat_mod(e * d)((p - 1) * (q - 1)) = 1","proof":["p.is_prime and q.is_prime and p != q and lib(nat.nat_base).nat_mod(e * d, (p - 1) * (q - 1)) = 1"]}
+{"goal":"p.is_prime","proof":[]}
+{"goal":"q.is_prime","proof":[]}
+{"goal":"p != q","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(e * d)((p - 1) * (q - 1)) = 1","proof":[]}
 {"goal":"exists(k0: Nat) { k0 * ((p - 1) * (q - 1)) + 1 = e * d }","proof":[]}
 {"goal":"m.pow(e * d).congr_mod(m, p)","proof":[]}
 {"goal":"m.pow(e * d).congr_mod(m, q)","proof":[]}

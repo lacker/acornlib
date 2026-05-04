@@ -1,0 +1,70 @@
+{"goal":"count_coprime_to_suc_yes","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x0.coprime(x2) { count_coprime_to(x2, x0) + 1 } else { count_coprime_to(x2, x0) }) = count_coprime_to(x2, x1) }(k, k.suc, n)"]}
+{"goal":"count_coprime_to_suc_no","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (if x0.coprime(x2) { count_coprime_to(x2, x0) + 1 } else { count_coprime_to(x2, x0) }) = count_coprime_to(x2, x1) }(k, k.suc, n)"]}
+{"goal":"0.gcd(p) = p","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"p != 1","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(1, 1)"]}
+{"goal":"not 0.coprime(p)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(0, p)"]}
+{"goal":"count_coprime_to(p, 1) = count_coprime_to(p, 0)","proof":[]}
+{"goal":"count_coprime_to(p, 0) = 0","proof":["function(x0: Nat, x1: Nat) { Nat.zero != x0 or count_coprime_to(x1, x0) = 0 }(0, p)"]}
+{"goal":"count_coprime_to(p, 1) = 0","proof":[]}
+{"goal":"1 - 1 = 0","proof":["function(x0: Nat) { x0 - x0 = 0 }(1)"]}
+{"goal":"count_coprime_to(p, 1) = 1 - 1","proof":[]}
+{"goal":"totient_prime_base","proof":["function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(1, p)"]}
+{"goal":"d.divides(p)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1).divides(x1) }(k, p)"]}
+{"goal":"d.divides(k)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = x1.gcd(x0) }(p, k)","function(x0: Nat, x1: Nat) { x0.gcd(x1).divides(x1) }(p, k)"]}
+{"goal":"d = 1 or d = p","proof":[]}
+{"goal":"p.divides(k)","proof":[]}
+{"goal":"k != 0","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0 < x1 or not x1 <= x2 or x0 < x2 }(0, 0.suc, k)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 != x1 }[Nat](0, k)","function(x0: Nat) { x0 < x0.suc }(0)"]}
+{"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0.divides(x1) or x0 <= x1 or 0 = x1 }(p, k)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(k, p)"]}
+{"goal":"d = 1","proof":[]}
+{"goal":"k.gcd(p) = 1","proof":[]}
+{"goal":"k.coprime(p)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1) = 1 = x0.coprime(x1) }(k, p)"]}
+{"goal":"coprime_below_prime","proof":[]}
+{"goal":"totient_prime_pred(p)(1)","proof":[]}
+{"goal":"1 <= 1","proof":[]}
+{"goal":"1 <= p","proof":[]}
+{"goal":"count_coprime_to(p, 1) = 1 - 1","proof":["function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(1, p)"]}
+{"goal":"k.suc = 1","proof":[]}
+{"goal":"k.suc - 1 = 1 - 1","proof":[]}
+{"goal":"count_coprime_to(p, k.suc) = k.suc - 1","proof":[]}
+{"goal":"1 <= k","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(0, k)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(0, k)","function(x0: Nat) { not x0 < 0 }(k)"]}
+{"goal":"k <= k.suc","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(k, k.suc)","function(x0: Nat) { x0 + 1 = x0.suc }(k)","not exists(k0: Nat) { k.suc = k + k0 }","function(x0: Nat) { k + x0 != k.suc }(1)"]}
+{"goal":"k.suc <= p","proof":[]}
+{"goal":"k <= p","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0 < x1.suc }(p, k)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(p, k.suc)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(p, k)"]}
+{"goal":"count_coprime_to(p, k) = k - 1","proof":["function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(k, p)"]}
+{"goal":"k < k.suc","proof":["function(x0: Nat) { x0 < x0.suc }(k)"]}
+{"goal":"k <= p","proof":[]}
+{"goal":"k != p or k = p","proof":[]}
+{"goal":"false","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(p, k.suc)"]}
+{"goal":"k != p","proof":[]}
+{"goal":"k < p","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 < x0 or x0 = x1 }(k, p)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(p, k)"]}
+{"goal":"k.coprime(p)","proof":[]}
+{"goal":"count_coprime_to(p, k.suc) = count_coprime_to(p, k) + 1","proof":[]}
+{"goal":"count_coprime_to(p, k.suc) = k - 1 + 1","proof":[]}
+{"goal":"1 <= k","proof":[]}
+{"goal":"exists(k0: Nat) { k0.suc = k }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or 0 = x0 }(k)"]}
+{"goal":"k - 1 = kp","proof":["function(x0: Nat) { x0.suc - 1 = x0 }(kp)"]}
+{"goal":"kp + 1 = kp.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, kp)"]}
+{"goal":"k - 1 + 1 = k","proof":[]}
+{"goal":"count_coprime_to(p, k.suc) = k","proof":[]}
+{"goal":"k.suc - 1 = k","proof":["function(x0: Nat) { x0.suc - 1 = x0 }(k)"]}
+{"goal":"count_coprime_to(p, k.suc) = k.suc - 1","proof":[]}
+{"goal":"totient_prime_step","proof":["function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(k.suc, p)"]}
+{"goal":"totient_prime_pred(p)(y) = f(y)","proof":["function(x0: Nat) { (not 1 <= x0 or not x0 <= p or x0 - 1 = count_coprime_to(p, x0)) = f(x0) }(y)","function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(y, p)"]}
+{"goal":"f(y) = totient_prime_pred(p)(y)","proof":[]}
+{"goal":"false","proof":["function(x0: Nat) { not x0 <= 0 or 0 = x0 }(1)"]}
+{"goal":"not 1 <= 0","proof":[]}
+{"goal":"f(0)","proof":["function(x0: Nat) { (not 1 <= x0 or not x0 <= p or x0 - 1 = count_coprime_to(p, x0)) = f(x0) }(0)"]}
+{"goal":"totient_prime_pred(p)(x)","proof":[]}
+{"goal":"totient_prime_pred(p)(x.suc)","proof":[]}
+{"goal":"f(x.suc)","proof":[]}
+{"goal":"f(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, n)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"totient_prime_pred(p)(n)","proof":[]}
+{"goal":"totient_prime_run","proof":[]}
+{"goal":"totient_prime_pred(p)(p)","proof":[]}
+{"goal":"1 <= p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 < x0 }[Nat](1, p)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(p, 1)"]}
+{"goal":"p <= p","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0) { not lib(relation_basic).is_reflexive[T0](x0) or x0(x1, x1) }[Nat](Nat.lte, p)"]}
+{"goal":"count_coprime_to(p, p) = p - 1","proof":["function(x0: Nat, x1: Nat) { (not 1 <= x0 or not x0 <= x1 or x0 - 1 = count_coprime_to(x1, x0)) = totient_prime_pred(x1, x0) }(p, p)"]}
+{"goal":"p.totient = count_coprime_to(p, p)","proof":["function(x0: Nat) { x0.totient = count_coprime_to(x0, x0) }(p)"]}
+{"goal":"p.totient = p - 1","proof":[]}
+{"goal":"totient_prime","proof":[]}

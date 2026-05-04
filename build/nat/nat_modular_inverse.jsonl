@@ -56,7 +56,7 @@
 {"goal":"is_mod_inv_iff_congr","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (x0 * x1).congr_mod(Nat.1, x2) = x0.is_mod_inv(x1, x2) }(a, b, n)"]}
 {"goal":"(a * b1).congr_mod(Nat.1, n)","proof":[]}
 {"goal":"(a * b2).congr_mod(Nat.1, n)","proof":[]}
-{"goal":"mod_inv_unique","proof":["not (a * b2).congr_mod(Nat.1, n) or not (a * b1).congr_mod(Nat.1, n) or not a.is_mod_inv(b2, n) or not a.is_mod_inv(b1, n)","a.is_mod_inv(b2, n)","a.is_mod_inv(b1, n)","(a * b1).congr_mod(Nat.1, n)","(a * b2).congr_mod(Nat.1, n)","not (a * b2).congr_mod(Nat.1, n)"]}
+{"goal":"mod_inv_unique","proof":[]}
 {"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, n) }","proof":[]}
 {"goal":"a.is_mod_inv(b0, n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (x0 * x1).congr_mod(Nat.1, x2) = x0.is_mod_inv(x1, x2) }(a, b0, n)"]}
 {"goal":"Nat.0 = Nat.0","proof":[]}

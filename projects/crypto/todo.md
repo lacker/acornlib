@@ -7,15 +7,21 @@ No current blockers.
 ## RSA
 
 The headline `rsa_correctness` is proven directly from Fermat's little theorem
-and the existing CRT (`nat_congr_combine_coprime`), so the totient/Euler
-roadmap below is no longer required for RSA itself. It remains useful for
-the textbook formulation and as a stepping stone toward later cryptographic
-content.
+and the existing CRT (`nat_congr_combine_coprime`); the items below are not
+required for it. They support the textbook formulation and downstream
+cryptographic content. `nat_totient` is defined in `src/nat/nat_totient.ac`
+and `totient(p) = p - 1` is proven there.
 
-- [ ] Define `nat_totient` (Euler's totient function) on `Nat`.
-- [ ] Prove `totient(p) = p - 1` for prime `p`.
-- [ ] Prove `totient(p * q) = (p - 1) * (q - 1)` for distinct primes `p`, `q`.
-- [ ] Prove Euler's theorem: `gcd(a, n) = 1` implies `a.pow(totient(n)).mod(n) = 1`.
+- [ ] Prove totient is multiplicative on coprime arguments
+      (`nat_totient(m * n) = nat_totient(m) * nat_totient(n)` when
+      `m.coprime(n)`), via the CRT-induced bijection between `[0, mn)` and
+      `[0, m) x [0, n)`. The split predicate is already available as
+      `coprime_mul_iff` in `nat_coprime.ac`. Then derive
+      `totient(p * q) = (p - 1) * (q - 1)` for distinct primes as a
+      corollary.
+- [ ] Prove Euler's theorem: `gcd(a, n) = 1` implies
+      `a.pow(nat_totient(n)).mod(n) = 1`. Standard route: multiplication
+      by `a` permutes the units in `Z/n`, take the product and cancel.
 
 ## DSA
 
