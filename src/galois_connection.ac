@@ -1,7 +1,8 @@
 /// Galois connections between partially ordered types.
 
 from order import PartialOrder, lte_refl, lte_trans, lte_antisymm
-from order_maps import is_monotone, monotone_step
+from functions import is_surjective_fn
+from order_maps import is_monotone, is_order_embedding, is_order_surjection, monotone_step
 
 /// True if `lower` is left adjoint to `upper`.
 define is_galois_connection[A: PartialOrder, B: PartialOrder](
@@ -468,5 +469,477 @@ theorem galois_coinsertion_closure_eq_self[A: PartialOrder, B: PartialOrder](
         galois_coinsertion_unit_eq(lower, upper, a)
         galois_closure_at(lower, upper, a)
         galois_closure(lower, upper, a) = a
+    }
+}
+
+/// True if a self-map lies above every element.
+define is_extensive[A: PartialOrder](f: A -> A) -> Bool {
+    forall(a: A) {
+        a <= f(a)
+    }
+}
+
+/// True if a self-map lies below every element.
+define is_reductive[A: PartialOrder](f: A -> A) -> Bool {
+    forall(a: A) {
+        f(a) <= a
+    }
+}
+
+/// True if applying a self-map twice is the same as applying it once.
+define is_idempotent_map[A](f: A -> A) -> Bool {
+    forall(a: A) {
+        f(f(a)) = f(a)
+    }
+}
+
+/// True if a map is a closure operator.
+define is_closure_operator[A: PartialOrder](close: A -> A) -> Bool {
+    is_monotone(close) and is_extensive(close) and is_idempotent_map(close)
+}
+
+/// True if a map is a kernel operator.
+define is_kernel_operator[A: PartialOrder](kernel: A -> A) -> Bool {
+    is_monotone(kernel) and is_reductive(kernel) and is_idempotent_map(kernel)
+}
+
+/// A closure operator is monotone.
+theorem closure_operator_is_monotone[A: PartialOrder](close: A -> A) {
+    is_closure_operator(close) implies is_monotone(close)
+} by {
+    if is_closure_operator(close) {
+        is_closure_operator(close) =
+            (is_monotone(close) and is_extensive(close) and is_idempotent_map(close))
+        is_monotone(close)
+    }
+}
+
+/// A closure operator is extensive.
+theorem closure_operator_is_extensive[A: PartialOrder](close: A -> A) {
+    is_closure_operator(close) implies is_extensive(close)
+} by {
+    if is_closure_operator(close) {
+        is_closure_operator(close) =
+            (is_monotone(close) and is_extensive(close) and is_idempotent_map(close))
+        is_extensive(close)
+    }
+}
+
+/// A closure operator is idempotent.
+theorem closure_operator_is_idempotent[A: PartialOrder](close: A -> A) {
+    is_closure_operator(close) implies is_idempotent_map(close)
+} by {
+    if is_closure_operator(close) {
+        is_closure_operator(close) =
+            (is_monotone(close) and is_extensive(close) and is_idempotent_map(close))
+        is_idempotent_map(close)
+    }
+}
+
+/// A closure operator lies above an element.
+theorem closure_operator_extensive_at[A: PartialOrder](close: A -> A, a: A) {
+    is_closure_operator(close) implies a <= close(a)
+} by {
+    if is_closure_operator(close) {
+        closure_operator_is_extensive(close)
+        is_extensive(close)
+        is_extensive(close) = forall(x: A) {
+            x <= close(x)
+        }
+        a <= close(a)
+    }
+}
+
+/// Applying a closure operator twice is the same as applying it once.
+theorem closure_operator_idempotent_at[A: PartialOrder](close: A -> A, a: A) {
+    is_closure_operator(close) implies close(close(a)) = close(a)
+} by {
+    if is_closure_operator(close) {
+        closure_operator_is_idempotent(close)
+        is_idempotent_map(close)
+        is_idempotent_map(close) = forall(x: A) {
+            close(close(x)) = close(x)
+        }
+        close(close(a)) = close(a)
+    }
+}
+
+/// A kernel operator is monotone.
+theorem kernel_operator_is_monotone[A: PartialOrder](kernel: A -> A) {
+    is_kernel_operator(kernel) implies is_monotone(kernel)
+} by {
+    if is_kernel_operator(kernel) {
+        is_kernel_operator(kernel) =
+            (is_monotone(kernel) and is_reductive(kernel) and is_idempotent_map(kernel))
+        is_monotone(kernel)
+    }
+}
+
+/// A kernel operator is reductive.
+theorem kernel_operator_is_reductive[A: PartialOrder](kernel: A -> A) {
+    is_kernel_operator(kernel) implies is_reductive(kernel)
+} by {
+    if is_kernel_operator(kernel) {
+        is_kernel_operator(kernel) =
+            (is_monotone(kernel) and is_reductive(kernel) and is_idempotent_map(kernel))
+        is_reductive(kernel)
+    }
+}
+
+/// A kernel operator is idempotent.
+theorem kernel_operator_is_idempotent[A: PartialOrder](kernel: A -> A) {
+    is_kernel_operator(kernel) implies is_idempotent_map(kernel)
+} by {
+    if is_kernel_operator(kernel) {
+        is_kernel_operator(kernel) =
+            (is_monotone(kernel) and is_reductive(kernel) and is_idempotent_map(kernel))
+        is_idempotent_map(kernel)
+    }
+}
+
+/// A kernel operator lies below an element.
+theorem kernel_operator_reductive_at[A: PartialOrder](kernel: A -> A, a: A) {
+    is_kernel_operator(kernel) implies kernel(a) <= a
+} by {
+    if is_kernel_operator(kernel) {
+        kernel_operator_is_reductive(kernel)
+        is_reductive(kernel)
+        is_reductive(kernel) = forall(x: A) {
+            kernel(x) <= x
+        }
+        kernel(a) <= a
+    }
+}
+
+/// Applying a kernel operator twice is the same as applying it once.
+theorem kernel_operator_idempotent_at[A: PartialOrder](kernel: A -> A, a: A) {
+    is_kernel_operator(kernel) implies kernel(kernel(a)) = kernel(a)
+} by {
+    if is_kernel_operator(kernel) {
+        kernel_operator_is_idempotent(kernel)
+        is_idempotent_map(kernel)
+        is_idempotent_map(kernel) = forall(x: A) {
+            kernel(kernel(x)) = kernel(x)
+        }
+        kernel(kernel(a)) = kernel(a)
+    }
+}
+
+/// The closure induced by a Galois connection is a closure operator.
+theorem galois_closure_is_closure_operator[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies
+    is_closure_operator(galois_closure(lower, upper))
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_closure_monotone(lower, upper)
+        is_monotone(galois_closure(lower, upper))
+        forall(a: A) {
+            galois_closure_extensive(lower, upper, a)
+            a <= galois_closure(lower, upper, a)
+        }
+        is_extensive(galois_closure(lower, upper))
+        forall(a: A) {
+            galois_closure_idempotent(lower, upper, a)
+            galois_closure(lower, upper, galois_closure(lower, upper, a)) =
+            galois_closure(lower, upper, a)
+        }
+        is_idempotent_map(galois_closure(lower, upper))
+        is_closure_operator(galois_closure(lower, upper)) =
+            (is_monotone(galois_closure(lower, upper)) and
+            is_extensive(galois_closure(lower, upper)) and
+            is_idempotent_map(galois_closure(lower, upper)))
+        is_monotone(galois_closure(lower, upper)) and
+            is_extensive(galois_closure(lower, upper)) and
+            is_idempotent_map(galois_closure(lower, upper))
+        is_closure_operator(galois_closure(lower, upper))
+    }
+}
+
+/// The kernel induced by a Galois connection is a kernel operator.
+theorem galois_kernel_is_kernel_operator[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_connection(lower, upper) implies
+    is_kernel_operator(galois_kernel(lower, upper))
+} by {
+    if is_galois_connection(lower, upper) {
+        galois_kernel_monotone(lower, upper)
+        is_monotone(galois_kernel(lower, upper))
+        forall(b: B) {
+            galois_kernel_reductive(lower, upper, b)
+            galois_kernel(lower, upper, b) <= b
+        }
+        is_reductive(galois_kernel(lower, upper))
+        forall(b: B) {
+            galois_kernel_idempotent(lower, upper, b)
+            galois_kernel(lower, upper, galois_kernel(lower, upper, b)) =
+            galois_kernel(lower, upper, b)
+        }
+        is_idempotent_map(galois_kernel(lower, upper))
+        is_kernel_operator(galois_kernel(lower, upper)) =
+            (is_monotone(galois_kernel(lower, upper)) and
+            is_reductive(galois_kernel(lower, upper)) and
+            is_idempotent_map(galois_kernel(lower, upper)))
+        is_monotone(galois_kernel(lower, upper)) and
+            is_reductive(galois_kernel(lower, upper)) and
+            is_idempotent_map(galois_kernel(lower, upper))
+        is_kernel_operator(galois_kernel(lower, upper))
+    }
+}
+
+/// A Galois insertion gives a closure operator on the lower side.
+theorem galois_insertion_closure_is_closure_operator[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_insertion(lower, upper) implies
+    is_closure_operator(galois_closure(lower, upper))
+} by {
+    if is_galois_insertion(lower, upper) {
+        galois_insertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_closure_is_closure_operator(lower, upper)
+        is_closure_operator(galois_closure(lower, upper))
+    }
+}
+
+/// A Galois coinsertion gives a kernel operator on the upper side.
+theorem galois_coinsertion_kernel_is_kernel_operator[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_coinsertion(lower, upper) implies
+    is_kernel_operator(galois_kernel(lower, upper))
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        galois_coinsertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_kernel_is_kernel_operator(lower, upper)
+        is_kernel_operator(galois_kernel(lower, upper))
+    }
+}
+
+/// The upper adjoint of a Galois insertion is an order embedding.
+theorem galois_insertion_upper_is_order_embedding[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_insertion(lower, upper) implies is_order_embedding(upper)
+} by {
+    if is_galois_insertion(lower, upper) {
+        galois_insertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        forall(x: B, y: B) {
+            if upper(x) <= upper(y) {
+                monotone_step(lower, upper(x), upper(y))
+                lower(upper(x)) <= lower(upper(y))
+                galois_insertion_counit_eq(lower, upper, x)
+                galois_insertion_counit_eq(lower, upper, y)
+                x <= y
+            }
+            if x <= y {
+                monotone_step(upper, x, y)
+                upper(x) <= upper(y)
+            }
+            upper(x) <= upper(y) = (x <= y)
+        }
+        is_order_embedding(upper)
+    }
+}
+
+/// The lower adjoint of a Galois insertion is an order-preserving surjection.
+theorem galois_insertion_lower_is_order_surjection[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_insertion(lower, upper) implies is_order_surjection(lower)
+} by {
+    if is_galois_insertion(lower, upper) {
+        galois_insertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        forall(b: B) {
+            exists(a: A) {
+                a = upper(b) and lower(a) = b
+            }
+        }
+        is_surjective_fn(lower)
+        is_order_surjection(lower)
+    }
+}
+
+/// The lower adjoint of a Galois coinsertion is an order embedding.
+theorem galois_coinsertion_lower_is_order_embedding[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_coinsertion(lower, upper) implies is_order_embedding(lower)
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        galois_coinsertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_connection_lower_monotone(lower, upper)
+        is_monotone(lower)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        forall(x: A, y: A) {
+            if lower(x) <= lower(y) {
+                monotone_step(upper, lower(x), lower(y))
+                upper(lower(x)) <= upper(lower(y))
+                galois_coinsertion_unit_eq(lower, upper, x)
+                galois_coinsertion_unit_eq(lower, upper, y)
+                x <= y
+            }
+            if x <= y {
+                monotone_step(lower, x, y)
+                lower(x) <= lower(y)
+            }
+            lower(x) <= lower(y) = (x <= y)
+        }
+        is_order_embedding(lower)
+    }
+}
+
+/// The upper adjoint of a Galois coinsertion is an order-preserving surjection.
+theorem galois_coinsertion_upper_is_order_surjection[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A
+) {
+    is_galois_coinsertion(lower, upper) implies is_order_surjection(upper)
+} by {
+    if is_galois_coinsertion(lower, upper) {
+        galois_coinsertion_is_connection(lower, upper)
+        is_galois_connection(lower, upper)
+        galois_connection_upper_monotone(lower, upper)
+        is_monotone(upper)
+        forall(a: A) {
+            exists(b: B) {
+                b = lower(a) and upper(b) = a
+            }
+        }
+        is_surjective_fn(upper)
+        is_order_surjection(upper)
+    }
+}
+
+/// True if a self-map fixes an element.
+define is_fixed_by[A](f: A -> A, a: A) -> Bool {
+    f(a) = a
+}
+
+/// An element in the image of the upper adjoint of an insertion is closed.
+theorem galois_insertion_closure_fixed_of_upper_image[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A
+) {
+    is_galois_insertion(lower, upper) and exists(b: B) { a = upper(b) } implies
+    is_fixed_by(galois_closure(lower, upper), a)
+} by {
+    if is_galois_insertion(lower, upper) and exists(b: B) { a = upper(b) } {
+        let b: B satisfy {
+            a = upper(b)
+        }
+        galois_insertion_counit_eq(lower, upper, b)
+        lower(upper(b)) = b
+        upper(lower(upper(b))) = upper(b)
+        galois_closure_at(lower, upper, upper(b))
+        galois_closure(lower, upper, upper(b)) = upper(b)
+        galois_closure(lower, upper, a) = a
+        is_fixed_by(galois_closure(lower, upper), a)
+    }
+}
+
+/// An element in the image of the lower adjoint of a coinsertion is kernel-stable.
+theorem galois_coinsertion_kernel_fixed_of_lower_image[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    b: B
+) {
+    is_galois_coinsertion(lower, upper) and exists(a: A) { b = lower(a) } implies
+    is_fixed_by(galois_kernel(lower, upper), b)
+} by {
+    if is_galois_coinsertion(lower, upper) and exists(a: A) { b = lower(a) } {
+        let a: A satisfy {
+            b = lower(a)
+        }
+        galois_coinsertion_unit_eq(lower, upper, a)
+        upper(lower(a)) = a
+        lower(upper(lower(a))) = lower(a)
+        galois_kernel_at(lower, upper, lower(a))
+        galois_kernel(lower, upper, lower(a)) = lower(a)
+        galois_kernel(lower, upper, b) = b
+        is_fixed_by(galois_kernel(lower, upper), b)
+    }
+}
+
+/// Below a closed element, comparing the closure is the same as comparing the element.
+theorem galois_closure_le_iff_le_of_fixed[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    a: A,
+    c: A
+) {
+    is_galois_connection(lower, upper) and is_fixed_by(galois_closure(lower, upper), c)
+    implies (galois_closure(lower, upper, a) <= c = (a <= c))
+} by {
+    if is_galois_connection(lower, upper) and is_fixed_by(galois_closure(lower, upper), c) {
+        if galois_closure(lower, upper, a) <= c {
+            galois_closure_extensive(lower, upper, a)
+            a <= galois_closure(lower, upper, a)
+            lte_trans(a, galois_closure(lower, upper, a), c)
+            a <= c
+        }
+        if a <= c {
+            galois_closure_monotone(lower, upper)
+            is_monotone(galois_closure(lower, upper))
+            monotone_step(galois_closure(lower, upper), a, c)
+            galois_closure(lower, upper, a) <= galois_closure(lower, upper, c)
+            is_fixed_by(galois_closure(lower, upper), c) =
+                (galois_closure(lower, upper, c) = c)
+            galois_closure(lower, upper, c) = c
+            galois_closure(lower, upper, a) <= c
+        }
+        galois_closure(lower, upper, a) <= c = (a <= c)
+    }
+}
+
+/// Above a kernel-stable element, comparing with the kernel is the same as comparing with the element.
+theorem le_galois_kernel_iff_le_of_fixed[A: PartialOrder, B: PartialOrder](
+    lower: A -> B,
+    upper: B -> A,
+    k: B,
+    b: B
+) {
+    is_galois_connection(lower, upper) and is_fixed_by(galois_kernel(lower, upper), k)
+    implies (k <= galois_kernel(lower, upper, b) = (k <= b))
+} by {
+    if is_galois_connection(lower, upper) and is_fixed_by(galois_kernel(lower, upper), k) {
+        if k <= galois_kernel(lower, upper, b) {
+            galois_kernel_reductive(lower, upper, b)
+            galois_kernel(lower, upper, b) <= b
+            lte_trans(k, galois_kernel(lower, upper, b), b)
+            k <= b
+        }
+        if k <= b {
+            galois_kernel_monotone(lower, upper)
+            is_monotone(galois_kernel(lower, upper))
+            monotone_step(galois_kernel(lower, upper), k, b)
+            galois_kernel(lower, upper, k) <= galois_kernel(lower, upper, b)
+            is_fixed_by(galois_kernel(lower, upper), k) =
+                (galois_kernel(lower, upper, k) = k)
+            galois_kernel(lower, upper, k) = k
+            k <= galois_kernel(lower, upper, b)
+        }
+        k <= galois_kernel(lower, upper, b) = (k <= b)
     }
 }
