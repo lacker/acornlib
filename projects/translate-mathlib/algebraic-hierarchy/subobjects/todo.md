@@ -2,7 +2,6 @@
 
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
-- [ ] Strengthen the existing subgroup API beyond identity, multiplication, inverse, and intersection
 - [ ] Extend additive submonoids with closure from subsets
 - [ ] Add membership, coercion, and extensionality lemmas for subobjects
 - [ ] Add closure/generation operations from subsets
@@ -17,3 +16,4 @@ Status:
 - `src/add_submonoid.ac` now defines bundled additive submonoids with zero/addition constraints, extensionality, intersections, inclusion order, and zero/full submonoids.
 - `src/subring.ac` now defines bundled subrings with operation constraints, extensionality, intersections, inclusion order, full subrings, and additive subgroup/multiplicative submonoid bridges.
 - `src/add_submonoid.ac` now supports inverse images under bundled additive monoid homomorphisms.
+- `src/subgroup.ac`, `src/add_subgroup.ac`, and `src/submonoid.ac` now have stronger membership/closure lemmas for inverse/negation equivalences, products/sums of three, powers, identity/full membership characterizations, and kernel membership directions.

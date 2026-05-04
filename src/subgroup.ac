@@ -1,3 +1,4 @@
+from nat import Nat
 from group import Group, GroupHom, group_hom_one, group_hom_mul, group_hom_inv
 from set import Set
 from functions import predicate_extensionality
@@ -165,6 +166,105 @@ theorem subgroup_inv_mem[G: Group](s: Subgroup[G], a: G) {
             s.contains(x) implies s.contains(x.inverse)
         }
         s.contains(a.inverse)
+    }
+}
+
+/// Membership is unchanged by taking inverses.
+theorem subgroup_contains_inverse_iff[G: Group](s: Subgroup[G], a: G) {
+    s.contains(a.inverse) = s.contains(a)
+} by {
+    if s.contains(a.inverse) {
+        subgroup_inv_mem(s, a.inverse)
+        s.contains(a.inverse.inverse)
+        a.inverse.inverse = a
+        s.contains(a)
+    }
+    if s.contains(a) {
+        subgroup_inv_mem(s, a)
+        s.contains(a.inverse)
+    }
+    s.contains(a.inverse) = s.contains(a)
+}
+
+/// A subgroup is closed under multiplying by an inverse on the right.
+theorem subgroup_mul_inv_mem[G: Group](s: Subgroup[G], a: G, b: G) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b.inverse)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subgroup_inv_mem(s, b)
+        s.contains(b.inverse)
+        subgroup_mul_mem(s, a, b.inverse)
+        s.contains(a * b.inverse)
+    }
+}
+
+/// A subgroup is closed under multiplying by an inverse on the left.
+theorem subgroup_inv_mul_mem[G: Group](s: Subgroup[G], a: G, b: G) {
+    s.contains(a) and s.contains(b) implies s.contains(a.inverse * b)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subgroup_inv_mem(s, a)
+        s.contains(a.inverse)
+        subgroup_mul_mem(s, a.inverse, b)
+        s.contains(a.inverse * b)
+    }
+}
+
+/// A subgroup is closed under products of three of its elements.
+theorem subgroup_mul_mul_mem[G: Group](s: Subgroup[G], a: G, b: G, c: G) {
+    s.contains(a) and s.contains(b) and s.contains(c) implies s.contains(a * b * c)
+} by {
+    if s.contains(a) and s.contains(b) and s.contains(c) {
+        subgroup_mul_mem(s, a, b)
+        s.contains(a * b)
+        subgroup_mul_mem(s, a * b, c)
+        s.contains(a * b * c)
+    }
+}
+
+/// A subgroup is closed under conjugation by one of its elements.
+theorem subgroup_conj_mem[G: Group](s: Subgroup[G], a: G, b: G) {
+    s.contains(a) and s.contains(b) implies s.contains(a * b * a.inverse)
+} by {
+    if s.contains(a) and s.contains(b) {
+        subgroup_inv_mem(s, a)
+        s.contains(a.inverse)
+        subgroup_mul_mul_mem(s, a, b, a.inverse)
+        s.contains(a * b * a.inverse)
+    }
+}
+
+/// A subgroup contains every natural power of each of its elements.
+theorem subgroup_pow_mem[G: Group](s: Subgroup[G], a: G, n: Nat) {
+    s.contains(a) implies s.contains(a.pow(n))
+} by {
+    define p(k: Nat) -> Bool {
+        s.contains(a) implies s.contains(a.pow(k))
+    }
+
+    if s.contains(a) {
+        a.pow(Nat.0) = G.1
+        subgroup_contains_identity(s)
+        s.contains(G.1)
+        s.contains(a.pow(Nat.0))
+    }
+    p(Nat.0)
+
+    forall(k: Nat) {
+        if p(k) {
+            if s.contains(a) {
+                s.contains(a.pow(k))
+                subgroup_mul_mem(s, a, a.pow(k))
+                s.contains(a * a.pow(k))
+                a.pow(k.suc) = a * a.pow(k)
+                s.contains(a.pow(k.suc))
+            }
+            p(k.suc)
+        }
+    }
+    p(n)
+    if s.contains(a) {
+        s.contains(a.pow(n))
     }
 }
 
@@ -457,6 +557,22 @@ theorem identity_subgroup_only_has_identity[G: Group](g: G) {
     identity_subgroup[G].contains(g) implies g = G.1
 }
 
+/// Membership in the identity subgroup is the same as equality to the identity element.
+theorem identity_subgroup_contains_eq[G: Group](g: G) {
+    identity_subgroup[G].contains(g) = (g = G.1)
+} by {
+    if identity_subgroup[G].contains(g) {
+        identity_subgroup_only_has_identity(g)
+        g = G.1
+    }
+    if g = G.1 {
+        subgroup_contains_identity(identity_subgroup[G])
+        identity_subgroup[G].contains(G.1)
+        identity_subgroup[G].contains(g)
+    }
+    identity_subgroup[G].contains(g) = (g = G.1)
+}
+
 /// The identity subgroup is contained in every subgroup.
 theorem identity_subgroup_subset[G: Group](s: Subgroup[G]) {
     subgroup_subset(identity_subgroup[G], s)
@@ -505,6 +621,13 @@ let full_subgroup[G: Group]: Subgroup[G] satisfy {
 /// Every group element belongs to the full subgroup.
 theorem full_subgroup_contains_everything[G: Group](g: G) {
     full_subgroup[G].contains(g)
+}
+
+/// Membership in the full subgroup is always true.
+theorem full_subgroup_contains_eq[G: Group](g: G) {
+    full_subgroup[G].contains(g) = true
+} by {
+    full_subgroup_contains_everything(g)
 }
 
 /// Every subgroup is contained in the full subgroup.
@@ -775,5 +898,15 @@ theorem group_hom_kernel_contains_of_maps_to_identity[G: Group, H: Group](f: Gro
     if f.hom(a) = H.1 {
         group_hom_kernel_contains_eq(f, a)
         group_hom_kernel(f).contains(a)
+    }
+}
+
+/// A kernel element maps to the identity.
+theorem group_hom_maps_to_identity_of_kernel_contains[G: Group, H: Group](f: GroupHom[G, H], a: G) {
+    group_hom_kernel(f).contains(a) implies f.hom(a) = H.1
+} by {
+    if group_hom_kernel(f).contains(a) {
+        group_hom_kernel_contains_eq(f, a)
+        f.hom(a) = H.1
     }
 }
