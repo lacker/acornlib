@@ -27,11 +27,11 @@ cryptographic content.
   membership characterization
   `coprime_residues_contains_iff`: `contains(x) iff x < n and x.coprime(n)`,
   `coprime_residues_mul_mem`: multiplication by a coprime unit preserves
-  membership, and `coprime_residues_mul_inj` (with the underlying
-  `mul_mod_inj_below`): the same multiplication is injective on `[0, n)`.
-  Together these are the membership and injectivity halves of
-  "multiplication by a unit permutes `coprime_residues(n)`".
-  Foundation for the eventual product/permutation argument behind a
+  membership, `coprime_residues_mul_inj` (with the underlying
+  `mul_mod_inj_below`): injectivity on `[0, n)`, and
+  `coprime_residues_unique`: the list itself has no duplicates.
+  Together these give the membership / injectivity / no-duplicates
+  bookkeeping needed for the product / permutation argument behind a
   general Euler proof.
 - `euler_pq`: Euler's theorem at `p * q` for distinct primes.
 
@@ -49,8 +49,11 @@ cancellation by a coprime factor).
       `m.coprime(n)`) — generalises `totient_pq` via the CRT-induced
       bijection between `[0, mn)` and `[0, m) x [0, n)`.
 - [ ] Generalise `euler_pq` to arbitrary moduli: `gcd(a, n) = 1` implies
-      `a.pow(nat_totient(n)).mod(n) = 1`. Standard route: multiplication
-      by `a` permutes the units in `Z/n`, take the product and cancel.
+      `a.pow(nat_totient(n)).mod(n) = 1`. Next concrete step: prove
+      `is_permutation(map(coprime_residues(n), λx. (a * x).mod(n)),
+      coprime_residues(n))` from the existing membership / injectivity /
+      uniqueness lemmas plus a length-equal-image-equal argument. Then
+      take the product over both sides and cancel via `cancel_coprime`.
 
 ## DSA
 

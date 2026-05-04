@@ -1935,3 +1935,87 @@ theorem coprime_residues_mul_inj(n: Nat, a: Nat, x: Nat, y: Nat) {
         x = y
     }
 }
+
+/// Helper: consing a fresh head onto a unique list keeps it unique.
+theorem cons_unique_intro(head: Nat, tail: List[Nat]) {
+    not tail.contains(head) and tail.is_unique
+        implies List.cons(head, tail).is_unique
+} by {
+    if not tail.contains(head) and tail.is_unique {
+        tail.unique = tail
+        // unfold cons(head, tail).unique on the not-contains branch.
+        List.cons(head, tail).unique = List.cons(head, tail.unique)
+        List.cons(head, tail.unique) = List.cons(head, tail)
+        List.cons(head, tail).unique = List.cons(head, tail)
+    }
+}
+
+/// Inductive predicate for `coprime_residues_below_unique`.
+define cr_unique_pred(n: Nat) -> (Nat -> Bool) {
+    function(k: Nat) {
+        coprime_residues_below(n, k).is_unique
+    }
+}
+
+/// Inductive step.
+theorem cr_unique_step(n: Nat, k: Nat) {
+    cr_unique_pred(n)(k) implies cr_unique_pred(n)(k.suc)
+} by {
+    if cr_unique_pred(n)(k) {
+        coprime_residues_below(n, k).is_unique
+        if k.coprime(n) {
+            coprime_residues_below_suc_yes(n, k)
+            coprime_residues_below(n, k.suc) =
+                List.cons(k, coprime_residues_below(n, k))
+            // k is not in coprime_residues_below(n, k) since all elements are < k.
+            if coprime_residues_below(n, k).contains(k) {
+                coprime_residues_below_all_below(n, k, k)
+                k < k
+                false
+            }
+            not coprime_residues_below(n, k).contains(k)
+            cons_unique_intro(k, coprime_residues_below(n, k))
+            List.cons(k, coprime_residues_below(n, k)).is_unique
+            coprime_residues_below(n, k.suc).is_unique
+        } else {
+            coprime_residues_below_suc_no(n, k)
+            coprime_residues_below(n, k.suc) = coprime_residues_below(n, k)
+            coprime_residues_below(n, k.suc).is_unique
+        }
+    }
+}
+
+/// `coprime_residues_below(n, k)` has no duplicates.
+theorem coprime_residues_below_unique(n: Nat, k: Nat) {
+    coprime_residues_below(n, k).is_unique
+} by {
+    let f: Nat -> Bool = function(m: Nat) {
+        coprime_residues_below(n, m).is_unique
+    }
+    forall(y: Nat) {
+        cr_unique_pred(n)(y) = f(y)
+        f(y) = cr_unique_pred(n)(y)
+    }
+    // Base.
+    coprime_residues_below(n, Nat.0) = List.nil[Nat]
+    List.nil[Nat].unique = List.nil[Nat]
+    List.nil[Nat].is_unique
+    f(Nat.0)
+    forall(m: Nat) {
+        if f(m) {
+            cr_unique_pred(n)(m)
+            cr_unique_step(n, m)
+            cr_unique_pred(n)(m.suc)
+            f(m.suc)
+        }
+    }
+    f(k)
+}
+
+/// `coprime_residues(n)` has no duplicates.
+theorem coprime_residues_unique(n: Nat) {
+    coprime_residues(n).is_unique
+} by {
+    coprime_residues_below_unique(n, n)
+    coprime_residues(n) = coprime_residues_below(n, n)
+}
