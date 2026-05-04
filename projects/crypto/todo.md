@@ -4,14 +4,6 @@
 
 No current blockers.
 
-## Shared number theory
-
-- [ ] Prove Freshman's dream: for prime `p`,
-      `(a + b).pow(p).congr_mod(a.pow(p) + b.pow(p), p)` via the binomial
-      theorem and `prime_divides_binom`.
-- [ ] Prove Fermat's little theorem: `a.pow(p).mod(p) = a.mod(p)` for prime
-      `p`, by induction on `a` using Freshman's dream.
-
 ## RSA
 
 - [ ] Define `nat_totient` (Euler's totient function) on `Nat`.

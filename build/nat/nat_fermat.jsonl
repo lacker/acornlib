@@ -59,3 +59,128 @@
 {"goal":"false","proof":[]}
 {"goal":"p.divides(binom(p)(k))","proof":[]}
 {"goal":"prime_divides_binom","proof":[]}
+{"goal":"partial(f, 0) = 0","proof":["function[T0: lib(add_comm_monoid).AddCommMonoid](x0: Nat -> T0) { partial[T0](x0, 0) = T0.0 }[Nat](f)"]}
+{"goal":"d.divides(0)","proof":["function(x0: Nat, x1: Nat) { x0.gcd(x1).divides(x0) }(0, d)","function(x0: Nat) { 0.gcd(x0) = x0 }(d)"]}
+{"goal":"divides_partial_nat_zero","proof":["function(x0: Nat, x1: Nat, x2: Nat -> Nat) { (exists(k0: Nat) { k0 < x0 and not x1.divides(x2(k0)) } or x1.divides(partial(x2, x0))) = divides_partial_pred(x1, x2, x0) }(0, d, f)"]}
+{"goal":"k < m.suc","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0 < x1.suc }(k, m)"]}
+{"goal":"d.divides(f(k))","proof":["function(x0: Nat) { not x0 < m.suc or d.divides(f(x0)) }(k)"]}
+{"goal":"d.divides(partial(f, m))","proof":["function(x0: Nat, x1: Nat, x2: Nat -> Nat) { (exists(k0: Nat) { k0 < x0 and not x1.divides(x2(k0)) } or x1.divides(partial(x2, x0))) = divides_partial_pred(x1, x2, x0) }(m, d, f)","function(x0: Nat, x1: Nat, x2: Nat -> Nat) { not (forall(x3: Nat) { not x3 < x0 or x1.divides(x2(x3)) } and not x1.divides(partial(x2, x0))) or not divides_partial_pred(x1, x2, x0) }(m, d, f)","function(x0: Nat, x1: Nat, x2: Nat -> Nat) { not forall(x3: Nat) { not x3 < x0 or x1.divides(x2(x3)) } or not divides_partial_pred(x1, x2, x0) or x1.divides(partial(x2, x0)) }(m, d, f)","let w0: Nat satisfy { w0 < m and not d.divides(f(w0)) }","function(x0: Nat) { not x0 < m or d.divides(f(x0)) }(w0)"]}
+{"goal":"m < m.suc","proof":["function(x0: Nat) { x0 < x0.suc }(m)"]}
+{"goal":"d.divides(f(m))","proof":["function(x0: Nat) { not x0 < m.suc or d.divides(f(x0)) }(m)"]}
+{"goal":"partial(f, m.suc) = partial(f, m) + f(m)","proof":[]}
+{"goal":"d.divides(partial(f, m.suc))","proof":[]}
+{"goal":"divides_partial_nat_step","proof":["function(x0: Nat, x1: Nat, x2: Nat -> Nat) { (exists(k0: Nat) { k0 < x0 and not x1.divides(x2(k0)) } or x1.divides(partial(x2, x0))) = divides_partial_pred(x1, x2, x0) }(m.suc, d, f)"]}
+{"goal":"pp.suc = pp + 1","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, pp)"]}
+{"goal":"pp + 1 = p","proof":[]}
+{"goal":"sub_one_pred","proof":["function(x0: Nat) { x0.suc - 1 = x0 }(pp)"]}
+{"goal":"p.suc = pp.suc.suc","proof":[]}
+{"goal":"pp.suc.suc = pp + 2","proof":["function(x0: Nat, x1: Nat) { x0 + x1.suc = (x0 + x1).suc }(pp, 1)","function(x0: Nat) { x0 + 1 = x0.suc }(pp)"]}
+{"goal":"pp + 2 = p.suc","proof":[]}
+{"goal":"suc_sub_two_pred","proof":["function(x0: Nat, x1: Nat) { x0 + x1.suc = (x0 + x1).suc }(pp, 1)","function(x0: Nat) { x0 + 1 = x0.suc }(pp)"]}
+{"goal":"exists(k0: Nat) { k0.suc = p }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or Nat.zero = x0 }(p)","function(x0: Nat) { not x0 < Nat.zero }(1)"]}
+{"goal":"p - 1 = pp","proof":[]}
+{"goal":"p.suc - 2 = pp","proof":[]}
+{"goal":"p.suc - 2 = p - 1","proof":[]}
+{"goal":"suc_sub_two_eq_sub_one","proof":[]}
+{"goal":"suc_sub_one_eq","proof":[]}
+{"goal":"2 <= p","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(1, p)"]}
+{"goal":"p <= p.suc","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(p, p.suc)","function(x0: Nat) { x0 + 1 = x0.suc }(p)","not exists(k0: Nat) { p.suc = p + k0 }","function(x0: Nat) { p + x0 != p.suc }(1)"]}
+{"goal":"2 <= p.suc","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0 < x1.suc }(1, p)","function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(1, p.suc)"]}
+{"goal":"suc_geq_two","proof":["function(x0: Nat, x1: Nat) { not x0.suc < x1.suc or x0 < x1 }(p, 1)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 < x0 }(1, p)","function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[Nat](p.suc, 1.suc)"]}
+{"goal":"q(0)","proof":[]}
+{"goal":"q(m.suc)","proof":[]}
+{"goal":"q(n)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(q)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(q, n)","let w0: Nat satisfy { q(w0) and not q(w0.suc) }","function(x0: Nat) { not q(x0) or q(x0.suc) }(w0)"]}
+{"goal":"divides_partial_nat","proof":["function(x0: Nat) { divides_partial_pred(d, f, x0) = q(x0) }(n)","function(x0: Nat, x1: Nat, x2: Nat -> Nat) { (exists(k0: Nat) { k0 < x0 and not x1.divides(x2(k0)) } or x1.divides(partial(x2, x0))) = divides_partial_nat(x1, x2, x0) }(n, d, f)","function(x0: Nat, x1: Nat, x2: Nat -> Nat) { (exists(k0: Nat) { k0 < x0 and not x1.divides(x2(k0)) } or x1.divides(partial(x2, x0))) = divides_partial_pred(x1, x2, x0) }(n, d, f)"]}
+{"goal":"p.divides(binom(p)(k))","proof":[]}
+{"goal":"binomial_term(a, b, p, k) = binom(p)(k) * a.pow(k) * b.pow(p - k)","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { binom(x0, x1) * x2.pow(x1) * x3.pow(x0 - x1) = binomial_term(x2, x3, x0, x1) }(p, k, a, b)"]}
+{"goal":"p.divides(binom(p)(k) * a.pow(k))","proof":[]}
+{"goal":"p.divides(binom(p)(k) * a.pow(k) * b.pow(p - k))","proof":[]}
+{"goal":"prime_divides_binomial_term_middle","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { binom(x0, x1) * x2.pow(x1) * x3.pow(x0 - x1) = binomial_term(x2, x3, x0, x1) }(p, k, a, b)"]}
+{"goal":"binom(p)(0) = 1","proof":[]}
+{"goal":"a.pow(0) = 1","proof":[]}
+{"goal":"p - 0 = p","proof":["function(x0: Nat) { x0 - 0 = x0 }(p)"]}
+{"goal":"binomial_term(a, b, p, 0) = 1 * 1 * b.pow(p)","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { binom(x0, x1) * x2.pow(x1) * x3.pow(x0 - x1) = binomial_term(x2, x3, x0, x1) }(p, 0, a, b)"]}
+{"goal":"binomial_term_left_boundary","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x0 * x1 }(1, 1)","function(x0: Nat, x1: Nat) { x0 * x1 = x0 * x1 }(1 * 1, b.pow(p))","function[T0: lib(monoid).Monoid](x0: T0) { x0.pow(0) = T0.1 }[Nat](a)","function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[Nat](b.pow(p))"]}
+{"goal":"binom(p)(p) = 1","proof":[]}
+{"goal":"p - p = 0","proof":["function(x0: Nat) { x0 - x0 = 0 }(p)"]}
+{"goal":"b.pow(0) = 1","proof":[]}
+{"goal":"binomial_term(a, b, p, p) = 1 * a.pow(p) * 1","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { binom(x0, x1) * x2.pow(x1) * x3.pow(x0 - x1) = binomial_term(x2, x3, x0, x1) }(p, p, a, b)"]}
+{"goal":"binomial_term_right_boundary","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x0 * x1 }(1, a.pow(p))","function(x0: Nat, x1: Nat) { x0 * x1 = x0 * x1 }(1 * a.pow(p), 1)","function[T0: lib(monoid).Monoid](x0: T0) { x0.pow(0) = T0.1 }[Nat](b)","function[T0: lib(monoid).Monoid](x0: T0) { T0.1 * x0 = x0 }[Nat](a.pow(p))","function[T0: lib(monoid).Monoid](x0: T0) { x0 * T0.1 = x0 }[Nat](a.pow(p))"]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"exists(k0: Nat) { k0.suc = p }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or Nat.zero = x0 }(p)","function(x0: Nat) { not x0 < Nat.zero }(1)"]}
+{"goal":"p - 1 = pp","proof":[]}
+{"goal":"k < pp","proof":[]}
+{"goal":"0 < k.suc","proof":["function(x0: Nat, x1: Nat) { x0 < x0 + x1.suc }(0, k)","function(x0: Nat) { 0 + x0 = x0 }(k.suc)"]}
+{"goal":"k.suc <= pp","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or x0.suc <= x1 }(k, pp)"]}
+{"goal":"k.suc < pp.suc","proof":["function(x0: Nat, x1: Nat) { not x0.suc <= x1.suc or x0 <= x1 }(pp, k)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(k, pp)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(k.suc, pp.suc)"]}
+{"goal":"k.suc < p","proof":[]}
+{"goal":"p.divides(binomial_term(a, b, p, k.suc))","proof":[]}
+{"goal":"compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc)(k) = binomial_term(a, b, p, k.suc)","proof":["function[T0, T1, T2](x0: T1 -> T2, x1: T0 -> T1, x2: T0) { compose[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc, k)"]}
+{"goal":"p.divides(compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc)(k))","proof":[]}
+{"goal":"shifted_binom_term_div","proof":[]}
+{"goal":"p.divides(compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc)(k))","proof":[]}
+{"goal":"prime_divides_binomial_middle","proof":["not forall(x0: Nat) { not x0 < p - 1 or p.divides(compose(binomial_term(a, b, p), Nat.suc, x0)) } or not p.is_prime","let w0: Nat satisfy { w0 < p - 1 and not p.divides(compose(binomial_term(a, b, p), Nat.suc, w0)) }","function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { not x0 < x1 - 1 or not x1.is_prime or x1.divides(compose(binomial_term(x2, x3, x1), Nat.suc, x0)) }(w0, p, a, b)"]}
+{"goal":"p.suc - 2 = p - 1","proof":[]}
+{"goal":"p.suc - 1 = p","proof":[]}
+{"goal":"p.suc >= 2","proof":[]}
+{"goal":"(a + b).pow(p) = partial(binomial_term(a, b, p), p.suc)","proof":[]}
+{"goal":"partial(binomial_term(a, b, p), p.suc) = binomial_term(a, b, p, 0) + partial(compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc), p.suc - 2) + binomial_term(a, b, p, p.suc - 1)","proof":[]}
+{"goal":"partial(binomial_term(a, b, p), p.suc) = binomial_term(a, b, p, 0) + partial(compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc), p - 1) + binomial_term(a, b, p, p)","proof":[]}
+{"goal":"binomial_term(a, b, p, 0) = b.pow(p)","proof":[]}
+{"goal":"binomial_term(a, b, p, p) = a.pow(p)","proof":[]}
+{"goal":"partial(binomial_term(a, b, p), p.suc) = b.pow(p) + partial(compose[Nat, Nat, Nat](binomial_term(a, b, p), Nat.suc), p - 1) + a.pow(p)","proof":[]}
+{"goal":"binomial_pow_split","proof":["function(x0: Nat, x1: Nat, x2: Nat) { partial(binomial_term(x0, x1, x2), x2.suc) = (x0 + x1).pow(x2) }(a, b, p)"]}
+{"goal":"lib(nat.nat_base).nat_mod(x)(d) = 0","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(0)(d) = 0","proof":["function(x0: Nat, x1: Nat) { lib(nat.nat_base).nat_mod(lib(nat.nat_base).nat_mod(x0, x1), x1) = lib(nat.nat_base).nat_mod(x0, x1) }(x, d)"]}
+{"goal":"lib(nat.nat_base).nat_mod(x)(d) = lib(nat.nat_base).nat_mod(0)(d)","proof":[]}
+{"goal":"divides_imp_congr_zero","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(x, d, 0)"]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"(a + b).pow(p) = b.pow(p) + middle + a.pow(p)","proof":[]}
+{"goal":"p.divides(middle)","proof":[]}
+{"goal":"middle.congr_mod(0, p)","proof":[]}
+{"goal":"(b.pow(p) + a.pow(p) + middle).congr_mod(b.pow(p) + a.pow(p) + 0, p)","proof":[]}
+{"goal":"b.pow(p) + a.pow(p) + 0 = b.pow(p) + a.pow(p)","proof":["function(x0: Nat, x1: Nat) { 0 != x0 or x1 + x0 = x1 }(0, b.pow(p) + a.pow(p))"]}
+{"goal":"(b.pow(p) + a.pow(p) + middle).congr_mod(b.pow(p) + a.pow(p), p)","proof":[]}
+{"goal":"b.pow(p) + a.pow(p) + middle = b.pow(p) + (a.pow(p) + middle)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(b.pow(p), a.pow(p), middle)"]}
+{"goal":"a.pow(p) + middle = middle + a.pow(p)","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(middle, a.pow(p))"]}
+{"goal":"b.pow(p) + (a.pow(p) + middle) = b.pow(p) + (middle + a.pow(p))","proof":[]}
+{"goal":"b.pow(p) + (middle + a.pow(p)) = b.pow(p) + middle + a.pow(p)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(b.pow(p), middle, a.pow(p))"]}
+{"goal":"b.pow(p) + a.pow(p) + middle = b.pow(p) + middle + a.pow(p)","proof":[]}
+{"goal":"(b.pow(p) + middle + a.pow(p)).congr_mod(b.pow(p) + a.pow(p), p)","proof":[]}
+{"goal":"(a + b).pow(p).congr_mod(b.pow(p) + a.pow(p), p)","proof":[]}
+{"goal":"b.pow(p) + a.pow(p) = a.pow(p) + b.pow(p)","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(b.pow(p), a.pow(p))"]}
+{"goal":"(a + b).pow(p).congr_mod(a.pow(p) + b.pow(p), p)","proof":[]}
+{"goal":"freshmans_dream","proof":[]}
+{"goal":"1 < p","proof":["function(x0: Nat) { not x0.is_prime or (1 < x0 and forall(x1: Nat) { not 1 < x1 or not x1 < x0 or not x1.divides(x0) }) }(p)"]}
+{"goal":"p != 0","proof":["function(x0: Nat) { not x0 < 0 }(1)"]}
+{"goal":"0.pow(p) = 0","proof":[]}
+{"goal":"0.congr_mod(0, p)","proof":[]}
+{"goal":"0.pow(p).congr_mod(0, p)","proof":[]}
+{"goal":"fermat_base","proof":["function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(0, p)"]}
+{"goal":"a.pow(p).congr_mod(a, p)","proof":["function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(a, p)"]}
+{"goal":"(a + 1).pow(p).congr_mod(a.pow(p) + 1.pow(p), p)","proof":[]}
+{"goal":"1.pow(p) = 1","proof":[]}
+{"goal":"a.pow(p) + 1.pow(p) = a.pow(p) + 1","proof":[]}
+{"goal":"(a + 1).pow(p).congr_mod(a.pow(p) + 1, p)","proof":[]}
+{"goal":"1.congr_mod(1, p)","proof":[]}
+{"goal":"(a.pow(p) + 1).congr_mod(a + 1, p)","proof":[]}
+{"goal":"(a + 1).pow(p).congr_mod(a + 1, p)","proof":[]}
+{"goal":"a + 1 = a.suc","proof":["function(x0: Nat, x1: Nat) { x0 + x1 = x1 + x0 }(1, a)"]}
+{"goal":"(a + 1).pow(p) = a.suc.pow(p)","proof":[]}
+{"goal":"a.suc.pow(p).congr_mod(a.suc, p)","proof":[]}
+{"goal":"fermat_step","proof":["function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(a.suc, p)"]}
+{"goal":"fermat_pred_unfold","proof":["function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(a, p)"]}
+{"goal":"f(y) = fermat_pred(p)(y)","proof":["function(x0: Nat) { x0.pow(p).congr_mod(x0, p) = f(x0) }(y)","function(x0: Nat, x1: Nat) { x0.pow(x1).congr_mod(x0, x1) = fermat_pred(x1, x0) }(y, p)"]}
+{"goal":"fermat_pred(p)(y) = f(y)","proof":[]}
+{"goal":"fermat_pred(p)(0)","proof":["not p.is_prime"]}
+{"goal":"f(0)","proof":[]}
+{"goal":"fermat_pred(p)(x)","proof":["function(x0: Nat) { fermat_pred(p, x0) = f(x0) }(x)"]}
+{"goal":"fermat_pred(p)(x.suc)","proof":["not fermat_pred(p, x) or not p.is_prime","not p.is_prime"]}
+{"goal":"f(x.suc)","proof":[]}
+{"goal":"f(a)","proof":["function(x0: Nat -> Bool) { not forall(x1: Nat) { not x0(x1) or x0(x1.suc) } or not x0(0) or forall(x2: Nat) { x0(x2) } = true }(f)","function(x0: Nat -> Bool, x1: Nat) { not forall(x2: Nat) { not x0(x2) or x0(x2.suc) } or not x0(0) or x0(x1) }(f, a)","let w0: Nat satisfy { f(w0) and not f(w0.suc) }","function(x0: Nat) { not f(x0) or f(x0.suc) }(w0)"]}
+{"goal":"fermat_pred(p)(a)","proof":[]}
+{"goal":"fermats_little_run","proof":["not p.is_prime"]}
+{"goal":"fermat_pred(p)(a)","proof":["not p.is_prime"]}
+{"goal":"a.pow(p).congr_mod(a, p)","proof":[]}
+{"goal":"fermats_little_congr","proof":[]}
+{"goal":"fermats_little","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a.pow(p), p, a)"]}
