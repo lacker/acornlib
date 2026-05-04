@@ -2,7 +2,12 @@ from list.list_base import List
 from order import LinearOrder, lte_trans, lte_min_of_bounds, max_lte_of_upper_bounds,
     min_assoc_rev, max_assoc_rev, min_lte_left, min_lte_right, lte_max_left, lte_max_right
 from order_interval import closed_interval
-from list.list_lattice import list_lower_bound, list_upper_bound
+from list.list_lattice import list_lower_bound, list_upper_bound,
+    list_lower_bound_nil, list_upper_bound_nil,
+    list_lower_bound_cons_iff, list_upper_bound_cons_iff,
+    list_lower_bound_add_iff, list_upper_bound_add_iff,
+    list_lower_bound_singleton_iff, list_upper_bound_singleton_iff,
+    list_lower_bound_append_iff, list_upper_bound_append_iff
 
 /// Theorems about lists of ordered types.
 
@@ -189,6 +194,60 @@ theorem list_upper_bound_imp_upper_bound[T: LinearOrder](list: List[T], upper: T
     }
 }
 
+/// Every point is an upper bound for the empty list.
+theorem upper_bound_nil[T: LinearOrder](upper: T) {
+    is_upper_bound(List.nil[T], upper)
+} by {
+    list_upper_bound_nil(upper)
+    list_upper_bound_imp_upper_bound(List.nil[T], upper)
+}
+
+/// Upper bounds for a cons list are exactly upper bounds for the head and tail.
+theorem upper_bound_cons_iff[T: LinearOrder](head: T, tail: List[T], upper: T) {
+    is_upper_bound(List.cons(head, tail), upper) =
+    (head <= upper and is_upper_bound(tail, upper))
+} by {
+    upper_bound_iff_list_upper_bound(List.cons(head, tail), upper)
+    list_upper_bound_cons_iff(head, tail, upper)
+    upper_bound_iff_list_upper_bound(tail, upper)
+    is_upper_bound(List.cons(head, tail), upper) =
+    (head <= upper and is_upper_bound(tail, upper))
+}
+
+/// Upper bounds for a concatenation are exactly upper bounds for both lists.
+theorem upper_bound_add_iff[T: LinearOrder](left: List[T], right: List[T], upper: T) {
+    is_upper_bound(left + right, upper) =
+    (is_upper_bound(left, upper) and is_upper_bound(right, upper))
+} by {
+    upper_bound_iff_list_upper_bound(left + right, upper)
+    list_upper_bound_add_iff(left, right, upper)
+    upper_bound_iff_list_upper_bound(left, upper)
+    upper_bound_iff_list_upper_bound(right, upper)
+    is_upper_bound(left + right, upper) =
+    (is_upper_bound(left, upper) and is_upper_bound(right, upper))
+}
+
+/// An upper bound for a singleton list is exactly a point above the singleton element.
+theorem upper_bound_singleton_iff[T: LinearOrder](item: T, upper: T) {
+    is_upper_bound(List.singleton(item), upper) = (item <= upper)
+} by {
+    upper_bound_iff_list_upper_bound(List.singleton(item), upper)
+    list_upper_bound_singleton_iff(item, upper)
+    is_upper_bound(List.singleton(item), upper) = (item <= upper)
+}
+
+/// Upper bounds after append are exactly upper bounds for the old list and the appended element.
+theorem upper_bound_append_iff[T: LinearOrder](items: List[T], last: T, upper: T) {
+    is_upper_bound(items.append(last), upper) =
+    (is_upper_bound(items, upper) and last <= upper)
+} by {
+    upper_bound_iff_list_upper_bound(items.append(last), upper)
+    list_upper_bound_append_iff(items, last, upper)
+    upper_bound_iff_list_upper_bound(items, upper)
+    is_upper_bound(items.append(last), upper) =
+    (is_upper_bound(items, upper) and last <= upper)
+}
+
 /// The maximum element of a non-empty list.
 define list_max[T: LinearOrder](head: T, tail: List[T]) -> T {
     match tail {
@@ -327,6 +386,42 @@ theorem list_max_le_iff[T: LinearOrder](head: T, tail: List[T], upper: T) {
     list_max(head, tail) <= upper = is_upper_bound(List.cons(head, tail), upper)
 } by {
     list_max_lte_iff_upper_bound(head, tail, upper)
+}
+
+/// The maximum of a non-empty list is a membership-predicate upper bound.
+theorem list_max_is_list_upper_bound[T: LinearOrder](head: T, tail: List[T]) {
+    list_upper_bound(List.cons(head, tail), list_max(head, tail))
+} by {
+    list_max_is_upper_bound(head, tail)
+    upper_bound_imp_list_upper_bound(List.cons(head, tail), list_max(head, tail))
+}
+
+/// The list maximum is below a point exactly when that point is a membership-predicate upper bound.
+theorem list_max_le_iff_list_upper_bound[T: LinearOrder](head: T, tail: List[T], upper: T) {
+    list_max(head, tail) <= upper = list_upper_bound(List.cons(head, tail), upper)
+} by {
+    list_max_lte_iff_upper_bound(head, tail, upper)
+    upper_bound_iff_list_upper_bound(List.cons(head, tail), upper)
+    list_max(head, tail) <= upper = list_upper_bound(List.cons(head, tail), upper)
+}
+
+/// Every element of a non-empty list is below its maximum.
+theorem contains_lte_list_max[T: LinearOrder](head: T, tail: List[T], item: T) {
+    List.cons(head, tail).contains(item) implies item <= list_max(head, tail)
+} by {
+    if List.cons(head, tail).contains(item) {
+        list_max_is_upper_bound(head, tail)
+        upper_bound_contains(List.cons(head, tail), list_max(head, tail), item)
+        item <= list_max(head, tail)
+    }
+}
+
+/// The head of a non-empty list is below its maximum.
+theorem head_lte_list_max[T: LinearOrder](head: T, tail: List[T]) {
+    head <= list_max(head, tail)
+} by {
+    List.cons(head, tail).contains(head)
+    contains_lte_list_max(head, tail, head)
 }
 
 /// Every non-empty list has an upper bound.
@@ -518,6 +613,60 @@ theorem list_lower_bound_imp_lower_bound[T: LinearOrder](list: List[T], lower: T
     }
 }
 
+/// Every point is a lower bound for the empty list.
+theorem lower_bound_nil[T: LinearOrder](lower: T) {
+    is_lower_bound(List.nil[T], lower)
+} by {
+    list_lower_bound_nil(lower)
+    list_lower_bound_imp_lower_bound(List.nil[T], lower)
+}
+
+/// Lower bounds for a cons list are exactly lower bounds for the head and tail.
+theorem lower_bound_cons_iff[T: LinearOrder](head: T, tail: List[T], lower: T) {
+    is_lower_bound(List.cons(head, tail), lower) =
+    (lower <= head and is_lower_bound(tail, lower))
+} by {
+    lower_bound_iff_list_lower_bound(List.cons(head, tail), lower)
+    list_lower_bound_cons_iff(head, tail, lower)
+    lower_bound_iff_list_lower_bound(tail, lower)
+    is_lower_bound(List.cons(head, tail), lower) =
+    (lower <= head and is_lower_bound(tail, lower))
+}
+
+/// Lower bounds for a concatenation are exactly lower bounds for both lists.
+theorem lower_bound_add_iff[T: LinearOrder](left: List[T], right: List[T], lower: T) {
+    is_lower_bound(left + right, lower) =
+    (is_lower_bound(left, lower) and is_lower_bound(right, lower))
+} by {
+    lower_bound_iff_list_lower_bound(left + right, lower)
+    list_lower_bound_add_iff(left, right, lower)
+    lower_bound_iff_list_lower_bound(left, lower)
+    lower_bound_iff_list_lower_bound(right, lower)
+    is_lower_bound(left + right, lower) =
+    (is_lower_bound(left, lower) and is_lower_bound(right, lower))
+}
+
+/// A lower bound for a singleton list is exactly a point below the singleton element.
+theorem lower_bound_singleton_iff[T: LinearOrder](item: T, lower: T) {
+    is_lower_bound(List.singleton(item), lower) = (lower <= item)
+} by {
+    lower_bound_iff_list_lower_bound(List.singleton(item), lower)
+    list_lower_bound_singleton_iff(item, lower)
+    is_lower_bound(List.singleton(item), lower) = (lower <= item)
+}
+
+/// Lower bounds after append are exactly lower bounds for the old list and the appended element.
+theorem lower_bound_append_iff[T: LinearOrder](items: List[T], last: T, lower: T) {
+    is_lower_bound(items.append(last), lower) =
+    (is_lower_bound(items, lower) and lower <= last)
+} by {
+    lower_bound_iff_list_lower_bound(items.append(last), lower)
+    list_lower_bound_append_iff(items, last, lower)
+    lower_bound_iff_list_lower_bound(items, lower)
+    is_lower_bound(items.append(last), lower) =
+    (is_lower_bound(items, lower) and lower <= last)
+}
+
 /// True if all elements of a list lie in the closed interval from `lower` to `upper`.
 define is_interval_bound[T: LinearOrder](list: List[T], lower: T, upper: T) -> Bool {
     is_lower_bound(list, lower) and is_upper_bound(list, upper)
@@ -591,6 +740,122 @@ theorem interval_bound_iff_bounds[T: LinearOrder](list: List[T], lower: T, upper
     }
     is_interval_bound(list, lower, upper) =
     (is_lower_bound(list, lower) and is_upper_bound(list, upper))
+}
+
+/// Every ordered interval bounds the empty list.
+theorem interval_bound_nil[T: LinearOrder](lower: T, upper: T) {
+    is_interval_bound(List.nil[T], lower, upper)
+} by {
+    lower_bound_nil(lower)
+    upper_bound_nil(upper)
+    bounds_imp_interval_bound(List.nil[T], lower, upper)
+}
+
+/// Interval bounds for a cons list are exactly endpoint inequalities for the head and interval bounds for the tail.
+theorem interval_bound_cons_iff[T: LinearOrder](head: T, tail: List[T], lower: T, upper: T) {
+    is_interval_bound(List.cons(head, tail), lower, upper) =
+    (closed_interval(lower, upper, head) and is_interval_bound(tail, lower, upper))
+} by {
+    if is_interval_bound(List.cons(head, tail), lower, upper) {
+        interval_bound_imp_lower_bound(List.cons(head, tail), lower, upper)
+        is_lower_bound(List.cons(head, tail), lower)
+        lower_bound_cons_iff(head, tail, lower)
+        lower <= head
+        is_lower_bound(tail, lower)
+        interval_bound_imp_upper_bound(List.cons(head, tail), lower, upper)
+        is_upper_bound(List.cons(head, tail), upper)
+        upper_bound_cons_iff(head, tail, upper)
+        head <= upper
+        is_upper_bound(tail, upper)
+        closed_interval(lower, upper, head)
+        bounds_imp_interval_bound(tail, lower, upper)
+        is_interval_bound(tail, lower, upper)
+        closed_interval(lower, upper, head) and is_interval_bound(tail, lower, upper)
+    }
+    if closed_interval(lower, upper, head) and is_interval_bound(tail, lower, upper) {
+        lower <= head
+        head <= upper
+        interval_bound_imp_lower_bound(tail, lower, upper)
+        is_lower_bound(tail, lower)
+        lower_bound_cons_iff(head, tail, lower)
+        is_lower_bound(List.cons(head, tail), lower)
+        interval_bound_imp_upper_bound(tail, lower, upper)
+        is_upper_bound(tail, upper)
+        upper_bound_cons_iff(head, tail, upper)
+        is_upper_bound(List.cons(head, tail), upper)
+        bounds_imp_interval_bound(List.cons(head, tail), lower, upper)
+        is_interval_bound(List.cons(head, tail), lower, upper)
+    }
+    is_interval_bound(List.cons(head, tail), lower, upper) =
+    (closed_interval(lower, upper, head) and is_interval_bound(tail, lower, upper))
+}
+
+/// Interval bounds for a concatenation are exactly interval bounds for both lists.
+theorem interval_bound_add_iff[T: LinearOrder](left: List[T], right: List[T],
+        lower: T, upper: T) {
+    is_interval_bound(left + right, lower, upper) =
+    (is_interval_bound(left, lower, upper) and is_interval_bound(right, lower, upper))
+} by {
+    if is_interval_bound(left + right, lower, upper) {
+        interval_bound_imp_lower_bound(left + right, lower, upper)
+        is_lower_bound(left + right, lower)
+        lower_bound_add_iff(left, right, lower)
+        is_lower_bound(left, lower)
+        is_lower_bound(right, lower)
+        interval_bound_imp_upper_bound(left + right, lower, upper)
+        is_upper_bound(left + right, upper)
+        upper_bound_add_iff(left, right, upper)
+        is_upper_bound(left, upper)
+        is_upper_bound(right, upper)
+        bounds_imp_interval_bound(left, lower, upper)
+        is_interval_bound(left, lower, upper)
+        bounds_imp_interval_bound(right, lower, upper)
+        is_interval_bound(right, lower, upper)
+        is_interval_bound(left, lower, upper) and is_interval_bound(right, lower, upper)
+    }
+    if is_interval_bound(left, lower, upper) and is_interval_bound(right, lower, upper) {
+        interval_bound_imp_lower_bound(left, lower, upper)
+        is_lower_bound(left, lower)
+        interval_bound_imp_lower_bound(right, lower, upper)
+        is_lower_bound(right, lower)
+        lower_bound_add_iff(left, right, lower)
+        is_lower_bound(left + right, lower)
+        interval_bound_imp_upper_bound(left, lower, upper)
+        is_upper_bound(left, upper)
+        interval_bound_imp_upper_bound(right, lower, upper)
+        is_upper_bound(right, upper)
+        upper_bound_add_iff(left, right, upper)
+        is_upper_bound(left + right, upper)
+        bounds_imp_interval_bound(left + right, lower, upper)
+        is_interval_bound(left + right, lower, upper)
+    }
+    is_interval_bound(left + right, lower, upper) =
+    (is_interval_bound(left, lower, upper) and is_interval_bound(right, lower, upper))
+}
+
+/// A singleton list is interval-bounded exactly when its element lies in the interval.
+theorem interval_bound_singleton_iff[T: LinearOrder](item: T, lower: T, upper: T) {
+    is_interval_bound(List.singleton(item), lower, upper) =
+    closed_interval(lower, upper, item)
+} by {
+    List.singleton(item) = List.cons(item, List.nil[T])
+    interval_bound_cons_iff(item, List.nil[T], lower, upper)
+    interval_bound_nil(lower, upper)
+    is_interval_bound(List.singleton(item), lower, upper) =
+    closed_interval(lower, upper, item)
+}
+
+/// Interval bounds after append are exactly interval bounds for the old list and membership of the appended element.
+theorem interval_bound_append_iff[T: LinearOrder](items: List[T], last: T,
+        lower: T, upper: T) {
+    is_interval_bound(items.append(last), lower, upper) =
+    (is_interval_bound(items, lower, upper) and closed_interval(lower, upper, last))
+} by {
+    items.append(last) = items + List.singleton(last)
+    interval_bound_add_iff(items, List.singleton(last), lower, upper)
+    interval_bound_singleton_iff(last, lower, upper)
+    is_interval_bound(items.append(last), lower, upper) =
+    (is_interval_bound(items, lower, upper) and closed_interval(lower, upper, last))
 }
 
 /// A list lower bound is a lower bound for the list membership predicate.
@@ -909,6 +1174,42 @@ theorem le_list_min_iff[T: LinearOrder](lower: T, head: T, tail: List[T]) {
     lower <= list_min(head, tail) = is_lower_bound(List.cons(head, tail), lower)
 } by {
     lte_list_min_iff_lower_bound(lower, head, tail)
+}
+
+/// The minimum of a non-empty list is a membership-predicate lower bound.
+theorem list_min_is_list_lower_bound[T: LinearOrder](head: T, tail: List[T]) {
+    list_lower_bound(List.cons(head, tail), list_min(head, tail))
+} by {
+    list_min_is_lower_bound(head, tail)
+    lower_bound_imp_list_lower_bound(List.cons(head, tail), list_min(head, tail))
+}
+
+/// A point is below the list minimum exactly when it is a membership-predicate lower bound.
+theorem le_list_min_iff_list_lower_bound[T: LinearOrder](lower: T, head: T, tail: List[T]) {
+    lower <= list_min(head, tail) = list_lower_bound(List.cons(head, tail), lower)
+} by {
+    lte_list_min_iff_lower_bound(lower, head, tail)
+    lower_bound_iff_list_lower_bound(List.cons(head, tail), lower)
+    lower <= list_min(head, tail) = list_lower_bound(List.cons(head, tail), lower)
+}
+
+/// The minimum of a non-empty list is below every element of the list.
+theorem list_min_lte_contains[T: LinearOrder](head: T, tail: List[T], item: T) {
+    List.cons(head, tail).contains(item) implies list_min(head, tail) <= item
+} by {
+    if List.cons(head, tail).contains(item) {
+        list_min_is_lower_bound(head, tail)
+        lower_bound_contains(List.cons(head, tail), list_min(head, tail), item)
+        list_min(head, tail) <= item
+    }
+}
+
+/// The minimum of a non-empty list is below its head.
+theorem list_min_lte_head[T: LinearOrder](head: T, tail: List[T]) {
+    list_min(head, tail) <= head
+} by {
+    List.cons(head, tail).contains(head)
+    list_min_lte_contains(head, tail, head)
 }
 
 /// The minimum over a concatenation with a non-empty right list is the minimum of the two list minima.

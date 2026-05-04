@@ -15,4 +15,4 @@ Goal: provide a broad order-theoretic language that later algebra, topology, and
 
 ## Current Focus
 
-The earliest basic-orders and interval-preimage frontiers are definition choices, so concrete execution is currently advancing through [lattices](lattices/todo.md) until those API choices are settled.
+The earliest basic-orders, lattice submodule, and interval-preimage frontiers are definition choices. The concrete list/interval lattice migration pass is complete, so the next non-design execution work should skip those deferred choices and continue with downstream order-operation audits or later concrete branches.
