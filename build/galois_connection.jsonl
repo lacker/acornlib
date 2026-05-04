@@ -84,39 +84,39 @@
 {"goal":"galois_closure[A, B](lower, upper, a) = a","proof":[]}
 {"goal":"galois_coinsertion_closure_eq_self","proof":[]}
 {"goal":"is_closure_operator[A](close) = (is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_extensive[T0](x0) and is_idempotent_map[T0](x0)) = is_closure_operator[T0](x0) }[A](close)"]}
-{"goal":"is_monotone[A, A](close)","proof":["is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close)"]}
-{"goal":"closure_operator_is_monotone","proof":["not is_closure_operator[A](close)"]}
+{"goal":"is_monotone[A, A](close)","proof":[]}
+{"goal":"closure_operator_is_monotone","proof":[]}
 {"goal":"is_closure_operator[A](close) = (is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_extensive[T0](x0) and is_idempotent_map[T0](x0)) = is_closure_operator[T0](x0) }[A](close)"]}
-{"goal":"is_extensive[A](close)","proof":["is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close)"]}
-{"goal":"closure_operator_is_extensive","proof":["not is_closure_operator[A](close)"]}
+{"goal":"is_extensive[A](close)","proof":[]}
+{"goal":"closure_operator_is_extensive","proof":[]}
 {"goal":"is_closure_operator[A](close) = (is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_extensive[T0](x0) and is_idempotent_map[T0](x0)) = is_closure_operator[T0](x0) }[A](close)"]}
-{"goal":"is_idempotent_map[A](close)","proof":["is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close)"]}
-{"goal":"closure_operator_is_idempotent","proof":["not is_closure_operator[A](close)"]}
-{"goal":"is_extensive[A](close)","proof":["not is_closure_operator[A](close)"]}
+{"goal":"is_idempotent_map[A](close)","proof":[]}
+{"goal":"closure_operator_is_idempotent","proof":[]}
+{"goal":"is_extensive[A](close)","proof":[]}
 {"goal":"is_extensive[A](close) = forall(x0: A) { x0 <= close(x0) }","proof":["function[T0: PartialOrder](x0: T0 -> T0) { forall(x1: T0) { x1 <= x0(x1) } = is_extensive[T0](x0) }[A](close)"]}
 {"goal":"a <= close(a)","proof":["is_extensive[A](close)","(forall(x0: A) { x0 <= close(x0) } = true)","function(x0: A) { x0 <= close(x0) }(a)"]}
-{"goal":"closure_operator_extensive_at","proof":["not is_closure_operator[A](close)"]}
-{"goal":"is_idempotent_map[A](close)","proof":["not is_closure_operator[A](close)"]}
+{"goal":"closure_operator_extensive_at","proof":[]}
+{"goal":"is_idempotent_map[A](close)","proof":[]}
 {"goal":"is_idempotent_map[A](close) = forall(x0: A) { close(close(x0)) = close(x0) }","proof":["function[T0](x0: T0 -> T0) { forall(x1: T0) { x0(x0(x1)) = x0(x1) } = is_idempotent_map[T0](x0) }[A](close)"]}
 {"goal":"close(close(a)) = close(a)","proof":["is_idempotent_map[A](close)","(forall(x0: A) { close(close(x0)) = close(x0) } = true)","function(x0: A) { close(close(x0)) = close(x0) }(a)"]}
-{"goal":"closure_operator_idempotent_at","proof":["not is_closure_operator[A](close)"]}
+{"goal":"closure_operator_idempotent_at","proof":[]}
 {"goal":"is_kernel_operator[A](kernel) = (is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_reductive[T0](x0) and is_idempotent_map[T0](x0)) = is_kernel_operator[T0](x0) }[A](kernel)"]}
-{"goal":"is_monotone[A, A](kernel)","proof":["is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel)"]}
-{"goal":"kernel_operator_is_monotone","proof":["not is_kernel_operator[A](kernel)"]}
+{"goal":"is_monotone[A, A](kernel)","proof":[]}
+{"goal":"kernel_operator_is_monotone","proof":[]}
 {"goal":"is_kernel_operator[A](kernel) = (is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_reductive[T0](x0) and is_idempotent_map[T0](x0)) = is_kernel_operator[T0](x0) }[A](kernel)"]}
-{"goal":"is_reductive[A](kernel)","proof":["is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel)"]}
-{"goal":"kernel_operator_is_reductive","proof":["not is_kernel_operator[A](kernel)"]}
+{"goal":"is_reductive[A](kernel)","proof":[]}
+{"goal":"kernel_operator_is_reductive","proof":[]}
 {"goal":"is_kernel_operator[A](kernel) = (is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_reductive[T0](x0) and is_idempotent_map[T0](x0)) = is_kernel_operator[T0](x0) }[A](kernel)"]}
-{"goal":"is_idempotent_map[A](kernel)","proof":["is_monotone[A, A](kernel) and is_reductive[A](kernel) and is_idempotent_map[A](kernel)"]}
-{"goal":"kernel_operator_is_idempotent","proof":["not is_kernel_operator[A](kernel)"]}
-{"goal":"is_reductive[A](kernel)","proof":["not is_kernel_operator[A](kernel)"]}
+{"goal":"is_idempotent_map[A](kernel)","proof":[]}
+{"goal":"kernel_operator_is_idempotent","proof":[]}
+{"goal":"is_reductive[A](kernel)","proof":[]}
 {"goal":"is_reductive[A](kernel) = forall(x0: A) { kernel(x0) <= x0 }","proof":["function[T0: PartialOrder](x0: T0 -> T0) { forall(x1: T0) { x0(x1) <= x1 } = is_reductive[T0](x0) }[A](kernel)"]}
 {"goal":"kernel(a) <= a","proof":["is_reductive[A](kernel)","(forall(x0: A) { kernel(x0) <= x0 } = true)","function(x0: A) { kernel(x0) <= x0 }(a)"]}
-{"goal":"kernel_operator_reductive_at","proof":["not is_kernel_operator[A](kernel)"]}
-{"goal":"is_idempotent_map[A](kernel)","proof":["not is_kernel_operator[A](kernel)"]}
+{"goal":"kernel_operator_reductive_at","proof":[]}
+{"goal":"is_idempotent_map[A](kernel)","proof":[]}
 {"goal":"is_idempotent_map[A](kernel) = forall(x0: A) { kernel(kernel(x0)) = kernel(x0) }","proof":["function[T0](x0: T0 -> T0) { forall(x1: T0) { x0(x0(x1)) = x0(x1) } = is_idempotent_map[T0](x0) }[A](kernel)"]}
 {"goal":"kernel(kernel(a)) = kernel(a)","proof":["is_idempotent_map[A](kernel)","(forall(x0: A) { kernel(kernel(x0)) = kernel(x0) } = true)","function(x0: A) { kernel(kernel(x0)) = kernel(x0) }(a)"]}
-{"goal":"kernel_operator_idempotent_at","proof":["not is_kernel_operator[A](kernel)"]}
+{"goal":"kernel_operator_idempotent_at","proof":[]}
 {"goal":"is_monotone[A, A](galois_closure[A, B](lower, upper))","proof":[]}
 {"goal":"a <= galois_closure[A, B](lower, upper, a)","proof":[]}
 {"goal":"is_extensive[A](galois_closure[A, B](lower, upper))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { forall(x1: T0) { x1 <= x0(x1) } = is_extensive[T0](x0) }[A](galois_closure[A, B](lower, upper))","let w0: A satisfy { not w0 <= galois_closure[A, B](lower, upper, w0) }","function(x0: A) { x0 <= galois_closure[A, B](lower, upper, x0) }(w0)"]}
