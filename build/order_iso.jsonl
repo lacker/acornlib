@@ -204,7 +204,7 @@
 {"goal":"is_order_iso_pair[A, C](fh, kg) = (forall(x0: A) { kg(fh(x0)) = x0 } and forall(x1: C) { fh(kg(x1)) = x1 } and is_order_embedding[A, C](fh) and is_order_embedding[C, A](kg))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1) and is_order_embedding[T1, T0](x0)) = is_order_iso_pair[T0, T1](x1, x0) }[A, C](kg, fh)"]}
 {"goal":"kg(fh(a)) = a","proof":["function(x0: A) { kg(fh(x0)) = x0 }(a)"]}
 {"goal":"fh(kg(c)) = c","proof":["function(x0: C) { fh(kg(x0)) = x0 }(c)"]}
-{"goal":"is_order_embedding[A, C](fh) and is_order_embedding[C, A](kg)","proof":["not is_order_embedding[A, C](fh)"]}
+{"goal":"is_order_embedding[A, C](fh) and is_order_embedding[C, A](kg)","proof":[]}
 {"goal":"forall(x0: C) { fh(kg(x0)) = x0 } and is_order_embedding[A, C](fh) and is_order_embedding[C, A](kg)","proof":["let w0: C satisfy { fh(kg(w0)) != w0 }","function(x0: C) { fh(kg(x0)) = x0 }(w0)"]}
 {"goal":"forall(x0: A) { kg(fh(x0)) = x0 } and forall(x1: C) { fh(kg(x1)) = x1 } and is_order_embedding[A, C](fh) and is_order_embedding[C, A](kg)","proof":["(forall(x0: C) { fh(kg(x0)) = x0 } and is_order_embedding[A, C](fh))","let w0: A satisfy { kg(fh(w0)) != w0 }","function(x0: A) { kg(fh(x0)) = x0 }(w0)"]}
 {"goal":"is_order_iso_pair[A, C](fh, kg)","proof":[]}
@@ -439,6 +439,126 @@
 {"goal":"is_bounded_by_interval(order_iso_preimage_predicate[A, B](e, q), e.inv(a), e.inv(b))","proof":[]}
 {"goal":"is_bounded[A](order_iso_preimage_predicate[A, B](e, q))","proof":[]}
 {"goal":"order_iso_preimage_bounded","proof":[]}
+{"goal":"e.inv(e.map(x)) = x","proof":[]}
+{"goal":"order_dual_iso_image_predicate[A, B](e, p, e.map(x)) = p(e.inv(e.map(x)))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T0 -> Bool, x2: T1) { order_dual_iso_image_predicate[T0, T1](x0, x1, x2) = x1(x0.inv(x2)) }[A, B](e, p, e.map(x))"]}
+{"goal":"order_dual_iso_image_predicate[A, B](e, p, e.map(x)) = p(x)","proof":[]}
+{"goal":"order_dual_iso_image_predicate_map","proof":[]}
+{"goal":"e.map(e.inv(y)) = y","proof":[]}
+{"goal":"order_dual_iso_preimage_predicate[A, B](e, q, e.inv(y)) = q(e.map(e.inv(y)))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T1 -> Bool, x2: T0) { order_dual_iso_preimage_predicate[T0, T1](x0, x1, x2) = x1(x0.map(x2)) }[A, B](e, q, e.inv(y))"]}
+{"goal":"order_dual_iso_preimage_predicate[A, B](e, q, e.inv(y)) = q(y)","proof":[]}
+{"goal":"order_dual_iso_preimage_predicate_inv","proof":[]}
+{"goal":"p(e.inv(y))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T0 -> Bool, x2: T1) { order_dual_iso_image_predicate[T0, T1](x0, x1, x2) = x1(x0.inv(x2)) }[A, B](e, p, y)"]}
+{"goal":"a <= e.inv(y)","proof":[]}
+{"goal":"e.map(e.inv(y)) <= e.map(a)","proof":[]}
+{"goal":"e.map(e.inv(y)) = y","proof":[]}
+{"goal":"y <= e.map(a)","proof":[]}
+{"goal":"order_dual_iso_image_lower_bound_to_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[B](order_dual_iso_image_predicate[A, B](e, p), e.map(a))"]}
+{"goal":"p(e.inv(y))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T0 -> Bool, x2: T1) { order_dual_iso_image_predicate[T0, T1](x0, x1, x2) = x1(x0.inv(x2)) }[A, B](e, p, y)"]}
+{"goal":"e.inv(y) <= b","proof":[]}
+{"goal":"e.map(b) <= e.map(e.inv(y))","proof":[]}
+{"goal":"e.map(e.inv(y)) = y","proof":[]}
+{"goal":"e.map(b) <= y","proof":[]}
+{"goal":"order_dual_iso_image_upper_bound_to_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[B](order_dual_iso_image_predicate[A, B](e, p), e.map(b))"]}
+{"goal":"order_dual_iso_image_predicate[A, B](e, p, e.map(x))","proof":[]}
+{"goal":"e.map(x) <= e.map(a)","proof":[]}
+{"goal":"a <= x","proof":[]}
+{"goal":"order_dual_iso_reflects_image_upper_bound_to_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[A](p, a)"]}
+{"goal":"order_dual_iso_image_predicate[A, B](e, p, e.map(x))","proof":[]}
+{"goal":"e.map(b) <= e.map(x)","proof":[]}
+{"goal":"x <= b","proof":[]}
+{"goal":"order_dual_iso_reflects_image_lower_bound_to_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[A](p, b)"]}
+{"goal":"is_lower_bound(p, a)","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(a))","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(a)) = is_lower_bound(p, a)","proof":[]}
+{"goal":"order_dual_iso_image_lower_bound_upper_bound_iff","proof":[]}
+{"goal":"is_upper_bound(p, b)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(b))","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(b)) = is_upper_bound(p, b)","proof":[]}
+{"goal":"order_dual_iso_image_upper_bound_lower_bound_iff","proof":[]}
+{"goal":"is_upper_bound(p, b)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(b))","proof":[]}
+{"goal":"is_lower_bound(p, a)","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(a))","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_image_predicate[A, B](e, p), e.map(b), e.map(a))","proof":[]}
+{"goal":"order_dual_iso_image_bounded_by_interval","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(a))","proof":[]}
+{"goal":"is_lower_bound(p, a)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(b))","proof":[]}
+{"goal":"is_upper_bound(p, b)","proof":[]}
+{"goal":"is_bounded_by_interval(p, a, b)","proof":[]}
+{"goal":"order_dual_iso_reflects_image_bounded_by_interval","proof":[]}
+{"goal":"is_bounded_by_interval(p, a, b)","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_image_predicate[A, B](e, p), e.map(b), e.map(a))","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_image_predicate[A, B](e, p), e.map(b), e.map(a)) = is_bounded_by_interval(p, a, b)","proof":[]}
+{"goal":"order_dual_iso_image_bounded_by_interval_iff","proof":[]}
+{"goal":"exists(k0: A) { is_lower_bound(p, k0) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[A](p)"]}
+{"goal":"is_upper_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(a))","proof":[]}
+{"goal":"is_bounded_above[B](order_dual_iso_image_predicate[A, B](e, p))","proof":[]}
+{"goal":"order_dual_iso_image_bounded_below_to_bounded_above","proof":[]}
+{"goal":"exists(k0: A) { is_upper_bound(p, k0) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[A](p)"]}
+{"goal":"is_lower_bound(order_dual_iso_image_predicate[A, B](e, p), e.map(b))","proof":[]}
+{"goal":"is_bounded_below[B](order_dual_iso_image_predicate[A, B](e, p))","proof":[]}
+{"goal":"order_dual_iso_image_bounded_above_to_bounded_below","proof":[]}
+{"goal":"exists(k0: A, k1: A) { is_bounded_by_interval(p, k0, k1) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[A](p)"]}
+{"goal":"is_bounded_by_interval(order_dual_iso_image_predicate[A, B](e, p), e.map(b), e.map(a))","proof":[]}
+{"goal":"is_bounded[B](order_dual_iso_image_predicate[A, B](e, p))","proof":[]}
+{"goal":"order_dual_iso_image_bounded","proof":[]}
+{"goal":"q(e.map(x))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T1 -> Bool, x2: T0) { order_dual_iso_preimage_predicate[T0, T1](x0, x1, x2) = x1(x0.map(x2)) }[A, B](e, q, x)"]}
+{"goal":"a <= e.map(x)","proof":[]}
+{"goal":"e.inv(e.map(x)) <= e.inv(a)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, a)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, e.map(x))"]}
+{"goal":"e.inv(e.map(x)) = x","proof":[]}
+{"goal":"x <= e.inv(a)","proof":[]}
+{"goal":"order_dual_iso_preimage_lower_bound_to_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[A](order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a))"]}
+{"goal":"q(e.map(x))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T0, T1], x1: T1 -> Bool, x2: T0) { order_dual_iso_preimage_predicate[T0, T1](x0, x1, x2) = x1(x0.map(x2)) }[A, B](e, q, x)"]}
+{"goal":"e.map(x) <= b","proof":[]}
+{"goal":"e.inv(b) <= e.inv(e.map(x))","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, b)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, e.map(x))"]}
+{"goal":"e.inv(e.map(x)) = x","proof":[]}
+{"goal":"e.inv(b) <= x","proof":[]}
+{"goal":"order_dual_iso_preimage_upper_bound_to_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[A](order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b))"]}
+{"goal":"order_dual_iso_preimage_predicate[A, B](e, q, e.inv(y))","proof":[]}
+{"goal":"e.inv(y) <= e.inv(a)","proof":[]}
+{"goal":"a <= y","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, y)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, a)"]}
+{"goal":"order_dual_iso_reflects_preimage_upper_bound_to_lower_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x1 <= x2 } = is_lower_bound[T0](x0, x1) }[B](q, a)"]}
+{"goal":"order_dual_iso_preimage_predicate[A, B](e, q, e.inv(y))","proof":[]}
+{"goal":"e.inv(b) <= e.inv(y)","proof":[]}
+{"goal":"y <= b","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, y)","function[T0: PartialOrder, T1: PartialOrder](x0: OrderDualIso[T1, T0], x1: T0) { order_dual_iso_inverse[T1, T0](x0).map(x1) = x0.inv(x1) }[B, A](e, b)"]}
+{"goal":"order_dual_iso_reflects_preimage_lower_bound_to_upper_bound","proof":["function[T0: LinearOrder](x0: T0 -> Bool, x1: T0) { forall(x2: T0) { not x0(x2) or x2 <= x1 } = is_upper_bound[T0](x0, x1) }[B](q, b)"]}
+{"goal":"is_lower_bound(q, a)","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a))","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a)) = is_lower_bound(q, a)","proof":[]}
+{"goal":"order_dual_iso_preimage_lower_bound_upper_bound_iff","proof":[]}
+{"goal":"is_upper_bound(q, b)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b))","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b)) = is_upper_bound(q, b)","proof":[]}
+{"goal":"order_dual_iso_preimage_upper_bound_lower_bound_iff","proof":[]}
+{"goal":"is_upper_bound(q, b)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b))","proof":[]}
+{"goal":"is_lower_bound(q, a)","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a))","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b), e.inv(a))","proof":[]}
+{"goal":"order_dual_iso_preimage_bounded_by_interval","proof":[]}
+{"goal":"is_upper_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a))","proof":[]}
+{"goal":"is_lower_bound(q, a)","proof":[]}
+{"goal":"is_lower_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b))","proof":[]}
+{"goal":"is_upper_bound(q, b)","proof":[]}
+{"goal":"is_bounded_by_interval(q, a, b)","proof":[]}
+{"goal":"order_dual_iso_reflects_preimage_bounded_by_interval","proof":[]}
+{"goal":"is_bounded_by_interval(q, a, b)","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b), e.inv(a))","proof":[]}
+{"goal":"is_bounded_by_interval(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b), e.inv(a)) = is_bounded_by_interval(q, a, b)","proof":[]}
+{"goal":"order_dual_iso_preimage_bounded_by_interval_iff","proof":[]}
+{"goal":"exists(k0: B) { is_lower_bound(q, k0) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_lower_bound[T0](x0, k0) } = is_bounded_below[T0](x0) }[B](q)"]}
+{"goal":"is_upper_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(a))","proof":[]}
+{"goal":"is_bounded_above[A](order_dual_iso_preimage_predicate[A, B](e, q))","proof":[]}
+{"goal":"order_dual_iso_preimage_bounded_below_to_bounded_above","proof":[]}
+{"goal":"exists(k0: B) { is_upper_bound(q, k0) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0) { is_upper_bound[T0](x0, k0) } = is_bounded_above[T0](x0) }[B](q)"]}
+{"goal":"is_lower_bound(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b))","proof":[]}
+{"goal":"is_bounded_below[A](order_dual_iso_preimage_predicate[A, B](e, q))","proof":[]}
+{"goal":"order_dual_iso_preimage_bounded_above_to_bounded_below","proof":[]}
+{"goal":"exists(k0: B, k1: B) { is_bounded_by_interval(q, k0, k1) }","proof":["function[T0: LinearOrder](x0: T0 -> Bool) { exists(k0: T0, k1: T0) { is_bounded_by_interval[T0](x0, k0, k1) } = is_bounded[T0](x0) }[B](q)"]}
+{"goal":"is_bounded_by_interval(order_dual_iso_preimage_predicate[A, B](e, q), e.inv(b), e.inv(a))","proof":[]}
+{"goal":"is_bounded[A](order_dual_iso_preimage_predicate[A, B](e, q))","proof":[]}
+{"goal":"order_dual_iso_preimage_bounded","proof":[]}
 {"goal":"is_order_embedding[A, A](identity_fn[A])","proof":[]}
 {"goal":"identity_fn(identity_fn(a)) = a","proof":["function[T0](x0: T0) { identity_fn[T0](x0) = x0 }[A](a)"]}
 {"goal":"is_order_iso_pair[A, A](identity_fn[A], identity_fn[A])","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T1 -> T0, x1: T0 -> T1) { (forall(x2: T0) { x0(x1(x2)) = x2 } and forall(x3: T1) { x1(x0(x3)) = x3 } and is_order_embedding[T0, T1](x1)) = is_order_iso_pair[T0, T1](x1, x0) }[A, A](identity_fn[A], identity_fn[A])","function[T0: PartialOrder] { is_order_embedding[T0, T0](identity_fn[T0]) }[A]","not (forall(x0: A) { identity_fn(identity_fn(x0)) = x0 } and forall(x1: A) { identity_fn(identity_fn(x1)) = x1 } and is_order_embedding[A, A](identity_fn[A]))","not (forall(x2: A) { identity_fn(identity_fn(x2)) = x2 } and forall(x3: A) { identity_fn(identity_fn(x3)) = x3 })","let w0: A satisfy { identity_fn(identity_fn(w0)) != w0 }","function(x0: A) { identity_fn(identity_fn(x0)) = x0 }(w0)"]}
@@ -564,6 +684,100 @@
 {"goal":"order_iso_inv_min_image","proof":[]}
 {"goal":"e.inv(a.max(b)) = e.inv(a).max(e.inv(b))","proof":[]}
 {"goal":"order_iso_inv_max_image","proof":[]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"e.map(x) <= e.map(a)","proof":["not a <= x"]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"e.map(b) <= e.map(x)","proof":["not x <= b"]}
+{"goal":"closed_interval(e.map(b), e.map(a), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","e.map(x) <= e.map(a)","e.map(b) <= e.map(x)"]}
+{"goal":"order_dual_iso_closed_interval_image","proof":["not closed_interval(a, b, x)"]}
+{"goal":"e.map(b) <= e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x0 <= x2 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"x <= b","proof":["not e.map(b) <= e.map(x)"]}
+{"goal":"e.map(x) <= e.map(a)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"a <= x","proof":["not e.map(x) <= e.map(a)"]}
+{"goal":"closed_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 <= x2) = closed_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_dual_iso_closed_interval_preimage","proof":["not closed_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"closed_interval(a, b, x)","proof":["not closed_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"closed_interval(e.map(b), e.map(a), e.map(x))","proof":["not closed_interval(a, b, x)"]}
+{"goal":"closed_interval(e.map(b), e.map(a), e.map(x)) = closed_interval(a, b, x)","proof":["closed_interval(e.map(b), e.map(a), e.map(x)) or closed_interval(a, b, x)","closed_interval(a, b, x)","closed_interval(e.map(b), e.map(a), e.map(x))","not closed_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"order_dual_iso_closed_interval_iff","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"e.map(x) < e.map(a)","proof":["not a < x"]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"e.map(b) < e.map(x)","proof":["not x < b"]}
+{"goal":"open_interval(e.map(b), e.map(a), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","e.map(x) < e.map(a)","e.map(b) < e.map(x)"]}
+{"goal":"order_dual_iso_open_interval_image","proof":["not open_interval(a, b, x)"]}
+{"goal":"e.map(b) < e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"x < b","proof":["not e.map(b) < e.map(x)"]}
+{"goal":"e.map(x) < e.map(a)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"a < x","proof":["not e.map(x) < e.map(a)"]}
+{"goal":"open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_dual_iso_open_interval_preimage","proof":["not open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"open_interval(a, b, x)","proof":["not open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"open_interval(e.map(b), e.map(a), e.map(x))","proof":["not open_interval(a, b, x)"]}
+{"goal":"open_interval(e.map(b), e.map(a), e.map(x)) = open_interval(a, b, x)","proof":["open_interval(e.map(b), e.map(a), e.map(x)) or open_interval(a, b, x)","open_interval(a, b, x)","open_interval(e.map(b), e.map(a), e.map(x))","not open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"order_dual_iso_open_interval_iff","proof":[]}
+{"goal":"a < x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[A](a, b, x)"]}
+{"goal":"e.map(x) < e.map(a)","proof":["not a < x"]}
+{"goal":"x <= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[A](a, b, x)"]}
+{"goal":"e.map(b) <= e.map(x)","proof":["not x <= b"]}
+{"goal":"right_open_interval(e.map(b), e.map(a), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[A](a, x, b)","e.map(x) < e.map(a)","e.map(b) <= e.map(x)"]}
+{"goal":"order_dual_iso_left_open_interval_image","proof":["not left_open_interval(a, b, x)"]}
+{"goal":"e.map(b) <= e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"x <= b","proof":["not e.map(b) <= e.map(x)"]}
+{"goal":"e.map(x) < e.map(a)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"a < x","proof":["not e.map(x) < e.map(a)"]}
+{"goal":"left_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[A](a, x, b)"]}
+{"goal":"order_dual_iso_left_open_interval_preimage","proof":["not right_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"left_open_interval(a, b, x)","proof":["not right_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"right_open_interval(e.map(b), e.map(a), e.map(x))","proof":["not left_open_interval(a, b, x)"]}
+{"goal":"right_open_interval(e.map(b), e.map(a), e.map(x)) = left_open_interval(a, b, x)","proof":["right_open_interval(e.map(b), e.map(a), e.map(x)) or left_open_interval(a, b, x)","left_open_interval(a, b, x)","right_open_interval(e.map(b), e.map(a), e.map(x))","not right_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"order_dual_iso_left_open_interval_iff","proof":[]}
+{"goal":"a <= x","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[A](a, b, x)"]}
+{"goal":"e.map(x) <= e.map(a)","proof":["not a <= x"]}
+{"goal":"x < b","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[A](a, b, x)"]}
+{"goal":"e.map(b) < e.map(x)","proof":["not x < b"]}
+{"goal":"left_open_interval(e.map(b), e.map(a), e.map(x))","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))","e.map(x) <= e.map(a)","e.map(b) < e.map(x)"]}
+{"goal":"order_dual_iso_right_open_interval_image","proof":["not right_open_interval(a, b, x)"]}
+{"goal":"e.map(b) < e.map(x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"x < b","proof":["not e.map(b) < e.map(x)"]}
+{"goal":"e.map(x) <= e.map(a)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[B](e.map(b), e.map(a), e.map(x))"]}
+{"goal":"a <= x","proof":["not e.map(x) <= e.map(a)"]}
+{"goal":"right_open_interval(a, b, x)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[A](a, x, b)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[B](e.map(b), e.map(x), e.map(a))"]}
+{"goal":"order_dual_iso_right_open_interval_preimage","proof":["not left_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"right_open_interval(a, b, x)","proof":["not left_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"left_open_interval(e.map(b), e.map(a), e.map(x))","proof":["not right_open_interval(a, b, x)"]}
+{"goal":"left_open_interval(e.map(b), e.map(a), e.map(x)) = right_open_interval(a, b, x)","proof":["left_open_interval(e.map(b), e.map(a), e.map(x)) or right_open_interval(a, b, x)","right_open_interval(a, b, x)","left_open_interval(e.map(b), e.map(a), e.map(x))","not left_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"order_dual_iso_right_open_interval_iff","proof":[]}
+{"goal":"a.min(b) = a","proof":["not a <= b"]}
+{"goal":"e.map(b) <= e.map(a)","proof":["not a <= b"]}
+{"goal":"e.map(a) >= e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[B](e.map(a), e.map(b))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[B](e.map(a), e.map(b))","e.map(a) < e.map(b)","not e.map(a) < e.map(b)"]}
+{"goal":"e.map(a).max(e.map(b)) = e.map(a)","proof":["not e.map(a) >= e.map(b)"]}
+{"goal":"e.map(a.min(b)) = e.map(a).max(e.map(b))","proof":["a.min(b) = a","e.map(a).max(e.map(b)) != e.map(a)"]}
+{"goal":"b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[A](b, a)"]}
+{"goal":"a >= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[A](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 or x0 >= x1 }[A](a, b)","a.max(b) != b","a.max(b) = b"]}
+{"goal":"a.min(b) = b","proof":["not a >= b"]}
+{"goal":"e.map(a) <= e.map(b)","proof":["not b <= a"]}
+{"goal":"e.map(a).max(e.map(b)) = e.map(b)","proof":["not e.map(a) <= e.map(b)"]}
+{"goal":"e.map(a.min(b)) = e.map(a).max(e.map(b))","proof":["a.min(b) = b","e.map(a).max(e.map(b)) != e.map(b)"]}
+{"goal":"order_dual_iso_min_image","proof":[]}
+{"goal":"a.max(b) = b","proof":["not a <= b"]}
+{"goal":"e.map(b) <= e.map(a)","proof":["not a <= b"]}
+{"goal":"e.map(a) >= e.map(b)","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 >= x1 or x0 < x1 }[B](e.map(a), e.map(b))","function[T0: PartialOrder](x0: T0, x1: T0) { not x0 < x1 or not x1 <= x0 }[B](e.map(a), e.map(b))","e.map(a) < e.map(b)","not e.map(a) < e.map(b)"]}
+{"goal":"e.map(a).min(e.map(b)) = e.map(b)","proof":["not e.map(a) >= e.map(b)"]}
+{"goal":"e.map(a.max(b)) = e.map(a).min(e.map(b))","proof":["a.max(b) = b","e.map(a).min(e.map(b)) != e.map(b)"]}
+{"goal":"b <= a","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0 <= x1 or x1 <= x0 }[A](b, a)"]}
+{"goal":"a >= b","proof":["function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 = x0 <= x1 }[A](a, b)","function[T0: LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x1 or x0 >= x1 }[A](a, b)","a.max(b) != b","a.max(b) = b"]}
+{"goal":"a.max(b) = a","proof":["not a >= b"]}
+{"goal":"e.map(a) <= e.map(b)","proof":["not b <= a"]}
+{"goal":"e.map(a).min(e.map(b)) = e.map(a)","proof":["not e.map(a) <= e.map(b)"]}
+{"goal":"e.map(a.max(b)) = e.map(a).min(e.map(b))","proof":["a.max(b) = a","e.map(a).min(e.map(b)) != e.map(a)"]}
+{"goal":"order_dual_iso_max_image","proof":[]}
+{"goal":"order_dual_iso_inverse[A, B](e).map = e.inv","proof":[]}
+{"goal":"e.inv(a.min(b)) = e.inv(a).max(e.inv(b))","proof":["function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(a.min(b))","function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(b)","function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(a)"]}
+{"goal":"order_dual_iso_inv_min_image","proof":[]}
+{"goal":"order_dual_iso_inverse[A, B](e).map = e.inv","proof":[]}
+{"goal":"e.inv(a.max(b)) = e.inv(a).min(e.inv(b))","proof":["function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(a.max(b))","function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(b)","function(x0: B) { order_dual_iso_inverse[A, B](e).map(x0) = e.inv(x0) }(a)"]}
+{"goal":"order_dual_iso_inv_max_image","proof":[]}
 {"goal":"e.map(a.meet(b)) <= e.map(a)","proof":[]}
 {"goal":"e.map(a.meet(b)) <= e.map(b)","proof":[]}
 {"goal":"e.map(a.meet(b)) <= e.map(a).meet(e.map(b))","proof":[]}

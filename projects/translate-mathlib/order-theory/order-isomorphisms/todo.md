@@ -13,8 +13,8 @@ Status:
 - `src/order_iso.ac` now has unbundled function-space order-isomorphism support: pointwise `<=` / `<` predicates, codomain transport through an `OrderIso`, domain reindexing through an `OrderIso`, inverse laws, and preservation/reflection iff lemmas for pointwise non-strict and strict order.
 - Function-space order-isomorphism support now includes pointwise projection and strict-transitivity lemmas, wrapper facts for `order_iso_apply` / `order_iso_unapply` across all four comparison forms, and identity/inverse/composition laws for pointwise codomain transport and domain reindexing.
 - `src/order_iso.ac` now has order-duality as a standard isomorphism pattern through mutually inverse antitone maps, bundled `OrderDualIso` values, strict and non-strict reflection/preservation lemmas, inverse dual isomorphisms, and composition of two dual isomorphisms into an ordinary `OrderIso` pair.
+- `src/order_iso.ac` now has `OrderDualIso` image/preimage predicate wrappers plus reversed interval, bound, boundedness, and binary `min`/`max` transport lemmas.
 
 - [ ] Connect order isomorphisms with algebraic equivalences in ordered algebra
-- [ ] Extend `OrderDualIso` with interval, bound, and `min`/`max` transport lemmas
 - [ ] Blocked: add bundled product order isomorphisms once generic `Pair[A, B]: PartialOrder` instances render correctly
 - [ ] Refactor representative transport-heavy proofs to use the new API
