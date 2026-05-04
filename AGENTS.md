@@ -14,6 +14,7 @@ If you are in an environment that doesn't have the verifier, use the "acorn-inst
 
 Make sure to run the verifier before you tell the user you're finished. If you have made some progress but you're still working on a big proof, it's okay to comment that out so the user can check in your work.
 
+Before submitting a pull request, read CONTRIBUTING.md to learn the expected format and understand the process.
 
 ## Documentation Style
 

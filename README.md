@@ -10,23 +10,8 @@ including documentation, is in the [acornprover.org repository](https://github.c
 
 ## How To Contribute
 
-Please feel free to submit pull requests! The more we contribute, the smarter the AI gets.
+We welcome both human and AI contributions. The goal of acornlib is to be a repository of all known mathematics. So you're welcome to contribute anything that isn't in here yet.
 
-To start, fork this repository by clicking the "fork" button on GitHub. Then, clone the fork to your machine.
+If you have OpenAI Codex and you'd like to use it to contribute, the first step is think of a project you'd like to contribute. A theorem you'd like to prove, or an area of mathematics you'd like to generally formalize. Then ask Codex to do it, with the `work-on-project` skill.
 
-To work on your fork, open the `acornlib` folder from VS Code. The extension ships with a copy of the Acorn library, but it will use your local fork instead when you are working on a file inside it.
-
-When you're ready, push your code to your fork, and open a pull request in the main repository.
-
-## What to Contribute
-
-The current goal for `acornlib` is to support the mathematics needed for the most common theorem-proving benchmarks, like [miniF2F](https://github.com/facebookresearch/miniF2F/blob/main/lean/src/test.lean) and PutnamBench. We still need to implement several parts of high school and college level mathematics:
-
-- Exponentiation
-- The definition and properties of `e`
-- Calculus with complex numbers
-- Trigonometry: sine, cosine, pi
-- Vectors
-- Matrices
-
-If you're not sure where to start, jump into [Discord](https://discord.gg/RqXxaye4MC) and we're happy to discuss.
+If you're looking for ideas, jump into [Discord](https://discord.gg/RqXxaye4MC) and we're happy to discuss.
