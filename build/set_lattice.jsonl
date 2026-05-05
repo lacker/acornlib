@@ -101,6 +101,45 @@
 {"goal":"set_sInf_monotone","proof":["let w0: I satisfy { not a(w0) ⊂ b(w0) }","function(x0: I) { a(x0) ⊂ b(x0) }(w0)"]}
 {"goal":"set_sSup_eq_of_family_subset","proof":["let w0: I satisfy { a(w0) != b(w0) }","function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or not x1 ⊂ x0 or x0 = x1 }[K](a(w0), b(w0))","b(w0) != a(w0)","(forall(x0: I) { b(x0) ⊂ a(x0) } = true)","(forall(x1: I) { a(x1) ⊂ b(x1) } = true)","function(x0: I) { a(x0) ⊂ b(x0) }(w0)","function(x0: I) { b(x0) ⊂ a(x0) }(w0)"]}
 {"goal":"set_sInf_eq_of_family_subset","proof":["let w0: I satisfy { a(w0) != b(w0) }","function[T0](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or not x1 ⊂ x0 or x0 = x1 }[K](a(w0), b(w0))","b(w0) != a(w0)","(forall(x0: I) { b(x0) ⊂ a(x0) } = true)","(forall(x1: I) { a(x1) ⊂ b(x1) } = true)","function(x0: I) { a(x0) ⊂ b(x0) }(w0)","function(x0: I) { b(x0) ⊂ a(x0) }(w0)"]}
+{"goal":"exists(k0: I) { a(k0).contains(x) }","proof":[]}
+{"goal":"exists(k0: J) { a(i).subset(b(k0)) }","proof":["function(x0: I) { exists(k0: J) { a(x0) ⊂ b(k0) } }(i)"]}
+{"goal":"b(j).contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](a(i), b(j), x)"]}
+{"goal":"set_sSup[K, J](b).contains(x)","proof":["not exists(k0: J) { x ∈ b(k0) }","function(x0: J) { not x ∈ b(x0) }(j)"]}
+{"goal":"set_sSup_subset_of_family_refines","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](set_sSup[K, I](a), set_sSup[K, J](b))","let w0: K satisfy { w0 ∈ set_sSup[K, I](a) and not w0 ∈ set_sSup[K, J](b) }","let w1: I satisfy { forall(x0: J) { not a(w1) ⊂ b(x0) } }","function(x0: I) { exists(k0: J) { a(x0) ⊂ b(k0) } }(w1)","let w2: J satisfy { a(w1) ⊂ b(w2) }","let w3(arg0: I) -> w3_result: J satisfy { a(arg0) ⊂ b(w3_result) }","function(x0: I) { a(x0) ⊂ b(w3(x0)) }(w1)","(forall(x1: J) { not a(w1) ⊂ b(x1) } = true)","function(x0: J) { not a(w1) ⊂ b(x0) }(w3(w1))"]}
+{"goal":"exists(k0: I) { a(k0).subset(b(j)) }","proof":["function(x0: J) { exists(k0: I) { a(k0) ⊂ b(x0) } }(j)"]}
+{"goal":"a(i).contains(x)","proof":["function[T0, T1](x0: T1 -> Set[T0], x1: T0, x2: T1) { not x1 ∈ indexed_intersection[T0, T1](x0) or x1 ∈ x0(x2) }[K, I](a, x, i)"]}
+{"goal":"b(j).contains(x)","proof":["function(x0: J) { exists(k0: I) { a(k0) ⊂ b(x0) } }(j)","let w0: I satisfy { a(w0) ⊂ b(j) }","let w1(arg0: J) -> w1_result: I satisfy { a(w1_result) ⊂ b(arg0) }","let w2(arg0: J) -> w2_result: I satisfy { a(w2_result) ⊂ b(arg0) }","function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](a(w1(j)), b(j), x)","(forall(x0: I) { x ∈ a(x0) } = true)","function(x0: J) { a(w1(x0)) ⊂ b(x0) }(j)","function(x0: I) { x ∈ a(x0) }(w1(j))"]}
+{"goal":"set_sInf[K, J](b).contains(x)","proof":["let w0: J satisfy { not x ∈ b(w0) }","function(x0: J) { x ∈ b(x0) }(w0)"]}
+{"goal":"set_sInf_subset_of_family_refines","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](set_sInf[K, I](a), set_sInf[K, J](b))","let w0: K satisfy { w0 ∈ set_sInf[K, I](a) and not w0 ∈ set_sInf[K, J](b) }","let w1: J satisfy { forall(x0: I) { not a(x0) ⊂ b(w1) } }","function(x0: J) { exists(k0: I) { a(k0) ⊂ b(x0) } }(w1)","let w2: I satisfy { a(w2) ⊂ b(w1) }","let w3(arg0: J) -> w3_result: I satisfy { a(w3_result) ⊂ b(arg0) }","function(x0: J) { a(w3(x0)) ⊂ b(x0) }(w1)","(forall(x1: I) { not a(x1) ⊂ b(w1) } = true)","function(x0: I) { not a(x0) ⊂ b(w1) }(w3(w1))"]}
+{"goal":"exists(k0: J) { a(i) = b(k0) }","proof":["function(x0: I) { exists(k0: J) { a(x0) = b(k0) } }(i)"]}
+{"goal":"a(i).subset(b(j))","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a(i), b(j))","let w0: K satisfy { w0 ∈ a(i) and not w0 ∈ b(j) }"]}
+{"goal":"set_sSup[K, I](a).subset(set_sSup[K, J](b))","proof":["let w0: I satisfy { forall(x0: J) { not a(w0) ⊂ b(x0) } }","function(x0: I) { exists(k0: J) { a(x0) ⊂ b(k0) } }(w0)","let w1: J satisfy { a(w0) ⊂ b(w1) }","let w2(arg0: I) -> w2_result: J satisfy { a(arg0) ⊂ b(w2_result) }","(forall(x1: J) { not a(w0) ⊂ b(x1) } = true)","function(x0: J) { not a(w0) ⊂ b(x0) }(w2(w0))","function(x0: I) { a(x0) ⊂ b(w2(x0)) }(w0)"]}
+{"goal":"set_sSup_subset_of_family_occurs","proof":["let w0: I satisfy { forall(x0: J) { a(w0) != b(x0) } }","function(x0: I) { exists(k0: J) { a(x0) = b(k0) } }(w0)","let w1: J satisfy { a(w0) = b(w1) }","let w2(arg0: I) -> w2_result: J satisfy { a(arg0) = b(w2_result) }","function(x0: I) { b(w2(x0)) = a(x0) }(w0)","(forall(x1: J) { a(w0) != b(x1) } = true)","function(x0: J) { a(w0) != b(x0) }(w2(w0))"]}
+{"goal":"exists(k0: I) { a(k0) = b(j) }","proof":["function(x0: J) { exists(k0: I) { a(k0) = b(x0) } }(j)"]}
+{"goal":"a(i).subset(b(j))","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[K](a(i), b(j))","let w0: K satisfy { w0 ∈ a(i) and not w0 ∈ b(j) }"]}
+{"goal":"set_sInf[K, I](a).subset(set_sInf[K, J](b))","proof":["let w0: J satisfy { forall(x0: I) { not a(x0) ⊂ b(w0) } }","function(x0: J) { exists(k0: I) { a(k0) ⊂ b(x0) } }(w0)","let w1: I satisfy { a(w1) ⊂ b(w0) }","let w2(arg0: J) -> w2_result: I satisfy { a(w2_result) ⊂ b(arg0) }","(forall(x1: I) { not a(x1) ⊂ b(w0) } = true)","function(x0: I) { not a(x0) ⊂ b(w0) }(w2(w0))","function(x0: J) { a(w2(x0)) ⊂ b(x0) }(w0)"]}
+{"goal":"set_sInf_subset_of_family_occurs","proof":["let w0: J satisfy { forall(x0: I) { a(x0) != b(w0) } }","function(x0: J) { exists(k0: I) { a(k0) = b(x0) } }(w0)","let w1: I satisfy { a(w1) = b(w0) }","let w2(arg0: J) -> w2_result: I satisfy { a(w2_result) = b(arg0) }","function(x0: J) { a(w2(x0)) = b(x0) }(w0)","(forall(x1: I) { a(x1) != b(w0) } = true)","function(x0: I) { b(w0) != a(x0) }(w2(w0))"]}
+{"goal":"set_reindex_family[K, I, J](family, h, j) = family(h(j))","proof":["function[T0, T1, T2](x0: T1 -> Set[T0], x1: T2 -> T1, x2: T2) { set_reindex_family[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[K, I, J](family, h, j)"]}
+{"goal":"set_reindex_family[K, I, J](family, h, j).subset(set_sSup[K, I](family))","proof":[]}
+{"goal":"set_sSup[K, J](set_reindex_family[K, I, J](family, h)).subset(set_sSup[K, I](family))","proof":["let w0: J satisfy { not set_reindex_family[K, I, J](family, h, w0) ⊂ set_sSup[K, I](family) }","function(x0: J) { set_reindex_family[K, I, J](family, h, x0) ⊂ set_sSup[K, I](family) }(w0)"]}
+{"goal":"set_sSup_reindex_subset","proof":[]}
+{"goal":"set_sInf[K, I](family).subset(family(h(j)))","proof":[]}
+{"goal":"set_reindex_family[K, I, J](family, h, j) = family(h(j))","proof":["function[T0, T1, T2](x0: T1 -> Set[T0], x1: T2 -> T1, x2: T2) { set_reindex_family[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[K, I, J](family, h, j)"]}
+{"goal":"set_sInf[K, I](family).subset(set_reindex_family[K, I, J](family, h, j))","proof":[]}
+{"goal":"set_sInf[K, I](family).subset(set_sInf[K, J](set_reindex_family[K, I, J](family, h)))","proof":["let w0: J satisfy { not set_sInf[K, I](family) ⊂ set_reindex_family[K, I, J](family, h, w0) }","function(x0: J) { set_sInf[K, I](family) ⊂ set_reindex_family[K, I, J](family, h, x0) }(w0)"]}
+{"goal":"set_sInf_subset_reindex","proof":[]}
+{"goal":"set_reindex_family[K, I, J](family, h, g(i)) = family(h(g(i)))","proof":["function[T0, T1, T2](x0: T1 -> Set[T0], x1: T2 -> T1, x2: T2) { set_reindex_family[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[K, I, J](family, h, g(i))"]}
+{"goal":"h(g(i)) = i","proof":["function(x0: I) { h(g(x0)) = x0 }(i)"]}
+{"goal":"set_reindex_family[K, I, J](family, h, g(i)) = family(i)","proof":["set_reindex_family[K, I, J](family, h, g(i)) != family(h(g(i)))"]}
+{"goal":"family(i).subset(set_sSup[K, J](set_reindex_family[K, I, J](family, h)))","proof":["not set_reindex_family[K, I, J](family, h, g(i)) ⊂ set_sSup[K, J](set_reindex_family[K, I, J](family, h))"]}
+{"goal":"set_sSup[K, I](family).subset(set_sSup[K, J](set_reindex_family[K, I, J](family, h)))","proof":["let w0: I satisfy { not family(w0) ⊂ set_sSup[K, J](set_reindex_family[K, I, J](family, h)) }","function(x0: I) { family(x0) ⊂ set_sSup[K, J](set_reindex_family[K, I, J](family, h)) }(w0)"]}
+{"goal":"set_sSup_subset_reindex_of_section","proof":["let w0: I satisfy { h(g(w0)) != w0 }","function(x0: I) { h(g(x0)) = x0 }(w0)"]}
+{"goal":"set_sInf[K, J](set_reindex_family[K, I, J](family, h)).subset(set_reindex_family[K, I, J](family, h, g(i)))","proof":[]}
+{"goal":"set_reindex_family[K, I, J](family, h, g(i)) = family(h(g(i)))","proof":["function[T0, T1, T2](x0: T1 -> Set[T0], x1: T2 -> T1, x2: T2) { set_reindex_family[T0, T1, T2](x0, x1, x2) = x0(x1(x2)) }[K, I, J](family, h, g(i))"]}
+{"goal":"h(g(i)) = i","proof":["function(x0: I) { h(g(x0)) = x0 }(i)"]}
+{"goal":"set_sInf[K, J](set_reindex_family[K, I, J](family, h)).subset(family(i))","proof":["not set_sInf[K, J](set_reindex_family[K, I, J](family, h)) ⊂ family(h(g(i)))","set_sInf[K, J](set_reindex_family[K, I, J](family, h)) ⊂ family(h(g(i)))"]}
+{"goal":"set_sInf[K, J](set_reindex_family[K, I, J](family, h)).subset(set_sInf[K, I](family))","proof":["let w0: I satisfy { not set_sInf[K, J](set_reindex_family[K, I, J](family, h)) ⊂ family(w0) }","function(x0: I) { set_sInf[K, J](set_reindex_family[K, I, J](family, h)) ⊂ family(x0) }(w0)"]}
+{"goal":"set_sInf_reindex_subset_of_section","proof":["let w0: I satisfy { h(g(w0)) != w0 }","function(x0: I) { h(g(x0)) = x0 }(w0)"]}
 {"goal":"set_sSup[U, I](family).contains(f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, set_sSup[U, I](family), x)"]}
 {"goal":"exists(k0: I) { family(k0).contains(f(x)) }","proof":[]}
 {"goal":"set_preimage[T, U](f, family(i)).contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, family(i), x)"]}
@@ -127,10 +166,10 @@
 {"goal":"u.contains(x) = v.contains(x)","proof":[]}
 {"goal":"set_preimage_sInf","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, set_sInf[U, I](family)))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_sInf[T, I](set_preimage_family[T, U, I](f, family)))"]}
 {"goal":"set_preimage[T, U](f, set_sSup[U, I](family)) = set_sSup[T, I](set_preimage_family[T, U, I](f, family))","proof":[]}
-{"goal":"set_preimage[T, U](f, set_sSup[U, I](family)).subset(s) = forall(x0: I) { set_preimage_family[T, U, I](f, family, x0).subset(s) }","proof":["set_sSup[T, I](set_preimage_family[T, U, I](f, family)) ⊂ s != forall(x0: I) { set_preimage_family[T, U, I](f, family, x0) ⊂ s }"]}
+{"goal":"set_preimage[T, U](f, set_sSup[U, I](family)).subset(s) = forall(x0: I) { set_preimage_family[T, U, I](f, family, x0).subset(s) }","proof":[]}
 {"goal":"set_preimage_sSup_subset_iff","proof":[]}
 {"goal":"set_preimage[T, U](f, set_sInf[U, I](family)) = set_sInf[T, I](set_preimage_family[T, U, I](f, family))","proof":[]}
-{"goal":"s.subset(set_preimage[T, U](f, set_sInf[U, I](family))) = forall(x0: I) { s.subset(set_preimage_family[T, U, I](f, family, x0)) }","proof":["s ⊂ set_sInf[T, I](set_preimage_family[T, U, I](f, family)) != forall(x0: I) { s ⊂ set_preimage_family[T, U, I](f, family, x0) }"]}
+{"goal":"s.subset(set_preimage[T, U](f, set_sInf[U, I](family))) = forall(x0: I) { s.subset(set_preimage_family[T, U, I](f, family, x0)) }","proof":[]}
 {"goal":"set_subset_preimage_sInf_iff","proof":[]}
 {"goal":"exists(k0: T) { set_sSup[T, I](family).contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"exists(k0: I) { family(k0).contains(x) }","proof":[]}
@@ -302,10 +341,10 @@
 {"goal":"u.contains(x) = v.contains(x)","proof":[]}
 {"goal":"set_preimage_list_sInf","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, set_list_sInf[U, I](items, family)))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_list_sInf[T, I](items, set_preimage_family[T, U, I](f, family)))"]}
 {"goal":"set_preimage[T, U](f, set_list_sSup[U, I](items, family)) = set_list_sSup[T, I](items, set_preimage_family[T, U, I](f, family))","proof":[]}
-{"goal":"set_preimage[T, U](f, set_list_sSup[U, I](items, family)).subset(s) = forall(x0: I) { items.contains(x0) implies set_preimage_family[T, U, I](f, family, x0).subset(s) }","proof":["(forall(x0: I) { not x0 ∈ items or set_preimage_family[T, U, I](f, family, x0) ⊂ s } != set_list_sSup[T, I](items, set_preimage_family[T, U, I](f, family)) ⊂ s)"]}
+{"goal":"set_preimage[T, U](f, set_list_sSup[U, I](items, family)).subset(s) = forall(x0: I) { items.contains(x0) implies set_preimage_family[T, U, I](f, family, x0).subset(s) }","proof":[]}
 {"goal":"set_preimage_list_sSup_subset_iff","proof":[]}
 {"goal":"set_preimage[T, U](f, set_list_sInf[U, I](items, family)) = set_list_sInf[T, I](items, set_preimage_family[T, U, I](f, family))","proof":[]}
-{"goal":"s.subset(set_preimage[T, U](f, set_list_sInf[U, I](items, family))) = forall(x0: I) { items.contains(x0) implies s.subset(set_preimage_family[T, U, I](f, family, x0)) }","proof":["(forall(x0: I) { not x0 ∈ items or s ⊂ set_preimage_family[T, U, I](f, family, x0) } != s ⊂ set_list_sInf[T, I](items, set_preimage_family[T, U, I](f, family)))"]}
+{"goal":"s.subset(set_preimage[T, U](f, set_list_sInf[U, I](items, family))) = forall(x0: I) { items.contains(x0) implies s.subset(set_preimage_family[T, U, I](f, family, x0)) }","proof":[]}
 {"goal":"set_subset_preimage_list_sInf_iff","proof":[]}
 {"goal":"exists(k0: T) { set_list_sSup[T, I](items, family).contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"exists(k0: I) { items.contains(k0) and family(k0).contains(x) }","proof":[]}
@@ -405,10 +444,10 @@
 {"goal":"u.contains(x) = v.contains(x)","proof":[]}
 {"goal":"set_preimage_range_sInf","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, set_range_sInf[U](n, family)))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_range_sInf[T](n, set_preimage_family[T, U, Nat](f, family)))"]}
 {"goal":"set_preimage[T, U](f, set_range_sSup[U](n, family)) = set_range_sSup[T](n, set_preimage_family[T, U, Nat](f, family))","proof":[]}
-{"goal":"set_preimage[T, U](f, set_range_sSup[U](n, family)).subset(s) = forall(x0: Nat) { x0 < n implies set_preimage_family[T, U, Nat](f, family, x0).subset(s) }","proof":["(forall(x0: Nat) { not x0 < n or set_preimage_family[T, U, Nat](f, family, x0) ⊂ s } != set_range_sSup[T](n, set_preimage_family[T, U, Nat](f, family)) ⊂ s)"]}
+{"goal":"set_preimage[T, U](f, set_range_sSup[U](n, family)).subset(s) = forall(x0: Nat) { x0 < n implies set_preimage_family[T, U, Nat](f, family, x0).subset(s) }","proof":[]}
 {"goal":"set_preimage_range_sSup_subset_iff","proof":[]}
 {"goal":"set_preimage[T, U](f, set_range_sInf[U](n, family)) = set_range_sInf[T](n, set_preimage_family[T, U, Nat](f, family))","proof":[]}
-{"goal":"s.subset(set_preimage[T, U](f, set_range_sInf[U](n, family))) = forall(x0: Nat) { x0 < n implies s.subset(set_preimage_family[T, U, Nat](f, family, x0)) }","proof":["(forall(x0: Nat) { not x0 < n or s ⊂ set_preimage_family[T, U, Nat](f, family, x0) } != s ⊂ set_range_sInf[T](n, set_preimage_family[T, U, Nat](f, family)))"]}
+{"goal":"s.subset(set_preimage[T, U](f, set_range_sInf[U](n, family))) = forall(x0: Nat) { x0 < n implies s.subset(set_preimage_family[T, U, Nat](f, family, x0)) }","proof":[]}
 {"goal":"set_subset_preimage_range_sInf_iff","proof":[]}
 {"goal":"exists(k0: T) { set_range_sSup[T](n, family).contains(k0) and y = f(k0) }","proof":[]}
 {"goal":"exists(k0: Nat) { k0 < n and family(k0).contains(x) }","proof":[]}
