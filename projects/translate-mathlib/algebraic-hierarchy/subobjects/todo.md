@@ -30,3 +30,4 @@ Status:
 - Bridge APIs now include adjacent forgetful views from submonoids to subsemigroups, subgroups to submonoids, and additive subgroups to additive submonoids, plus reverse membership and underlying-set aliases for those views and the existing subring/submodule additive and multiplicative views.
 - `src/submodule.ac` now has raw common-membership meet laws for submodule intersections: commutativity, associativity directions, idempotence, lower-bound characterization, and zero/full membership simplification aliases.
 - `src/submodule.ac` now has a bundled `intersection` operation for same-carrier submodules, with membership, lower-bound, greatest-lower-bound, and idempotence lemmas.
+- `src/submodule.ac` now has the linear-map kernel-injectivity bridge: `is_kernel_trivial` predicate, `linear_map_kernel_trivial_of_injective`, and `linear_map_injective_of_kernel_trivial`.
