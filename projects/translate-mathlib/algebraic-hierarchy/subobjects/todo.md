@@ -3,7 +3,6 @@
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
 - [ ] Finish subobject lattice work: valid union/closure APIs and eventual lattice structures after design choices settle
-- [ ] Add finite-generation predicates for modules after the pending submodule work settles
 - [ ] Refactor remaining finite set code toward the shared subobject conventions after downstream needs are clearer
 
 Status:
@@ -34,3 +33,4 @@ Status:
 - `src/submodule.ac` now has a bundled `intersection` operation for same-carrier submodules, with membership, lower-bound, greatest-lower-bound, and idempotence lemmas.
 - `src/subsemigroup.ac`, `src/submonoid.ac`, `src/subgroup.ac`, and `src/subring.ac` now have finite-generation bridges from finite closures, singleton closure finite-generation lemmas, and singleton generator membership lemmas; empty/identity multiplicative subobjects are finitely generated where empty-set closure is available.
 - `src/submodule.ac` now has the linear-map kernel-injectivity bridge: `is_kernel_trivial` predicate, `linear_map_kernel_trivial_of_injective`, `linear_map_injective_of_kernel_trivial`, and bundled-form bridges `linear_map_kernel_submodule_contains_eq_zero_of_trivial` (pointwise) and `linear_map_kernel_trivial_of_kernel_submodule_eq_zero`.
+- `src/submodule.ac` now has finite-generation predicates and basic generation lemmas for submodules: finite closures, finite underlying sets, singleton closures, zero submodules, and equality transport.

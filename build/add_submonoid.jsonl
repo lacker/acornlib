@@ -208,7 +208,7 @@
 {"goal":"add_submonoid_subset[M](add_submonoid_closure[M](a), s)","proof":[]}
 {"goal":"add_submonoid_subset[M](add_submonoid_closure[M](a), s) = set_subset_add_submonoid[M](a, s)","proof":[]}
 {"goal":"add_submonoid_closure_le_iff_set_subset","proof":[]}
-{"goal":"add_submonoid_closure[M](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":["add_submonoid_closure[M](a).as_set ⊂ s.as_set != set_subset_add_submonoid[M](a, s)","add_submonoid_closure[M](a).as_set ⊂ s.as_set = set_subset_add_submonoid[M](a, s)"]}
+{"goal":"add_submonoid_closure[M](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":[]}
 {"goal":"add_submonoid_closure_as_set_galois_connection","proof":[]}
 {"goal":"add_submonoid_subset[M](add_submonoid_closure[M](s.as_set), s)","proof":[]}
 {"goal":"s.as_set.contains(x)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[M](s, x)"]}
@@ -225,19 +225,19 @@
 {"goal":"a.subset(add_submonoid_closure[M](a).as_set)","proof":[]}
 {"goal":"a.subset(add_submonoid_set_closure[M](a))","proof":[]}
 {"goal":"add_submonoid_set_closure_extensive","proof":[]}
-{"goal":"add_submonoid_subset[M](add_submonoid_closure[M](a), add_submonoid_closure[M](b))","proof":["not a ⊂ b"]}
+{"goal":"add_submonoid_subset[M](add_submonoid_closure[M](a), add_submonoid_closure[M](b))","proof":[]}
 {"goal":"add_submonoid_closure[M](a).as_set.subset(add_submonoid_closure[M](b).as_set)","proof":[]}
-{"goal":"add_submonoid_set_closure[M](a).subset(add_submonoid_set_closure[M](b))","proof":["not add_submonoid_closure[M](a).as_set ⊂ add_submonoid_set_closure[M](b)","add_submonoid_closure[M](a).as_set ⊂ add_submonoid_set_closure[M](b)"]}
-{"goal":"add_submonoid_set_closure_mono","proof":["not a ⊂ b"]}
+{"goal":"add_submonoid_set_closure[M](a).subset(add_submonoid_set_closure[M](b))","proof":[]}
+{"goal":"add_submonoid_set_closure_mono","proof":[]}
 {"goal":"add_submonoid_set_closure[M](add_submonoid_set_closure[M](a)) = add_submonoid_set_closure[M](a)","proof":[]}
 {"goal":"add_submonoid_set_closure_idempotent","proof":[]}
-{"goal":"add_submonoid_set_closure[M](a).subset(add_submonoid_set_closure[M](b))","proof":["not a ⊂ b"]}
-{"goal":"add_submonoid_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[M, M](add_submonoid_set_closure[M])","let w0: Set[M] satisfy { exists(k0: Set[M]) { w0 ⊂ k0 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](k0) } }","let w1: Set[M] satisfy { w0 ⊂ w1 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w1) }","let w2: Set[M] satisfy { w0 ⊂ w2 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w2) }","function[T0: AddMonoid](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or add_submonoid_set_closure[T0](x0) ⊂ add_submonoid_set_closure[T0](x1) }[M](w0, w2)","w0 ⊂ w2","not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w2)","add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w2)"]}
+{"goal":"add_submonoid_set_closure[M](a).subset(add_submonoid_set_closure[M](b))","proof":[]}
+{"goal":"add_submonoid_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[M, M](add_submonoid_set_closure[M])","let w0: Set[M] satisfy { exists(k0: Set[M]) { w0 ⊂ k0 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](k0) } }","let w1: Set[M] satisfy { w0 ⊂ w1 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w1) }","let w2: Set[M] satisfy { w0 ⊂ w2 and not add_submonoid_set_closure[M](w0) ⊂ add_submonoid_set_closure[M](w2) }","function[T0: AddMonoid](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or add_submonoid_set_closure[T0](x0) ⊂ add_submonoid_set_closure[T0](x1) }[M](w0, w2)"]}
 {"goal":"a.subset(add_submonoid_set_closure[M](a))","proof":[]}
 {"goal":"add_submonoid_set_closure_is_extensive","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x1 ⊂ x0(x1) } = is_set_extensive_map[T0](x0) }[M](add_submonoid_set_closure[M])","let w0: Set[M] satisfy { not w0 ⊂ add_submonoid_set_closure[M](w0) }","function[T0: AddMonoid](x0: Set[T0]) { x0 ⊂ add_submonoid_set_closure[T0](x0) }[M](w0)"]}
 {"goal":"add_submonoid_set_closure[M](add_submonoid_set_closure[M](a)) = add_submonoid_set_closure[M](a)","proof":[]}
 {"goal":"add_submonoid_set_closure_is_idempotent","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x0(x0(x1)) = x0(x1) } = is_set_idempotent_map[T0](x0) }[M](add_submonoid_set_closure[M])","let w0: Set[M] satisfy { add_submonoid_set_closure[M](add_submonoid_set_closure[M](w0)) != add_submonoid_set_closure[M](w0) }","function[T0: AddMonoid](x0: Set[T0]) { add_submonoid_set_closure[T0](add_submonoid_set_closure[T0](x0)) = add_submonoid_set_closure[T0](x0) }[M](w0)"]}
-{"goal":"is_set_closure_operator[M](add_submonoid_set_closure[M])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[M](add_submonoid_set_closure[M])","function[T0: AddMonoid] { is_subset_monotone_map[T0, T0](add_submonoid_set_closure[T0]) }[M]","function[T0: AddMonoid] { is_set_idempotent_map[T0](add_submonoid_set_closure[T0]) }[M]","function[T0: AddMonoid] { is_set_extensive_map[T0](add_submonoid_set_closure[T0]) }[M]","not (is_subset_monotone_map[M, M](add_submonoid_set_closure[M]) and is_set_extensive_map[M](add_submonoid_set_closure[M]) and is_set_idempotent_map[M](add_submonoid_set_closure[M]))","not (is_subset_monotone_map[M, M](add_submonoid_set_closure[M]) and is_set_extensive_map[M](add_submonoid_set_closure[M]))"]}
+{"goal":"is_set_closure_operator[M](add_submonoid_set_closure[M])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[M](add_submonoid_set_closure[M])"]}
 {"goal":"add_submonoid_set_closure_operator","proof":[]}
 {"goal":"set_subset_add_submonoid[M](Set.empty_set[M], zero_add_submonoid[M])","proof":["function[T0: AddMonoid](x0: Set[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_add_submonoid[T0](x0, x1) }[M](Set.empty_set[M], zero_add_submonoid[M])","let w0: M satisfy { w0 ∈ Set.empty_set[M] and not w0 ∈ zero_add_submonoid[M] }","function[T0](x0: T0) { not x0 ∈ Set.empty_set[T0] }[M](w0)"]}
 {"goal":"add_submonoid_subset[M](add_submonoid_closure[M](Set.empty_set[M]), zero_add_submonoid[M])","proof":[]}

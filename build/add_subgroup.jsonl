@@ -250,7 +250,7 @@
 {"goal":"add_subgroup_subset[G](add_subgroup_closure[G](a), s)","proof":[]}
 {"goal":"add_subgroup_subset[G](add_subgroup_closure[G](a), s) = set_subset_add_subgroup[G](a, s)","proof":[]}
 {"goal":"add_subgroup_closure_le_iff_set_subset","proof":[]}
-{"goal":"add_subgroup_closure[G](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":["add_subgroup_closure[G](a).as_set ⊂ s.as_set != set_subset_add_subgroup[G](a, s)","add_subgroup_closure[G](a).as_set ⊂ s.as_set = set_subset_add_subgroup[G](a, s)"]}
+{"goal":"add_subgroup_closure[G](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":[]}
 {"goal":"add_subgroup_closure_as_set_galois_connection","proof":[]}
 {"goal":"add_subgroup_subset[G](add_subgroup_closure[G](s.as_set), s)","proof":[]}
 {"goal":"s.as_set.contains(x)","proof":["function[T0: AddGroup](x0: AddSubgroup[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[G](s, x)"]}
@@ -267,19 +267,19 @@
 {"goal":"a.subset(add_subgroup_closure[G](a).as_set)","proof":[]}
 {"goal":"a.subset(add_subgroup_set_closure[G](a))","proof":[]}
 {"goal":"add_subgroup_set_closure_extensive","proof":[]}
-{"goal":"add_subgroup_subset[G](add_subgroup_closure[G](a), add_subgroup_closure[G](b))","proof":["not a ⊂ b"]}
+{"goal":"add_subgroup_subset[G](add_subgroup_closure[G](a), add_subgroup_closure[G](b))","proof":[]}
 {"goal":"add_subgroup_closure[G](a).as_set.subset(add_subgroup_closure[G](b).as_set)","proof":[]}
-{"goal":"add_subgroup_set_closure[G](a).subset(add_subgroup_set_closure[G](b))","proof":["not add_subgroup_closure[G](a).as_set ⊂ add_subgroup_set_closure[G](b)","add_subgroup_closure[G](a).as_set ⊂ add_subgroup_set_closure[G](b)"]}
-{"goal":"add_subgroup_set_closure_mono","proof":["not a ⊂ b"]}
+{"goal":"add_subgroup_set_closure[G](a).subset(add_subgroup_set_closure[G](b))","proof":[]}
+{"goal":"add_subgroup_set_closure_mono","proof":[]}
 {"goal":"add_subgroup_set_closure[G](add_subgroup_set_closure[G](a)) = add_subgroup_set_closure[G](a)","proof":[]}
 {"goal":"add_subgroup_set_closure_idempotent","proof":[]}
-{"goal":"add_subgroup_set_closure[G](a).subset(add_subgroup_set_closure[G](b))","proof":["not a ⊂ b"]}
-{"goal":"add_subgroup_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[G, G](add_subgroup_set_closure[G])","let w0: Set[G] satisfy { exists(k0: Set[G]) { w0 ⊂ k0 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](k0) } }","let w1: Set[G] satisfy { w0 ⊂ w1 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w1) }","let w2: Set[G] satisfy { w0 ⊂ w2 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w2) }","function[T0: AddGroup](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or add_subgroup_set_closure[T0](x0) ⊂ add_subgroup_set_closure[T0](x1) }[G](w0, w2)","w0 ⊂ w2","not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w2)","add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w2)"]}
+{"goal":"add_subgroup_set_closure[G](a).subset(add_subgroup_set_closure[G](b))","proof":[]}
+{"goal":"add_subgroup_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[G, G](add_subgroup_set_closure[G])","let w0: Set[G] satisfy { exists(k0: Set[G]) { w0 ⊂ k0 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](k0) } }","let w1: Set[G] satisfy { w0 ⊂ w1 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w1) }","let w2: Set[G] satisfy { w0 ⊂ w2 and not add_subgroup_set_closure[G](w0) ⊂ add_subgroup_set_closure[G](w2) }","function[T0: AddGroup](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or add_subgroup_set_closure[T0](x0) ⊂ add_subgroup_set_closure[T0](x1) }[G](w0, w2)"]}
 {"goal":"a.subset(add_subgroup_set_closure[G](a))","proof":[]}
 {"goal":"add_subgroup_set_closure_is_extensive","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x1 ⊂ x0(x1) } = is_set_extensive_map[T0](x0) }[G](add_subgroup_set_closure[G])","let w0: Set[G] satisfy { not w0 ⊂ add_subgroup_set_closure[G](w0) }","function[T0: AddGroup](x0: Set[T0]) { x0 ⊂ add_subgroup_set_closure[T0](x0) }[G](w0)"]}
 {"goal":"add_subgroup_set_closure[G](add_subgroup_set_closure[G](a)) = add_subgroup_set_closure[G](a)","proof":[]}
 {"goal":"add_subgroup_set_closure_is_idempotent","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x0(x0(x1)) = x0(x1) } = is_set_idempotent_map[T0](x0) }[G](add_subgroup_set_closure[G])","let w0: Set[G] satisfy { add_subgroup_set_closure[G](add_subgroup_set_closure[G](w0)) != add_subgroup_set_closure[G](w0) }","function[T0: AddGroup](x0: Set[T0]) { add_subgroup_set_closure[T0](add_subgroup_set_closure[T0](x0)) = add_subgroup_set_closure[T0](x0) }[G](w0)"]}
-{"goal":"is_set_closure_operator[G](add_subgroup_set_closure[G])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[G](add_subgroup_set_closure[G])","function[T0: AddGroup] { is_subset_monotone_map[T0, T0](add_subgroup_set_closure[T0]) }[G]","function[T0: AddGroup] { is_set_idempotent_map[T0](add_subgroup_set_closure[T0]) }[G]","function[T0: AddGroup] { is_set_extensive_map[T0](add_subgroup_set_closure[T0]) }[G]","not (is_subset_monotone_map[G, G](add_subgroup_set_closure[G]) and is_set_extensive_map[G](add_subgroup_set_closure[G]) and is_set_idempotent_map[G](add_subgroup_set_closure[G]))","not (is_subset_monotone_map[G, G](add_subgroup_set_closure[G]) and is_set_extensive_map[G](add_subgroup_set_closure[G]))"]}
+{"goal":"is_set_closure_operator[G](add_subgroup_set_closure[G])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[G](add_subgroup_set_closure[G])"]}
 {"goal":"add_subgroup_set_closure_operator","proof":[]}
 {"goal":"set_subset_add_subgroup[G](Set.empty_set[G], zero_add_subgroup[G])","proof":["function[T0: AddGroup](x0: Set[T0], x1: AddSubgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_add_subgroup[T0](x0, x1) }[G](Set.empty_set[G], zero_add_subgroup[G])","let w0: G satisfy { w0 ∈ Set.empty_set[G] and not w0 ∈ zero_add_subgroup[G] }","function[T0](x0: T0) { not x0 ∈ Set.empty_set[T0] }[G](w0)"]}
 {"goal":"add_subgroup_subset[G](add_subgroup_closure[G](Set.empty_set[G]), zero_add_subgroup[G])","proof":[]}
