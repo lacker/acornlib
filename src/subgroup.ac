@@ -346,6 +346,18 @@ attributes Subgroup[G: Group] {
     let intersection: (Subgroup[G], Subgroup[G]) -> Subgroup[G] = subgroup_intersection
 }
 
+/// Membership in the underlying set is membership in the subgroup.
+theorem subgroup_as_set_contains_eq[G: Group](s: Subgroup[G], x: G) {
+    s.as_set.contains(x) = s.contains(x)
+} by {
+    s.as_set.contains(x) = s.contains(x)
+}
+
+/// Equal subgroups have equal underlying sets.
+theorem subgroup_eq_as_set[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a = b implies a.as_set = b.as_set
+}
+
 /// Membership in the intersection means membership in both subgroups.
 theorem subgroup_intersection_contains_eq[G: Group](a: Subgroup[G], b: Subgroup[G], x: G) {
     a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
@@ -461,6 +473,40 @@ define subgroup_subset[G: Group](a: Subgroup[G], b: Subgroup[G]) -> Bool {
     forall(x: G) {
         a.contains(x) implies b.contains(x)
     }
+}
+
+/// Subgroup containment is containment of the underlying sets.
+theorem subgroup_subset_as_set_eq[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_subset(a, b) = a.as_set.subset(b.as_set)
+} by {
+    if subgroup_subset(a, b) {
+        forall(x: G) {
+            if a.as_set.contains(x) {
+                subgroup_as_set_contains_eq(a, x)
+                a.contains(x)
+                b.contains(x)
+                subgroup_as_set_contains_eq(b, x)
+                b.as_set.contains(x)
+            }
+        }
+        a.as_set.subset(b.as_set)
+    }
+    if a.as_set.subset(b.as_set) {
+        forall(x: G) {
+            if a.contains(x) {
+                subgroup_as_set_contains_eq(a, x)
+                a.as_set.contains(x)
+                a.as_set.subset(b.as_set) = forall(y: G) {
+                    a.as_set.contains(y) implies b.as_set.contains(y)
+                }
+                b.as_set.contains(x)
+                subgroup_as_set_contains_eq(b, x)
+                b.contains(x)
+            }
+        }
+        subgroup_subset(a, b)
+    }
+    subgroup_subset(a, b) = a.as_set.subset(b.as_set)
 }
 
 /// Subgroup inclusion is reflexive.
@@ -747,6 +793,36 @@ define set_subset_subgroup[G: Group](a: Set[G], s: Subgroup[G]) -> Bool {
     forall(x: G) {
         a.contains(x) implies s.contains(x)
     }
+}
+
+/// Set containment in a subgroup is containment in its underlying set.
+theorem set_subset_subgroup_as_set_eq[G: Group](a: Set[G], s: Subgroup[G]) {
+    set_subset_subgroup(a, s) = a.subset(s.as_set)
+} by {
+    if set_subset_subgroup(a, s) {
+        forall(x: G) {
+            if a.contains(x) {
+                s.contains(x)
+                subgroup_as_set_contains_eq(s, x)
+                s.as_set.contains(x)
+            }
+        }
+        a.subset(s.as_set)
+    }
+    if a.subset(s.as_set) {
+        forall(x: G) {
+            if a.contains(x) {
+                a.subset(s.as_set) = forall(y: G) {
+                    a.contains(y) implies s.as_set.contains(y)
+                }
+                s.as_set.contains(x)
+                subgroup_as_set_contains_eq(s, x)
+                s.contains(x)
+            }
+        }
+        set_subset_subgroup(a, s)
+    }
+    set_subset_subgroup(a, s) = a.subset(s.as_set)
 }
 
 /// The underlying set of a subgroup is contained in the subgroup.
