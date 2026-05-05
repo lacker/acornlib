@@ -266,7 +266,7 @@
 {"goal":"subring_to_add_subgroup_contains_eq","proof":[]}
 {"goal":"s.contains(x) = subring_to_add_subgroup[R](s).contains(x)","proof":[]}
 {"goal":"subring_contains_to_add_subgroup_eq","proof":[]}
-{"goal":"subring_to_add_subgroup_as_set","proof":["function[T0: Ring](x0: Subring[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](s)","function[T0: lib(add_group).AddGroup](x0: AddSubgroup[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](subring_to_add_subgroup[R](s))","function[T0: Ring](x0: Subring[T0]) { subring_to_add_subgroup[T0](x0).contains = x0.contains }[R](s)","Set.new[R](subring_to_add_subgroup[R](s).contains) != s.as_set"]}
+{"goal":"subring_to_add_subgroup_as_set","proof":["function[T0: Ring](x0: Subring[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](s)","function[T0: lib(add_group).AddGroup](x0: AddSubgroup[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](subring_to_add_subgroup[R](s))","function[T0: Ring](x0: Subring[T0]) { subring_to_add_subgroup[T0](x0).contains = x0.contains }[R](s)"]}
 {"goal":"submonoid_identity_constraint[R](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[R](s.contains)"]}
 {"goal":"s.contains(a * b)","proof":[]}
 {"goal":"submonoid_closure_constraint[R](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = submonoid_closure_constraint[T0](x0) }[R](s.contains)","let w0: R satisfy { exists(k0: R) { w0 ∈ s and k0 ∈ s and not w0 * k0 ∈ s } }","let w1: R satisfy { w0 ∈ s and w1 ∈ s and not w0 * w1 ∈ s }","let w2: R satisfy { w0 ∈ s and w2 ∈ s and not w0 * w2 ∈ s }","function[T0: Ring](x0: Subring[T0], x1: T0, x2: T0) { not x1 ∈ x0 or not x2 ∈ x0 or x1 * x2 ∈ x0 }[R](s, w0, w2)"]}
@@ -277,7 +277,7 @@
 {"goal":"subring_to_submonoid_contains_eq","proof":[]}
 {"goal":"s.contains(x) = subring_to_submonoid[R](s).contains(x)","proof":[]}
 {"goal":"subring_contains_to_submonoid_eq","proof":[]}
-{"goal":"subring_to_submonoid_as_set","proof":["function[T0: Ring](x0: Subring[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](s)","function[T0: lib(monoid).Monoid](x0: Submonoid[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](subring_to_submonoid[R](s))","function[T0: Ring](x0: Subring[T0]) { subring_to_submonoid[T0](x0).contains = x0.contains }[R](s)","Set.new[R](subring_to_submonoid[R](s).contains) != s.as_set"]}
+{"goal":"subring_to_submonoid_as_set","proof":["function[T0: Ring](x0: Subring[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](s)","function[T0: lib(monoid).Monoid](x0: Submonoid[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](subring_to_submonoid[R](s))","function[T0: Ring](x0: Subring[T0]) { subring_to_submonoid[T0](x0).contains = x0.contains }[R](s)"]}
 {"goal":"f.hom(R.0) = S.0","proof":[]}
 {"goal":"t.contains(S.0)","proof":[]}
 {"goal":"t.contains(f.hom(R.0))","proof":[]}

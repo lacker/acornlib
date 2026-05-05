@@ -120,8 +120,8 @@
 {"goal":"m = M.0","proof":["function[T0: AddMonoid](x0: T0) { T0.0 = x0 = is_add_monoid_identity[T0](x0) }[M](m)"]}
 {"goal":"zero_add_submonoid_only_has_zero","proof":[]}
 {"goal":"zero_add_submonoid[M].contains(M.0)","proof":[]}
-{"goal":"zero_add_submonoid[M].contains(m)","proof":["not M.0 ∈ zero_add_submonoid[M]"]}
-{"goal":"zero_add_submonoid[M].contains(m) = (m = M.0)","proof":["m ∈ zero_add_submonoid[M] or M.0 = m","M.0 = m","m ∈ zero_add_submonoid[M]","not m ∈ zero_add_submonoid[M]"]}
+{"goal":"zero_add_submonoid[M].contains(m)","proof":[]}
+{"goal":"zero_add_submonoid[M].contains(m) = (m = M.0)","proof":[]}
 {"goal":"zero_add_submonoid_contains_eq","proof":[]}
 {"goal":"x = M.0","proof":[]}
 {"goal":"s.contains(M.0)","proof":[]}

@@ -1596,6 +1596,233 @@ theorem set_image_preimage_subset[T, U](s: Set[U], f: T -> U) {
     }
 }
 
+/// Image-subset is equivalent to source-subset of the preimage.
+theorem set_image_subset_iff_subset_preimage[T, U](s: Set[T], t: Set[U], f: T -> U) {
+    set_image(s, f).subset(t) = s.subset(set_preimage(f, t))
+} by {
+    if set_image(s, f).subset(t) {
+        forall(x: T) {
+            if s.contains(x) {
+                maps_into_set_image(s, f, x)
+                set_image(s, f).contains(f(x))
+                t.contains(f(x))
+                set_preimage_contains_eq(f, t, x)
+                set_preimage(f, t).contains(x)
+            }
+        }
+        s.subset(set_preimage(f, t))
+    }
+    if s.subset(set_preimage(f, t)) {
+        forall(y: U) {
+            if set_image(s, f).contains(y) {
+                set_image_contains_witness(s, f, y)
+                let x: T satisfy {
+                    s.contains(x) and y = f(x)
+                }
+                set_preimage(f, t).contains(x)
+                set_preimage_contains_eq(f, t, x)
+                t.contains(f(x))
+                t.contains(y)
+            }
+        }
+        set_image(s, f).subset(t)
+    }
+    set_image(s, f).subset(t) = s.subset(set_preimage(f, t))
+}
+
+/// A source subset of a preimage gives an image subset.
+theorem set_image_subset_of_subset_preimage[T, U](s: Set[T], t: Set[U], f: T -> U) {
+    s.subset(set_preimage(f, t)) implies set_image(s, f).subset(t)
+} by {
+    if s.subset(set_preimage(f, t)) {
+        set_image_subset_iff_subset_preimage(s, t, f)
+        set_image(s, f).subset(t)
+    }
+}
+
+/// An image subset gives a source subset of the preimage.
+theorem subset_preimage_of_set_image_subset[T, U](s: Set[T], t: Set[U], f: T -> U) {
+    set_image(s, f).subset(t) implies s.subset(set_preimage(f, t))
+} by {
+    if set_image(s, f).subset(t) {
+        set_image_subset_iff_subset_preimage(s, t, f)
+        s.subset(set_preimage(f, t))
+    }
+}
+
+/// The closure of a source set induced by image followed by preimage.
+define set_image_preimage_closure[T, U](f: T -> U, s: Set[T]) -> Set[T] {
+    set_preimage(f, set_image(s, f))
+}
+
+/// Membership in the image-preimage closure is membership in the preimage of the image.
+theorem set_image_preimage_closure_contains_eq[T, U](f: T -> U, s: Set[T], x: T) {
+    set_image_preimage_closure(f, s).contains(x) =
+        set_preimage(f, set_image(s, f)).contains(x)
+}
+
+/// The image-preimage closure is extensive.
+theorem set_image_preimage_closure_extensive[T, U](f: T -> U, s: Set[T]) {
+    s.subset(set_image_preimage_closure(f, s))
+} by {
+    subset_set_preimage_image(s, f)
+    set_image_preimage_closure(f, s) = set_preimage(f, set_image(s, f))
+}
+
+/// The image-preimage closure is monotone.
+theorem set_image_preimage_closure_monotone[T, U](f: T -> U, s: Set[T], t: Set[T]) {
+    s.subset(t) implies
+    set_image_preimage_closure(f, s).subset(set_image_preimage_closure(f, t))
+} by {
+    if s.subset(t) {
+        forall(x: T) {
+            if set_image_preimage_closure(f, s).contains(x) {
+                set_image_preimage_closure_contains_eq(f, s, x)
+                set_preimage_contains_eq(f, set_image(s, f), x)
+                set_image(s, f).contains(f(x))
+                set_image_contains_witness(s, f, f(x))
+                let z: T satisfy {
+                    s.contains(z) and f(x) = f(z)
+                }
+                t.contains(z)
+                maps_into_set_image(t, f, z)
+                set_image(t, f).contains(f(z))
+                set_image(t, f).contains(f(x))
+                set_preimage_contains_eq(f, set_image(t, f), x)
+                set_preimage(f, set_image(t, f)).contains(x)
+                set_image_preimage_closure_contains_eq(f, t, x)
+                set_image_preimage_closure(f, t).contains(x)
+            }
+        }
+    }
+}
+
+/// The image-preimage closure is idempotent.
+theorem set_image_preimage_closure_idempotent[T, U](f: T -> U, s: Set[T]) {
+    set_image_preimage_closure(f, set_image_preimage_closure(f, s)) =
+        set_image_preimage_closure(f, s)
+} by {
+    let c = set_image_preimage_closure(f, s)
+    let cc = set_image_preimage_closure(f, c)
+
+    set_image_preimage_closure_extensive(f, c)
+    c.subset(cc)
+
+    forall(x: T) {
+        if cc.contains(x) {
+            set_image_preimage_closure_contains_eq(f, c, x)
+            set_preimage_contains_eq(f, set_image(c, f), x)
+            set_image(c, f).contains(f(x))
+            set_image_contains_witness(c, f, f(x))
+            let z: T satisfy {
+                c.contains(z) and f(x) = f(z)
+            }
+            set_image_preimage_closure_contains_eq(f, s, z)
+            set_preimage_contains_eq(f, set_image(s, f), z)
+            set_image(s, f).contains(f(z))
+            set_image(s, f).contains(f(x))
+            set_preimage_contains_eq(f, set_image(s, f), x)
+            set_preimage(f, set_image(s, f)).contains(x)
+            set_image_preimage_closure_contains_eq(f, s, x)
+            c.contains(x)
+        }
+    }
+    cc.subset(c)
+    double_inclusion(cc, c)
+    cc = c
+}
+
+/// Injective maps have trivial image-preimage closure.
+theorem set_image_preimage_closure_of_injective[T, U](f: T -> U, s: Set[T]) {
+    is_injective_fn(f) implies set_image_preimage_closure(f, s) = s
+} by {
+    if is_injective_fn(f) {
+        set_preimage_image_of_injective(s, f)
+        set_image_preimage_closure(f, s) = set_preimage(f, set_image(s, f))
+        set_image_preimage_closure(f, s) = s
+    }
+}
+
+/// The kernel of a target set induced by preimage followed by image.
+define set_preimage_image_kernel[T, U](f: T -> U, s: Set[U]) -> Set[U] {
+    set_image(set_preimage(f, s), f)
+}
+
+/// Membership in the preimage-image kernel is membership in the image of the preimage.
+theorem set_preimage_image_kernel_contains_eq[T, U](f: T -> U, s: Set[U], y: U) {
+    set_preimage_image_kernel(f, s).contains(y) =
+        set_image(set_preimage(f, s), f).contains(y)
+}
+
+/// The preimage-image kernel is reductive.
+theorem set_preimage_image_kernel_reductive[T, U](f: T -> U, s: Set[U]) {
+    set_preimage_image_kernel(f, s).subset(s)
+} by {
+    set_image_preimage_subset(s, f)
+    set_preimage_image_kernel(f, s) = set_image(set_preimage(f, s), f)
+}
+
+/// The preimage-image kernel is monotone.
+theorem set_preimage_image_kernel_monotone[T, U](f: T -> U, s: Set[U], t: Set[U]) {
+    s.subset(t) implies
+    set_preimage_image_kernel(f, s).subset(set_preimage_image_kernel(f, t))
+} by {
+    if s.subset(t) {
+        forall(y: U) {
+            if set_preimage_image_kernel(f, s).contains(y) {
+                set_preimage_image_kernel_contains_eq(f, s, y)
+                set_image_contains_witness(set_preimage(f, s), f, y)
+                let x: T satisfy {
+                    set_preimage(f, s).contains(x) and y = f(x)
+                }
+                set_preimage_contains_eq(f, s, x)
+                s.contains(f(x))
+                t.contains(f(x))
+                set_preimage_contains_eq(f, t, x)
+                set_preimage(f, t).contains(x)
+                maps_into_set_image(set_preimage(f, t), f, x)
+                set_image(set_preimage(f, t), f).contains(f(x))
+                set_image(set_preimage(f, t), f).contains(y)
+                set_preimage_image_kernel_contains_eq(f, t, y)
+                set_preimage_image_kernel(f, t).contains(y)
+            }
+        }
+    }
+}
+
+/// The preimage-image kernel is idempotent.
+theorem set_preimage_image_kernel_idempotent[T, U](f: T -> U, s: Set[U]) {
+    set_preimage_image_kernel(f, set_preimage_image_kernel(f, s)) =
+        set_preimage_image_kernel(f, s)
+} by {
+    let k = set_preimage_image_kernel(f, s)
+    let kk = set_preimage_image_kernel(f, k)
+
+    set_preimage_image_kernel_reductive(f, k)
+    kk.subset(k)
+
+    forall(y: U) {
+        if k.contains(y) {
+            set_preimage_image_kernel_contains_eq(f, s, y)
+            set_image_contains_witness(set_preimage(f, s), f, y)
+            let x: T satisfy {
+                set_preimage(f, s).contains(x) and y = f(x)
+            }
+            set_preimage_contains_eq(f, k, x)
+            k.contains(f(x))
+            set_preimage(f, k).contains(x)
+            maps_into_set_image(set_preimage(f, k), f, x)
+            set_image(set_preimage(f, k), f).contains(f(x))
+            set_image(set_preimage(f, k), f).contains(y)
+            set_preimage_image_kernel_contains_eq(f, k, y)
+            kk.contains(y)
+        }
+    }
+    k.subset(kk)
+    double_inclusion(kk, k)
+    kk = k
+}
+
 /// Under surjectivity, taking image after preimage recovers the original set.
 theorem set_image_preimage_of_surjective[T, U](s: Set[U], f: T -> U) {
     is_surjective_fn(f) implies set_image(set_preimage(f, s), f) = s
@@ -1621,6 +1848,17 @@ theorem set_image_preimage_of_surjective[T, U](s: Set[U], f: T -> U) {
         v.subset(u)
         double_inclusion(u, v)
         u = v
+    }
+}
+
+/// Surjective maps have trivial preimage-image kernel.
+theorem set_preimage_image_kernel_of_surjective[T, U](f: T -> U, s: Set[U]) {
+    is_surjective_fn(f) implies set_preimage_image_kernel(f, s) = s
+} by {
+    if is_surjective_fn(f) {
+        set_image_preimage_of_surjective(s, f)
+        set_preimage_image_kernel(f, s) = set_image(set_preimage(f, s), f)
+        set_preimage_image_kernel(f, s) = s
     }
 }
 
