@@ -1147,6 +1147,19 @@ theorem subring_to_add_subgroup_contains_eq[R: Ring](s: Subring[R], x: R) {
     subring_to_add_subgroup(s).contains(x) = s.contains(x)
 }
 
+/// Membership in a subring is membership in its associated additive subgroup.
+theorem subring_contains_to_add_subgroup_eq[R: Ring](s: Subring[R], x: R) {
+    s.contains(x) = subring_to_add_subgroup(s).contains(x)
+} by {
+    subring_to_add_subgroup_contains_eq(s, x)
+    s.contains(x) = subring_to_add_subgroup(s).contains(x)
+}
+
+/// The associated additive subgroup has the same underlying set as the subring.
+theorem subring_to_add_subgroup_as_set[R: Ring](s: Subring[R]) {
+    subring_to_add_subgroup(s).as_set = s.as_set
+}
+
 /// The multiplicative submonoid predicate associated to a subring.
 theorem subring_submonoid_constraint[R: Ring](s: Subring[R]) {
     submonoid_constraint(s.contains)
@@ -1180,6 +1193,19 @@ theorem subring_to_submonoid_contains_eq[R: Ring](s: Subring[R], x: R) {
 } by {
     subring_to_submonoid_contains(s)
     subring_to_submonoid(s).contains(x) = s.contains(x)
+}
+
+/// Membership in a subring is membership in its associated multiplicative submonoid.
+theorem subring_contains_to_submonoid_eq[R: Ring](s: Subring[R], x: R) {
+    s.contains(x) = subring_to_submonoid(s).contains(x)
+} by {
+    subring_to_submonoid_contains_eq(s, x)
+    s.contains(x) = subring_to_submonoid(s).contains(x)
+}
+
+/// The associated multiplicative submonoid has the same underlying set as the subring.
+theorem subring_to_submonoid_as_set[R: Ring](s: Subring[R]) {
+    subring_to_submonoid(s).as_set = s.as_set
 }
 
 /// The inverse image membership predicate of a subring under a ring homomorphism.

@@ -1,5 +1,7 @@
 from nat import Nat
 from group import Group, GroupHom, group_hom_one, group_hom_mul, group_hom_inv
+from submonoid import Submonoid, submonoid_identity_constraint, submonoid_closure_constraint,
+    submonoid_constraint
 from set import Set
 from functions import predicate_extensionality
 
@@ -1178,6 +1180,54 @@ theorem subgroup_closure_is_finitely_generated[G: Group](a: Set[G]) {
         }
         subgroup_is_finitely_generated(subgroup_closure(a))
     }
+}
+
+/// The submonoid predicate associated to a subgroup.
+theorem subgroup_submonoid_constraint[G: Group](s: Subgroup[G]) {
+    submonoid_constraint(s.contains)
+} by {
+    subgroup_contains_identity(s)
+    submonoid_identity_constraint(s.contains)
+    forall(a: G, b: G) {
+        if s.contains(a) and s.contains(b) {
+            subgroup_mul_mem(s, a, b)
+            s.contains(a * b)
+        }
+    }
+    submonoid_closure_constraint(s.contains)
+}
+
+/// The submonoid associated to a subgroup.
+let subgroup_to_submonoid[G: Group](s: Subgroup[G]) -> result: Submonoid[G] satisfy {
+    Submonoid.new(s.contains) = Option.some(result)
+} by {
+    subgroup_submonoid_constraint(s)
+}
+
+/// The submonoid associated to a subgroup has the same membership predicate.
+theorem subgroup_to_submonoid_contains[G: Group](s: Subgroup[G]) {
+    subgroup_to_submonoid(s).contains = s.contains
+}
+
+/// Membership in the submonoid associated to a subgroup is membership in the subgroup.
+theorem subgroup_to_submonoid_contains_eq[G: Group](s: Subgroup[G], x: G) {
+    subgroup_to_submonoid(s).contains(x) = s.contains(x)
+} by {
+    subgroup_to_submonoid_contains(s)
+    subgroup_to_submonoid(s).contains(x) = s.contains(x)
+}
+
+/// Membership in a subgroup is membership in its associated submonoid.
+theorem subgroup_contains_to_submonoid_eq[G: Group](s: Subgroup[G], x: G) {
+    s.contains(x) = subgroup_to_submonoid(s).contains(x)
+} by {
+    subgroup_to_submonoid_contains_eq(s, x)
+    s.contains(x) = subgroup_to_submonoid(s).contains(x)
+}
+
+/// The associated submonoid has the same underlying set as the subgroup.
+theorem subgroup_to_submonoid_as_set[G: Group](s: Subgroup[G]) {
+    subgroup_to_submonoid(s).as_set = s.as_set
 }
 
 /// The inverse image membership predicate of a subgroup under a group homomorphism.

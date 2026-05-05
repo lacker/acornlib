@@ -134,9 +134,9 @@
 {"goal":"subgroup_subset[G](a, b) = a.as_set.subset(b.as_set)","proof":[]}
 {"goal":"subgroup_subset_as_set_eq","proof":[]}
 {"goal":"a.as_set.subset(b.as_set)","proof":[]}
-{"goal":"subgroup_as_set_subset_of_subset","proof":["not subgroup_subset[G](a, b)"]}
+{"goal":"subgroup_as_set_subset_of_subset","proof":[]}
 {"goal":"subgroup_subset[G](a, b)","proof":[]}
-{"goal":"subgroup_subset_of_as_set_subset","proof":["not a.as_set ⊂ b.as_set"]}
+{"goal":"subgroup_subset_of_as_set_subset","proof":[]}
 {"goal":"a.contains(x) implies a.contains(x)","proof":[]}
 {"goal":"subgroup_subset_refl","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subgroup_subset[T0](x0, x1) }[G](a, a)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[G](a.contains, a.contains)","function[T0](x0: T0 -> Bool) { lib(relation_transport).predicate_subset[T0](x0, x0) }[G](a.contains)"]}
 {"goal":"b.contains(x)","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subgroup_subset[T0](x0, x1) }[G](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[G](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[G](a.contains, b.contains, x)"]}
@@ -186,7 +186,7 @@
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"a = b","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { x0.contains != x1.contains or x0 = x1 }[G](b, a)"]}
 {"goal":"subgroup_subset_antisymm","proof":[]}
-{"goal":"subgroup_subset[G](a, b)","proof":["not subgroup_subset[G](a, a)"]}
+{"goal":"subgroup_subset[G](a, b)","proof":[]}
 {"goal":"subgroup_subset[G](b, a)","proof":[]}
 {"goal":"subgroup_subset[G](a, b) and subgroup_subset[G](b, a)","proof":[]}
 {"goal":"a = b","proof":[]}
@@ -212,9 +212,9 @@
 {"goal":"set_subset_subgroup[G](a, s) = a.subset(s.as_set)","proof":[]}
 {"goal":"set_subset_subgroup_as_set_eq","proof":[]}
 {"goal":"a.subset(s.as_set)","proof":[]}
-{"goal":"set_as_set_subset_of_subset_subgroup","proof":["not set_subset_subgroup[G](a, s)"]}
+{"goal":"set_as_set_subset_of_subset_subgroup","proof":[]}
 {"goal":"set_subset_subgroup[G](a, s)","proof":[]}
-{"goal":"set_subset_subgroup_of_as_set_subset","proof":["not a ⊂ s.as_set"]}
+{"goal":"set_subset_subgroup_of_as_set_subset","proof":[]}
 {"goal":"s.contains(x)","proof":["function[T0: Group](x0: Subgroup[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[G](s, x)"]}
 {"goal":"subgroup_as_set_subset_self","proof":["function[T0: Group](x0: Set[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_subgroup[T0](x0, x1) }[G](s.as_set, s)","let w0: G satisfy { w0 ∈ s.as_set and not w0 ∈ s }","function(x0: G) { not x0 ∈ s.as_set or x0 ∈ s }(w0)"]}
 {"goal":"s.contains(x)","proof":["function[T0: Group](x0: Set[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_subgroup[T0](x0, x1) }[G](a, s)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[G](a.contains, s.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[G](a.contains, s.contains, x)"]}
@@ -252,7 +252,7 @@
 {"goal":"subgroup_closure_contains_of_set_contains","proof":[]}
 {"goal":"subgroup_closure_contains(a, x)","proof":[]}
 {"goal":"subgroup_closure_subset_of_set_subset","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subgroup_subset[T0](x0, x1) }[G](subgroup_closure[G](a), s)","(forall(x0: G) { not x0 ∈ subgroup_closure[G](a) or (not subgroup_closure_contains(a, x0) or not set_subset_subgroup[G](a, s) or x0 ∈ s) } = true)","let w0: G satisfy { w0 ∈ subgroup_closure[G](a) and not w0 ∈ s }","function[T0: Group](x0: Set[T0], x1: T0) { x1 ∈ subgroup_closure[T0](x0) = subgroup_closure_contains[T0](x0, x1) }[G](a, w0)","function(x0: G) { not (x0 ∈ subgroup_closure[G](a) and (subgroup_closure_contains(a, x0) and set_subset_subgroup[G](a, s) and not x0 ∈ s)) }(w0)"]}
-{"goal":"set_subset_subgroup[G](a, s)","proof":["not set_subset_subgroup[G](a, subgroup_closure[G](a)) or not subgroup_subset[G](subgroup_closure[G](a), s)","not subgroup_subset[G](subgroup_closure[G](a), s)"]}
+{"goal":"set_subset_subgroup[G](a, s)","proof":[]}
 {"goal":"subgroup_subset[G](subgroup_closure[G](a), s)","proof":[]}
 {"goal":"subgroup_subset[G](subgroup_closure[G](a), s) = set_subset_subgroup[G](a, s)","proof":[]}
 {"goal":"subgroup_closure_le_iff_set_subset","proof":[]}
@@ -277,6 +277,17 @@
 {"goal":"exists(k0: Set[G]) { k0.is_finite and subgroup_closure[G](k0) = subgroup_closure[G](a) }","proof":[]}
 {"goal":"subgroup_is_finitely_generated[G](subgroup_closure[G](a))","proof":["let w0: Set[G] satisfy { w0.is_finite and subgroup_closure[G](w0) = subgroup_closure[G](a) }","function[T0: Group](x0: Subgroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subgroup_closure[T0](k0) = x0 } = subgroup_is_finitely_generated[T0](x0) }[G](subgroup_closure[G](a))"]}
 {"goal":"subgroup_closure_is_finitely_generated","proof":[]}
+{"goal":"submonoid_identity_constraint[G](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[G](s.contains)"]}
+{"goal":"s.contains(a * b)","proof":["not b ∈ s or not a ∈ s","b ∈ s","a ∈ s","not a ∈ s"]}
+{"goal":"submonoid_closure_constraint[G](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = submonoid_closure_constraint[T0](x0) }[G](s.contains)","let w0: G satisfy { exists(k0: G) { w0 ∈ s and k0 ∈ s and not w0 * k0 ∈ s } }","let w1: G satisfy { w0 ∈ s and w1 ∈ s and not w0 * w1 ∈ s }","let w2: G satisfy { w0 ∈ s and w2 ∈ s and not w0 * w2 ∈ s }","function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { not x1 ∈ x0 or not x2 ∈ x0 or x1 * x2 ∈ x0 }[G](s, w0, w2)","not w0 * w2 ∈ s","w0 ∈ s and w2 ∈ s","not w0 ∈ s"]}
+{"goal":"subgroup_submonoid_constraint","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { (submonoid_identity_constraint[T0](x0) and submonoid_closure_constraint[T0](x0)) = submonoid_constraint[T0](x0) }[G](s.contains)","not (submonoid_identity_constraint[G](s.contains) and submonoid_closure_constraint[G](s.contains))"]}
+{"goal":"exists(k0: Submonoid[G]) { Submonoid.new[G](s.contains) = Option.some(k0) }","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { not Submonoid.constraint[T0](x0) or exists(k0: Submonoid[T0]) { Submonoid.new[T0](x0) = Option.some[Submonoid[T0]](k0) } }[G](s.contains)","function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { Submonoid.constraint[T0](x0) = submonoid_constraint[T0](x0) }[G](s.contains)","not Submonoid.constraint[G](s.contains)","Submonoid.constraint[G](s.contains)"]}
+{"goal":"subgroup_to_submonoid_contains","proof":["function[T0: Group](x0: Subgroup[T0]) { Option.some[Submonoid[T0]](subgroup_to_submonoid[T0](x0)) = Submonoid.new[T0](x0.contains) }[G](s)","let w0: G satisfy { w0 ∈ s != w0 ∈ subgroup_to_submonoid[G](s) }","function[T0: lib(monoid).Monoid](x0: Submonoid[T0], x1: T0 -> Bool, x2: T0) { Option.some[Submonoid[T0]](x0) != Submonoid.new[T0](x1) or x2 ∈ x0 = x1(x2) }[G](subgroup_to_submonoid[G](s), s.contains, w0)"]}
+{"goal":"subgroup_to_submonoid[G](s).contains(x) = s.contains(x)","proof":["function(x0: G) { x0 ∈ subgroup_to_submonoid[G](s) = x0 ∈ s }(x)"]}
+{"goal":"subgroup_to_submonoid_contains_eq","proof":[]}
+{"goal":"s.contains(x) = subgroup_to_submonoid[G](s).contains(x)","proof":[]}
+{"goal":"subgroup_contains_to_submonoid_eq","proof":[]}
+{"goal":"subgroup_to_submonoid_as_set","proof":["function[T0: Group](x0: Subgroup[T0]) { Set.new[T0](x0.contains) = x0.as_set }[G](s)","function[T0: lib(monoid).Monoid](x0: Submonoid[T0]) { Set.new[T0](x0.contains) = x0.as_set }[G](subgroup_to_submonoid[G](s))","function[T0: Group](x0: Subgroup[T0]) { subgroup_to_submonoid[T0](x0).contains = x0.contains }[G](s)","Set.new[G](subgroup_to_submonoid[G](s).contains) != s.as_set"]}
 {"goal":"f.hom(G.1) = H.1","proof":[]}
 {"goal":"s.contains(H.1)","proof":[]}
 {"goal":"s.contains(f.hom(G.1))","proof":[]}

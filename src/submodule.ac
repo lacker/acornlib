@@ -404,6 +404,61 @@ theorem submodule_intersection_is_submodule[R: Ring, M: AddCommGroup](
     }
 }
 
+/// Common membership is symmetric.
+theorem submodule_intersection_contains_comm_at[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) {
+    submodule_intersection_contains(a, b, x) = submodule_intersection_contains(b, a, x)
+} by {
+    submodule_intersection_contains_eq(a, b, x)
+    submodule_intersection_contains_eq(b, a, x)
+    submodule_intersection_contains(a, b, x) = submodule_intersection_contains(b, a, x)
+}
+
+/// Common membership is associative from left to right.
+theorem submodule_intersection_contains_assoc_left[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M], x: M
+) {
+    submodule_intersection_contains(a, b, x) and c.contains(x)
+        implies a.contains(x) and submodule_intersection_contains(b, c, x)
+} by {
+    if submodule_intersection_contains(a, b, x) and c.contains(x) {
+        submodule_intersection_contains_eq(a, b, x)
+        a.contains(x)
+        b.contains(x)
+        submodule_intersection_contains_eq(b, c, x)
+        submodule_intersection_contains(b, c, x)
+        a.contains(x) and submodule_intersection_contains(b, c, x)
+    }
+}
+
+/// Common membership is associative from right to left.
+theorem submodule_intersection_contains_assoc_right[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M], x: M
+) {
+    a.contains(x) and submodule_intersection_contains(b, c, x)
+        implies submodule_intersection_contains(a, b, x) and c.contains(x)
+} by {
+    if a.contains(x) and submodule_intersection_contains(b, c, x) {
+        submodule_intersection_contains_eq(b, c, x)
+        b.contains(x)
+        c.contains(x)
+        submodule_intersection_contains_eq(a, b, x)
+        submodule_intersection_contains(a, b, x)
+        submodule_intersection_contains(a, b, x) and c.contains(x)
+    }
+}
+
+/// Common membership with itself is ordinary membership.
+theorem submodule_intersection_contains_idempotent_at[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], x: M
+) {
+    submodule_intersection_contains(a, a, x) = a.contains(x)
+} by {
+    submodule_intersection_contains_eq(a, a, x)
+    submodule_intersection_contains(a, a, x) = a.contains(x)
+}
+
 attributes Submodule[R: Ring, M: AddCommGroup] {
     /// Submodule extensionality from equality of ambient modules and pointwise equality of membership.
     let ext = submodule_ext[R, M]
@@ -474,6 +529,98 @@ theorem submodule_subset_trans[R: Ring, M: AddCommGroup](
             }
         }
     }
+}
+
+/// Every common lower bound is contained in the common membership predicate.
+theorem submodule_subset_intersection_contains_of_subset_left_right[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    submodule_subset(c, a) and submodule_subset(c, b) implies forall(x: M) {
+        c.contains(x) implies submodule_intersection_contains(a, b, x)
+    }
+} by {
+    if submodule_subset(c, a) and submodule_subset(c, b) {
+        submodule_subset(c, a) = forall(y: M) {
+            c.contains(y) implies a.contains(y)
+        }
+        submodule_subset(c, b) = forall(y: M) {
+            c.contains(y) implies b.contains(y)
+        }
+        forall(x: M) {
+            if c.contains(x) {
+                a.contains(x)
+                b.contains(x)
+                submodule_intersection_contains_eq(a, b, x)
+                submodule_intersection_contains(a, b, x)
+            }
+        }
+    }
+}
+
+/// Containment in the common membership predicate gives containment in the left submodule.
+theorem submodule_subset_left_of_subset_intersection_contains[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    (forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) })
+        implies submodule_subset(c, a)
+} by {
+    if forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) } {
+        forall(x: M) {
+            if c.contains(x) {
+                submodule_intersection_contains(a, b, x)
+                submodule_intersection_subset_left(a, b, x)
+                a.contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in the common membership predicate gives containment in the right submodule.
+theorem submodule_subset_right_of_subset_intersection_contains[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    (forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) })
+        implies submodule_subset(c, b)
+} by {
+    if forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) } {
+        forall(x: M) {
+            if c.contains(x) {
+                submodule_intersection_contains(a, b, x)
+                submodule_intersection_subset_right(a, b, x)
+                b.contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in the common membership predicate is equivalent to containment in both submodules.
+theorem submodule_subset_intersection_contains_iff[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    (forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) }) =
+        (submodule_subset(c, a) and submodule_subset(c, b))
+} by {
+    if forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) } {
+        submodule_subset_left_of_subset_intersection_contains(c, a, b)
+        submodule_subset_right_of_subset_intersection_contains(c, a, b)
+        submodule_subset(c, a)
+        submodule_subset(c, b)
+        submodule_subset(c, a) and submodule_subset(c, b)
+    }
+    if submodule_subset(c, a) and submodule_subset(c, b) {
+        submodule_subset_intersection_contains_of_subset_left_right(c, a, b)
+        forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) }
+    }
+    (forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) }) =
+        (submodule_subset(c, a) and submodule_subset(c, b))
 }
 
 /// Mutual inclusion gives equality of membership predicates.
@@ -668,6 +815,67 @@ theorem submodule_subset_full[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
             full_submodule_contains_everything(s.carrier, x)
         }
     }
+}
+
+/// Common membership with the zero submodule on the left is zero-submodule membership.
+theorem zero_submodule_intersection_contains_left[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], s: Submodule[R, M], x: M
+) {
+    s.carrier = carrier implies
+        submodule_intersection_contains(zero_submodule(carrier), s, x) = zero_submodule(carrier).contains(x)
+} by {
+    if s.carrier = carrier {
+        if submodule_intersection_contains(zero_submodule(carrier), s, x) {
+            submodule_intersection_contains_eq(zero_submodule(carrier), s, x)
+            zero_submodule(carrier).contains(x)
+        }
+        if zero_submodule(carrier).contains(x) {
+            zero_submodule_contains_eq(carrier, x)
+            x = M.0
+            submodule_contains_zero(s)
+            s.contains(M.0)
+            s.contains(x)
+            submodule_intersection_contains_eq(zero_submodule(carrier), s, x)
+            submodule_intersection_contains(zero_submodule(carrier), s, x)
+        }
+        submodule_intersection_contains(zero_submodule(carrier), s, x) = zero_submodule(carrier).contains(x)
+    }
+}
+
+/// Common membership with the zero submodule on the right is zero-submodule membership.
+theorem zero_submodule_intersection_contains_right[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], s: Submodule[R, M], x: M
+) {
+    s.carrier = carrier implies
+        submodule_intersection_contains(s, zero_submodule(carrier), x) = zero_submodule(carrier).contains(x)
+} by {
+    if s.carrier = carrier {
+        submodule_intersection_contains_comm_at(s, zero_submodule(carrier), x)
+        zero_submodule_intersection_contains_left(carrier, s, x)
+        submodule_intersection_contains(s, zero_submodule(carrier), x) = zero_submodule(carrier).contains(x)
+    }
+}
+
+/// Common membership with the full submodule on the left is ordinary membership.
+theorem full_submodule_intersection_contains_left[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], s: Submodule[R, M], x: M
+) {
+    submodule_intersection_contains(full_submodule(carrier), s, x) = s.contains(x)
+} by {
+    full_submodule_contains_everything(carrier, x)
+    submodule_intersection_contains_eq(full_submodule(carrier), s, x)
+    submodule_intersection_contains(full_submodule(carrier), s, x) = s.contains(x)
+}
+
+/// Common membership with the full submodule on the right is ordinary membership.
+theorem full_submodule_intersection_contains_right[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], s: Submodule[R, M], x: M
+) {
+    submodule_intersection_contains(s, full_submodule(carrier), x) = s.contains(x)
+} by {
+    submodule_intersection_contains_comm_at(s, full_submodule(carrier), x)
+    full_submodule_intersection_contains_left(carrier, s, x)
+    submodule_intersection_contains(s, full_submodule(carrier), x) = s.contains(x)
 }
 
 /// True if every element of a set belongs to a submodule.
@@ -1186,6 +1394,19 @@ theorem submodule_to_add_subgroup_contains_eq[R: Ring, M: AddCommGroup](s: Submo
     submodule_to_add_subgroup(s).contains(x) = s.contains(x)
 }
 
+/// Membership in a submodule is membership in its associated additive subgroup.
+theorem submodule_contains_to_add_subgroup_eq[R: Ring, M: AddCommGroup](s: Submodule[R, M], x: M) {
+    s.contains(x) = submodule_to_add_subgroup(s).contains(x)
+} by {
+    submodule_to_add_subgroup_contains_eq(s, x)
+    s.contains(x) = submodule_to_add_subgroup(s).contains(x)
+}
+
+/// The associated additive subgroup has the same underlying set as the submodule.
+theorem submodule_to_add_subgroup_as_set[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_to_add_subgroup(s).as_set = s.as_set
+}
+
 /// The additive submonoid predicate associated to a submodule.
 theorem submodule_add_submonoid_constraint[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
     add_submonoid_constraint(s.contains)
@@ -1219,6 +1440,19 @@ theorem submodule_to_add_submonoid_contains_eq[R: Ring, M: AddCommGroup](s: Subm
 } by {
     submodule_to_add_submonoid_contains(s)
     submodule_to_add_submonoid(s).contains(x) = s.contains(x)
+}
+
+/// Membership in a submodule is membership in its associated additive submonoid.
+theorem submodule_contains_to_add_submonoid_eq[R: Ring, M: AddCommGroup](s: Submodule[R, M], x: M) {
+    s.contains(x) = submodule_to_add_submonoid(s).contains(x)
+} by {
+    submodule_to_add_submonoid_contains_eq(s, x)
+    s.contains(x) = submodule_to_add_submonoid(s).contains(x)
+}
+
+/// The associated additive submonoid has the same underlying set as the submodule.
+theorem submodule_to_add_submonoid_as_set[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_to_add_submonoid(s).as_set = s.as_set
 }
 
 /// Membership in the kernel of a linear map.

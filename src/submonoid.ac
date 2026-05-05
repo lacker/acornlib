@@ -1,5 +1,6 @@
 from nat import Nat
 from monoid import Monoid, MonoidHom, monoid_hom_one, monoid_hom_mul
+from subsemigroup import Subsemigroup, subsemigroup_closure_constraint
 from set import Set
 from functions import predicate_extensionality
 
@@ -1067,6 +1068,46 @@ theorem submonoid_closure_is_finitely_generated[M: Monoid](a: Set[M]) {
         }
         submonoid_is_finitely_generated(submonoid_closure(a))
     }
+}
+
+/// The subsemigroup predicate associated to a submonoid.
+theorem submonoid_subsemigroup_constraint[M: Monoid](s: Submonoid[M]) {
+    subsemigroup_closure_constraint(s.contains)
+} by {
+    submonoid_closure_constraint(s.contains)
+}
+
+/// The subsemigroup associated to a submonoid.
+let submonoid_to_subsemigroup[M: Monoid](s: Submonoid[M]) -> result: Subsemigroup[M] satisfy {
+    Subsemigroup.new(s.contains) = Option.some(result)
+} by {
+    submonoid_subsemigroup_constraint(s)
+}
+
+/// The subsemigroup associated to a submonoid has the same membership predicate.
+theorem submonoid_to_subsemigroup_contains[M: Monoid](s: Submonoid[M]) {
+    submonoid_to_subsemigroup(s).contains = s.contains
+}
+
+/// Membership in the subsemigroup associated to a submonoid is membership in the submonoid.
+theorem submonoid_to_subsemigroup_contains_eq[M: Monoid](s: Submonoid[M], x: M) {
+    submonoid_to_subsemigroup(s).contains(x) = s.contains(x)
+} by {
+    submonoid_to_subsemigroup_contains(s)
+    submonoid_to_subsemigroup(s).contains(x) = s.contains(x)
+}
+
+/// Membership in a submonoid is membership in its associated subsemigroup.
+theorem submonoid_contains_to_subsemigroup_eq[M: Monoid](s: Submonoid[M], x: M) {
+    s.contains(x) = submonoid_to_subsemigroup(s).contains(x)
+} by {
+    submonoid_to_subsemigroup_contains_eq(s, x)
+    s.contains(x) = submonoid_to_subsemigroup(s).contains(x)
+}
+
+/// The associated subsemigroup has the same underlying set as the submonoid.
+theorem submonoid_to_subsemigroup_as_set[M: Monoid](s: Submonoid[M]) {
+    submonoid_to_subsemigroup(s).as_set = s.as_set
 }
 
 /// The inverse image membership predicate of a submonoid under a monoid homomorphism.
