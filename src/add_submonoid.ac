@@ -189,6 +189,14 @@ theorem add_submonoid_as_set_contains_eq[M: AddMonoid](s: AddSubmonoid[M], x: M)
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in an additive submonoid is membership in its underlying set.
+theorem add_submonoid_contains_as_set_eq[M: AddMonoid](s: AddSubmonoid[M], x: M) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    add_submonoid_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal additive submonoids have equal underlying sets.
 theorem add_submonoid_eq_as_set[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
     a = b implies a.as_set = b.as_set
@@ -346,6 +354,26 @@ theorem add_submonoid_subset_as_set_eq[M: AddMonoid](a: AddSubmonoid[M], b: AddS
         add_submonoid_subset(a, b)
     }
     add_submonoid_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Additive submonoid containment gives containment of underlying sets.
+theorem add_submonoid_as_set_subset_of_subset[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if add_submonoid_subset(a, b) {
+        add_submonoid_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives additive submonoid containment.
+theorem add_submonoid_subset_of_as_set_subset[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    a.as_set.subset(b.as_set) implies add_submonoid_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        add_submonoid_subset_as_set_eq(a, b)
+        add_submonoid_subset(a, b)
+    }
 }
 
 /// Additive submonoid inclusion is reflexive.
@@ -686,6 +714,26 @@ theorem set_subset_add_submonoid_as_set_eq[M: AddMonoid](a: Set[M], s: AddSubmon
         set_subset_add_submonoid(a, s)
     }
     set_subset_add_submonoid(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in an additive submonoid gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_add_submonoid[M: AddMonoid](a: Set[M], s: AddSubmonoid[M]) {
+    set_subset_add_submonoid(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_add_submonoid(a, s) {
+        set_subset_add_submonoid_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the additive submonoid.
+theorem set_subset_add_submonoid_of_as_set_subset[M: AddMonoid](a: Set[M], s: AddSubmonoid[M]) {
+    a.subset(s.as_set) implies set_subset_add_submonoid(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_add_submonoid_as_set_eq(a, s)
+        set_subset_add_submonoid(a, s)
+    }
 }
 
 /// Set containment in an additive submonoid is reflexive for the underlying set.

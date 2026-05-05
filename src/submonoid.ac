@@ -169,6 +169,14 @@ theorem submonoid_as_set_contains_eq[M: Monoid](s: Submonoid[M], x: M) {
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in a submonoid is membership in its underlying set.
+theorem submonoid_contains_as_set_eq[M: Monoid](s: Submonoid[M], x: M) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    submonoid_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal submonoids have equal underlying sets.
 theorem submonoid_eq_as_set[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
     a = b implies a.as_set = b.as_set
@@ -382,6 +390,26 @@ theorem submonoid_subset_as_set_eq[M: Monoid](a: Submonoid[M], b: Submonoid[M]) 
         submonoid_subset(a, b)
     }
     submonoid_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Submonoid containment gives containment of underlying sets.
+theorem submonoid_as_set_subset_of_subset[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    submonoid_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if submonoid_subset(a, b) {
+        submonoid_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives submonoid containment.
+theorem submonoid_subset_of_as_set_subset[M: Monoid](a: Submonoid[M], b: Submonoid[M]) {
+    a.as_set.subset(b.as_set) implies submonoid_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        submonoid_subset_as_set_eq(a, b)
+        submonoid_subset(a, b)
+    }
 }
 
 /// Submonoid inclusion is reflexive.
@@ -732,6 +760,26 @@ theorem set_subset_submonoid_as_set_eq[M: Monoid](a: Set[M], s: Submonoid[M]) {
         set_subset_submonoid(a, s)
     }
     set_subset_submonoid(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in a submonoid gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_submonoid[M: Monoid](a: Set[M], s: Submonoid[M]) {
+    set_subset_submonoid(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_submonoid(a, s) {
+        set_subset_submonoid_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the submonoid.
+theorem set_subset_submonoid_of_as_set_subset[M: Monoid](a: Set[M], s: Submonoid[M]) {
+    a.subset(s.as_set) implies set_subset_submonoid(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_submonoid_as_set_eq(a, s)
+        set_subset_submonoid(a, s)
+    }
 }
 
 /// The underlying set of a submonoid is contained in the submonoid.

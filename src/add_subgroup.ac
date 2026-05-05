@@ -293,6 +293,14 @@ theorem add_subgroup_as_set_contains_eq[G: AddGroup](s: AddSubgroup[G], x: G) {
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in an additive subgroup is membership in its underlying set.
+theorem add_subgroup_contains_as_set_eq[G: AddGroup](s: AddSubgroup[G], x: G) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    add_subgroup_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal additive subgroups have equal underlying sets.
 theorem add_subgroup_eq_as_set[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
     a = b implies a.as_set = b.as_set
@@ -450,6 +458,26 @@ theorem add_subgroup_subset_as_set_eq[G: AddGroup](a: AddSubgroup[G], b: AddSubg
         add_subgroup_subset(a, b)
     }
     add_subgroup_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Additive subgroup containment gives containment of underlying sets.
+theorem add_subgroup_as_set_subset_of_subset[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    add_subgroup_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if add_subgroup_subset(a, b) {
+        add_subgroup_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives additive subgroup containment.
+theorem add_subgroup_subset_of_as_set_subset[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    a.as_set.subset(b.as_set) implies add_subgroup_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        add_subgroup_subset_as_set_eq(a, b)
+        add_subgroup_subset(a, b)
+    }
 }
 
 /// Additive subgroup inclusion is reflexive.
@@ -828,6 +856,26 @@ theorem set_subset_add_subgroup_as_set_eq[G: AddGroup](a: Set[G], s: AddSubgroup
         set_subset_add_subgroup(a, s)
     }
     set_subset_add_subgroup(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in an additive subgroup gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_add_subgroup[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    set_subset_add_subgroup(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_add_subgroup(a, s) {
+        set_subset_add_subgroup_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the additive subgroup.
+theorem set_subset_add_subgroup_of_as_set_subset[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    a.subset(s.as_set) implies set_subset_add_subgroup(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_add_subgroup_as_set_eq(a, s)
+        set_subset_add_subgroup(a, s)
+    }
 }
 
 /// The underlying set of an additive subgroup is contained in the additive subgroup.

@@ -353,6 +353,14 @@ theorem subgroup_as_set_contains_eq[G: Group](s: Subgroup[G], x: G) {
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in a subgroup is membership in its underlying set.
+theorem subgroup_contains_as_set_eq[G: Group](s: Subgroup[G], x: G) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    subgroup_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal subgroups have equal underlying sets.
 theorem subgroup_eq_as_set[G: Group](a: Subgroup[G], b: Subgroup[G]) {
     a = b implies a.as_set = b.as_set
@@ -507,6 +515,26 @@ theorem subgroup_subset_as_set_eq[G: Group](a: Subgroup[G], b: Subgroup[G]) {
         subgroup_subset(a, b)
     }
     subgroup_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Subgroup containment gives containment of underlying sets.
+theorem subgroup_as_set_subset_of_subset[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if subgroup_subset(a, b) {
+        subgroup_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives subgroup containment.
+theorem subgroup_subset_of_as_set_subset[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    a.as_set.subset(b.as_set) implies subgroup_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        subgroup_subset_as_set_eq(a, b)
+        subgroup_subset(a, b)
+    }
 }
 
 /// Subgroup inclusion is reflexive.
@@ -823,6 +851,26 @@ theorem set_subset_subgroup_as_set_eq[G: Group](a: Set[G], s: Subgroup[G]) {
         set_subset_subgroup(a, s)
     }
     set_subset_subgroup(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in a subgroup gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_subgroup[G: Group](a: Set[G], s: Subgroup[G]) {
+    set_subset_subgroup(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_subgroup(a, s) {
+        set_subset_subgroup_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the subgroup.
+theorem set_subset_subgroup_of_as_set_subset[G: Group](a: Set[G], s: Subgroup[G]) {
+    a.subset(s.as_set) implies set_subset_subgroup(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_subgroup_as_set_eq(a, s)
+        set_subset_subgroup(a, s)
+    }
 }
 
 /// The underlying set of a subgroup is contained in the subgroup.
