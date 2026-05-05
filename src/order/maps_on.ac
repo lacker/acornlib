@@ -1,0 +1,302 @@
+/// Monotone and antitone maps restricted to a subset of their domain.
+
+from order import PartialOrder, lte_refl, lt_imp_lte
+from order_maps import is_monotone, is_antitone, is_strict_monotone, is_strict_antitone,
+    monotone_apply, antitone_apply, strict_monotone_apply, strict_antitone_apply
+from set import Set
+
+/// True if `f` preserves the non-strict order on `domain`.
+define is_monotone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) -> Bool {
+    forall(left: Domain, right: Domain) {
+        domain.contains(left) and domain.contains(right) and left <= right implies f(left) <= f(right)
+    }
+}
+
+/// True if `f` reverses the non-strict order on `domain`.
+define is_antitone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) -> Bool {
+    forall(left: Domain, right: Domain) {
+        domain.contains(left) and domain.contains(right) and left <= right implies f(right) <= f(left)
+    }
+}
+
+/// True if `f` preserves strict order on `domain`.
+define is_strict_monotone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) -> Bool {
+    forall(left: Domain, right: Domain) {
+        domain.contains(left) and domain.contains(right) and left < right implies f(left) < f(right)
+    }
+}
+
+/// True if `f` reverses strict order on `domain`.
+define is_strict_antitone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) -> Bool {
+    forall(left: Domain, right: Domain) {
+        domain.contains(left) and domain.contains(right) and left < right implies f(right) < f(left)
+    }
+}
+
+/// A monotone map on a set carries an ordered pair of points to an ordered pair of values.
+theorem monotone_on_apply[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, left: Domain, right: Domain
+) {
+    is_monotone_on(domain, f) and domain.contains(left) and domain.contains(right) and left <= right
+    implies f(left) <= f(right)
+} by {
+    if is_monotone_on(domain, f) and domain.contains(left) and domain.contains(right) and left <= right {
+        is_monotone_on(domain, f) = forall(first: Domain, second: Domain) {
+            domain.contains(first) and domain.contains(second) and first <= second implies f(first) <= f(second)
+        }
+        domain.contains(left) and domain.contains(right) and left <= right implies f(left) <= f(right)
+        f(left) <= f(right)
+    }
+}
+
+/// An antitone map on a set reverses an ordered pair of points.
+theorem antitone_on_apply[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, left: Domain, right: Domain
+) {
+    is_antitone_on(domain, f) and domain.contains(left) and domain.contains(right) and left <= right
+    implies f(right) <= f(left)
+} by {
+    if is_antitone_on(domain, f) and domain.contains(left) and domain.contains(right) and left <= right {
+        is_antitone_on(domain, f) = forall(first: Domain, second: Domain) {
+            domain.contains(first) and domain.contains(second) and first <= second implies f(second) <= f(first)
+        }
+        domain.contains(left) and domain.contains(right) and left <= right implies f(right) <= f(left)
+        f(right) <= f(left)
+    }
+}
+
+/// A strictly monotone map on a set carries a strictly ordered pair to a strictly ordered pair.
+theorem strict_monotone_on_apply[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, left: Domain, right: Domain
+) {
+    is_strict_monotone_on(domain, f) and domain.contains(left) and domain.contains(right) and left < right
+    implies f(left) < f(right)
+} by {
+    if is_strict_monotone_on(domain, f) and domain.contains(left) and domain.contains(right) and left < right {
+        is_strict_monotone_on(domain, f) = forall(first: Domain, second: Domain) {
+            domain.contains(first) and domain.contains(second) and first < second implies f(first) < f(second)
+        }
+        domain.contains(left) and domain.contains(right) and left < right implies f(left) < f(right)
+        f(left) < f(right)
+    }
+}
+
+/// A strictly antitone map on a set reverses a strictly ordered pair.
+theorem strict_antitone_on_apply[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, left: Domain, right: Domain
+) {
+    is_strict_antitone_on(domain, f) and domain.contains(left) and domain.contains(right) and left < right
+    implies f(right) < f(left)
+} by {
+    if is_strict_antitone_on(domain, f) and domain.contains(left) and domain.contains(right) and left < right {
+        is_strict_antitone_on(domain, f) = forall(first: Domain, second: Domain) {
+            domain.contains(first) and domain.contains(second) and first < second implies f(second) < f(first)
+        }
+        domain.contains(left) and domain.contains(right) and left < right implies f(right) < f(left)
+        f(right) < f(left)
+    }
+}
+
+/// A globally monotone map is monotone on every subset.
+theorem monotone_on_of_monotone[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_monotone(f) implies is_monotone_on(domain, f)
+} by {
+    if is_monotone(f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                monotone_apply(f, left, right)
+                f(left) <= f(right)
+            }
+        }
+        is_monotone_on(domain, f)
+    }
+}
+
+/// A globally antitone map is antitone on every subset.
+theorem antitone_on_of_antitone[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_antitone(f) implies is_antitone_on(domain, f)
+} by {
+    if is_antitone(f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                antitone_apply(f, left, right)
+                f(right) <= f(left)
+            }
+        }
+        is_antitone_on(domain, f)
+    }
+}
+
+/// A globally strictly monotone map is strictly monotone on every subset.
+theorem strict_monotone_on_of_strict_monotone[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_strict_monotone(f) implies is_strict_monotone_on(domain, f)
+} by {
+    if is_strict_monotone(f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left < right {
+                strict_monotone_apply(f, left, right)
+                f(left) < f(right)
+            }
+        }
+        is_strict_monotone_on(domain, f)
+    }
+}
+
+/// A globally strictly antitone map is strictly antitone on every subset.
+theorem strict_antitone_on_of_strict_antitone[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_strict_antitone(f) implies is_strict_antitone_on(domain, f)
+} by {
+    if is_strict_antitone(f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left < right {
+                strict_antitone_apply(f, left, right)
+                f(right) < f(left)
+            }
+        }
+        is_strict_antitone_on(domain, f)
+    }
+}
+
+/// Strict monotonicity on a set implies non-strict monotonicity on that set.
+theorem strict_monotone_on_imp_monotone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_strict_monotone_on(domain, f) implies is_monotone_on(domain, f)
+} by {
+    if is_strict_monotone_on(domain, f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                if left = right {
+                    lte_refl(f(right))
+                    f(left) <= f(right)
+                }
+                if left != right {
+                    left < right
+                    strict_monotone_on_apply(domain, f, left, right)
+                    f(left) < f(right)
+                    lt_imp_lte(f(left), f(right))
+                    f(left) <= f(right)
+                }
+            }
+        }
+        is_monotone_on(domain, f)
+    }
+}
+
+/// Strict antitonicity on a set implies non-strict antitonicity on that set.
+theorem strict_antitone_on_imp_antitone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value
+) {
+    is_strict_antitone_on(domain, f) implies is_antitone_on(domain, f)
+} by {
+    if is_strict_antitone_on(domain, f) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                if left = right {
+                    lte_refl(f(left))
+                    f(right) <= f(left)
+                }
+                if left != right {
+                    left < right
+                    strict_antitone_on_apply(domain, f, left, right)
+                    f(right) < f(left)
+                    lt_imp_lte(f(right), f(left))
+                    f(right) <= f(left)
+                }
+            }
+        }
+        is_antitone_on(domain, f)
+    }
+}
+
+/// Monotonicity on a set is preserved by restricting the domain.
+theorem monotone_on_subset[Domain: PartialOrder, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value
+) {
+    subset.subset(superset) and is_monotone_on(superset, f) implies is_monotone_on(subset, f)
+} by {
+    if subset.subset(superset) and is_monotone_on(superset, f) {
+        forall(left: Domain, right: Domain) {
+            if subset.contains(left) and subset.contains(right) and left <= right {
+                superset.contains(left)
+                superset.contains(right)
+                monotone_on_apply(superset, f, left, right)
+                f(left) <= f(right)
+            }
+        }
+        is_monotone_on(subset, f)
+    }
+}
+
+/// Antitonicity on a set is preserved by restricting the domain.
+theorem antitone_on_subset[Domain: PartialOrder, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value
+) {
+    subset.subset(superset) and is_antitone_on(superset, f) implies is_antitone_on(subset, f)
+} by {
+    if subset.subset(superset) and is_antitone_on(superset, f) {
+        forall(left: Domain, right: Domain) {
+            if subset.contains(left) and subset.contains(right) and left <= right {
+                superset.contains(left)
+                superset.contains(right)
+                antitone_on_apply(superset, f, left, right)
+                f(right) <= f(left)
+            }
+        }
+        is_antitone_on(subset, f)
+    }
+}
+
+/// Strict monotonicity on a set is preserved by restricting the domain.
+theorem strict_monotone_on_subset[Domain: PartialOrder, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value
+) {
+    subset.subset(superset) and is_strict_monotone_on(superset, f) implies is_strict_monotone_on(subset, f)
+} by {
+    if subset.subset(superset) and is_strict_monotone_on(superset, f) {
+        forall(left: Domain, right: Domain) {
+            if subset.contains(left) and subset.contains(right) and left < right {
+                superset.contains(left)
+                superset.contains(right)
+                strict_monotone_on_apply(superset, f, left, right)
+                f(left) < f(right)
+            }
+        }
+        is_strict_monotone_on(subset, f)
+    }
+}
+
+/// Strict antitonicity on a set is preserved by restricting the domain.
+theorem strict_antitone_on_subset[Domain: PartialOrder, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value
+) {
+    subset.subset(superset) and is_strict_antitone_on(superset, f) implies is_strict_antitone_on(subset, f)
+} by {
+    if subset.subset(superset) and is_strict_antitone_on(superset, f) {
+        forall(left: Domain, right: Domain) {
+            if subset.contains(left) and subset.contains(right) and left < right {
+                superset.contains(left)
+                superset.contains(right)
+                strict_antitone_on_apply(superset, f, left, right)
+                f(right) < f(left)
+            }
+        }
+        is_strict_antitone_on(subset, f)
+    }
+}
