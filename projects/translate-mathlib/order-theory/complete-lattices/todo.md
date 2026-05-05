@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, family distributivity, preimage, image-over-supremum, and nested binary-family Fubini API
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, family distributivity, preimage, image-over-supremum, and binary-family API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -33,4 +33,5 @@ Status:
 - `src/set_lattice.ac` now has finite-list and bounded-range constant-family bottom/top wrappers for `set_list_sSup` / `set_list_sInf` and `set_range_sSup` / `set_range_sInf`, including nonempty-index equalities.
 - `src/set_lattice.ac` now has inhabited-family same-operation distributivity wrappers: binary `set_sup` over indexed `set_sSup` from either side, and binary `set_inf` over indexed `set_sInf` from either side.
 - `src/set_lattice.ac` now has nested binary-family wrappers for pair-indexed set suprema and infima, including membership characterizations, Fubini equalities for either nesting order, and nested universal-property subset characterizations.
+- `src/set_lattice.ac` now has direct flattened binary-family universal-property, monotonicity, pointwise equality, and constant/empty/universal family wrappers.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.

@@ -488,6 +488,21 @@ define set_binary_family_contains[K, I, J](family: (I, J) -> Set[K], x: K, i: I,
     family(i, j).contains(x)
 }
 
+/// The binary family whose members are empty.
+define set_empty_binary_family[K, I, J](i: I, j: J) -> Set[K] {
+    Set[K].empty_set
+}
+
+/// The binary family whose members are universal.
+define set_universal_binary_family[K, I, J](i: I, j: J) -> Set[K] {
+    Set[K].universal_set
+}
+
+/// The binary family whose members are a fixed set.
+define set_constant_binary_family[K, I, J](s: Set[K], i: I, j: J) -> Set[K] {
+    s
+}
+
 /// A binary set family viewed as a family over pairs.
 define set_pair_family[K, I, J](family: (I, J) -> Set[K], p: Pair[I, J]) -> Set[K] {
     family(p.first, p.second)
@@ -1090,6 +1105,340 @@ theorem set_sInf_eq_of_family_subset[K, I](a: I -> Set[K], b: I -> Set[K]) {
         set_sInf_monotone(b, a)
         subset_antisymm(set_sInf(a), set_sInf(b))
     }
+}
+
+/// Every member of a binary family is contained in the flattened supremum.
+theorem set_pair_family_subset_sSup[K, I, J](family: (I, J) -> Set[K], i: I, j: J) {
+    family(i, j).subset(set_sSup(set_pair_family(family)))
+} by {
+    forall(x: K) {
+        if family(i, j).contains(x) {
+            set_sSup_pair_family_contains_of_contains(family, x)
+            set_sSup(set_pair_family(family)).contains(x)
+        }
+    }
+}
+
+/// The flattened supremum of a binary family is contained in every common superset.
+theorem set_sSup_pair_family_subset_of_family_subset[K, I, J](family: (I, J) -> Set[K],
+    s: Set[K]) {
+    (forall(i: I) { forall(j: J) { family(i, j).subset(s) } }) implies
+    set_sSup(set_pair_family(family)).subset(s)
+} by {
+    if forall(i: I) { forall(j: J) { family(i, j).subset(s) } } {
+        forall(p: Pair[I, J]) {
+            family(p.first, p.second).subset(s)
+            set_pair_family(family, p).subset(s)
+        }
+        set_sSup_subset_of_family_subset(set_pair_family(family), s)
+        set_sSup(set_pair_family(family)).subset(s)
+    }
+}
+
+/// A flattened binary-family supremum is contained in a set exactly when every member is.
+theorem set_sSup_pair_family_subset_iff[K, I, J](family: (I, J) -> Set[K], s: Set[K]) {
+    set_sSup(set_pair_family(family)).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    }
+} by {
+    if set_sSup(set_pair_family(family)).subset(s) {
+        forall(i: I) {
+            forall(j: J) {
+                set_pair_family_subset_sSup(family, i, j)
+                subset_trans(family(i, j), set_sSup(set_pair_family(family)), s)
+                family(i, j).subset(s)
+            }
+        }
+    }
+    if forall(i: I) { forall(j: J) { family(i, j).subset(s) } } {
+        set_sSup_pair_family_subset_of_family_subset(family, s)
+        set_sSup(set_pair_family(family)).subset(s)
+    }
+    set_sSup(set_pair_family(family)).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    }
+}
+
+/// The flattened infimum of a binary family is contained in every member.
+theorem set_sInf_pair_family_subset_family[K, I, J](family: (I, J) -> Set[K], i: I, j: J) {
+    set_sInf(set_pair_family(family)).subset(family(i, j))
+} by {
+    forall(x: K) {
+        if set_sInf(set_pair_family(family)).contains(x) {
+            set_sInf_pair_family_contains_eq(family, x)
+            family(i, j).contains(x)
+        }
+    }
+}
+
+/// Every common subset is contained in the flattened infimum of a binary family.
+theorem set_subset_sInf_pair_family_of_subset_family[K, I, J](s: Set[K],
+    family: (I, J) -> Set[K]) {
+    (forall(i: I) { forall(j: J) { s.subset(family(i, j)) } }) implies
+    s.subset(set_sInf(set_pair_family(family)))
+} by {
+    if forall(i: I) { forall(j: J) { s.subset(family(i, j)) } } {
+        forall(p: Pair[I, J]) {
+            s.subset(family(p.first, p.second))
+            s.subset(set_pair_family(family, p))
+        }
+        set_subset_sInf_of_subset_family(s, set_pair_family(family))
+        s.subset(set_sInf(set_pair_family(family)))
+    }
+}
+
+/// A set is contained in a flattened binary-family infimum exactly when it is contained in every member.
+theorem set_subset_sInf_pair_family_iff[K, I, J](s: Set[K], family: (I, J) -> Set[K]) {
+    s.subset(set_sInf(set_pair_family(family))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    }
+} by {
+    if s.subset(set_sInf(set_pair_family(family))) {
+        forall(i: I) {
+            forall(j: J) {
+                set_sInf_pair_family_subset_family(family, i, j)
+                subset_trans(s, set_sInf(set_pair_family(family)), family(i, j))
+                s.subset(family(i, j))
+            }
+        }
+    }
+    if forall(i: I) { forall(j: J) { s.subset(family(i, j)) } } {
+        set_subset_sInf_pair_family_of_subset_family(s, family)
+        s.subset(set_sInf(set_pair_family(family)))
+    }
+    s.subset(set_sInf(set_pair_family(family))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    }
+}
+
+/// Pointwise inclusion of binary families preserves flattened suprema.
+theorem set_sSup_pair_family_monotone[K, I, J](a: (I, J) -> Set[K],
+    b: (I, J) -> Set[K]) {
+    (forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) } }) implies
+    set_sSup(set_pair_family(a)).subset(set_sSup(set_pair_family(b)))
+} by {
+    if forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) } } {
+        forall(p: Pair[I, J]) {
+            a(p.first, p.second).subset(b(p.first, p.second))
+            set_pair_family(a, p).subset(set_pair_family(b, p))
+        }
+        set_sSup_monotone(set_pair_family(a), set_pair_family(b))
+        set_sSup(set_pair_family(a)).subset(set_sSup(set_pair_family(b)))
+    }
+}
+
+/// Pointwise inclusion of binary families preserves flattened infima.
+theorem set_sInf_pair_family_monotone[K, I, J](a: (I, J) -> Set[K],
+    b: (I, J) -> Set[K]) {
+    (forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) } }) implies
+    set_sInf(set_pair_family(a)).subset(set_sInf(set_pair_family(b)))
+} by {
+    if forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) } } {
+        forall(p: Pair[I, J]) {
+            a(p.first, p.second).subset(b(p.first, p.second))
+            set_pair_family(a, p).subset(set_pair_family(b, p))
+        }
+        set_sInf_monotone(set_pair_family(a), set_pair_family(b))
+        set_sInf(set_pair_family(a)).subset(set_sInf(set_pair_family(b)))
+    }
+}
+
+/// Mutually pointwise-equivalent binary families have the same flattened supremum.
+theorem set_sSup_pair_family_eq_of_family_subset[K, I, J](a: (I, J) -> Set[K],
+    b: (I, J) -> Set[K]) {
+    (forall(i: I) {
+        forall(j: J) {
+            a(i, j).subset(b(i, j)) and b(i, j).subset(a(i, j))
+        }
+    }) implies set_sSup(set_pair_family(a)) = set_sSup(set_pair_family(b))
+} by {
+    if forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) and b(i, j).subset(a(i, j)) } } {
+        forall(i: I) {
+            forall(j: J) {
+                a(i, j).subset(b(i, j))
+            }
+        }
+        set_sSup_pair_family_monotone(a, b)
+        set_sSup(set_pair_family(a)).subset(set_sSup(set_pair_family(b)))
+        forall(i: I) {
+            forall(j: J) {
+                b(i, j).subset(a(i, j))
+            }
+        }
+        set_sSup_pair_family_monotone(b, a)
+        set_sSup(set_pair_family(b)).subset(set_sSup(set_pair_family(a)))
+        subset_antisymm(set_sSup(set_pair_family(a)), set_sSup(set_pair_family(b)))
+    }
+}
+
+/// Mutually pointwise-equivalent binary families have the same flattened infimum.
+theorem set_sInf_pair_family_eq_of_family_subset[K, I, J](a: (I, J) -> Set[K],
+    b: (I, J) -> Set[K]) {
+    (forall(i: I) {
+        forall(j: J) {
+            a(i, j).subset(b(i, j)) and b(i, j).subset(a(i, j))
+        }
+    }) implies set_sInf(set_pair_family(a)) = set_sInf(set_pair_family(b))
+} by {
+    if forall(i: I) { forall(j: J) { a(i, j).subset(b(i, j)) and b(i, j).subset(a(i, j)) } } {
+        forall(i: I) {
+            forall(j: J) {
+                a(i, j).subset(b(i, j))
+            }
+        }
+        set_sInf_pair_family_monotone(a, b)
+        set_sInf(set_pair_family(a)).subset(set_sInf(set_pair_family(b)))
+        forall(i: I) {
+            forall(j: J) {
+                b(i, j).subset(a(i, j))
+            }
+        }
+        set_sInf_pair_family_monotone(b, a)
+        set_sInf(set_pair_family(b)).subset(set_sInf(set_pair_family(a)))
+        subset_antisymm(set_sInf(set_pair_family(a)), set_sInf(set_pair_family(b)))
+    }
+}
+
+/// The flattened supremum of constantly empty binary-family members is empty.
+theorem set_sSup_empty_binary_family[K, I, J] {
+    set_sSup(set_pair_family(set_empty_binary_family[K, I, J])) = Set[K].empty_set
+} by {
+    forall(i: I) {
+        forall(j: J) {
+            set_empty_binary_family[K, I, J](i, j).subset(Set[K].empty_set)
+        }
+    }
+    set_sSup_pair_family_subset_of_family_subset(set_empty_binary_family[K, I, J],
+        Set[K].empty_set)
+    set_sSup(set_pair_family(set_empty_binary_family[K, I, J])).subset(Set[K].empty_set)
+    Set[K].empty_set.subset(set_sSup(set_pair_family(set_empty_binary_family[K, I, J])))
+    subset_antisymm(set_sSup(set_pair_family(set_empty_binary_family[K, I, J])),
+        Set[K].empty_set)
+}
+
+/// The flattened infimum of constantly universal binary-family members is universal.
+theorem set_sInf_universal_binary_family[K, I, J] {
+    set_sInf(set_pair_family(set_universal_binary_family[K, I, J])) = Set[K].universal_set
+} by {
+    forall(i: I) {
+        forall(j: J) {
+            Set[K].universal_set.subset(set_universal_binary_family[K, I, J](i, j))
+        }
+    }
+    set_subset_sInf_pair_family_of_subset_family(Set[K].universal_set,
+        set_universal_binary_family[K, I, J])
+    Set[K].universal_set.subset(set_sInf(set_pair_family(set_universal_binary_family[K, I, J])))
+    set_sInf(set_pair_family(set_universal_binary_family[K, I, J])).subset(Set[K].universal_set)
+    subset_antisymm(set_sInf(set_pair_family(set_universal_binary_family[K, I, J])),
+        Set[K].universal_set)
+}
+
+/// The flattened supremum of a constant binary family is contained in the constant member.
+theorem set_sSup_constant_binary_family_subset[K, I, J](s: Set[K]) {
+    set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))).subset(s)
+} by {
+    forall(i: I) {
+        forall(j: J) {
+            set_constant_binary_family(s, i, j) = s
+            set_constant_binary_family(s, i, j).subset(s)
+        }
+    }
+    set_sSup_pair_family_subset_of_family_subset(set_constant_binary_family[K, I, J](s), s)
+    set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))).subset(s)
+}
+
+/// A chosen constant binary-family member is contained in the flattened supremum.
+theorem set_subset_sSup_constant_binary_family[K, I, J](s: Set[K], i0: I, j0: J) {
+    s.subset(set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))))
+} by {
+    set_pair_family_subset_sSup(set_constant_binary_family[K, I, J](s), i0, j0)
+    set_constant_binary_family(s, i0, j0) = s
+    s.subset(set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))))
+}
+
+/// If the binary index types have witnesses, the flattened supremum of a constant family is the constant member.
+theorem set_sSup_constant_binary_family[K, I, J](s: Set[K], i0: I, j0: J) {
+    set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))) = s
+} by {
+    set_sSup_constant_binary_family_subset[K, I, J](s)
+    set_subset_sSup_constant_binary_family(s, i0, j0)
+    subset_antisymm(set_sSup(set_pair_family(set_constant_binary_family[K, I, J](s))), s)
+}
+
+/// The constant member is contained in the flattened infimum of a constant binary family.
+theorem set_subset_sInf_constant_binary_family[K, I, J](s: Set[K]) {
+    s.subset(set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))))
+} by {
+    forall(i: I) {
+        forall(j: J) {
+            set_constant_binary_family(s, i, j) = s
+            s.subset(set_constant_binary_family(s, i, j))
+        }
+    }
+    set_subset_sInf_pair_family_of_subset_family(s, set_constant_binary_family[K, I, J](s))
+    s.subset(set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))))
+}
+
+/// The flattened infimum of a constant binary family is contained in a chosen constant member.
+theorem set_sInf_constant_binary_family_subset[K, I, J](s: Set[K], i0: I, j0: J) {
+    set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))).subset(s)
+} by {
+    set_sInf_pair_family_subset_family(set_constant_binary_family[K, I, J](s), i0, j0)
+    set_constant_binary_family(s, i0, j0) = s
+    set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))).subset(s)
+}
+
+/// If the binary index types have witnesses, the flattened infimum of a constant family is the constant member.
+theorem set_sInf_constant_binary_family[K, I, J](s: Set[K], i0: I, j0: J) {
+    set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))) = s
+} by {
+    set_sInf_constant_binary_family_subset(s, i0, j0)
+    set_subset_sInf_constant_binary_family[K, I, J](s)
+    subset_antisymm(set_sInf(set_pair_family(set_constant_binary_family[K, I, J](s))), s)
+}
+
+/// With binary index witnesses, the flattened supremum of constantly universal members is universal.
+theorem set_sSup_universal_binary_family[K, I, J](i0: I, j0: J) {
+    set_sSup(set_pair_family(set_universal_binary_family[K, I, J])) = Set[K].universal_set
+} by {
+    set_sSup_constant_binary_family(Set[K].universal_set, i0, j0)
+    set_sSup(set_pair_family(set_constant_binary_family[K, I, J](Set[K].universal_set))) =
+        Set[K].universal_set
+    forall(i: I) {
+        forall(j: J) {
+            set_universal_binary_family[K, I, J](i, j) =
+                set_constant_binary_family[K, I, J](Set[K].universal_set, i, j)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_universal_binary_family[K, I, J],
+        set_constant_binary_family[K, I, J](Set[K].universal_set))
+    set_sSup(set_pair_family(set_universal_binary_family[K, I, J])) = Set[K].universal_set
+}
+
+/// With binary index witnesses, the flattened infimum of constantly empty members is empty.
+theorem set_sInf_empty_binary_family[K, I, J](i0: I, j0: J) {
+    set_sInf(set_pair_family(set_empty_binary_family[K, I, J])) = Set[K].empty_set
+} by {
+    set_sInf_constant_binary_family(Set[K].empty_set, i0, j0)
+    set_sInf(set_pair_family(set_constant_binary_family[K, I, J](Set[K].empty_set))) =
+        Set[K].empty_set
+    forall(i: I) {
+        forall(j: J) {
+            set_empty_binary_family[K, I, J](i, j) =
+                set_constant_binary_family[K, I, J](Set[K].empty_set, i, j)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_empty_binary_family[K, I, J],
+        set_constant_binary_family[K, I, J](Set[K].empty_set))
+    set_sInf(set_pair_family(set_empty_binary_family[K, I, J])) = Set[K].empty_set
 }
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
