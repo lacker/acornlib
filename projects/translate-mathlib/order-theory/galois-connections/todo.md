@@ -2,11 +2,13 @@
 
 Goal: support the adjoint-order patterns that appear in lattice theory and closure constructions.
 
-- [ ] Audit additional closure constructions against the generic set closure-operator API
+- [ ] Decide whether relation closures should be exposed as `Set[Pair[T, T]]` closure operators or stay in the unbundled relation API
 
 Status:
 
 - Algebraic generation is now connected to the generic set closure-operator API for subsemigroups, submonoids, subgroups, additive submonoids, additive subgroups, subrings, and ideals.
+- Homomorphism image-preimage closures and preimage-image kernels are now packaged as generic set closure/kernel operators for monoid, additive monoid, group, additive group, and semiring homomorphisms.
+- Submodule generation is now connected to the generic set closure-operator API for each fixed ambient module.
 - `src/galois_connection.ac` now has unbundled meet and join operations transported along a Galois insertion from a meet/join semilattice lower side to the upper side, with lower/upper projection lemmas, universal-property iff lemmas, commutativity, associativity, and idempotence.
 - `src/galois_connection.ac` now defines Galois connections, insertions, coinsertions, induced closure/kernel operators, adjunction-direction lemmas, monotonicity of adjoints and composites, unit/counit inequalities, idempotence, and exact insertion/coinsertion laws.
 - `src/galois_connection.ac` now connects induced closure/kernel maps to generic closure and kernel operator predicates, proves insertion/coinsertion embedding and surjection facts, and characterizes fixed closed/kernel-stable elements.

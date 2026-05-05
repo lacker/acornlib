@@ -8,7 +8,9 @@ from add_submonoid import AddSubmonoid, add_submonoid_zero_constraint,
     add_submonoid_closure_constraint, add_submonoid_constraint
 from module import Module, module_smul_zero_right
 from module_hom import is_linear_map, preserves_add, preserves_smul
-from set import Set, singleton_contains_eq, singleton_set_is_finite, empty_set_is_finite
+from set import Set, singleton_contains_eq, singleton_set_is_finite, empty_set_is_finite,
+    is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
+    is_set_closure_operator
 from functions import predicate_extensionality, is_injective_fn
 
 /// True if a subset of a module contains the additive identity.
@@ -1708,6 +1710,99 @@ theorem submodule_closure_idempotent[R: Ring, M: AddCommGroup](carrier: Module[R
     submodule_closure(carrier, submodule_closure(carrier, a).as_set) = submodule_closure(carrier, a)
 } by {
     submodule_closure_as_set(submodule_closure(carrier, a))
+}
+
+/// The set closure induced by submodule generation in a fixed module.
+define submodule_set_closure[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) -> Set[M] {
+    submodule_closure(carrier, a).as_set
+}
+
+/// The submodule set closure is the underlying set of the generated submodule.
+theorem submodule_set_closure_at[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_set_closure(carrier, a) = submodule_closure(carrier, a).as_set
+}
+
+/// The submodule set closure contains the original set.
+theorem submodule_set_closure_extensive[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    a.subset(submodule_set_closure(carrier, a))
+} by {
+    submodule_set_closure_at(carrier, a)
+    submodule_subset_closure(carrier, a)
+    set_subset_submodule_as_set_eq(a, submodule_closure(carrier, a))
+    a.subset(submodule_closure(carrier, a).as_set)
+    a.subset(submodule_set_closure(carrier, a))
+}
+
+/// The submodule set closure preserves inclusion.
+theorem submodule_set_closure_mono[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], a: Set[M], b: Set[M]
+) {
+    a.subset(b) implies submodule_set_closure(carrier, a).subset(submodule_set_closure(carrier, b))
+} by {
+    if a.subset(b) {
+        submodule_closure_mono(carrier, a, b)
+        submodule_subset(submodule_closure(carrier, a), submodule_closure(carrier, b))
+        submodule_subset_as_set_eq(submodule_closure(carrier, a), submodule_closure(carrier, b))
+        submodule_closure(carrier, a).as_set.subset(submodule_closure(carrier, b).as_set)
+        submodule_set_closure_at(carrier, a)
+        submodule_set_closure_at(carrier, b)
+        submodule_set_closure(carrier, a).subset(submodule_set_closure(carrier, b))
+    }
+}
+
+/// Applying submodule set closure twice gives the same set.
+theorem submodule_set_closure_idempotent[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_set_closure(carrier, submodule_set_closure(carrier, a)) =
+        submodule_set_closure(carrier, a)
+} by {
+    submodule_set_closure_at(carrier, a)
+    submodule_set_closure_at(carrier, submodule_set_closure(carrier, a))
+    submodule_closure_idempotent(carrier, a)
+    submodule_set_closure(carrier, submodule_set_closure(carrier, a)) =
+        submodule_set_closure(carrier, a)
+}
+
+/// Submodule set closure is monotone as a set map.
+theorem submodule_set_closure_is_monotone[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_subset_monotone_map(submodule_set_closure(carrier))
+} by {
+    forall(a: Set[M], b: Set[M]) {
+        if a.subset(b) {
+            submodule_set_closure_mono(carrier, a, b)
+            submodule_set_closure(carrier, a).subset(submodule_set_closure(carrier, b))
+        }
+    }
+}
+
+/// Submodule set closure is extensive as a set map.
+theorem submodule_set_closure_is_extensive[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_set_extensive_map(submodule_set_closure(carrier))
+} by {
+    forall(a: Set[M]) {
+        submodule_set_closure_extensive(carrier, a)
+        a.subset(submodule_set_closure(carrier, a))
+    }
+}
+
+/// Submodule set closure is idempotent as a set map.
+theorem submodule_set_closure_is_idempotent[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_set_idempotent_map(submodule_set_closure(carrier))
+} by {
+    forall(a: Set[M]) {
+        submodule_set_closure_idempotent(carrier, a)
+        submodule_set_closure(carrier, submodule_set_closure(carrier, a)) =
+            submodule_set_closure(carrier, a)
+    }
+}
+
+/// Submodule generation induces a closure operator on sets.
+theorem submodule_set_closure_operator[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_set_closure_operator(submodule_set_closure(carrier))
+} by {
+    submodule_set_closure_is_monotone(carrier)
+    submodule_set_closure_is_extensive(carrier)
+    submodule_set_closure_is_idempotent(carrier)
+    is_set_closure_operator(submodule_set_closure(carrier))
 }
 
 /// The closure of the empty set is the zero submodule.
