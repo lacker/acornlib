@@ -15,7 +15,9 @@ from comm_group import CommGroup
 from comm_ring.base import CommRing
 from module_hom import is_linear_map
 from submodule import linear_map_neg
-from relation_basic import is_equivalence
+from ideal import Ideal, ideal_contains_zero, ideal_contains_add, ideal_contains_neg,
+    ideal_contains_mul_left
+from relation_basic import is_equivalence, is_reflexive, is_symmetric, is_transitive
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
     add_congruence_eq_binary_congruence, respects_mul, is_mul_congruence,
@@ -349,6 +351,254 @@ theorem group_hom_kernel_is_mul_congruence[G: Group, H: Group](f: GroupHom[G, H]
 /// True if a relation is a ring congruence: an equivalence compatible with both addition and multiplication.
 define is_ring_congruence[R: Ring](r: (R, R) -> Bool) -> Bool {
     is_add_congruence(r) and is_mul_congruence(r)
+}
+
+/// The ideal quotient relation: two elements are related when their difference lies in the ideal.
+define ideal_quotient_rel[R: CommRing](i: Ideal[R], a: R, b: R) -> Bool {
+    i.contains(a - b)
+}
+
+/// Membership in the ideal quotient relation is membership of the difference.
+theorem ideal_quotient_rel_eq_contains_sub[R: CommRing](i: Ideal[R], a: R, b: R) {
+    ideal_quotient_rel(i, a, b) = i.contains(a - b)
+}
+
+/// The ideal quotient relation is reflexive.
+theorem ideal_quotient_rel_reflexive_at[R: CommRing](i: Ideal[R], a: R) {
+    ideal_quotient_rel(i, a, a)
+} by {
+    a - a = R.0
+    ideal_contains_zero(i)
+    i.contains(R.0)
+    i.contains(a - a)
+}
+
+/// Negating a difference reverses it.
+theorem ideal_quotient_neg_sub_eq_swap[R: CommRing](a: R, b: R) {
+    -(a - b) = b - a
+} by {
+    a - b = a + -b
+    -(a - b) = -(a + -b)
+    -(a + -b) = --b + -a
+    --b = b
+    --b + -a = b + -a
+    b + -a = b - a
+}
+
+/// The ideal quotient relation is symmetric.
+theorem ideal_quotient_rel_symmetric_at[R: CommRing](i: Ideal[R], a: R, b: R) {
+    ideal_quotient_rel(i, a, b) implies ideal_quotient_rel(i, b, a)
+} by {
+    if ideal_quotient_rel(i, a, b) {
+        i.contains(a - b)
+        ideal_contains_neg(i, a - b)
+        i.contains(-(a - b))
+        ideal_quotient_neg_sub_eq_swap(a, b)
+        i.contains(b - a)
+    }
+}
+
+/// Differences compose through an intermediate point.
+theorem ideal_quotient_sub_chain[R: CommRing](a: R, b: R, c: R) {
+    (a - b) + (b - c) = a - c
+} by {
+    (a - b) + (b - c) = (a + -b) + (b + -c)
+    (a + -b) + (b + -c) = a + (-b + b) + -c
+    -b + b = R.0
+    a + R.0 + -c = a + -c
+    a + -c = a - c
+}
+
+/// The ideal quotient relation is transitive.
+theorem ideal_quotient_rel_transitive_at[R: CommRing](i: Ideal[R], a: R, b: R, c: R) {
+    ideal_quotient_rel(i, a, b) and ideal_quotient_rel(i, b, c) implies ideal_quotient_rel(i, a, c)
+} by {
+    if ideal_quotient_rel(i, a, b) and ideal_quotient_rel(i, b, c) {
+        i.contains(a - b)
+        i.contains(b - c)
+        ideal_contains_add(i, a - b, b - c)
+        i.contains((a - b) + (b - c))
+        ideal_quotient_sub_chain(a, b, c)
+        i.contains(a - c)
+    }
+}
+
+/// The ideal quotient relation is reflexive.
+theorem ideal_quotient_rel_is_reflexive[R: CommRing](i: Ideal[R]) {
+    is_reflexive(ideal_quotient_rel(i))
+} by {
+    forall(a: R) {
+        ideal_quotient_rel_reflexive_at(i, a)
+    }
+}
+
+/// The ideal quotient relation is symmetric.
+theorem ideal_quotient_rel_is_symmetric[R: CommRing](i: Ideal[R]) {
+    is_symmetric(ideal_quotient_rel(i))
+} by {
+    forall(a: R, b: R) {
+        if ideal_quotient_rel(i, a, b) {
+            ideal_quotient_rel_symmetric_at(i, a, b)
+        }
+    }
+}
+
+/// The ideal quotient relation is transitive.
+theorem ideal_quotient_rel_is_transitive[R: CommRing](i: Ideal[R]) {
+    is_transitive(ideal_quotient_rel(i))
+} by {
+    forall(a: R, b: R, c: R) {
+        if ideal_quotient_rel(i, a, b) and ideal_quotient_rel(i, b, c) {
+            ideal_quotient_rel_transitive_at(i, a, b, c)
+            ideal_quotient_rel(i, a, c)
+        }
+    }
+    is_transitive(ideal_quotient_rel(i)) = forall(x: R, y: R, z: R) {
+        ideal_quotient_rel(i, x, y) and ideal_quotient_rel(i, y, z) implies ideal_quotient_rel(i, x, z)
+    }
+}
+
+/// The ideal quotient relation is an equivalence relation.
+theorem ideal_quotient_rel_is_equivalence[R: CommRing](i: Ideal[R]) {
+    is_equivalence(ideal_quotient_rel(i))
+} by {
+    ideal_quotient_rel_is_reflexive(i)
+    ideal_quotient_rel_is_symmetric(i)
+    ideal_quotient_rel_is_transitive(i)
+}
+
+/// The sum of related pairs is related.
+theorem ideal_quotient_rel_add_step[R: CommRing](i: Ideal[R], a1: R, b1: R, a2: R, b2: R) {
+    ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2)
+    implies ideal_quotient_rel(i, a1 + a2, b1 + b2)
+} by {
+    if ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2) {
+        i.contains(a1 - b1)
+        i.contains(a2 - b2)
+        ideal_contains_add(i, a1 - b1, a2 - b2)
+        i.contains((a1 - b1) + (a2 - b2))
+        (a1 + a2) - (b1 + b2) = (a1 - b1) + (a2 - b2)
+        i.contains((a1 + a2) - (b1 + b2))
+    }
+}
+
+/// The ideal quotient relation is compatible with addition.
+theorem ideal_quotient_rel_respects_add[R: CommRing](i: Ideal[R]) {
+    respects_add(ideal_quotient_rel(i))
+} by {
+    respects_add_eq_respects_binary_op(ideal_quotient_rel(i))
+    respects_add(ideal_quotient_rel(i)) = respects_binary_op(ideal_quotient_rel(i), R.add)
+    forall(a1: R, b1: R, a2: R, b2: R) {
+        if ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2) {
+            ideal_quotient_rel_add_step(i, a1, b1, a2, b2)
+            ideal_quotient_rel(i, a1 + a2, b1 + b2)
+            ideal_quotient_rel(i, R.add(a1, a2), R.add(b1, b2))
+        }
+    }
+    respects_binary_op(ideal_quotient_rel(i), R.add) = forall(x1: R, y1: R, x2: R, y2: R) {
+        ideal_quotient_rel(i, x1, y1) and ideal_quotient_rel(i, x2, y2)
+            implies ideal_quotient_rel(i, R.add(x1, x2), R.add(y1, y2))
+    }
+    respects_binary_op(ideal_quotient_rel(i), R.add)
+}
+
+/// The ideal quotient relation is an additive congruence.
+theorem ideal_quotient_rel_is_add_congruence[R: CommRing](i: Ideal[R]) {
+    is_add_congruence(ideal_quotient_rel(i))
+} by {
+    ideal_quotient_rel_is_equivalence(i)
+    ideal_quotient_rel_respects_add(i)
+    respects_add_eq_respects_binary_op(ideal_quotient_rel(i))
+    respects_binary_op(ideal_quotient_rel(i), R.add)
+    is_binary_congruence(ideal_quotient_rel(i), R.add) =
+        (is_equivalence(ideal_quotient_rel(i)) and respects_binary_op(ideal_quotient_rel(i), R.add))
+    is_binary_congruence(ideal_quotient_rel(i), R.add)
+    add_congruence_eq_binary_congruence(ideal_quotient_rel(i))
+}
+
+/// The difference of products splits into ideal-compatible summands.
+theorem ideal_quotient_mul_sub_split[R: CommRing](a1: R, b1: R, a2: R, b2: R) {
+    (a1 * a2) - (b1 * b2) = a1 * (a2 - b2) + b2 * (a1 - b1)
+} by {
+    (a1 * a2) - (b1 * b2) = a1 * a2 + -(b1 * b2)
+    a1 * (a2 - b2) = a1 * (a2 + -b2)
+    a1 * (a2 + -b2) = a1 * a2 + a1 * -b2
+    a1 * -b2 = -(a1 * b2)
+    a1 * (a2 - b2) = a1 * a2 + -(a1 * b2)
+    b2 * (a1 - b1) = b2 * (a1 + -b1)
+    b2 * (a1 + -b1) = b2 * a1 + b2 * -b1
+    b2 * a1 = a1 * b2
+    b2 * -b1 = -(b2 * b1)
+    b2 * b1 = b1 * b2
+    b2 * (a1 - b1) = a1 * b2 + -(b1 * b2)
+    a1 * (a2 - b2) + b2 * (a1 - b1) =
+        (a1 * a2 + -(a1 * b2)) + (a1 * b2 + -(b1 * b2))
+    (a1 * a2 + -(a1 * b2)) + (a1 * b2 + -(b1 * b2)) =
+        a1 * a2 + (-(a1 * b2) + a1 * b2) + -(b1 * b2)
+    -(a1 * b2) + a1 * b2 = R.0
+    a1 * a2 + R.0 + -(b1 * b2) = a1 * a2 + -(b1 * b2)
+    a1 * (a2 - b2) + b2 * (a1 - b1) = a1 * a2 + -(b1 * b2)
+}
+
+/// Multiplication preserves the ideal quotient relation on related pairs.
+theorem ideal_quotient_rel_mul_step[R: CommRing](i: Ideal[R], a1: R, b1: R, a2: R, b2: R) {
+    ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2)
+    implies ideal_quotient_rel(i, a1 * a2, b1 * b2)
+} by {
+    if ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2) {
+        i.contains(a1 - b1)
+        i.contains(a2 - b2)
+        ideal_contains_mul_left(i, a1, a2 - b2)
+        i.contains(a1 * (a2 - b2))
+        ideal_contains_mul_left(i, b2, a1 - b1)
+        i.contains(b2 * (a1 - b1))
+        ideal_contains_add(i, a1 * (a2 - b2), b2 * (a1 - b1))
+        i.contains(a1 * (a2 - b2) + b2 * (a1 - b1))
+        ideal_quotient_mul_sub_split(a1, b1, a2, b2)
+        i.contains((a1 * a2) - (b1 * b2))
+    }
+}
+
+/// The ideal quotient relation is compatible with multiplication.
+theorem ideal_quotient_rel_respects_mul[R: CommRing](i: Ideal[R]) {
+    respects_mul(ideal_quotient_rel(i))
+} by {
+    respects_mul_eq_respects_binary_op(ideal_quotient_rel(i))
+    respects_mul(ideal_quotient_rel(i)) = respects_binary_op(ideal_quotient_rel(i), R.mul)
+    forall(a1: R, b1: R, a2: R, b2: R) {
+        if ideal_quotient_rel(i, a1, b1) and ideal_quotient_rel(i, a2, b2) {
+            ideal_quotient_rel_mul_step(i, a1, b1, a2, b2)
+            ideal_quotient_rel(i, a1 * a2, b1 * b2)
+            ideal_quotient_rel(i, R.mul(a1, a2), R.mul(b1, b2))
+        }
+    }
+    respects_binary_op(ideal_quotient_rel(i), R.mul) = forall(x1: R, y1: R, x2: R, y2: R) {
+        ideal_quotient_rel(i, x1, y1) and ideal_quotient_rel(i, x2, y2)
+            implies ideal_quotient_rel(i, R.mul(x1, x2), R.mul(y1, y2))
+    }
+    respects_binary_op(ideal_quotient_rel(i), R.mul)
+}
+
+/// The ideal quotient relation is a multiplicative congruence.
+theorem ideal_quotient_rel_is_mul_congruence[R: CommRing](i: Ideal[R]) {
+    is_mul_congruence(ideal_quotient_rel(i))
+} by {
+    ideal_quotient_rel_is_equivalence(i)
+    ideal_quotient_rel_respects_mul(i)
+    respects_mul_eq_respects_binary_op(ideal_quotient_rel(i))
+    respects_binary_op(ideal_quotient_rel(i), R.mul)
+    is_binary_congruence(ideal_quotient_rel(i), R.mul) =
+        (is_equivalence(ideal_quotient_rel(i)) and respects_binary_op(ideal_quotient_rel(i), R.mul))
+    is_binary_congruence(ideal_quotient_rel(i), R.mul)
+    mul_congruence_eq_binary_congruence(ideal_quotient_rel(i))
+}
+
+/// The ideal quotient relation is a ring congruence.
+theorem ideal_quotient_rel_is_ring_congruence[R: CommRing](i: Ideal[R]) {
+    is_ring_congruence(ideal_quotient_rel(i))
+} by {
+    ideal_quotient_rel_is_add_congruence(i)
+    ideal_quotient_rel_is_mul_congruence(i)
 }
 
 /// The kernel of a ring homomorphism is compatible with addition.
