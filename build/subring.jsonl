@@ -249,9 +249,12 @@
 {"goal":"subring_closure[R](Set.universal_set[R]).contains(x)","proof":[]}
 {"goal":"subring_subset[R](full_subring[R], subring_closure[R](Set.universal_set[R]))","proof":["function[T0: Ring](x0: Subring[T0], x1: Subring[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subring_subset[T0](x0, x1) }[R](full_subring[R], subring_closure[R](Set.universal_set[R]))","let w0: R satisfy { w0 ∈ full_subring[R] and not w0 ∈ subring_closure[R](Set.universal_set[R]) }","function(x0: R) { not x0 ∈ full_subring[R] or x0 ∈ subring_closure[R](Set.universal_set[R]) }(w0)"]}
 {"goal":"subring_closure_universal","proof":[]}
-{"goal":"exists(k0: Set[R]) { k0.is_finite and subring_closure[R](k0) = subring_closure[R](a) }","proof":[]}
-{"goal":"subring_is_finitely_generated[R](subring_closure[R](a))","proof":["let w0: Set[R] satisfy { w0.is_finite and subring_closure[R](w0) = subring_closure[R](a) }","function[T0: Ring](x0: Subring[T0]) { exists(k0: Set[T0]) { k0.is_finite and subring_closure[T0](k0) = x0 } = subring_is_finitely_generated[T0](x0) }[R](subring_closure[R](a))"]}
+{"goal":"exists(k0: Set[R]) { k0.is_finite and subring_closure[R](k0) = s }","proof":["function(x0: Set[R]) { not (x0.is_finite and subring_closure[R](x0) = s) }(a)"]}
+{"goal":"subring_is_finitely_generated[R](s)","proof":["let w0: Set[R] satisfy { w0.is_finite and subring_closure[R](w0) = s }","function[T0: Ring](x0: Subring[T0]) { exists(k0: Set[T0]) { k0.is_finite and subring_closure[T0](k0) = x0 } = subring_is_finitely_generated[T0](x0) }[R](s)"]}
+{"goal":"subring_is_finitely_generated_of_closure_eq","proof":[]}
 {"goal":"subring_closure_is_finitely_generated","proof":[]}
+{"goal":"subring_closure_singleton_is_finitely_generated","proof":[]}
+{"goal":"subring_closure_singleton_contains","proof":[]}
 {"goal":"full_subring_intersection_left","proof":[]}
 {"goal":"full_subring_intersection_right","proof":[]}
 {"goal":"add_zero_constraint[R](s.contains)","proof":["function[T0: lib(add_group).AddGroup](x0: T0 -> Bool) { x0(T0.0) = add_zero_constraint[T0](x0) }[R](s.contains)"]}
