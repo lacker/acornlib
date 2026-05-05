@@ -134,20 +134,16 @@
 {"goal":"c / b = c * b.inverse","proof":["function(x0: Real, x1: Real) { x0 * x1.inverse = x0 / x1 }(c, b)"]}
 {"goal":"a <= c / b","proof":[]}
 {"goal":"div_le_of_mul_le","proof":[]}
-{"goal":"c.is_positive","proof":["function(x0: Real) { not x0 > 0 or x0.is_positive }(c)"]}
-{"goal":"not c.is_negative","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](c, 0)","0 < c","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Real](0, c)","function(x0: Real) { not 0 <= x0 or not x0.is_negative }(c)"]}
-{"goal":"a * c <= b * c","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 <= x1 or x0 * x2 <= x1 * x2 or x2.is_negative }(a, b, c)"]}
+{"goal":"0 <= c","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or not x1 > x0 }[Real](c, 0)","function(x0: Real, x1: Real) { x0 > x1 or x0 <= x1 }(0, c)"]}
+{"goal":"a * c <= b * c","proof":[]}
 {"goal":"mul_le_mul_pos_right","proof":[]}
-{"goal":"c.is_positive","proof":["function(x0: Real) { not x0 > 0 or x0.is_positive }(c)"]}
-{"goal":"not c.is_negative","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](c, 0)","0 < c","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Real](0, c)","function(x0: Real) { not 0 <= x0 or not x0.is_negative }(c)"]}
-{"goal":"c * a <= c * b","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 <= x1 or x2 * x0 <= x2 * x1 or x2.is_negative }(a, b, c)"]}
+{"goal":"0 <= c","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or not x1 > x0 }[Real](c, 0)","function(x0: Real, x1: Real) { x0 > x1 or x0 <= x1 }(0, c)"]}
+{"goal":"c * a <= c * b","proof":[]}
 {"goal":"mul_le_mul_pos_left","proof":[]}
 {"goal":"b != 0","proof":["a / b < c and b > b","b > b","function(x0: Real, x1: Real) { not x0 > x1 or not x0 <= x1 }(b, b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 > x1 = x1 < x0 }[Real](b, b)","b < b","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[Real](b, b)"]}
 {"goal":"a / b = a * b.inverse","proof":["function(x0: Real, x1: Real) { x0 * x1.inverse = x0 / x1 }(a, b)"]}
 {"goal":"a * b.inverse < c","proof":[]}
-{"goal":"b.is_positive","proof":["function(x0: Real) { not x0 > 0 or x0.is_positive }(b)"]}
-{"goal":"not b.is_negative","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](b, 0)","0 < b","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not T0.lt(x0, x1) or T0.lte(x0, x1) }[Real](0, b)","function(x0: Real) { not 0 <= x0 or not x0.is_negative }(b)"]}
-{"goal":"a * b.inverse * b < c * b","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 < x1 or not x2.is_positive or x0 * x2 < x1 * x2 }(a * b.inverse, c, b)"]}
+{"goal":"a * b.inverse * b < c * b","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[Real](b, 0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[Real](b, 0)"]}
 {"goal":"a * (b.inverse * b) < c * b","proof":["function(x0: Real, x1: Real, x2: Real) { x0 * x1 * x2 = x0 * (x1 * x2) }(a, b.inverse, b)"]}
 {"goal":"b.inverse * b = 1","proof":["function(x0: Real) { x0 * x0.inverse = 1 or 0 = x0 }(b)","function(x0: Real, x1: Real) { x0 * x1 = x1 * x0 }(b, b.inverse)"]}
 {"goal":"a * 1 < c * b","proof":[]}
