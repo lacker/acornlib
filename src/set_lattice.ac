@@ -38,12 +38,15 @@ from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     range_indexed_union_complement_eq_intersection_complement,
     range_indexed_intersection_complement_eq_union_complement,
     range_indexed_union_subset_of_bound_le, range_indexed_intersection_subset_of_bound_le,
-    is_increasing, is_decreasing, seq_union, seq_intersection,
+    is_increasing, is_decreasing, seq_union, seq_intersection, seq_complement,
+    seq_union_contains_eq, seq_intersection_contains_eq, seq_union_set_image,
+    seq_union_complement_eq_intersection_complement,
+    seq_intersection_complement_eq_union_complement,
     range_indexed_union_suc_subset_of_increasing, family_subset_range_indexed_union_suc,
     range_indexed_union_suc_of_increasing, decreasing_subset_range_indexed_intersection_suc,
     range_indexed_intersection_suc_subset_family, range_indexed_intersection_suc_of_decreasing,
     range_indexed_union_subset_seq_union, seq_intersection_subset_range_indexed_intersection,
-    set_image, set_image_contains_witness, set_image_contains_inverse_of_bijection,
+    set_image, set_image_seq, set_image_contains_witness, set_image_contains_inverse_of_bijection,
     set_inverse_contains_imp_image_contains, maps_into_set_image,
     set_image_union, set_image_intersection_subset, set_image_intersection_reverse_of_injective,
     set_image_monotone, set_image_subset_iff_subset_preimage, set_preimage,
@@ -4302,4 +4305,348 @@ theorem set_seq_intersection_subset_range_sInf[K](n: Nat, family: Nat -> Set[K])
     seq_intersection_subset_range_indexed_intersection(n, family)
     seq_intersection(family).subset(range_indexed_intersection(n, family))
     seq_intersection(family).subset(set_range_sInf(n, family))
+}
+
+/// The generic natural-family supremum is the sequence union.
+theorem set_sSup_eq_seq_union[K](family: Nat -> Set[K]) {
+    set_sSup(family) = seq_union(family)
+} by {
+    let u = set_sSup(family)
+    let v = seq_union(family)
+    forall(x: K) {
+        set_sSup_contains_eq(family, x)
+        seq_union_contains_eq(family, x)
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The generic natural-family infimum is the sequence intersection.
+theorem set_sInf_eq_seq_intersection[K](family: Nat -> Set[K]) {
+    set_sInf(family) = seq_intersection(family)
+} by {
+    let u = set_sInf(family)
+    let v = seq_intersection(family)
+    forall(x: K) {
+        set_sInf_contains_eq(family, x)
+        seq_intersection_contains_eq(family, x)
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// A sequence union is the least upper bound of the sequence.
+theorem set_seq_union_is_lub[K](family: Nat -> Set[K], s: Set[K]) {
+    (forall(i: Nat) { family(i).subset(seq_union(family)) }) and
+    (seq_union(family).subset(s) = forall(i: Nat) { family(i).subset(s) })
+} by {
+    set_sSup_eq_seq_union(family)
+    set_sSup_is_lub(family, s)
+    forall(i: Nat) {
+        family(i).subset(set_sSup(family))
+        family(i).subset(seq_union(family))
+    }
+    set_sSup(family).subset(s) = forall(i: Nat) { family(i).subset(s) }
+    seq_union(family).subset(s) = forall(i: Nat) { family(i).subset(s) }
+}
+
+/// A sequence intersection is the greatest lower bound of the sequence.
+theorem set_seq_intersection_is_glb[K](family: Nat -> Set[K], s: Set[K]) {
+    (forall(i: Nat) { seq_intersection(family).subset(family(i)) }) and
+    (s.subset(seq_intersection(family)) = forall(i: Nat) { s.subset(family(i)) })
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_sInf_is_glb(family, s)
+    forall(i: Nat) {
+        set_sInf(family).subset(family(i))
+        seq_intersection(family).subset(family(i))
+    }
+    s.subset(set_sInf(family)) = forall(i: Nat) { s.subset(family(i)) }
+    s.subset(seq_intersection(family)) = forall(i: Nat) { s.subset(family(i)) }
+}
+
+/// A sequence union is contained in a set exactly when every term is contained in it.
+theorem set_seq_union_subset_iff[K](family: Nat -> Set[K], s: Set[K]) {
+    seq_union(family).subset(s) = forall(i: Nat) { family(i).subset(s) }
+} by {
+    set_sSup_eq_seq_union(family)
+    set_sSup_subset_iff(family, s)
+    seq_union(family).subset(s) = forall(i: Nat) { family(i).subset(s) }
+}
+
+/// A set is contained in a sequence intersection exactly when it is contained in every term.
+theorem set_subset_seq_intersection_iff[K](s: Set[K], family: Nat -> Set[K]) {
+    s.subset(seq_intersection(family)) = forall(i: Nat) { s.subset(family(i)) }
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_subset_sInf_iff(s, family)
+    s.subset(seq_intersection(family)) = forall(i: Nat) { s.subset(family(i)) }
+}
+
+/// Pointwise inclusion of sequences preserves sequence unions.
+theorem set_seq_union_monotone[K](a: Nat -> Set[K], b: Nat -> Set[K]) {
+    (forall(i: Nat) { a(i).subset(b(i)) }) implies seq_union(a).subset(seq_union(b))
+} by {
+    if forall(i: Nat) { a(i).subset(b(i)) } {
+        set_sSup_monotone(a, b)
+        set_sSup_eq_seq_union(a)
+        set_sSup_eq_seq_union(b)
+        set_sSup(a).subset(set_sSup(b))
+        seq_union(a).subset(seq_union(b))
+    }
+}
+
+/// Pointwise inclusion of sequences preserves sequence intersections.
+theorem set_seq_intersection_monotone[K](a: Nat -> Set[K], b: Nat -> Set[K]) {
+    (forall(i: Nat) { a(i).subset(b(i)) }) implies
+    seq_intersection(a).subset(seq_intersection(b))
+} by {
+    if forall(i: Nat) { a(i).subset(b(i)) } {
+        set_sInf_monotone(a, b)
+        set_sInf_eq_seq_intersection(a)
+        set_sInf_eq_seq_intersection(b)
+        set_sInf(a).subset(set_sInf(b))
+        seq_intersection(a).subset(seq_intersection(b))
+    }
+}
+
+/// Preimage commutes with sequence unions.
+theorem set_preimage_seq_union[T, U](f: T -> U, family: Nat -> Set[U]) {
+    set_preimage(f, seq_union(family)) = seq_union(set_preimage_family(f, family))
+} by {
+    set_sSup_eq_seq_union(family)
+    set_sSup_eq_seq_union(set_preimage_family(f, family))
+    set_preimage_sSup(f, family)
+    set_preimage(f, set_sSup(family)) = set_sSup(set_preimage_family(f, family))
+    set_preimage(f, seq_union(family)) = seq_union(set_preimage_family(f, family))
+}
+
+/// Preimage commutes with sequence intersections.
+theorem set_preimage_seq_intersection[T, U](f: T -> U, family: Nat -> Set[U]) {
+    set_preimage(f, seq_intersection(family)) =
+    seq_intersection(set_preimage_family(f, family))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_sInf_eq_seq_intersection(set_preimage_family(f, family))
+    set_preimage_sInf(f, family)
+    set_preimage(f, set_sInf(family)) = set_sInf(set_preimage_family(f, family))
+    set_preimage(f, seq_intersection(family)) =
+        seq_intersection(set_preimage_family(f, family))
+}
+
+/// A preimage of a sequence union is contained in a set exactly when every term preimage is contained in it.
+theorem set_preimage_seq_union_subset_iff[T, U](f: T -> U, family: Nat -> Set[U],
+    s: Set[T]) {
+    set_preimage(f, seq_union(family)).subset(s) = forall(i: Nat) {
+        set_preimage_family(f, family, i).subset(s)
+    }
+} by {
+    set_preimage_seq_union(f, family)
+    set_seq_union_subset_iff(set_preimage_family(f, family), s)
+    set_preimage(f, seq_union(family)).subset(s) = forall(i: Nat) {
+        set_preimage_family(f, family, i).subset(s)
+    }
+}
+
+/// A set is contained in a preimage of a sequence intersection exactly when it is contained in every term preimage.
+theorem set_subset_preimage_seq_intersection_iff[T, U](s: Set[T], f: T -> U,
+    family: Nat -> Set[U]) {
+    s.subset(set_preimage(f, seq_intersection(family))) = forall(i: Nat) {
+        s.subset(set_preimage_family(f, family, i))
+    }
+} by {
+    set_preimage_seq_intersection(f, family)
+    set_subset_seq_intersection_iff(s, set_preimage_family(f, family))
+    s.subset(set_preimage(f, seq_intersection(family))) = forall(i: Nat) {
+        s.subset(set_preimage_family(f, family, i))
+    }
+}
+
+/// The image of a sequence union is the sequence union of the images.
+theorem set_image_seq_union[T, U](family: Nat -> Set[T], f: T -> U) {
+    set_image(seq_union(family), f) = seq_union(set_image_family(family, f))
+} by {
+    seq_union_set_image(family, f)
+    seq_union(set_image_seq(family, f)) = set_image(seq_union(family), f)
+    forall(i: Nat) {
+        set_image_seq(family, f, i) = set_image_family(family, f, i)
+    }
+    set_sSup_eq_of_family_subset(set_image_seq(family, f), set_image_family(family, f))
+    set_sSup(set_image_seq(family, f)) = set_sSup(set_image_family(family, f))
+    set_sSup_eq_seq_union(set_image_seq(family, f))
+    set_sSup_eq_seq_union(set_image_family(family, f))
+    seq_union(set_image_seq(family, f)) = seq_union(set_image_family(family, f))
+    set_image(seq_union(family), f) = seq_union(set_image_family(family, f))
+}
+
+/// The image of a sequence intersection is contained in the sequence intersection of the images.
+theorem set_image_seq_intersection_subset[T, U](family: Nat -> Set[T], f: T -> U) {
+    set_image(seq_intersection(family), f).subset(seq_intersection(set_image_family(family, f)))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_sInf_eq_seq_intersection(set_image_family(family, f))
+    set_image_sInf_subset(family, f)
+    set_image(set_sInf(family), f).subset(set_sInf(set_image_family(family, f)))
+    set_image(seq_intersection(family), f).subset(seq_intersection(set_image_family(family, f)))
+}
+
+/// Under an injective map, images preserve sequence intersections.
+theorem set_image_seq_intersection_of_injective[T, U](family: Nat -> Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    set_image(seq_intersection(family), f) = seq_intersection(set_image_family(family, f))
+} by {
+    if is_injective_fn(f) {
+        set_sInf_eq_seq_intersection(family)
+        set_sInf_eq_seq_intersection(set_image_family(family, f))
+        set_image_sInf_of_injective(family, f)
+        set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+        set_image(seq_intersection(family), f) =
+            seq_intersection(set_image_family(family, f))
+    }
+}
+
+/// Under a bijective map, images preserve sequence intersections.
+theorem set_image_seq_intersection_of_bijection[T: Inhabited, U](family: Nat -> Set[T],
+    f: T -> U) {
+    is_bijection_fn(f) implies
+    set_image(seq_intersection(family), f) = seq_intersection(set_image_family(family, f))
+} by {
+    if is_bijection_fn(f) {
+        set_sInf_eq_seq_intersection(family)
+        set_sInf_eq_seq_intersection(set_image_family(family, f))
+        set_image_sInf_of_bijection(family, f)
+        set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+        set_image(seq_intersection(family), f) =
+            seq_intersection(set_image_family(family, f))
+    }
+}
+
+/// Image of a sequence union is contained in a target exactly when every term maps into it.
+theorem set_image_seq_union_subset_iff[T, U](family: Nat -> Set[T], s: Set[U],
+    f: T -> U) {
+    set_image(seq_union(family), f).subset(s) = forall(i: Nat) {
+        family(i).subset(set_preimage(f, s))
+    }
+} by {
+    set_image_seq_union(family, f)
+    set_seq_union_subset_iff(set_image_family(family, f), s)
+    set_image_subset_iff_subset_preimage(seq_union(family), s, f)
+    set_seq_union_subset_iff(family, set_preimage(f, s))
+    set_image(seq_union(family), f).subset(s) = forall(i: Nat) {
+        family(i).subset(set_preimage(f, s))
+    }
+}
+
+/// A set is contained in an injective image of a sequence intersection exactly when it is contained in every term image.
+theorem set_subset_image_seq_intersection_iff_of_injective[T, U](s: Set[U],
+    family: Nat -> Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    s.subset(set_image(seq_intersection(family), f)) = forall(i: Nat) {
+        s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_injective_fn(f) {
+        set_image_seq_intersection_of_injective(family, f)
+        set_subset_seq_intersection_iff(s, set_image_family(family, f))
+        s.subset(set_image(seq_intersection(family), f)) = forall(i: Nat) {
+            s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// A set is contained in a bijective image of a sequence intersection exactly when it is contained in every term image.
+theorem set_subset_image_seq_intersection_iff_of_bijection[T: Inhabited, U](s: Set[U],
+    family: Nat -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(seq_intersection(family), f)) = forall(i: Nat) {
+        s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_bijection_fn(f) {
+        set_image_seq_intersection_of_bijection(family, f)
+        set_subset_seq_intersection_iff(s, set_image_family(family, f))
+        s.subset(set_image(seq_intersection(family), f)) = forall(i: Nat) {
+            s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// The sequence union of constantly empty sets is empty.
+theorem set_seq_union_empty_family[K] {
+    seq_union(set_empty_family[K, Nat]) = Set[K].empty_set
+} by {
+    set_sSup_eq_seq_union(set_empty_family[K, Nat])
+    set_sSup_empty_family[K, Nat]
+    seq_union(set_empty_family[K, Nat]) = Set[K].empty_set
+}
+
+/// The sequence intersection of constantly universal sets is universal.
+theorem set_seq_intersection_universal_family[K] {
+    seq_intersection(set_universal_family[K, Nat]) = Set[K].universal_set
+} by {
+    set_sInf_eq_seq_intersection(set_universal_family[K, Nat])
+    set_sInf_universal_family[K, Nat]
+    seq_intersection(set_universal_family[K, Nat]) = Set[K].universal_set
+}
+
+/// The sequence union of a constant family is the constant member.
+theorem set_seq_union_constant_family[K](s: Set[K]) {
+    seq_union(set_constant_family[K, Nat](s)) = s
+} by {
+    set_sSup_eq_seq_union(set_constant_family[K, Nat](s))
+    set_sSup_constant_family[K, Nat](s)
+    seq_union(set_constant_family[K, Nat](s)) = s
+}
+
+/// The sequence intersection of a constant family is the constant member.
+theorem set_seq_intersection_constant_family[K](s: Set[K]) {
+    seq_intersection(set_constant_family[K, Nat](s)) = s
+} by {
+    set_sInf_eq_seq_intersection(set_constant_family[K, Nat](s))
+    set_sInf_constant_family[K, Nat](s)
+    seq_intersection(set_constant_family[K, Nat](s)) = s
+}
+
+/// The sequence union of constantly universal sets is universal.
+theorem set_seq_union_universal_family[K] {
+    seq_union(set_universal_family[K, Nat]) = Set[K].universal_set
+} by {
+    set_seq_union_constant_family(Set[K].universal_set)
+    forall(i: Nat) {
+        set_universal_family[K, Nat](i) = set_constant_family[K, Nat](Set[K].universal_set, i)
+    }
+    set_sSup_eq_of_family_subset(set_universal_family[K, Nat],
+        set_constant_family[K, Nat](Set[K].universal_set))
+    set_sSup_eq_seq_union(set_universal_family[K, Nat])
+    set_sSup_eq_seq_union(set_constant_family[K, Nat](Set[K].universal_set))
+    seq_union(set_universal_family[K, Nat]) = Set[K].universal_set
+}
+
+/// The sequence intersection of constantly empty sets is empty.
+theorem set_seq_intersection_empty_family[K] {
+    seq_intersection(set_empty_family[K, Nat]) = Set[K].empty_set
+} by {
+    set_seq_intersection_constant_family(Set[K].empty_set)
+    forall(i: Nat) {
+        set_empty_family[K, Nat](i) = set_constant_family[K, Nat](Set[K].empty_set, i)
+    }
+    set_sInf_eq_of_family_subset(set_empty_family[K, Nat],
+        set_constant_family[K, Nat](Set[K].empty_set))
+    set_sInf_eq_seq_intersection(set_empty_family[K, Nat])
+    set_sInf_eq_seq_intersection(set_constant_family[K, Nat](Set[K].empty_set))
+    seq_intersection(set_empty_family[K, Nat]) = Set[K].empty_set
+}
+
+/// The sequence union of complements is the complement of the sequence intersection.
+theorem set_seq_union_complement_eq_seq_intersection_complement[K](family: Nat -> Set[K]) {
+    seq_union(seq_complement(family)) = seq_intersection(family).c
+} by {
+    seq_union_complement_eq_intersection_complement(family)
+}
+
+/// The sequence intersection of complements is the complement of the sequence union.
+theorem set_seq_intersection_complement_eq_seq_union_complement[K](family: Nat -> Set[K]) {
+    seq_intersection(seq_complement(family)) = seq_union(family).c
+} by {
+    seq_intersection_complement_eq_union_complement(family)
 }
