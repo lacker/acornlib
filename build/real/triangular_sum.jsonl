@@ -275,6 +275,14 @@
 {"goal":"partial[Real](tri_row_sum(f, n.suc), n) + tri_row_sum(f, n.suc, n) >= triangular_sum(f, n) + Real.0","proof":["function[T0: lib(add_ordered_group).AddOrderedGroup](x0: T0, x1: T0, x2: T0, x3: T0) { not T0.lte(x0, x1) or not T0.lte(x2, x3) or T0.add(x0, x2) <= T0.add(x1, x3) }[Real](triangular_sum(f, n), partial[Real](tri_row_sum(f, n.suc), n), Real.0, tri_row_sum(f, n.suc, n))","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](partial[Real](tri_row_sum(f, n.suc), n), triangular_sum(f, n))","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](tri_row_sum(f, n.suc, n), Real.0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](partial[Real](tri_row_sum(f, n.suc), n) + tri_row_sum(f, n.suc, n), triangular_sum(f, n) + Real.0)"]}
 {"goal":"triangular_sum(f, n.suc) >= triangular_sum(f, n)","proof":[]}
 {"goal":"triangular_sum_increasing","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gte(x0, x1) = T0.lte(x1, x0) }[Real](triangular_sum(f, n.suc), triangular_sum(f, n))"]}
+{"goal":"triangular_sum_seq(f, n) = triangular_sum(f, n)","proof":[]}
+{"goal":"triangular_sum_seq(f, n.suc) = triangular_sum(f, n.suc)","proof":[]}
+{"goal":"triangular_sum(f, n) <= triangular_sum(f, n.suc)","proof":["function(x0: (Nat, Nat) -> Real, x1: Nat) { not nonneg_fn_2(x0) or triangular_sum(x0, x1) <= triangular_sum(x0, x1.suc) }(f, n)"]}
+{"goal":"triangular_sum_seq(f, n) <= triangular_sum_seq(f, n.suc)","proof":[]}
+{"goal":"triangular_sum_is_increasing","proof":["function(x0: Nat -> Real) { forall(x1: Nat) { x0(x1) <= x0(x1.suc) } = is_increasing(x0) }(triangular_sum_seq(f))"]}
+{"goal":"is_increasing(triangular_sum_seq(f))","proof":[]}
+{"goal":"is_monotone[Nat, Real](triangular_sum_seq(f))","proof":[]}
+{"goal":"triangular_sum_is_monotone","proof":[]}
 {"goal":"p(0)","proof":["function(x0: Nat) { partial[Real](const_fn_2(c, k), x0) != c * nat_to_real(x0) or p(x0) }(0)","function(x0: Nat -> Real) { partial[Real](x0, 0) = Real.0 }(const_fn_2(c, k))","function[T0: lib(semiring.base).Semiring](x0: T0) { T0.mul(x0, T0.0) = T0.0 }[Real](c)"]}
 {"goal":"partial[Real](const_fn_2(c, k), m.suc) = partial[Real](const_fn_2(c, k), m) + const_fn_2(c, k, m)","proof":["function(x0: Nat -> Real, x1: Nat) { partial[Real](x0, x1) + x0(x1) = partial[Real](x0, x1.suc) }(const_fn_2(c, k), m)"]}
 {"goal":"const_fn_2(c, k, m) = c","proof":["function(x0: Real, x1: Nat, x2: Nat) { const_fn_2(x0, x1, x2) = x0 }(c, k, m)"]}

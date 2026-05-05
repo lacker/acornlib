@@ -3,10 +3,10 @@
 Goal: give order-preserving maps a reusable interface.
 
 - [ ] Decide the exact preimage API for plain monotone maps; order-embedding interval preimages are in place
-- [ ] Audit remaining rectangular, triangular, and double-sum monotonicity proofs for shared `is_monotone` wrappers
 
 Status:
 
+- `src/real/rectangular_sum.ac`, `src/real/triangular_sum.ac`, and `src/real/double_sum.ac` now expose named sequence helpers plus shared `is_monotone` wrappers for rectangular row/column bounds, triangular truncation bounds, row/column partial sums, and square partial sums.
 - `src/real/real_series.ac` now has reverse bridges from local increasing/decreasing sequence predicates to shared `is_monotone`/`is_antitone`, iff characterizations, distant-index aliases, first-term bound aliases, and monotone partial sums for nonnegative sequences.
 - `src/real/limits.ac` now exposes `k.mul` and `k.add` as shared monotone maps and routes every-kth/tail convergence through the monotone-unbounded composition theorem.
 - `src/real/double_limit.ac` now exposes row, column, flipped-column, and iterated row/column limit monotonicity through the shared `is_monotone` interface, with convergence aliases using the shared monotone bounded convergence theorem.
