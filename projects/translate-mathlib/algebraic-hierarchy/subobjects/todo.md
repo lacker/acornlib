@@ -2,7 +2,7 @@
 
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
-- [ ] Finish subobject lattice work: bundled same-carrier submodule intersections, valid union/closure APIs, and eventual lattice structures after design choices settle
+- [ ] Finish subobject lattice work: valid union/closure APIs and eventual lattice structures after design choices settle
 - [ ] Add finite-generation predicates for ideals and modules after their bundled APIs settle
 - [ ] Refactor existing finite subgroup and finite set code toward the shared subobject conventions
 
@@ -27,3 +27,4 @@ Status:
 - Preimage APIs now include monotonicity, intersection preservation, and full-subobject preservation for submonoids, subgroups, additive submonoids, additive subgroups, and subrings; `src/add_submonoid.ac` also has the additive monoid homomorphism kernel API.
 - Bridge APIs now include adjacent forgetful views from submonoids to subsemigroups, subgroups to submonoids, and additive subgroups to additive submonoids, plus reverse membership and underlying-set aliases for those views and the existing subring/submodule additive and multiplicative views.
 - `src/submodule.ac` now has raw common-membership meet laws for submodule intersections: commutativity, associativity directions, idempotence, lower-bound characterization, and zero/full membership simplification aliases.
+- `src/submodule.ac` now has a bundled `intersection` operation for same-carrier submodules, with membership, lower-bound, greatest-lower-bound, and idempotence lemmas.
