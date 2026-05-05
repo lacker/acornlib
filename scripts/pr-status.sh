@@ -101,6 +101,12 @@ base_ref = pr.get("base", {}).get("ref", default_branch)
 if pr.get("draft"):
     status = "draft"
     next_step = f"{author} marks ready"
+elif author in assignees:
+    status = "assigned to author"
+    next_step = f"{author} updates"
+elif human_assignees:
+    status = "human review"
+    next_step = f"{join_names(human_assignees)} reviews"
 elif changes_requested:
     status = "changes requested"
     next_step = f"{author} updates"
@@ -110,12 +116,6 @@ elif approved_by:
         next_step = f"{bot_display} merges"
     else:
         next_step = f"{bot_display} waits for base branch"
-elif author in assignees:
-    status = "assigned to author"
-    next_step = f"{author} updates"
-elif human_assignees:
-    status = "human review"
-    next_step = f"{join_names(human_assignees)} reviews"
 else:
     status = "needs triage"
     next_step = f"{bot_display} reviews"
