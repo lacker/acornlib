@@ -286,6 +286,18 @@ attributes AddSubgroup[G: AddGroup] {
     let intersection: (AddSubgroup[G], AddSubgroup[G]) -> AddSubgroup[G] = add_subgroup_intersection
 }
 
+/// Membership in the underlying set is membership in the additive subgroup.
+theorem add_subgroup_as_set_contains_eq[G: AddGroup](s: AddSubgroup[G], x: G) {
+    s.as_set.contains(x) = s.contains(x)
+} by {
+    s.as_set.contains(x) = s.contains(x)
+}
+
+/// Equal additive subgroups have equal underlying sets.
+theorem add_subgroup_eq_as_set[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    a = b implies a.as_set = b.as_set
+}
+
 /// Membership in the intersection means membership in both additive subgroups.
 theorem add_subgroup_intersection_contains_eq[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G],
     x: G) {
@@ -404,6 +416,40 @@ define add_subgroup_subset[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) ->
     forall(x: G) {
         a.contains(x) implies b.contains(x)
     }
+}
+
+/// Additive subgroup containment is containment of the underlying sets.
+theorem add_subgroup_subset_as_set_eq[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    add_subgroup_subset(a, b) = a.as_set.subset(b.as_set)
+} by {
+    if add_subgroup_subset(a, b) {
+        forall(x: G) {
+            if a.as_set.contains(x) {
+                add_subgroup_as_set_contains_eq(a, x)
+                a.contains(x)
+                b.contains(x)
+                add_subgroup_as_set_contains_eq(b, x)
+                b.as_set.contains(x)
+            }
+        }
+        a.as_set.subset(b.as_set)
+    }
+    if a.as_set.subset(b.as_set) {
+        forall(x: G) {
+            if a.contains(x) {
+                add_subgroup_as_set_contains_eq(a, x)
+                a.as_set.contains(x)
+                a.as_set.subset(b.as_set) = forall(y: G) {
+                    a.as_set.contains(y) implies b.as_set.contains(y)
+                }
+                b.as_set.contains(x)
+                add_subgroup_as_set_contains_eq(b, x)
+                b.contains(x)
+            }
+        }
+        add_subgroup_subset(a, b)
+    }
+    add_subgroup_subset(a, b) = a.as_set.subset(b.as_set)
 }
 
 /// Additive subgroup inclusion is reflexive.
@@ -752,6 +798,36 @@ define set_subset_add_subgroup[G: AddGroup](a: Set[G], s: AddSubgroup[G]) -> Boo
     forall(x: G) {
         a.contains(x) implies s.contains(x)
     }
+}
+
+/// Set containment in an additive subgroup is containment in its underlying set.
+theorem set_subset_add_subgroup_as_set_eq[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    set_subset_add_subgroup(a, s) = a.subset(s.as_set)
+} by {
+    if set_subset_add_subgroup(a, s) {
+        forall(x: G) {
+            if a.contains(x) {
+                s.contains(x)
+                add_subgroup_as_set_contains_eq(s, x)
+                s.as_set.contains(x)
+            }
+        }
+        a.subset(s.as_set)
+    }
+    if a.subset(s.as_set) {
+        forall(x: G) {
+            if a.contains(x) {
+                a.subset(s.as_set) = forall(y: G) {
+                    a.contains(y) implies s.as_set.contains(y)
+                }
+                s.as_set.contains(x)
+                add_subgroup_as_set_contains_eq(s, x)
+                s.contains(x)
+            }
+        }
+        set_subset_add_subgroup(a, s)
+    }
+    set_subset_add_subgroup(a, s) = a.subset(s.as_set)
 }
 
 /// The underlying set of an additive subgroup is contained in the additive subgroup.
