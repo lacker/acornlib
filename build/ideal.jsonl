@@ -271,3 +271,280 @@
 {"goal":"zero_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { not is_ideal[T0](x0) or ideal_subset[T0](zero_ideal[T0], x0) }[R](contains)","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]"]}
 {"goal":"unit_ideal_sum_left","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]"]}
 {"goal":"unit_ideal_sum_right","proof":["function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, unit_ideal[T0]) }[R](contains)","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]"]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"ideal_ext","proof":["function[T0: CommRing](x0: Ideal[T0]) { Ideal.new[T0](x0.contains) = Option.some[Ideal[T0]](x0) }[R](a)","function[T0: CommRing](x0: Ideal[T0]) { Ideal.new[T0](x0.contains) = Option.some[Ideal[T0]](x0) }[R](b)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Ideal[R]](b, a)"]}
+{"goal":"ideal_eq_contains","proof":[]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"ideal_eq_contains_at","proof":[]}
+{"goal":"a.contains(x) = b.contains(x)","proof":[]}
+{"goal":"ideal_eq_of_contains_eq","proof":["not forall(x0: R) { x0 ∈ a = x0 ∈ b } or b.contains != a.contains","let w0: R satisfy { w0 ∈ a != w0 ∈ b }"]}
+{"goal":"ideal_eq_of_contains_at_eq","proof":["let w0: R satisfy { w0 ∈ a != w0 ∈ b }"]}
+{"goal":"is_ideal[R](i.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](i)"]}
+{"goal":"ideal_contains_zero","proof":[]}
+{"goal":"is_ideal[R](i.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](i)"]}
+{"goal":"i.contains(a + b)","proof":[]}
+{"goal":"ideal_contains_add","proof":[]}
+{"goal":"is_ideal[R](i.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](i)"]}
+{"goal":"i.contains(r * a)","proof":[]}
+{"goal":"ideal_contains_mul_left","proof":[]}
+{"goal":"i.contains(r * a)","proof":[]}
+{"goal":"r * a = a * r","proof":["function[T0: lib(comm_semigroup).CommSemigroup](x0: T0, x1: T0) { x0 * x1 = x1 * x0 }[R](r, a)"]}
+{"goal":"ideal_contains_mul_right","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0, x2: T0) { not is_ideal[T0](x0) or not x0(x1) or x0(x2 * x1) }[R](i.contains, a, r)","function[T0: lib(comm_semigroup).CommSemigroup](x0: T0, x1: T0) { x0 * x1 = x1 * x0 }[R](r, a)","function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](i)"]}
+{"goal":"is_ideal[R](i.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](i)"]}
+{"goal":"i.contains(-a)","proof":[]}
+{"goal":"ideal_contains_neg","proof":[]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](zero_ideal[R]) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](zero_ideal[R])","function[T0: CommRing](x0: T0 -> Bool) { Ideal.constraint[T0](x0) = is_ideal[T0](x0) }[R](zero_ideal[R])","function[T0: CommRing] { is_ideal[T0](zero_ideal[T0]) }[R]"]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](unit_ideal[R]) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](unit_ideal[R])","function[T0: CommRing](x0: T0 -> Bool) { Ideal.constraint[T0](x0) = is_ideal[T0](x0) }[R](unit_ideal[R])","function[T0: CommRing] { is_ideal[T0](unit_ideal[T0]) }[R]"]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](principal_ideal(a)) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](principal_ideal(a))"]}
+{"goal":"i.as_set.contains(x) = i.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0]) { Set.new[T0](x0.contains) = x0.as_set }[R](i)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[R](i.contains, x)"]}
+{"goal":"ideal_as_set_contains_eq","proof":[]}
+{"goal":"i.contains(x) = i.as_set.contains(x)","proof":[]}
+{"goal":"ideal_contains_as_set_eq","proof":[]}
+{"goal":"ideal_eq_as_set","proof":[]}
+{"goal":"Ideal.zero[R].contains(x) = zero_ideal(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](bundled_zero_ideal[R], zero_ideal[R], x)","function[T0: CommRing] { Option.some[Ideal[T0]](bundled_zero_ideal[T0]) = Ideal.new[T0](zero_ideal[T0]) }[R]"]}
+{"goal":"zero_ideal(x) = (x = R.0)","proof":["function[T0: CommRing](x0: T0) { T0.0 = x0 = zero_ideal[T0](x0) }[R](x)"]}
+{"goal":"bundled_zero_ideal_contains_eq","proof":[]}
+{"goal":"x = R.0","proof":[]}
+{"goal":"bundled_zero_ideal_only_has_zero","proof":[]}
+{"goal":"Ideal.unit[R].contains(x) = unit_ideal(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](bundled_unit_ideal[R], unit_ideal[R], x)","function[T0: CommRing] { Option.some[Ideal[T0]](bundled_unit_ideal[T0]) = Ideal.new[T0](unit_ideal[T0]) }[R]"]}
+{"goal":"unit_ideal(x)","proof":["function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[R](x)","function[T0: CommRing](x0: T0) { unit_ideal[T0](x0) }[R](lib(functions).identity_fn(x))"]}
+{"goal":"bundled_unit_ideal_contains_everything","proof":[]}
+{"goal":"bundled_unit_ideal_contains_eq","proof":[]}
+{"goal":"Ideal.principal(a).contains(x) = principal_ideal(a, x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](bundled_principal_ideal(a), principal_ideal(a), x)","function[T0: CommRing](x0: T0) { Option.some[Ideal[T0]](bundled_principal_ideal[T0](x0)) = Ideal.new[T0](principal_ideal[T0](x0)) }[R](a)"]}
+{"goal":"bundled_principal_ideal_contains_eq","proof":[]}
+{"goal":"Ideal.principal(a).contains(a)","proof":[]}
+{"goal":"bundled_principal_ideal_contains_generator","proof":[]}
+{"goal":"principal_ideal(R.0)(x) = zero_ideal(x)","proof":[]}
+{"goal":"Ideal.principal(R.0).contains(x) = Ideal.zero[R].contains(x)","proof":["function[T0: CommRing](x0: T0) { T0.0 = x0 = zero_ideal[T0](x0) }[R](x)"]}
+{"goal":"bundled_principal_ideal_zero_eq_zero","proof":["let w0: R satisfy { w0 ∈ Ideal.zero[R] != w0 ∈ Ideal.principal(R.0) }"]}
+{"goal":"principal_ideal(R.1)(x) = unit_ideal(x)","proof":[]}
+{"goal":"Ideal.principal(R.1).contains(x) = Ideal.unit[R].contains(x)","proof":["function[T0: CommRing](x0: T0) { unit_ideal[T0](x0) }[R](x)"]}
+{"goal":"bundled_principal_ideal_one_eq_unit","proof":["let w0: R satisfy { w0 ∈ Ideal.unit[R] != w0 ∈ Ideal.principal(R.1) }"]}
+{"goal":"b.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, b.contains, x)"]}
+{"goal":"ideal_subset[R](a.contains, b.contains)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = ideal_subset[T0](x0, x1) }[R](a.contains, b.contains)"]}
+{"goal":"b.contains(x)","proof":["function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = ideal_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, b.contains, x)"]}
+{"goal":"bundled_ideal_subset[R](a, b)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = ideal_subset[T0](x0, x1) }[R](a.contains, b.contains)"]}
+{"goal":"bundled_ideal_subset[R](a, b) = ideal_subset[R](a.contains, b.contains)","proof":[]}
+{"goal":"bundled_ideal_subset_eq","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset_refl","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { ideal_subset[T0](x0.contains, x1.contains) = bundled_ideal_subset[T0](x0, x1) }[R](a, a)","function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, x0) }[R](a.contains)"]}
+{"goal":"b.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, b.contains, x)"]}
+{"goal":"c.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](b, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](b.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](b.contains, c.contains, x)"]}
+{"goal":"bundled_ideal_subset_trans","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, c)"]}
+{"goal":"ideal_subset[R](a.contains, b.contains)","proof":["bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
+{"goal":"ideal_subset[R](b.contains, a.contains)","proof":["bundled_ideal_subset[R](b, a)","not bundled_ideal_subset[R](b, a)"]}
+{"goal":"a.contains = b.contains","proof":[]}
+{"goal":"a = b","proof":[]}
+{"goal":"bundled_ideal_subset_antisymm","proof":["not bundled_ideal_subset[R](b, a) or not bundled_ideal_subset[R](a, b)","bundled_ideal_subset[R](b, a)","bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
+{"goal":"bundled_ideal_subset[R](a, b)","proof":[]}
+{"goal":"bundled_ideal_subset[R](b, a)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a, b) and bundled_ideal_subset[R](b, a)","proof":[]}
+{"goal":"a = b","proof":["not bundled_ideal_subset[R](b, a) or not bundled_ideal_subset[R](a, b)","bundled_ideal_subset[R](b, a)","bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
+{"goal":"a = b = (bundled_ideal_subset[R](a, b) and bundled_ideal_subset[R](b, a))","proof":[]}
+{"goal":"bundled_ideal_eq_iff_subset_both","proof":[]}
+{"goal":"x = R.0","proof":[]}
+{"goal":"i.contains(R.0)","proof":[]}
+{"goal":"i.contains(x)","proof":[]}
+{"goal":"bundled_zero_ideal_subset","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](Ideal.zero[R], i)","let w0: R satisfy { w0 ∈ Ideal.zero[R] and not w0 ∈ i }","function(x0: R) { not x0 ∈ Ideal.zero[R] or x0 ∈ i }(w0)"]}
+{"goal":"bundled_ideal_subset_unit","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](i, Ideal.unit[R])","let w0: R satisfy { w0 ∈ i and not w0 ∈ Ideal.unit[R] }","function[T0: CommRing](x0: T0) { x0 ∈ Ideal.unit[T0] }[R](w0)"]}
+{"goal":"is_ideal[R](a.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](a)"]}
+{"goal":"is_ideal[R](b.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](b)"]}
+{"goal":"ideal_inter[R](a.contains, b.contains) = bundled_ideal_inter_contains[R](a, b)","proof":["let w0: R satisfy { bundled_ideal_inter_contains(a, b, w0) != ideal_inter(a.contains, b.contains, w0) }","function[T0: CommRing](x0: Ideal[T0], x1: T0, x2: Ideal[T0]) { (x1 ∈ x0 and x1 ∈ x2) = bundled_ideal_inter_contains[T0](x0, x2, x1) }[R](a, w0, b)","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { ideal_inter[T0](x0, x1, x2) = (x0(x2) and x1(x2)) }[R](a.contains, b.contains, w0)"]}
+{"goal":"is_ideal[R](bundled_ideal_inter_contains[R](a, b))","proof":[]}
+{"goal":"bundled_ideal_inter_is_ideal","proof":[]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](bundled_ideal_inter_contains[R](a, b)) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](bundled_ideal_inter_contains[R](a, b))"]}
+{"goal":"is_ideal[R](a.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](a)"]}
+{"goal":"is_ideal[R](b.contains)","proof":["function[T0: CommRing](x0: Ideal[T0]) { is_ideal[T0](x0.contains) }[R](b)"]}
+{"goal":"ideal_sum[R](a.contains, b.contains) = bundled_ideal_sum_contains[R](a, b)","proof":["let w0: R satisfy { bundled_ideal_sum_contains(a, b, w0) != ideal_sum(a.contains, b.contains, w0) }","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { exists(k0: T0, k1: T0) { x0(k0) and x1(k1) and k0 + k1 = x2 } = ideal_sum[T0](x0, x1, x2) }[R](a.contains, b.contains, w0)","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, w0)"]}
+{"goal":"is_ideal[R](bundled_ideal_sum_contains[R](a, b))","proof":[]}
+{"goal":"bundled_ideal_sum_is_ideal","proof":[]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](bundled_ideal_sum_contains[R](a, b)) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](bundled_ideal_sum_contains[R](a, b))"]}
+{"goal":"a.intersection(b).contains(x) = bundled_ideal_inter_contains(a, b, x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { Option.some[Ideal[T0]](bundled_ideal_inter[T0](x0, x1)) = Ideal.new[T0](bundled_ideal_inter_contains[T0](x0, x1)) }[R](a, b)","function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](bundled_ideal_inter[R](a, b), bundled_ideal_inter_contains[R](a, b), x)"]}
+{"goal":"bundled_ideal_inter_contains(a, b, x) = (a.contains(x) and b.contains(x))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0, x2: Ideal[T0]) { (x1 ∈ x0 and x1 ∈ x2) = bundled_ideal_inter_contains[T0](x0, x2, x1) }[R](a, x, b)"]}
+{"goal":"bundled_ideal_inter_contains_eq","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"bundled_ideal_inter_subset_left","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a ∩ b, a)","let w0: R satisfy { w0 ∈ a ∩ b and not w0 ∈ a }","function(x0: R) { not x0 ∈ a ∩ b or x0 ∈ a }(w0)"]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"bundled_ideal_inter_subset_right","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a ∩ b, b)","let w0: R satisfy { w0 ∈ a ∩ b and not w0 ∈ b }","function(x0: R) { not x0 ∈ a ∩ b or x0 ∈ b }(w0)"]}
+{"goal":"a.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](c, a)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](c.contains, a.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](c.contains, a.contains, x)"]}
+{"goal":"b.contains(x)","proof":["x ∈ a and x ∈ b"]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset_inter_of_subset_left_right","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](c, a ∩ b)"]}
+{"goal":"bundled_ideal_subset[R](c, a)","proof":[]}
+{"goal":"bundled_ideal_subset[R](c, b)","proof":[]}
+{"goal":"bundled_ideal_subset[R](c, a) and bundled_ideal_subset[R](c, b)","proof":[]}
+{"goal":"bundled_ideal_subset[R](c, a.intersection(b))","proof":[]}
+{"goal":"bundled_ideal_subset[R](c, a.intersection(b)) = (bundled_ideal_subset[R](c, a) and bundled_ideal_subset[R](c, b))","proof":[]}
+{"goal":"bundled_ideal_subset_inter_iff","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(a).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x) = b.intersection(a).contains(x)","proof":[]}
+{"goal":"bundled_ideal_inter_comm","proof":["let w0: R satisfy { w0 ∈ a ∩ b != w0 ∈ b ∩ a }"]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x)","proof":[]}
+{"goal":"a.intersection(a).contains(x) = a.contains(x)","proof":[]}
+{"goal":"bundled_ideal_inter_idempotent","proof":["let w0: R satisfy { w0 ∈ a != w0 ∈ a ∩ a }"]}
+{"goal":"bundled_ideal_subset[R](a, a.intersection(b))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { bundled_ideal_subset[T0](x0 ∩ x1, x0) }[R](a, a)","function[T0: CommRing](x0: Ideal[T0]) { x0 ∩ x0 = x0 }[R](a)"]}
+{"goal":"a.intersection(b) = a","proof":[]}
+{"goal":"bundled_ideal_inter_eq_left_of_subset","proof":[]}
+{"goal":"bundled_ideal_subset[R](b, a.intersection(b))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { bundled_ideal_subset[T0](x0 ∩ x1, x0) }[R](b, b)","function[T0: CommRing](x0: Ideal[T0]) { x0 ∩ x0 = x0 }[R](b)"]}
+{"goal":"a.intersection(b) = b","proof":[]}
+{"goal":"bundled_ideal_inter_eq_right_of_subset","proof":[]}
+{"goal":"bundled_zero_ideal_inter_left","proof":[]}
+{"goal":"bundled_zero_ideal_inter_right","proof":[]}
+{"goal":"bundled_unit_ideal_inter_left","proof":[]}
+{"goal":"bundled_unit_ideal_inter_right","proof":[]}
+{"goal":"a.sum(b).contains(x) = bundled_ideal_sum_contains(a, b, x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { Option.some[Ideal[T0]](bundled_ideal_sum[T0](x0, x1)) = Ideal.new[T0](bundled_ideal_sum_contains[T0](x0, x1)) }[R](a, b)","function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](bundled_ideal_sum[R](a, b), bundled_ideal_sum_contains[R](a, b), x)"]}
+{"goal":"bundled_ideal_sum_contains_eq","proof":[]}
+{"goal":"x = x + R.0","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[R](R.0, x)","function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.0 + x0 = x0 }[R](x)"]}
+{"goal":"a.contains(x) and b.contains(R.0) and x = x + R.0","proof":[]}
+{"goal":"exists(k0: R, k1: R) { a.contains(k0) and b.contains(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { x0 ∈ a and k0 ∈ b and x0 + k0 = x } }(x)","function(x0: R, x1: R) { not (x0 ∈ a and x1 ∈ b and x0 + x1 = x) }(x, R.0)"]}
+{"goal":"bundled_ideal_sum_contains(a, b, x)","proof":["let w0: R satisfy { exists(k0: R) { w0 ∈ a and k0 ∈ b and w0 + k0 = x } }","let w1: R satisfy { w0 ∈ a and w1 ∈ b and w0 + w1 = x }","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, x)"]}
+{"goal":"a.sum(b).contains(x)","proof":[]}
+{"goal":"bundled_ideal_sum_subset_left","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, a.sum(b))","let w0: R satisfy { w0 ∈ a and not w0 ∈ a.sum(b) }","function(x0: R) { not x0 ∈ a or x0 ∈ a.sum(b) }(w0)"]}
+{"goal":"x = R.0 + x","proof":["function[T0: lib(add_monoid).AddMonoid](x0: T0) { T0.0 + x0 = x0 }[R](x)"]}
+{"goal":"a.contains(R.0) and b.contains(x) and x = R.0 + x","proof":[]}
+{"goal":"exists(k0: R, k1: R) { a.contains(k0) and b.contains(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { x0 ∈ a and k0 ∈ b and x0 + k0 = x } }(R.0)","function(x0: R, x1: R) { not (x0 ∈ a and x1 ∈ b and x0 + x1 = x) }(R.0, x)"]}
+{"goal":"bundled_ideal_sum_contains(a, b, x)","proof":["let w0: R satisfy { exists(k0: R) { w0 ∈ a and k0 ∈ b and w0 + k0 = x } }","let w1: R satisfy { w0 ∈ a and w1 ∈ b and w0 + w1 = x }","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, x)"]}
+{"goal":"a.sum(b).contains(x)","proof":[]}
+{"goal":"bundled_ideal_sum_subset_right","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](b, a.sum(b))","let w0: R satisfy { w0 ∈ b and not w0 ∈ a.sum(b) }","function(x0: R) { not x0 ∈ b or x0 ∈ a.sum(b) }(w0)"]}
+{"goal":"bundled_ideal_sum_contains(a, b, x)","proof":[]}
+{"goal":"exists(k0: R, k1: R) { a.contains(k0) and b.contains(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, x)"]}
+{"goal":"c.contains(y)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, c.contains, y)"]}
+{"goal":"c.contains(z)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](b, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](b.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](b.contains, c.contains, z)"]}
+{"goal":"c.contains(y + z)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"bundled_ideal_sum_subset_of_left_right","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a.sum(b), c)"]}
+{"goal":"bundled_ideal_subset[R](a, c)","proof":[]}
+{"goal":"bundled_ideal_subset[R](b, c)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a, c) and bundled_ideal_subset[R](b, c)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a.sum(b), c)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a.sum(b), c) = (bundled_ideal_subset[R](a, c) and bundled_ideal_subset[R](b, c))","proof":[]}
+{"goal":"bundled_ideal_sum_subset_iff","proof":[]}
+{"goal":"exists(k0: R, k1: R) { a.contains(k0) and b.contains(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, x)"]}
+{"goal":"x = z + y","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[R](z, y)"]}
+{"goal":"b.contains(z) and a.contains(y) and x = z + y","proof":[]}
+{"goal":"exists(k0: R, k1: R) { b.contains(k0) and a.contains(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { x0 ∈ b and k0 ∈ a and x0 + k0 = x } }(z)","function(x0: R, x1: R) { not (x0 ∈ b and x1 ∈ a and x0 + x1 = x) }(z, y)"]}
+{"goal":"bundled_ideal_sum_contains(b, a, x)","proof":["let w0: R satisfy { exists(k0: R) { w0 ∈ b and k0 ∈ a and w0 + k0 = x } }","let w1: R satisfy { w0 ∈ b and w1 ∈ a and w0 + w1 = x }","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](b, a, x)"]}
+{"goal":"b.sum(a).contains(x)","proof":[]}
+{"goal":"exists(k0: R, k1: R) { b.contains(k0) and a.contains(k1) and x = k0 + k1 }","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](b, a, x)"]}
+{"goal":"x = z + y","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { x0 + x1 = x1 + x0 }[R](z, y)"]}
+{"goal":"a.contains(z) and b.contains(y) and x = z + y","proof":[]}
+{"goal":"exists(k0: R, k1: R) { a.contains(k0) and b.contains(k1) and x = k0 + k1 }","proof":["function(x0: R) { not exists(k0: R) { x0 ∈ a and k0 ∈ b and x0 + k0 = x } }(z)","function(x0: R, x1: R) { not (x0 ∈ a and x1 ∈ b and x0 + x1 = x) }(z, y)"]}
+{"goal":"bundled_ideal_sum_contains(a, b, x)","proof":["let w0: R satisfy { exists(k0: R) { w0 ∈ a and k0 ∈ b and w0 + k0 = x } }","let w1: R satisfy { w0 ∈ a and w1 ∈ b and w0 + w1 = x }","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0], x2: T0) { exists(k0: T0, k1: T0) { k0 ∈ x0 and k1 ∈ x1 and k0 + k1 = x2 } = bundled_ideal_sum_contains[T0](x0, x1, x2) }[R](a, b, x)"]}
+{"goal":"a.sum(b).contains(x)","proof":[]}
+{"goal":"a.sum(b).contains(x) = b.sum(a).contains(x)","proof":[]}
+{"goal":"bundled_ideal_sum_comm","proof":["let w0: R satisfy { w0 ∈ a.sum(b) != w0 ∈ b.sum(a) }"]}
+{"goal":"bundled_ideal_subset[R](a.sum(a), a)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a, a.sum(a))","proof":[]}
+{"goal":"a.sum(a) = a","proof":[]}
+{"goal":"bundled_ideal_sum_idempotent","proof":[]}
+{"goal":"bundled_ideal_subset[R](a.sum(b), a)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a, a.sum(b))","proof":[]}
+{"goal":"a.sum(b) = a","proof":[]}
+{"goal":"bundled_ideal_sum_eq_left_of_subset","proof":[]}
+{"goal":"bundled_ideal_subset[R](a.sum(b), b)","proof":[]}
+{"goal":"bundled_ideal_subset[R](b, a.sum(b))","proof":[]}
+{"goal":"a.sum(b) = b","proof":[]}
+{"goal":"bundled_ideal_sum_eq_right_of_subset","proof":[]}
+{"goal":"bundled_zero_ideal_sum_left","proof":[]}
+{"goal":"bundled_zero_ideal_sum_right","proof":[]}
+{"goal":"bundled_unit_ideal_sum_left","proof":[]}
+{"goal":"bundled_unit_ideal_sum_right","proof":[]}
+{"goal":"i.contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, i)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, i.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, i.contains, x)"]}
+{"goal":"i.as_set.contains(x)","proof":[]}
+{"goal":"a.subset(i.as_set)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[R](a, i.as_set)","let w0: R satisfy { w0 ∈ a and not w0 ∈ i.as_set }","function(x0: R) { not x0 ∈ a or x0 ∈ i.as_set }(w0)"]}
+{"goal":"a.subset(i.as_set) = forall(x0: R) { a.contains(x0) implies i.as_set.contains(x0) }","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[R](a, i.as_set)"]}
+{"goal":"i.as_set.contains(x)","proof":["(forall(x0: R) { not x0 ∈ a or x0 ∈ i.as_set } = true)","function(x0: R) { not (x0 ∈ a and not x0 ∈ i.as_set) }(x)"]}
+{"goal":"i.contains(x)","proof":[]}
+{"goal":"set_subset_ideal[R](a, i)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, i)","let w0: R satisfy { w0 ∈ a and not w0 ∈ i }","function(x0: R) { not x0 ∈ a or x0 ∈ i }(w0)"]}
+{"goal":"set_subset_ideal[R](a, i) = a.subset(i.as_set)","proof":[]}
+{"goal":"set_subset_ideal_as_set_eq","proof":[]}
+{"goal":"i.contains(x)","proof":[]}
+{"goal":"ideal_as_set_subset_self","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { x0 ⊂ x1.as_set = set_subset_ideal[T0](x0, x1) }[R](i.as_set, i)","function[T0](x0: Set[T0]) { x0 ⊂ x0 }[R](i.as_set)"]}
+{"goal":"i.contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, i)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, i.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, i.contains, x)"]}
+{"goal":"j.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](i, j)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](i.contains, j.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](i.contains, j.contains, x)"]}
+{"goal":"set_subset_ideal_trans","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, j)"]}
+{"goal":"a.subset(b) = forall(x0: R) { a.contains(x0) implies b.contains(x0) }","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[R](a, b)"]}
+{"goal":"b.contains(x)","proof":["x ∈ b and x ∈ a"]}
+{"goal":"i.contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](b, i)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](b.contains, i.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](b.contains, i.contains, x)"]}
+{"goal":"set_subset_ideal_of_set_subset","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, i)"]}
+{"goal":"ideal_closure_contains(a, x) = forall(x0: Ideal[R]) { set_subset_ideal[R](a, x0) implies x0.contains(x) }","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { forall(x2: Ideal[T0]) { not set_subset_ideal[T0](x0, x2) or x1 ∈ x2 } = ideal_closure_contains[T0](x0, x1) }[R](a, x)"]}
+{"goal":"i.contains(x)","proof":["set_subset_ideal[R](a, i)","ideal_closure_contains(a, x)","(forall(x0: Ideal[R]) { not set_subset_ideal[R](a, x0) or x ∈ x0 } = true)","function(x0: Ideal[R]) { not (set_subset_ideal[R](a, x0) and not x ∈ x0) }(i)"]}
+{"goal":"ideal_closure_contains_of_set_subset_raw","proof":[]}
+{"goal":"i.contains(R.0)","proof":[]}
+{"goal":"ideal_closure_contains(a, R.0)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { forall(x2: Ideal[T0]) { not set_subset_ideal[T0](x0, x2) or x1 ∈ x2 } = ideal_closure_contains[T0](x0, x1) }[R](a, R.0)","let w0: Ideal[R] satisfy { set_subset_ideal[R](a, w0) and not R.0 ∈ w0 }","function[T0: CommRing](x0: Ideal[T0]) { T0.0 ∈ x0 }[R](w0)"]}
+{"goal":"ideal_zero_constraint[R](ideal_closure_contains[R](a))","proof":["function[T0: CommRing](x0: T0 -> Bool) { x0(T0.0) = ideal_zero_constraint[T0](x0) }[R](ideal_closure_contains[R](a))"]}
+{"goal":"ideal_closure_zero_constraint","proof":[]}
+{"goal":"i.contains(x)","proof":[]}
+{"goal":"i.contains(y)","proof":[]}
+{"goal":"i.contains(x + y)","proof":[]}
+{"goal":"ideal_closure_contains(a, x + y)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { forall(x2: Ideal[T0]) { not set_subset_ideal[T0](x0, x2) or x1 ∈ x2 } = ideal_closure_contains[T0](x0, x1) }[R](a, x + y)","let w0: Ideal[R] satisfy { set_subset_ideal[R](a, w0) and not x + y ∈ w0 }","function(x0: Ideal[R]) { not set_subset_ideal[R](a, x0) or x + y ∈ x0 }(w0)"]}
+{"goal":"ideal_closure_add_constraint","proof":["function[T0: CommRing](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 + x2) } = ideal_add_constraint[T0](x0) }[R](ideal_closure_contains[R](a))","let w0: R satisfy { exists(k0: R) { ideal_closure_contains(a, w0) and ideal_closure_contains(a, k0) and not ideal_closure_contains(a, w0 + k0) } }","let w1: R satisfy { ideal_closure_contains(a, w0) and ideal_closure_contains(a, w1) and not ideal_closure_contains(a, w0 + w1) }","let w2: R satisfy { ideal_closure_contains(a, w0) and ideal_closure_contains(a, w2) and not ideal_closure_contains(a, w0 + w2) }","function(x0: R, x1: R) { not ideal_closure_contains(a, x0) or not ideal_closure_contains(a, x1) or ideal_closure_contains(a, x0 + x1) }(w0, w2)"]}
+{"goal":"i.contains(x)","proof":[]}
+{"goal":"i.contains(r * x)","proof":[]}
+{"goal":"ideal_closure_contains(a, r * x)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { forall(x2: Ideal[T0]) { not set_subset_ideal[T0](x0, x2) or x1 ∈ x2 } = ideal_closure_contains[T0](x0, x1) }[R](a, r * x)","let w0: Ideal[R] satisfy { set_subset_ideal[R](a, w0) and not r * x ∈ w0 }","function(x0: Ideal[R]) { not set_subset_ideal[R](a, x0) or r * x ∈ x0 }(w0)"]}
+{"goal":"ideal_closure_absorb_constraint","proof":["function[T0: CommRing](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x2) or x0(x1 * x2) } = ideal_absorb_constraint[T0](x0) }[R](ideal_closure_contains[R](a))","let w0: R satisfy { exists(k0: R) { ideal_closure_contains(a, k0) and not ideal_closure_contains(a, w0 * k0) } }","let w1: R satisfy { ideal_closure_contains(a, w1) and not ideal_closure_contains(a, w0 * w1) }","let w2: R satisfy { ideal_closure_contains(a, w2) and not ideal_closure_contains(a, w0 * w2) }","function(x0: R, x1: R) { not ideal_closure_contains(a, x0) or ideal_closure_contains(a, x1 * x0) }(w2, w0)"]}
+{"goal":"ideal_closure_is_ideal","proof":[]}
+{"goal":"exists(k0: Ideal[R]) { Ideal.new[R](ideal_closure_contains[R](a)) = Option.some(k0) }","proof":["function[T0: CommRing](x0: T0 -> Bool) { not Ideal.constraint[T0](x0) or exists(k0: Ideal[T0]) { Ideal.new[T0](x0) = Option.some[Ideal[T0]](k0) } }[R](ideal_closure_contains[R](a))"]}
+{"goal":"Ideal.closure[R](a).contains(x) = ideal_closure_contains(a, x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0 -> Bool, x2: T0) { Option.some[Ideal[T0]](x0) != Ideal.new[T0](x1) or x2 ∈ x0 = x1(x2) }[R](ideal_closure[R](a), ideal_closure_contains[R](a), x)","function[T0: CommRing](x0: Set[T0]) { Option.some[Ideal[T0]](ideal_closure[T0](x0)) = Ideal.new[T0](ideal_closure_contains[T0](x0)) }[R](a)"]}
+{"goal":"ideal_closure_contains_eq","proof":[]}
+{"goal":"i.contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, i)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, i.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, i.contains, x)"]}
+{"goal":"ideal_closure_contains(a, x)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { forall(x2: Ideal[T0]) { not set_subset_ideal[T0](x0, x2) or x1 ∈ x2 } = ideal_closure_contains[T0](x0, x1) }[R](a, x)","let w0: Ideal[R] satisfy { set_subset_ideal[R](a, w0) and not x ∈ w0 }","function(x0: Ideal[R]) { not set_subset_ideal[R](a, x0) or x ∈ x0 }(w0)"]}
+{"goal":"Ideal.closure[R](a).contains(x)","proof":[]}
+{"goal":"set_subset_ideal_closure","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, Ideal.closure[R](a))","let w0: R satisfy { w0 ∈ a and not w0 ∈ Ideal.closure[R](a) }","function(x0: R) { not x0 ∈ a or x0 ∈ Ideal.closure[R](a) }(w0)"]}
+{"goal":"Ideal.closure[R](a).contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](a, Ideal.closure[R](a))","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, Ideal.closure[R](a).contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, Ideal.closure[R](a).contains, x)"]}
+{"goal":"ideal_closure_contains_of_set_contains","proof":[]}
+{"goal":"ideal_closure_contains(a, x)","proof":[]}
+{"goal":"ideal_closure_subset_of_set_subset","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](Ideal.closure[R](a), i)","(forall(x0: R) { not x0 ∈ Ideal.closure[R](a) or (not ideal_closure_contains(a, x0) or not set_subset_ideal[R](a, i) or x0 ∈ i) } = true)","let w0: R satisfy { w0 ∈ Ideal.closure[R](a) and not w0 ∈ i }","function[T0: CommRing](x0: Set[T0], x1: T0) { x1 ∈ Ideal.closure[T0](x0) = ideal_closure_contains[T0](x0, x1) }[R](a, w0)","function(x0: R) { not (x0 ∈ Ideal.closure[R](a) and (ideal_closure_contains(a, x0) and set_subset_ideal[R](a, i) and not x0 ∈ i)) }(w0)"]}
+{"goal":"set_subset_ideal[R](a, i)","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), i)","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), i) = set_subset_ideal[R](a, i)","proof":[]}
+{"goal":"ideal_closure_le_iff_set_subset","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](i.as_set), i)","proof":[]}
+{"goal":"i.as_set.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[R](i, x)"]}
+{"goal":"Ideal.closure[R](i.as_set).contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ Ideal.closure[T0](x0) }[R](i.as_set, x)"]}
+{"goal":"bundled_ideal_subset[R](i, Ideal.closure[R](i.as_set))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](i, Ideal.closure[R](i.as_set))","let w0: R satisfy { w0 ∈ i and not w0 ∈ Ideal.closure[R](i.as_set) }","function(x0: R) { not x0 ∈ i or x0 ∈ Ideal.closure[R](i.as_set) }(w0)"]}
+{"goal":"ideal_closure_as_set","proof":[]}
+{"goal":"set_subset_ideal[R](a, Ideal.closure[R](b))","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), Ideal.closure[R](b))","proof":[]}
+{"goal":"ideal_closure_mono","proof":[]}
+{"goal":"Ideal.closure[R](a) = Ideal.closure[R](b)","proof":[]}
+{"goal":"ideal_closure_eq_of_set_eq","proof":[]}
+{"goal":"ideal_closure_idempotent","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](Set.empty_set[R]), Ideal.zero[R])","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { x0 ⊂ x1.as_set = set_subset_ideal[T0](x0, x1) }[R](Set.empty_set[R], Ideal.zero[R])","function[T0](x0: Set[T0]) { Set.empty_set[T0] ⊂ x0 }[R](Ideal.zero[R].as_set)"]}
+{"goal":"ideal_closure_empty","proof":[]}
+{"goal":"Set.universal_set[R].contains(x)","proof":["function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[R](x)"]}
+{"goal":"Ideal.closure[R](Set.universal_set[R]).contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.unit[R], Ideal.closure[R](Set.universal_set[R]))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](Ideal.unit[R], Ideal.closure[R](Set.universal_set[R]))","let w0: R satisfy { w0 ∈ Ideal.unit[R] and not w0 ∈ Ideal.closure[R](Set.universal_set[R]) }","function(x0: R) { not x0 ∈ Ideal.unit[R] or x0 ∈ Ideal.closure[R](Set.universal_set[R]) }(w0)"]}
+{"goal":"ideal_closure_universal","proof":[]}
+{"goal":"Set.singleton(a).contains(x) = (a = x)","proof":["function[T0](x0: T0, x1: T0) { x1 ∈ Set.singleton[T0](x0) = (x0 = x1) }[R](a, x)"]}
+{"goal":"a = x","proof":[]}
+{"goal":"Ideal.principal(a).contains(a)","proof":[]}
+{"goal":"Ideal.principal(a).contains(x)","proof":[]}
+{"goal":"set_subset_ideal[R](Set.singleton(a), Ideal.principal(a))","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_ideal[T0](x0, x1) }[R](Set.singleton(a), Ideal.principal(a))","let w0: R satisfy { w0 ∈ Set.singleton(a) and not w0 ∈ Ideal.principal(a) }","function(x0: R) { not x0 ∈ Set.singleton(a) or x0 ∈ Ideal.principal(a) }(w0)"]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](Set.singleton(a)), Ideal.principal(a))","proof":[]}
+{"goal":"Ideal.closure[R](Set.singleton(a)).contains(a)","proof":["function[T0](x0: T0, x1: T0) { x1 ∈ Set.singleton[T0](x0) = (x0 = x1) }[R](a, a)"]}
+{"goal":"principal_ideal(a, x)","proof":[]}
+{"goal":"exists(k0: R) { x = k0 * a }","proof":["function[T0: CommRing](x0: T0, x1: T0) { exists(k0: T0) { k0 * x0 = x1 } = principal_ideal[T0](x0, x1) }[R](a, x)"]}
+{"goal":"Ideal.closure[R](Set.singleton(a)).contains(r * a)","proof":[]}
+{"goal":"Ideal.closure[R](Set.singleton(a)).contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.principal(a), Ideal.closure[R](Set.singleton(a)))","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](Ideal.principal(a), Ideal.closure[R](Set.singleton(a)))","let w0: R satisfy { w0 ∈ Ideal.principal(a) and not w0 ∈ Ideal.closure[R](Set.singleton(a)) }","function(x0: R) { not x0 ∈ Ideal.principal(a) or x0 ∈ Ideal.closure[R](Set.singleton(a)) }(w0)"]}
+{"goal":"ideal_closure_singleton_eq_principal","proof":[]}
+{"goal":"exists(k0: Set[R]) { k0.is_finite and Ideal.closure[R](k0) = Ideal.closure[R](a) }","proof":[]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.closure[R](a))","proof":["let w0: Set[R] satisfy { w0.is_finite and Ideal.closure[R](w0) = Ideal.closure[R](a) }","function[T0: CommRing](x0: Ideal[T0]) { exists(k0: Set[T0]) { k0.is_finite and Ideal.closure[T0](k0) = x0 } = ideal_is_finitely_generated[T0](x0) }[R](Ideal.closure[R](a))"]}
+{"goal":"ideal_closure_is_finitely_generated","proof":[]}
+{"goal":"exists(k0: Set[R]) { k0.is_finite and Ideal.closure[R](k0) = Ideal.principal(a) }","proof":["function(x0: Set[R]) { not (x0.is_finite and Ideal.principal(a) = Ideal.closure[R](x0)) }(Set.singleton(a))"]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.principal(a))","proof":["let w0: Set[R] satisfy { w0.is_finite and Ideal.principal(a) = Ideal.closure[R](w0) }","function[T0: CommRing](x0: Ideal[T0]) { exists(k0: Set[T0]) { k0.is_finite and Ideal.closure[T0](k0) = x0 } = ideal_is_finitely_generated[T0](x0) }[R](Ideal.principal(a))"]}
+{"goal":"principal_ideal_is_finitely_generated","proof":[]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.principal(R.0))","proof":[]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.zero[R])","proof":[]}
+{"goal":"zero_ideal_is_finitely_generated","proof":[]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.principal(R.1))","proof":[]}
+{"goal":"ideal_is_finitely_generated[R](Ideal.unit[R])","proof":[]}
+{"goal":"unit_ideal_is_finitely_generated","proof":[]}
