@@ -5,6 +5,7 @@ from real.real_base import Real
 from real.real_series import seq_lte, neg_seq, const_seq
 from real.real_seq import converges, converges_to, limit, add_seq, tail_bound
 from real.prod_seq import prod_seq
+from order_maps import is_monotone
 
 /// Two sequences converge and share the same limit.
 define same_limit(a: Nat -> Real, b: Nat -> Real) -> Bool {
@@ -390,6 +391,20 @@ define is_nondecreasing_nat(f: Nat -> Nat) -> Bool {
     }
 }
 
+/// A monotone function on natural numbers is nondecreasing.
+theorem monotone_is_nondecreasing_nat(f: Nat -> Nat) {
+    is_monotone(f) implies is_nondecreasing_nat(f)
+} by {
+    if is_monotone(f) {
+        forall(i: Nat, j: Nat) {
+            if i <= j {
+                f(i) <= f(j)
+            }
+        }
+        is_nondecreasing_nat(f)
+    }
+}
+
 /// True if f is unbounded (i.e., not bounded above by any fixed value).
 define is_unbounded(f: Nat -> Nat) -> Bool {
     forall(bound: Nat) {
@@ -415,6 +430,29 @@ theorem nondecreasing_unbounded_tends_to_infinity(f: Nat -> Nat) {
                 f(m) <= f(n)
                 big_n < f(m)
                 big_n <= f(n)
+            }
+        }
+    }
+}
+
+/// A monotone unbounded function on natural numbers tends to infinity.
+theorem monotone_unbounded_tends_to_infinity(f: Nat -> Nat) {
+    is_monotone(f) and is_unbounded(f)
+    implies
+    tends_to_infinity(f)
+} by {
+    if is_monotone(f) and is_unbounded(f) {
+        forall(big_n: Nat) {
+            let m: Nat satisfy {
+                big_n < f(m)
+            }
+
+            forall(n: Nat) {
+                if m <= n {
+                    f(m) <= f(n)
+                    big_n < f(m)
+                    big_n <= f(n)
+                }
             }
         }
     }
@@ -466,6 +504,22 @@ theorem converges_compose_nondecreasing_unbounded(a: Nat -> Real, f: Nat -> Nat)
     implies
     converges_to(compose(a, f), limit(a))
 } by {
+    if converges(a) and is_nondecreasing_nat(f) and is_unbounded(f) {
+        tends_to_infinity(f)
+        converges_to(compose(a, f), limit(a))
+    }
+}
+
+/// If a sequence converges and f is monotone and unbounded, then compose(a, f) converges to the same limit.
+theorem converges_compose_monotone_unbounded(a: Nat -> Real, f: Nat -> Nat) {
+    converges(a) and is_monotone(f) and is_unbounded(f)
+    implies
+    converges_to(compose(a, f), limit(a))
+} by {
+    if converges(a) and is_monotone(f) and is_unbounded(f) {
+        tends_to_infinity(f)
+        converges_to(compose(a, f), limit(a))
+    }
 }
 
 /// The function n -> k * n is nondecreasing when k >= 1.
