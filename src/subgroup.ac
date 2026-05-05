@@ -2,7 +2,9 @@ from nat import Nat
 from group import Group, GroupHom, group_hom_one, group_hom_mul, group_hom_inv
 from submonoid import Submonoid, submonoid_identity_constraint, submonoid_closure_constraint,
     submonoid_constraint
-from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite
+from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite,
+    is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
+    is_set_closure_operator
 from functions import predicate_extensionality
 
 // We define subgroups with the "bundled subgroups" technique, so a subgroup "carries along"
@@ -1084,6 +1086,16 @@ theorem subgroup_closure_le_iff_set_subset[G: Group](a: Set[G], s: Subgroup[G]) 
     subgroup_subset(subgroup_closure(a), s) = set_subset_subgroup(a, s)
 }
 
+/// The subgroup closure and underlying set maps form a set-containment adjunction.
+theorem subgroup_closure_as_set_galois_connection[G: Group](a: Set[G], s: Subgroup[G]) {
+    subgroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+} by {
+    subgroup_subset_as_set_eq(subgroup_closure(a), s)
+    subgroup_closure_le_iff_set_subset(a, s)
+    set_subset_subgroup_as_set_eq(a, s)
+    subgroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+}
+
 /// The closure of the underlying set of a subgroup is the subgroup itself.
 theorem subgroup_closure_as_set[G: Group](s: Subgroup[G]) {
     subgroup_closure(s.as_set) = s
@@ -1129,6 +1141,94 @@ theorem subgroup_closure_idempotent[G: Group](a: Set[G]) {
     subgroup_closure(subgroup_closure(a).as_set) = subgroup_closure(a)
 } by {
     subgroup_closure_as_set(subgroup_closure(a))
+}
+
+/// The set closure induced by subgroup generation.
+define subgroup_set_closure[G: Group](a: Set[G]) -> Set[G] {
+    subgroup_closure(a).as_set
+}
+
+/// The subgroup set closure is the underlying set of the generated subgroup.
+theorem subgroup_set_closure_at[G: Group](a: Set[G]) {
+    subgroup_set_closure(a) = subgroup_closure(a).as_set
+}
+
+/// The subgroup set closure contains the original set.
+theorem subgroup_set_closure_extensive[G: Group](a: Set[G]) {
+    a.subset(subgroup_set_closure(a))
+} by {
+    subgroup_set_closure_at(a)
+    subgroup_subset_closure(a)
+    set_subset_subgroup_as_set_eq(a, subgroup_closure(a))
+    a.subset(subgroup_closure(a).as_set)
+    a.subset(subgroup_set_closure(a))
+}
+
+/// The subgroup set closure preserves inclusion.
+theorem subgroup_set_closure_mono[G: Group](a: Set[G], b: Set[G]) {
+    a.subset(b) implies subgroup_set_closure(a).subset(subgroup_set_closure(b))
+} by {
+    if a.subset(b) {
+        subgroup_closure_mono(a, b)
+        subgroup_subset(subgroup_closure(a), subgroup_closure(b))
+        subgroup_subset_as_set_eq(subgroup_closure(a), subgroup_closure(b))
+        subgroup_closure(a).as_set.subset(subgroup_closure(b).as_set)
+        subgroup_set_closure_at(a)
+        subgroup_set_closure_at(b)
+        subgroup_set_closure(a).subset(subgroup_set_closure(b))
+    }
+}
+
+/// The subgroup set closure is unchanged after two applications.
+theorem subgroup_set_closure_idempotent[G: Group](a: Set[G]) {
+    subgroup_set_closure(subgroup_set_closure(a)) = subgroup_set_closure(a)
+} by {
+    subgroup_set_closure_at(a)
+    subgroup_set_closure_at(subgroup_set_closure(a))
+    subgroup_closure_idempotent(a)
+    subgroup_set_closure(subgroup_set_closure(a)) = subgroup_set_closure(a)
+}
+
+/// Subgroup set closure is monotone as a set map.
+theorem subgroup_set_closure_is_monotone[G: Group] {
+    is_subset_monotone_map(subgroup_set_closure[G])
+} by {
+    forall(a: Set[G], b: Set[G]) {
+        if a.subset(b) {
+            subgroup_set_closure_mono(a, b)
+            subgroup_set_closure(a).subset(subgroup_set_closure(b))
+        }
+    }
+}
+
+/// Subgroup set closure is extensive as a set map.
+theorem subgroup_set_closure_is_extensive[G: Group] {
+    is_set_extensive_map(subgroup_set_closure[G])
+} by {
+    forall(a: Set[G]) {
+        subgroup_set_closure_extensive(a)
+        a.subset(subgroup_set_closure(a))
+    }
+}
+
+/// Subgroup set closure is idempotent as a set map.
+theorem subgroup_set_closure_is_idempotent[G: Group] {
+    is_set_idempotent_map(subgroup_set_closure[G])
+} by {
+    forall(a: Set[G]) {
+        subgroup_set_closure_idempotent(a)
+        subgroup_set_closure(subgroup_set_closure(a)) = subgroup_set_closure(a)
+    }
+}
+
+/// Subgroup generation induces a closure operator on sets.
+theorem subgroup_set_closure_operator[G: Group] {
+    is_set_closure_operator(subgroup_set_closure[G])
+} by {
+    subgroup_set_closure_is_monotone[G]
+    subgroup_set_closure_is_extensive[G]
+    subgroup_set_closure_is_idempotent[G]
+    is_set_closure_operator(subgroup_set_closure[G])
 }
 
 /// The closure of the empty set is the identity subgroup.

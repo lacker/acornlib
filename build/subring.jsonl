@@ -234,6 +234,8 @@
 {"goal":"subring_subset[R](subring_closure[R](a), s)","proof":[]}
 {"goal":"subring_subset[R](subring_closure[R](a), s) = set_subset_subring[R](a, s)","proof":[]}
 {"goal":"subring_closure_le_iff_set_subset","proof":[]}
+{"goal":"subring_closure[R](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":["subring_closure[R](a).as_set ⊂ s.as_set != set_subset_subring[R](a, s)","subring_closure[R](a).as_set ⊂ s.as_set = set_subset_subring[R](a, s)"]}
+{"goal":"subring_closure_as_set_galois_connection","proof":[]}
 {"goal":"subring_subset[R](subring_closure[R](s.as_set), s)","proof":[]}
 {"goal":"s.as_set.contains(x)","proof":["function[T0: Ring](x0: Subring[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[R](s, x)"]}
 {"goal":"subring_closure[R](s.as_set).contains(x)","proof":["function[T0: Ring](x0: Set[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ subring_closure[T0](x0) }[R](s.as_set, x)"]}
@@ -245,6 +247,24 @@
 {"goal":"subring_closure[R](a) = subring_closure[R](b)","proof":[]}
 {"goal":"subring_closure_eq_of_set_eq","proof":[]}
 {"goal":"subring_closure_idempotent","proof":[]}
+{"goal":"subring_set_closure_at","proof":["function[T0: Ring](x0: Set[T0]) { subring_closure[T0](x0).as_set = subring_set_closure[T0](x0) }[R](a)"]}
+{"goal":"a.subset(subring_closure[R](a).as_set)","proof":[]}
+{"goal":"a.subset(subring_set_closure[R](a))","proof":[]}
+{"goal":"subring_set_closure_extensive","proof":[]}
+{"goal":"subring_subset[R](subring_closure[R](a), subring_closure[R](b))","proof":["not a ⊂ b"]}
+{"goal":"subring_closure[R](a).as_set.subset(subring_closure[R](b).as_set)","proof":[]}
+{"goal":"subring_set_closure[R](a).subset(subring_set_closure[R](b))","proof":["not subring_closure[R](a).as_set ⊂ subring_set_closure[R](b)","subring_closure[R](a).as_set ⊂ subring_set_closure[R](b)"]}
+{"goal":"subring_set_closure_mono","proof":["not a ⊂ b"]}
+{"goal":"subring_set_closure[R](subring_set_closure[R](a)) = subring_set_closure[R](a)","proof":[]}
+{"goal":"subring_set_closure_idempotent","proof":[]}
+{"goal":"subring_set_closure[R](a).subset(subring_set_closure[R](b))","proof":["not a ⊂ b"]}
+{"goal":"subring_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[R, R](subring_set_closure[R])","let w0: Set[R] satisfy { exists(k0: Set[R]) { w0 ⊂ k0 and not subring_set_closure[R](w0) ⊂ subring_set_closure[R](k0) } }","let w1: Set[R] satisfy { w0 ⊂ w1 and not subring_set_closure[R](w0) ⊂ subring_set_closure[R](w1) }","let w2: Set[R] satisfy { w0 ⊂ w2 and not subring_set_closure[R](w0) ⊂ subring_set_closure[R](w2) }","function[T0: Ring](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or subring_set_closure[T0](x0) ⊂ subring_set_closure[T0](x1) }[R](w0, w2)","w0 ⊂ w2","not subring_set_closure[R](w0) ⊂ subring_set_closure[R](w2)","subring_set_closure[R](w0) ⊂ subring_set_closure[R](w2)"]}
+{"goal":"a.subset(subring_set_closure[R](a))","proof":[]}
+{"goal":"subring_set_closure_is_extensive","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x1 ⊂ x0(x1) } = is_set_extensive_map[T0](x0) }[R](subring_set_closure[R])","let w0: Set[R] satisfy { not w0 ⊂ subring_set_closure[R](w0) }","function[T0: Ring](x0: Set[T0]) { x0 ⊂ subring_set_closure[T0](x0) }[R](w0)"]}
+{"goal":"subring_set_closure[R](subring_set_closure[R](a)) = subring_set_closure[R](a)","proof":[]}
+{"goal":"subring_set_closure_is_idempotent","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x0(x0(x1)) = x0(x1) } = is_set_idempotent_map[T0](x0) }[R](subring_set_closure[R])","let w0: Set[R] satisfy { subring_set_closure[R](subring_set_closure[R](w0)) != subring_set_closure[R](w0) }","function[T0: Ring](x0: Set[T0]) { subring_set_closure[T0](subring_set_closure[T0](x0)) = subring_set_closure[T0](x0) }[R](w0)"]}
+{"goal":"is_set_closure_operator[R](subring_set_closure[R])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[R](subring_set_closure[R])","function[T0: Ring] { is_subset_monotone_map[T0, T0](subring_set_closure[T0]) }[R]","function[T0: Ring] { is_set_idempotent_map[T0](subring_set_closure[T0]) }[R]","function[T0: Ring] { is_set_extensive_map[T0](subring_set_closure[T0]) }[R]","not (is_subset_monotone_map[R, R](subring_set_closure[R]) and is_set_extensive_map[R](subring_set_closure[R]) and is_set_idempotent_map[R](subring_set_closure[R]))","not (is_subset_monotone_map[R, R](subring_set_closure[R]) and is_set_extensive_map[R](subring_set_closure[R]))"]}
+{"goal":"subring_set_closure_operator","proof":[]}
 {"goal":"Set.universal_set[R].contains(x)","proof":["function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[R](x)"]}
 {"goal":"subring_closure[R](Set.universal_set[R]).contains(x)","proof":[]}
 {"goal":"subring_subset[R](full_subring[R], subring_closure[R](Set.universal_set[R]))","proof":["function[T0: Ring](x0: Subring[T0], x1: Subring[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subring_subset[T0](x0, x1) }[R](full_subring[R], subring_closure[R](Set.universal_set[R]))","let w0: R satisfy { w0 ∈ full_subring[R] and not w0 ∈ subring_closure[R](Set.universal_set[R]) }","function(x0: R) { not x0 ∈ full_subring[R] or x0 ∈ subring_closure[R](Set.universal_set[R]) }(w0)"]}

@@ -1,7 +1,9 @@
 from nat import Nat
 from monoid import Monoid, MonoidHom, monoid_hom_one, monoid_hom_mul
 from subsemigroup import Subsemigroup, subsemigroup_closure_constraint
-from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite
+from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite,
+    is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
+    is_set_closure_operator
 from functions import predicate_extensionality
 
 // We define submonoids with the "bundled" technique, so a submonoid carries along
@@ -972,6 +974,16 @@ theorem submonoid_closure_le_iff_set_subset[M: Monoid](a: Set[M], s: Submonoid[M
     submonoid_subset(submonoid_closure(a), s) = set_subset_submonoid(a, s)
 }
 
+/// The submonoid closure and underlying set maps form a set-containment adjunction.
+theorem submonoid_closure_as_set_galois_connection[M: Monoid](a: Set[M], s: Submonoid[M]) {
+    submonoid_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+} by {
+    submonoid_subset_as_set_eq(submonoid_closure(a), s)
+    submonoid_closure_le_iff_set_subset(a, s)
+    set_subset_submonoid_as_set_eq(a, s)
+    submonoid_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+}
+
 /// The closure of the underlying set of a submonoid is the submonoid itself.
 theorem submonoid_closure_as_set[M: Monoid](s: Submonoid[M]) {
     submonoid_closure(s.as_set) = s
@@ -1017,6 +1029,94 @@ theorem submonoid_closure_idempotent[M: Monoid](a: Set[M]) {
     submonoid_closure(submonoid_closure(a).as_set) = submonoid_closure(a)
 } by {
     submonoid_closure_as_set(submonoid_closure(a))
+}
+
+/// The set closure induced by submonoid generation.
+define submonoid_set_closure[M: Monoid](a: Set[M]) -> Set[M] {
+    submonoid_closure(a).as_set
+}
+
+/// The submonoid set closure is the underlying set of the generated submonoid.
+theorem submonoid_set_closure_at[M: Monoid](a: Set[M]) {
+    submonoid_set_closure(a) = submonoid_closure(a).as_set
+}
+
+/// The submonoid set closure contains the original set.
+theorem submonoid_set_closure_extensive[M: Monoid](a: Set[M]) {
+    a.subset(submonoid_set_closure(a))
+} by {
+    submonoid_set_closure_at(a)
+    submonoid_subset_closure(a)
+    set_subset_submonoid_as_set_eq(a, submonoid_closure(a))
+    a.subset(submonoid_closure(a).as_set)
+    a.subset(submonoid_set_closure(a))
+}
+
+/// The submonoid set closure preserves inclusion.
+theorem submonoid_set_closure_mono[M: Monoid](a: Set[M], b: Set[M]) {
+    a.subset(b) implies submonoid_set_closure(a).subset(submonoid_set_closure(b))
+} by {
+    if a.subset(b) {
+        submonoid_closure_mono(a, b)
+        submonoid_subset(submonoid_closure(a), submonoid_closure(b))
+        submonoid_subset_as_set_eq(submonoid_closure(a), submonoid_closure(b))
+        submonoid_closure(a).as_set.subset(submonoid_closure(b).as_set)
+        submonoid_set_closure_at(a)
+        submonoid_set_closure_at(b)
+        submonoid_set_closure(a).subset(submonoid_set_closure(b))
+    }
+}
+
+/// The submonoid set closure is unchanged after two applications.
+theorem submonoid_set_closure_idempotent[M: Monoid](a: Set[M]) {
+    submonoid_set_closure(submonoid_set_closure(a)) = submonoid_set_closure(a)
+} by {
+    submonoid_set_closure_at(a)
+    submonoid_set_closure_at(submonoid_set_closure(a))
+    submonoid_closure_idempotent(a)
+    submonoid_set_closure(submonoid_set_closure(a)) = submonoid_set_closure(a)
+}
+
+/// Submonoid set closure is monotone as a set map.
+theorem submonoid_set_closure_is_monotone[M: Monoid] {
+    is_subset_monotone_map(submonoid_set_closure[M])
+} by {
+    forall(a: Set[M], b: Set[M]) {
+        if a.subset(b) {
+            submonoid_set_closure_mono(a, b)
+            submonoid_set_closure(a).subset(submonoid_set_closure(b))
+        }
+    }
+}
+
+/// Submonoid set closure is extensive as a set map.
+theorem submonoid_set_closure_is_extensive[M: Monoid] {
+    is_set_extensive_map(submonoid_set_closure[M])
+} by {
+    forall(a: Set[M]) {
+        submonoid_set_closure_extensive(a)
+        a.subset(submonoid_set_closure(a))
+    }
+}
+
+/// Submonoid set closure is idempotent as a set map.
+theorem submonoid_set_closure_is_idempotent[M: Monoid] {
+    is_set_idempotent_map(submonoid_set_closure[M])
+} by {
+    forall(a: Set[M]) {
+        submonoid_set_closure_idempotent(a)
+        submonoid_set_closure(submonoid_set_closure(a)) = submonoid_set_closure(a)
+    }
+}
+
+/// Submonoid generation induces a closure operator on sets.
+theorem submonoid_set_closure_operator[M: Monoid] {
+    is_set_closure_operator(submonoid_set_closure[M])
+} by {
+    submonoid_set_closure_is_monotone[M]
+    submonoid_set_closure_is_extensive[M]
+    submonoid_set_closure_is_idempotent[M]
+    is_set_closure_operator(submonoid_set_closure[M])
 }
 
 /// The closure of the empty set is the identity submonoid.
