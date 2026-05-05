@@ -325,7 +325,8 @@ theorem zero_is_different_than_one {
 
 instance Real: Field
 
-from ordered_field import OrderedField
+from ordered_field import OrderedField, mul_le_mul_of_nonneg_right, mul_le_mul_of_nonneg_left,
+    mul_lt_mul_of_pos_right
 
 instance Real: OrderedField
 
@@ -375,9 +376,11 @@ theorem mul_le_mul_pos_right(a: Real, b: Real, c: Real) {
     implies
     a * c <= b * c
 } by {
-    c.is_positive
-    not c.is_negative
-    a * c <= b * c
+    if a <= b and c > Real.0 {
+        Real.0 <= c
+        mul_le_mul_of_nonneg_right(a, b, c)
+        a * c <= b * c
+    }
 }
 
 /// If a <= b and c > 0, then c * a <= c * b.
@@ -386,9 +389,11 @@ theorem mul_le_mul_pos_left(a: Real, b: Real, c: Real) {
     implies
     c * a <= c * b
 } by {
-    c.is_positive
-    not c.is_negative
-    c * a <= c * b
+    if a <= b and c > Real.0 {
+        Real.0 <= c
+        mul_le_mul_of_nonneg_left(a, b, c)
+        c * a <= c * b
+    }
 }
 
 /// If a / b < c and b > 0, then a < b * c.
@@ -403,10 +408,8 @@ theorem div_lt_mul_pos(a: Real, b: Real, c: Real) {
         a / b = a * b.inverse
         a * b.inverse < c
 
-        // Multiply both sides by b (which is positive)
-        // Since b > 0, multiplication preserves <
-        b.is_positive
-        not b.is_negative
+        // Multiply both sides by b, which is positive.
+        mul_lt_mul_of_pos_right(a * b.inverse, c, b)
         (a * b.inverse) * b < c * b
 
         // Simplify left side
