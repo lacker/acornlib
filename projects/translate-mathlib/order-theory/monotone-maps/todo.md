@@ -3,11 +3,11 @@
 Goal: give order-preserving maps a reusable interface.
 
 - [ ] Decide the exact preimage API for plain monotone maps; order-embedding interval preimages are in place
-- [ ] Connect monotone sequences with current convergence theorems
 - [ ] Refactor monotonicity proofs in analysis files to the shared interface
 
 Status:
 
+- `src/real/real_series.ac` now bridges the shared `order_maps` API into sequence convergence: monotone maps from `Nat` to `Real` imply the local increasing-sequence predicate, antitone maps imply the local decreasing-sequence predicate, and the monotone/antitone bounded convergence and limit-bound aliases are available without unpacking the local adjacent-step definitions.
 - `src/ordered_field.ac` now has generic strict and reverse-order scalar multiplication aliases for positive, negative, nonnegative, and nonpositive scalars; `src/real/real_field.ac` now keeps its Real-specific scalar monotonicity wrappers by calling the shared ordered-field API.
 - `src/order_maps.ac` now defines `is_order_surjection`, projection lemmas, identity order surjection, and composition of order-preserving surjections.
 - `src/order_maps.ac` now has strict-order preservation and reflection for order embeddings, interval image lemmas for order embeddings, and antitone interval image lemmas with reversed endpoints.

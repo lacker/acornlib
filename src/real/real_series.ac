@@ -9,6 +9,7 @@ from real.real_set import Real
 from real.real_seq import cauchy_bound, tail_bound, add_seq, neg_rat_seq, converges_imp_converges_to, eventual_ub, eventual_lb, lt_converges_to_imp_lb, gt_converges_to_imp_ub, eventual_eq, eq_converges, eq_imp_limit, converges_to_unique
 from real.real_ring import converges, converges_to, limit, lift_seq, mul_nonneg, mul_abs
 from real.real_base import lte_add_right, close_imp_bounds
+from order_maps import is_monotone, is_antitone
 
 numerals Real
 
@@ -113,6 +114,18 @@ theorem distant_increasing(a: Nat -> Real, m: Nat, n: Nat) {
         a(m) <= a(m + k)
         a(m + k) = a(n)
         a(m) <= a(n)
+    }
+}
+
+/// A monotone map from natural numbers to reals is an increasing sequence.
+theorem monotone_is_increasing(a: Nat -> Real) {
+    is_monotone(a) implies is_increasing(a)
+} by {
+    if is_monotone(a) {
+        forall(n: Nat) {
+            n <= n.suc
+            a(n) <= a(n.suc)
+        }
     }
 }
 
@@ -353,6 +366,36 @@ theorem increasing_bounded_above_converges(a: Nat -> Real) {
             is_upper_bound(a, ub)
         }
         converges(a)
+    }
+}
+
+/// A monotone real sequence with an upper bound converges.
+theorem monotone_bounded_above_converges(a: Nat -> Real, b: Real) {
+    is_monotone(a) and is_upper_bound(a, b) implies converges(a)
+} by {
+    if is_monotone(a) and is_upper_bound(a, b) {
+        is_increasing(a)
+        converges(a)
+    }
+}
+
+/// A monotone real sequence with some upper bound converges.
+theorem monotone_has_upper_bound_converges(a: Nat -> Real) {
+    is_monotone(a) and has_upper_bound_seq(a) implies converges(a)
+} by {
+    if is_monotone(a) and has_upper_bound_seq(a) {
+        is_increasing(a)
+        converges(a)
+    }
+}
+
+/// A convergent monotone real sequence is bounded above by its limit.
+theorem monotone_convergent_bounded_by_limit(a: Nat -> Real) {
+    is_monotone(a) and converges(a) implies is_upper_bound(a, limit(a))
+} by {
+    if is_monotone(a) and converges(a) {
+        is_increasing(a)
+        is_upper_bound(a, limit(a))
     }
 }
 
@@ -1170,6 +1213,18 @@ theorem distant_decreasing(a: Nat -> Real, m: Nat, n: Nat) {
     }
 }
 
+/// An antitone map from natural numbers to reals is a decreasing sequence.
+theorem antitone_is_decreasing(a: Nat -> Real) {
+    is_antitone(a) implies is_decreasing_seq(a)
+} by {
+    if is_antitone(a) {
+        forall(n: Nat) {
+            n <= n.suc
+            a(n.suc) <= a(n)
+        }
+    }
+}
+
 /// The first term of an increasing sequence is a lower bound.
 theorem increasing_lower_bound_first(a: Nat -> Real) {
     is_increasing(a) implies is_lower_bound(a, a(Nat.0))
@@ -1261,6 +1316,26 @@ theorem decreasing_has_lower_bound_converges(a: Nat -> Real) {
     }
 }
 
+/// An antitone real sequence with a lower bound converges.
+theorem antitone_bounded_below_converges(a: Nat -> Real, lb: Real) {
+    is_antitone(a) and is_lower_bound(a, lb) implies converges(a)
+} by {
+    if is_antitone(a) and is_lower_bound(a, lb) {
+        is_decreasing_seq(a)
+        converges(a)
+    }
+}
+
+/// An antitone real sequence with some lower bound converges.
+theorem antitone_has_lower_bound_converges(a: Nat -> Real) {
+    is_antitone(a) and has_lower_bound_seq(a) implies converges(a)
+} by {
+    if is_antitone(a) and has_lower_bound_seq(a) {
+        is_decreasing_seq(a)
+        converges(a)
+    }
+}
+
 /// The limit of a negated sequence is the negation of the limit.
 theorem limit_neg_seq(a: Nat -> Real) {
     converges(a) implies limit(neg_seq(a)) = -limit(a)
@@ -1290,6 +1365,16 @@ theorem decreasing_convergent_bounded_by_limit(a: Nat -> Real) {
             -a(n) <= -limit(a)
             limit(a) <= a(n)
         }
+    }
+}
+
+/// A convergent antitone real sequence is bounded below by its limit.
+theorem antitone_convergent_bounded_by_limit(a: Nat -> Real) {
+    is_antitone(a) and converges(a) implies is_lower_bound(a, limit(a))
+} by {
+    if is_antitone(a) and converges(a) {
+        is_decreasing_seq(a)
+        is_lower_bound(a, limit(a))
     }
 }
 
