@@ -198,6 +198,12 @@
 {"goal":"subsemigroup_closure[S](Set.universal_set[S]).contains(x)","proof":[]}
 {"goal":"subsemigroup_subset[S](full_subsemigroup[S], subsemigroup_closure[S](Set.universal_set[S]))","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: Subsemigroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subsemigroup_subset[T0](x0, x1) }[S](full_subsemigroup[S], subsemigroup_closure[S](Set.universal_set[S]))","let w0: S satisfy { w0 ∈ full_subsemigroup[S] and not w0 ∈ subsemigroup_closure[S](Set.universal_set[S]) }","function(x0: S) { not x0 ∈ full_subsemigroup[S] or x0 ∈ subsemigroup_closure[S](Set.universal_set[S]) }(w0)"]}
 {"goal":"subsemigroup_closure_universal","proof":[]}
-{"goal":"exists(k0: Set[S]) { k0.is_finite and subsemigroup_closure[S](k0) = subsemigroup_closure[S](a) }","proof":[]}
-{"goal":"subsemigroup_is_finitely_generated[S](subsemigroup_closure[S](a))","proof":["let w0: Set[S] satisfy { w0.is_finite and subsemigroup_closure[S](w0) = subsemigroup_closure[S](a) }","function[T0: Semigroup](x0: Subsemigroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subsemigroup_closure[T0](k0) = x0 } = subsemigroup_is_finitely_generated[T0](x0) }[S](subsemigroup_closure[S](a))"]}
+{"goal":"exists(k0: Set[S]) { k0.is_finite and subsemigroup_closure[S](k0) = s }","proof":["function(x0: Set[S]) { not (x0.is_finite and subsemigroup_closure[S](x0) = s) }(a)"]}
+{"goal":"subsemigroup_is_finitely_generated[S](s)","proof":["let w0: Set[S] satisfy { w0.is_finite and subsemigroup_closure[S](w0) = s }","function[T0: Semigroup](x0: Subsemigroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subsemigroup_closure[T0](k0) = x0 } = subsemigroup_is_finitely_generated[T0](x0) }[S](s)"]}
+{"goal":"subsemigroup_is_finitely_generated_of_closure_eq","proof":["subsemigroup_closure[S](a) != s or not a.is_finite","a.is_finite","subsemigroup_closure[S](a) = s","subsemigroup_closure[S](a) != s"]}
 {"goal":"subsemigroup_closure_is_finitely_generated","proof":[]}
+{"goal":"subsemigroup_closure_singleton_is_finitely_generated","proof":[]}
+{"goal":"subsemigroup_closure_singleton_contains","proof":[]}
+{"goal":"subsemigroup_is_finitely_generated[S](subsemigroup_closure[S](Set.empty_set[S]))","proof":[]}
+{"goal":"subsemigroup_is_finitely_generated[S](empty_subsemigroup[S])","proof":[]}
+{"goal":"empty_subsemigroup_is_finitely_generated","proof":[]}

@@ -274,9 +274,15 @@
 {"goal":"subgroup_closure[G](Set.universal_set[G]).contains(x)","proof":[]}
 {"goal":"subgroup_subset[G](full_subgroup[G], subgroup_closure[G](Set.universal_set[G]))","proof":["function[T0: Group](x0: Subgroup[T0], x1: Subgroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = subgroup_subset[T0](x0, x1) }[G](full_subgroup[G], subgroup_closure[G](Set.universal_set[G]))","let w0: G satisfy { w0 ∈ full_subgroup[G] and not w0 ∈ subgroup_closure[G](Set.universal_set[G]) }","function(x0: G) { not x0 ∈ full_subgroup[G] or x0 ∈ subgroup_closure[G](Set.universal_set[G]) }(w0)"]}
 {"goal":"subgroup_closure_universal","proof":[]}
-{"goal":"exists(k0: Set[G]) { k0.is_finite and subgroup_closure[G](k0) = subgroup_closure[G](a) }","proof":[]}
-{"goal":"subgroup_is_finitely_generated[G](subgroup_closure[G](a))","proof":["let w0: Set[G] satisfy { w0.is_finite and subgroup_closure[G](w0) = subgroup_closure[G](a) }","function[T0: Group](x0: Subgroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subgroup_closure[T0](k0) = x0 } = subgroup_is_finitely_generated[T0](x0) }[G](subgroup_closure[G](a))"]}
+{"goal":"exists(k0: Set[G]) { k0.is_finite and subgroup_closure[G](k0) = s }","proof":["function(x0: Set[G]) { not (x0.is_finite and subgroup_closure[G](x0) = s) }(a)"]}
+{"goal":"subgroup_is_finitely_generated[G](s)","proof":["let w0: Set[G] satisfy { w0.is_finite and subgroup_closure[G](w0) = s }","function[T0: Group](x0: Subgroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subgroup_closure[T0](k0) = x0 } = subgroup_is_finitely_generated[T0](x0) }[G](s)"]}
+{"goal":"subgroup_is_finitely_generated_of_closure_eq","proof":["subgroup_closure[G](a) != s or not a.is_finite","a.is_finite","subgroup_closure[G](a) = s","subgroup_closure[G](a) != s"]}
 {"goal":"subgroup_closure_is_finitely_generated","proof":[]}
+{"goal":"subgroup_closure_singleton_is_finitely_generated","proof":[]}
+{"goal":"subgroup_closure_singleton_contains","proof":[]}
+{"goal":"subgroup_is_finitely_generated[G](subgroup_closure[G](Set.empty_set[G]))","proof":[]}
+{"goal":"subgroup_is_finitely_generated[G](identity_subgroup[G])","proof":[]}
+{"goal":"identity_subgroup_is_finitely_generated","proof":[]}
 {"goal":"submonoid_identity_constraint[G](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { submonoid_identity_constraint[T0](x0) = x0(T0.1) }[G](s.contains)"]}
 {"goal":"s.contains(a * b)","proof":[]}
 {"goal":"submonoid_closure_constraint[G](s.contains)","proof":["function[T0: lib(monoid).Monoid](x0: T0 -> Bool) { forall(x1: T0, x2: T0) { not x0(x1) or not x0(x2) or x0(x1 * x2) } = submonoid_closure_constraint[T0](x0) }[G](s.contains)","let w0: G satisfy { exists(k0: G) { w0 ∈ s and k0 ∈ s and not w0 * k0 ∈ s } }","let w1: G satisfy { w0 ∈ s and w1 ∈ s and not w0 * w1 ∈ s }","let w2: G satisfy { w0 ∈ s and w2 ∈ s and not w0 * w2 ∈ s }","function[T0: Group](x0: Subgroup[T0], x1: T0, x2: T0) { not x1 ∈ x0 or not x2 ∈ x0 or x1 * x2 ∈ x0 }[G](s, w0, w2)"]}
