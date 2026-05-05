@@ -1,5 +1,6 @@
 from semigroup import Semigroup
 from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite,
+    union_contains_eq, union_contains_left, union_contains_right,
     is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
     is_set_closure_operator
 from functions import predicate_extensionality
@@ -1032,9 +1033,111 @@ theorem subsemigroup_closure_universal[S: Semigroup] {
     subsemigroup_subset_antisymm(subsemigroup_closure(Set[S].universal_set), full_subsemigroup[S])
 }
 
+/// The least subsemigroup containing two subsemigroups.
+define subsemigroup_sup[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) -> Subsemigroup[S] {
+    subsemigroup_closure(a.as_set.union(b.as_set))
+}
+
+/// The join of two subsemigroups is the closure of the union of their underlying sets.
+theorem subsemigroup_sup_eq_closure_union[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_sup(a, b) = subsemigroup_closure(a.as_set.union(b.as_set))
+}
+
+/// The left subsemigroup is contained in the join.
+theorem subsemigroup_subset_sup_left[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_subset(a, subsemigroup_sup(a, b))
+} by {
+    forall(x: S) {
+        if a.contains(x) {
+            subsemigroup_as_set_contains_eq(a, x)
+            a.as_set.contains(x)
+            union_contains_left(a.as_set, b.as_set, x)
+            a.as_set.union(b.as_set).contains(x)
+            subsemigroup_closure_contains_of_set_contains(a.as_set.union(b.as_set), x)
+            subsemigroup_closure(a.as_set.union(b.as_set)).contains(x)
+            subsemigroup_sup(a, b).contains(x)
+        }
+    }
+}
+
+/// The right subsemigroup is contained in the join.
+theorem subsemigroup_subset_sup_right[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_subset(b, subsemigroup_sup(a, b))
+} by {
+    forall(x: S) {
+        if b.contains(x) {
+            subsemigroup_as_set_contains_eq(b, x)
+            b.as_set.contains(x)
+            union_contains_right(a.as_set, b.as_set, x)
+            a.as_set.union(b.as_set).contains(x)
+            subsemigroup_closure_contains_of_set_contains(a.as_set.union(b.as_set), x)
+            subsemigroup_closure(a.as_set.union(b.as_set)).contains(x)
+            subsemigroup_sup(a, b).contains(x)
+        }
+    }
+}
+
+/// The join is contained in every common upper bound.
+theorem subsemigroup_sup_subset_of_subset_left_right[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S],
+    c: Subsemigroup[S]
+) {
+    subsemigroup_subset(a, c) and subsemigroup_subset(b, c) implies subsemigroup_subset(subsemigroup_sup(a, b), c)
+} by {
+    if subsemigroup_subset(a, c) and subsemigroup_subset(b, c) {
+        forall(x: S) {
+            if a.as_set.union(b.as_set).contains(x) {
+                union_contains_eq(a.as_set, b.as_set, x)
+                if a.as_set.contains(x) {
+                    subsemigroup_as_set_contains_eq(a, x)
+                    a.contains(x)
+                    c.contains(x)
+                } else {
+                    b.as_set.contains(x)
+                    subsemigroup_as_set_contains_eq(b, x)
+                    b.contains(x)
+                    c.contains(x)
+                }
+            }
+        }
+        set_subset_subsemigroup(a.as_set.union(b.as_set), c)
+        subsemigroup_closure_subset_of_set_subset(a.as_set.union(b.as_set), c)
+        subsemigroup_subset(subsemigroup_closure(a.as_set.union(b.as_set)), c)
+        subsemigroup_subset(subsemigroup_sup(a, b), c)
+    }
+}
+
+/// Containment of a join is equivalent to containment of both subsemigroups.
+theorem subsemigroup_sup_subset_iff[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S],
+    c: Subsemigroup[S]
+) {
+    subsemigroup_subset(subsemigroup_sup(a, b), c) = (subsemigroup_subset(a, c) and subsemigroup_subset(b, c))
+} by {
+    if subsemigroup_subset(subsemigroup_sup(a, b), c) {
+        subsemigroup_subset_sup_left(a, b)
+        subsemigroup_subset_trans(a, subsemigroup_sup(a, b), c)
+        subsemigroup_subset(a, c)
+        subsemigroup_subset_sup_right(a, b)
+        subsemigroup_subset_trans(b, subsemigroup_sup(a, b), c)
+        subsemigroup_subset(b, c)
+        subsemigroup_subset(a, c) and subsemigroup_subset(b, c)
+    }
+    if subsemigroup_subset(a, c) and subsemigroup_subset(b, c) {
+        subsemigroup_sup_subset_of_subset_left_right(a, b, c)
+        subsemigroup_subset(subsemigroup_sup(a, b), c)
+    }
+    subsemigroup_subset(subsemigroup_sup(a, b), c) = (subsemigroup_subset(a, c) and subsemigroup_subset(b, c))
+}
+
 attributes Subsemigroup[S: Semigroup] {
     /// The smallest subsemigroup containing a set.
     let closure: Set[S] -> Subsemigroup[S] = subsemigroup_closure
+
+    /// The least subsemigroup containing this subsemigroup and another subsemigroup.
+    let sup: (Subsemigroup[S], Subsemigroup[S]) -> Subsemigroup[S] = subsemigroup_sup
 }
 
 /// True if a subsemigroup is generated by a finite set.

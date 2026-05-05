@@ -246,6 +246,33 @@
 {"goal":"add_submonoid_closure[M](Set.universal_set[M]).contains(x)","proof":[]}
 {"goal":"add_submonoid_subset[M](full_add_submonoid[M], add_submonoid_closure[M](Set.universal_set[M]))","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_submonoid_subset[T0](x0, x1) }[M](full_add_submonoid[M], add_submonoid_closure[M](Set.universal_set[M]))","let w0: M satisfy { w0 ∈ full_add_submonoid[M] and not w0 ∈ add_submonoid_closure[M](Set.universal_set[M]) }","function(x0: M) { not x0 ∈ full_add_submonoid[M] or x0 ∈ add_submonoid_closure[M](Set.universal_set[M]) }(w0)"]}
 {"goal":"add_submonoid_closure_universal","proof":[]}
+{"goal":"add_submonoid_sup_eq_closure_union","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { add_submonoid_closure[T0](x0.as_set ∪ x1.as_set) = add_submonoid_sup[T0](x0, x1) }[M](a, b)"]}
+{"goal":"a.as_set.contains(x)","proof":[]}
+{"goal":"a.as_set.union(b.as_set).contains(x)","proof":[]}
+{"goal":"add_submonoid_closure[M](a.as_set.union(b.as_set)).contains(x)","proof":[]}
+{"goal":"add_submonoid_sup[M](a, b).contains(x)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { add_submonoid_closure[T0](x0.as_set ∪ x1.as_set) = add_submonoid_sup[T0](x0, x1) }[M](a, b)"]}
+{"goal":"add_submonoid_subset_sup_left","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_submonoid_subset[T0](x0, x1) }[M](a, add_submonoid_sup[M](a, b))","let w0: M satisfy { w0 ∈ a and not w0 ∈ add_submonoid_sup[M](a, b) }","function(x0: M) { not x0 ∈ a or x0 ∈ add_submonoid_sup[M](a, b) }(w0)"]}
+{"goal":"b.as_set.contains(x)","proof":[]}
+{"goal":"a.as_set.union(b.as_set).contains(x)","proof":[]}
+{"goal":"add_submonoid_closure[M](a.as_set.union(b.as_set)).contains(x)","proof":[]}
+{"goal":"add_submonoid_sup[M](a, b).contains(x)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { add_submonoid_closure[T0](x0.as_set ∪ x1.as_set) = add_submonoid_sup[T0](x0, x1) }[M](a, b)"]}
+{"goal":"add_submonoid_subset_sup_right","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_submonoid_subset[T0](x0, x1) }[M](b, add_submonoid_sup[M](a, b))","let w0: M satisfy { w0 ∈ b and not w0 ∈ add_submonoid_sup[M](a, b) }","function(x0: M) { not x0 ∈ b or x0 ∈ add_submonoid_sup[M](a, b) }(w0)"]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_submonoid_subset[T0](x0, x1) }[M](a, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[M](a.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[M](a.contains, c.contains, x)"]}
+{"goal":"b.as_set.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = add_submonoid_subset[T0](x0, x1) }[M](b, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[M](b.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[M](b.contains, c.contains, x)"]}
+{"goal":"set_subset_add_submonoid[M](a.as_set.union(b.as_set), c) = forall(x0: M) { a.as_set.union(b.as_set).contains(x0) implies c.contains(x0) }","proof":["function[T0: AddMonoid](x0: Set[T0], x1: AddSubmonoid[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_add_submonoid[T0](x0, x1) }[M](a.as_set ∪ b.as_set, c)"]}
+{"goal":"set_subset_add_submonoid[M](a.as_set.union(b.as_set), c)","proof":["let w0: M satisfy { w0 ∈ a.as_set ∪ b.as_set and not w0 ∈ c }","function(x0: M) { not x0 ∈ a.as_set ∪ b.as_set or x0 ∈ c }(w0)","w0 ∈ a.as_set ∪ b.as_set and not w0 ∈ c","not w0 ∈ a.as_set ∪ b.as_set"]}
+{"goal":"add_submonoid_subset[M](add_submonoid_closure[M](a.as_set.union(b.as_set)), c)","proof":[]}
+{"goal":"add_submonoid_subset[M](add_submonoid_sup[M](a, b), c)","proof":["function[T0: AddMonoid](x0: AddSubmonoid[T0], x1: AddSubmonoid[T0]) { add_submonoid_closure[T0](x0.as_set ∪ x1.as_set) = add_submonoid_sup[T0](x0, x1) }[M](a, b)"]}
+{"goal":"add_submonoid_sup_subset_of_subset_left_right","proof":[]}
+{"goal":"add_submonoid_subset[M](a, c)","proof":[]}
+{"goal":"add_submonoid_subset[M](b, c)","proof":[]}
+{"goal":"add_submonoid_subset[M](a, c) and add_submonoid_subset[M](b, c)","proof":[]}
+{"goal":"add_submonoid_subset[M](add_submonoid_sup[M](a, b), c)","proof":[]}
+{"goal":"add_submonoid_subset[M](add_submonoid_sup[M](a, b), c) = (add_submonoid_subset[M](a, c) and add_submonoid_subset[M](b, c))","proof":[]}
+{"goal":"add_submonoid_sup_subset_iff","proof":[]}
 {"goal":"exists(k0: Set[M]) { k0.is_finite and add_submonoid_closure[M](k0) = add_submonoid_closure[M](a) }","proof":[]}
 {"goal":"add_submonoid_is_finitely_generated[M](add_submonoid_closure[M](a))","proof":["let w0: Set[M] satisfy { w0.is_finite and add_submonoid_closure[M](w0) = add_submonoid_closure[M](a) }","function[T0: AddMonoid](x0: AddSubmonoid[T0]) { exists(k0: Set[T0]) { k0.is_finite and add_submonoid_closure[T0](k0) = x0 } = add_submonoid_is_finitely_generated[T0](x0) }[M](add_submonoid_closure[M](a))"]}
 {"goal":"add_submonoid_closure_is_finitely_generated","proof":[]}
