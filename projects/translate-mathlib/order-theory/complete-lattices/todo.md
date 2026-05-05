@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue the unbundled set complete-lattice API with certificate-stable wrapper lemmas for finite and indexed suprema/infima
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed, list, range, monotone-range, distributivity, and preimage API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -21,4 +21,6 @@ Status:
 - `src/set_lattice.ac` now has finite-family `set_list_sSup` / `set_list_sInf` and bounded natural-family `set_range_sSup` / `set_range_sInf` wrappers, with membership, universal-property, monotonicity, empty/successor range, and comparison-to-full-family lemmas.
 - `src/set_lattice.ac` now has bounded natural-family complement duality and bound-monotonicity wrappers for `set_range_sSup` / `set_range_sInf`.
 - `src/set_lattice.ac` now has constant empty/universal family helpers and indexed-family bottom/top wrapper lemmas for `set_sSup` and `set_sInf`.
+- `src/set_lattice.ac` now has indexed-family extensionality wrappers, right-sided distributivity of binary set infimum/supremum over family supremum/infimum, and bounded monotone-family simplification plus sequential union/intersection bridge lemmas for `set_range_sSup` and `set_range_sInf`.
+- `src/set_lattice.ac` now has preimage transport wrappers for indexed, list-indexed, and bounded natural-family set suprema and infima.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.
