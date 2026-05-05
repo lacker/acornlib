@@ -33,7 +33,13 @@ from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     range_indexed_intersection_suc_eq_intersection,
     range_indexed_union_complement_eq_intersection_complement,
     range_indexed_intersection_complement_eq_union_complement,
-    range_indexed_union_subset_of_bound_le, range_indexed_intersection_subset_of_bound_le
+    range_indexed_union_subset_of_bound_le, range_indexed_intersection_subset_of_bound_le,
+    is_increasing, is_decreasing, seq_union, seq_intersection,
+    range_indexed_union_suc_subset_of_increasing, family_subset_range_indexed_union_suc,
+    range_indexed_union_suc_of_increasing, decreasing_subset_range_indexed_intersection_suc,
+    range_indexed_intersection_suc_subset_family, range_indexed_intersection_suc_of_decreasing,
+    range_indexed_union_subset_seq_union, seq_intersection_subset_range_indexed_intersection,
+    set_preimage, set_preimage_contains_eq
 
 /// The infimum of two sets.
 define set_inf[K](a: Set[K], b: Set[K]) -> Set[K] {
@@ -360,6 +366,11 @@ define set_universal_family[K, I](i: I) -> Set[K] {
     Set[K].universal_set
 }
 
+/// The family formed by taking preimages of an indexed family.
+define set_preimage_family[T, U, I](f: T -> U, family: I -> Set[U], i: I) -> Set[T] {
+    set_preimage(f, family(i))
+}
+
 /// Membership in the supremum of a family is membership in some member.
 theorem set_sSup_contains_eq[K, I](family: I -> Set[K], x: K) {
     set_sSup(family).contains(x) = exists(i: I) {
@@ -491,6 +502,113 @@ theorem set_sInf_monotone[K, I](a: I -> Set[K], b: I -> Set[K]) {
         set_sInf(b) = indexed_intersection(b)
         set_sInf(a).subset(set_sInf(b))
     }
+}
+
+/// Mutually pointwise-contained families have the same supremum.
+theorem set_sSup_eq_of_family_subset[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) and
+    (forall(i: I) { b(i).subset(a(i)) })
+    implies
+    set_sSup(a) = set_sSup(b)
+} by {
+    if (forall(i: I) { a(i).subset(b(i)) }) and
+        (forall(i: I) { b(i).subset(a(i)) }) {
+        set_sSup_monotone(a, b)
+        set_sSup_monotone(b, a)
+        subset_antisymm(set_sSup(a), set_sSup(b))
+    }
+}
+
+/// Mutually pointwise-contained families have the same infimum.
+theorem set_sInf_eq_of_family_subset[K, I](a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { a(i).subset(b(i)) }) and
+    (forall(i: I) { b(i).subset(a(i)) })
+    implies
+    set_sInf(a) = set_sInf(b)
+} by {
+    if (forall(i: I) { a(i).subset(b(i)) }) and
+        (forall(i: I) { b(i).subset(a(i)) }) {
+        set_sInf_monotone(a, b)
+        set_sInf_monotone(b, a)
+        subset_antisymm(set_sInf(a), set_sInf(b))
+    }
+}
+
+/// Preimage commutes with indexed set suprema.
+theorem set_preimage_sSup[T, U, I](f: T -> U, family: I -> Set[U]) {
+    set_preimage(f, set_sSup(family)) = set_sSup(set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_sSup(family))
+    let v = set_sSup(set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_sSup(family), x)
+            set_sSup(family).contains(f(x))
+            set_sSup_contains_eq(family, f(x))
+            let i: I satisfy {
+                family(i).contains(f(x))
+            }
+            set_preimage_contains_eq(f, family(i), x)
+            set_preimage(f, family(i)).contains(x)
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_family(f, family, i).contains(x)
+            set_sSup_contains_eq(set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_preimage_family(f, family), x)
+            let i: I satisfy {
+                set_preimage_family(f, family, i).contains(x)
+            }
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_contains_eq(f, family(i), x)
+            family(i).contains(f(x))
+            set_sSup_contains_eq(family, f(x))
+            set_sSup(family).contains(f(x))
+            set_preimage_contains_eq(f, set_sSup(family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Preimage commutes with indexed set infima.
+theorem set_preimage_sInf[T, U, I](f: T -> U, family: I -> Set[U]) {
+    set_preimage(f, set_sInf(family)) = set_sInf(set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_sInf(family))
+    let v = set_sInf(set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_sInf(family), x)
+            set_sInf(family).contains(f(x))
+            set_sInf_contains_eq(family, f(x))
+            forall(i: I) {
+                family(i).contains(f(x))
+                set_preimage_contains_eq(f, family(i), x)
+                set_preimage(f, family(i)).contains(x)
+                set_preimage_family(f, family, i).contains(x)
+            }
+            set_sInf_contains_eq(set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_preimage_family(f, family), x)
+            forall(i: I) {
+                set_preimage_family(f, family, i).contains(x)
+                set_preimage_family(f, family, i) = set_preimage(f, family(i))
+                set_preimage_contains_eq(f, family(i), x)
+                family(i).contains(f(x))
+            }
+            set_sInf_contains_eq(family, f(x))
+            set_sInf(family).contains(f(x))
+            set_preimage_contains_eq(f, set_sInf(family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
 }
 
 /// A family supremum is the least upper bound of the family.
@@ -649,6 +767,16 @@ define set_sup_family[K, I](s: Set[K], family: I -> Set[K], i: I) -> Set[K] {
     set_sup(s, family(i))
 }
 
+/// The family formed by taking the infimum with a fixed set on the right.
+define set_inf_family_right[K, I](family: I -> Set[K], s: Set[K], i: I) -> Set[K] {
+    set_inf(family(i), s)
+}
+
+/// The family formed by taking the supremum with a fixed set on the right.
+define set_sup_family_right[K, I](family: I -> Set[K], s: Set[K], i: I) -> Set[K] {
+    set_sup(family(i), s)
+}
+
 /// Binary infimum distributes over a family supremum on the right.
 theorem set_inf_sSup_distrib_left[K, I](s: Set[K], family: I -> Set[K]) {
     set_inf(s, set_sSup(family)) = set_sSup(set_inf_family(s, family))
@@ -686,6 +814,50 @@ theorem set_inf_sSup_distrib_left[K, I](s: Set[K], family: I -> Set[K]) {
             set_sSup_contains_eq(family, x)
             set_sSup(family).contains(x)
             set_inf_contains_eq(s, set_sSup(family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Binary infimum distributes over a family supremum on the left.
+theorem set_inf_sSup_distrib_right[K, I](family: I -> Set[K], s: Set[K]) {
+    set_inf(set_sSup(family), s) = set_sSup(set_inf_family_right(family, s))
+} by {
+    let u = set_inf(set_sSup(family), s)
+    let v = set_sSup(set_inf_family_right(family, s))
+    forall(x: K) {
+        if u.contains(x) {
+            set_inf_contains_eq(set_sSup(family), s, x)
+            set_sSup(family).contains(x)
+            s.contains(x)
+            set_sSup_contains_eq(family, x)
+            let i: I satisfy {
+                family(i).contains(x)
+            }
+            set_inf_contains_eq(family(i), s, x)
+            set_inf(family(i), s).contains(x)
+            set_inf_family_right(family, s, i) = set_inf(family(i), s)
+            set_inf_family_right(family, s, i).contains(x)
+            exists(j: I) {
+                j = i and set_inf_family_right(family, s, j).contains(x)
+            }
+            set_sSup_contains_eq(set_inf_family_right(family, s), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_inf_family_right(family, s), x)
+            let i: I satisfy {
+                set_inf_family_right(family, s, i).contains(x)
+            }
+            set_inf_family_right(family, s, i) = set_inf(family(i), s)
+            set_inf_contains_eq(family(i), s, x)
+            family(i).contains(x)
+            s.contains(x)
+            set_sSup_contains_eq(family, x)
+            set_sSup(family).contains(x)
+            set_inf_contains_eq(set_sSup(family), s, x)
             u.contains(x)
         }
         u.contains(x) = v.contains(x)
@@ -738,6 +910,59 @@ theorem set_sup_sInf_distrib_left[K, I](s: Set[K], family: I -> Set[K]) {
                 set_sInf_contains_eq(family, x)
                 set_sInf(family).contains(x)
                 set_sup_contains_eq(s, set_sInf(family), x)
+                u.contains(x)
+            }
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Binary supremum distributes over a family infimum on the left.
+theorem set_sup_sInf_distrib_right[K, I](family: I -> Set[K], s: Set[K]) {
+    set_sup(set_sInf(family), s) = set_sInf(set_sup_family_right(family, s))
+} by {
+    let u = set_sup(set_sInf(family), s)
+    let v = set_sInf(set_sup_family_right(family, s))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sup_contains_eq(set_sInf(family), s, x)
+            if s.contains(x) {
+                forall(i: I) {
+                    set_sup_contains_eq(family(i), s, x)
+                    set_sup(family(i), s).contains(x)
+                    set_sup_family_right(family, s, i).contains(x)
+                }
+                set_sInf_contains_eq(set_sup_family_right(family, s), x)
+                v.contains(x)
+            } else {
+                set_sInf(family).contains(x)
+                set_sInf_contains_eq(family, x)
+                forall(i: I) {
+                    family(i).contains(x)
+                    set_sup_contains_eq(family(i), s, x)
+                    set_sup(family(i), s).contains(x)
+                    set_sup_family_right(family, s, i).contains(x)
+                }
+                set_sInf_contains_eq(set_sup_family_right(family, s), x)
+                v.contains(x)
+            }
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_sup_family_right(family, s), x)
+            if s.contains(x) {
+                set_sup_contains_eq(set_sInf(family), s, x)
+                u.contains(x)
+            } else {
+                forall(i: I) {
+                    set_sup_family_right(family, s, i).contains(x)
+                    set_sup_family_right(family, s, i) = set_sup(family(i), s)
+                    set_sup_contains_eq(family(i), s, x)
+                    family(i).contains(x)
+                }
+                set_sInf_contains_eq(family, x)
+                set_sInf(family).contains(x)
+                set_sup_contains_eq(set_sInf(family), s, x)
                 u.contains(x)
             }
         }
@@ -900,6 +1125,89 @@ theorem set_list_sInf_monotone[K, I](items: List[I], a: I -> Set[K], b: I -> Set
         list_indexed_intersection(items, a).subset(list_indexed_intersection(items, b))
         set_list_sInf(items, a).subset(set_list_sInf(items, b))
     }
+}
+
+/// Preimage commutes with list-indexed set suprema.
+theorem set_preimage_list_sSup[T, U, I](f: T -> U, items: List[I], family: I -> Set[U]) {
+    set_preimage(f, set_list_sSup(items, family)) =
+    set_list_sSup(items, set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_list_sSup(items, family))
+    let v = set_list_sSup(items, set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_list_sSup(items, family), x)
+            set_list_sSup(items, family).contains(f(x))
+            set_list_sSup_contains_eq(items, family, f(x))
+            let i: I satisfy {
+                items.contains(i) and family(i).contains(f(x))
+            }
+            set_preimage_contains_eq(f, family(i), x)
+            set_preimage(f, family(i)).contains(x)
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_family(f, family, i).contains(x)
+            set_list_sSup_contains_eq(items, set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_list_sSup_contains_eq(items, set_preimage_family(f, family), x)
+            let i: I satisfy {
+                items.contains(i) and set_preimage_family(f, family, i).contains(x)
+            }
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_contains_eq(f, family(i), x)
+            family(i).contains(f(x))
+            set_list_sSup_contains_eq(items, family, f(x))
+            set_list_sSup(items, family).contains(f(x))
+            set_preimage_contains_eq(f, set_list_sSup(items, family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Preimage commutes with list-indexed set infima.
+theorem set_preimage_list_sInf[T, U, I](f: T -> U, items: List[I], family: I -> Set[U]) {
+    set_preimage(f, set_list_sInf(items, family)) =
+    set_list_sInf(items, set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_list_sInf(items, family))
+    let v = set_list_sInf(items, set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_list_sInf(items, family), x)
+            set_list_sInf(items, family).contains(f(x))
+            set_list_sInf_contains_eq(items, family, f(x))
+            forall(i: I) {
+                if items.contains(i) {
+                    family(i).contains(f(x))
+                    set_preimage_contains_eq(f, family(i), x)
+                    set_preimage(f, family(i)).contains(x)
+                    set_preimage_family(f, family, i).contains(x)
+                }
+            }
+            set_list_sInf_contains_eq(items, set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_list_sInf_contains_eq(items, set_preimage_family(f, family), x)
+            forall(i: I) {
+                if items.contains(i) {
+                    set_preimage_family(f, family, i).contains(x)
+                    set_preimage_family(f, family, i) = set_preimage(f, family(i))
+                    set_preimage_contains_eq(f, family(i), x)
+                    family(i).contains(f(x))
+                }
+            }
+            set_list_sInf_contains_eq(items, family, f(x))
+            set_list_sInf(items, family).contains(f(x))
+            set_preimage_contains_eq(f, set_list_sInf(items, family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
 }
 
 /// A list supremum is the least upper bound of its listed family.
@@ -1151,6 +1459,89 @@ theorem set_range_sInf_monotone[K](n: Nat, a: Nat -> Set[K], b: Nat -> Set[K]) {
     }
 }
 
+/// Preimage commutes with bounded natural-family set suprema.
+theorem set_preimage_range_sSup[T, U](f: T -> U, n: Nat, family: Nat -> Set[U]) {
+    set_preimage(f, set_range_sSup(n, family)) =
+    set_range_sSup(n, set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_range_sSup(n, family))
+    let v = set_range_sSup(n, set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_range_sSup(n, family), x)
+            set_range_sSup(n, family).contains(f(x))
+            set_range_sSup_contains_eq(n, family, f(x))
+            let i: Nat satisfy {
+                i < n and family(i).contains(f(x))
+            }
+            set_preimage_contains_eq(f, family(i), x)
+            set_preimage(f, family(i)).contains(x)
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_family(f, family, i).contains(x)
+            set_range_sSup_contains_eq(n, set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_range_sSup_contains_eq(n, set_preimage_family(f, family), x)
+            let i: Nat satisfy {
+                i < n and set_preimage_family(f, family, i).contains(x)
+            }
+            set_preimage_family(f, family, i) = set_preimage(f, family(i))
+            set_preimage_contains_eq(f, family(i), x)
+            family(i).contains(f(x))
+            set_range_sSup_contains_eq(n, family, f(x))
+            set_range_sSup(n, family).contains(f(x))
+            set_preimage_contains_eq(f, set_range_sSup(n, family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Preimage commutes with bounded natural-family set infima.
+theorem set_preimage_range_sInf[T, U](f: T -> U, n: Nat, family: Nat -> Set[U]) {
+    set_preimage(f, set_range_sInf(n, family)) =
+    set_range_sInf(n, set_preimage_family(f, family))
+} by {
+    let u = set_preimage(f, set_range_sInf(n, family))
+    let v = set_range_sInf(n, set_preimage_family(f, family))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_range_sInf(n, family), x)
+            set_range_sInf(n, family).contains(f(x))
+            set_range_sInf_contains_eq(n, family, f(x))
+            forall(i: Nat) {
+                if i < n {
+                    family(i).contains(f(x))
+                    set_preimage_contains_eq(f, family(i), x)
+                    set_preimage(f, family(i)).contains(x)
+                    set_preimage_family(f, family, i).contains(x)
+                }
+            }
+            set_range_sInf_contains_eq(n, set_preimage_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_range_sInf_contains_eq(n, set_preimage_family(f, family), x)
+            forall(i: Nat) {
+                if i < n {
+                    set_preimage_family(f, family, i).contains(x)
+                    set_preimage_family(f, family, i) = set_preimage(f, family(i))
+                    set_preimage_contains_eq(f, family(i), x)
+                    family(i).contains(f(x))
+                }
+            }
+            set_range_sInf_contains_eq(n, family, f(x))
+            set_range_sInf(n, family).contains(f(x))
+            set_preimage_contains_eq(f, set_range_sInf(n, family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
 /// A range supremum is the least upper bound of the bounded family.
 theorem set_range_sSup_is_lub[K](n: Nat, family: Nat -> Set[K], s: Set[K]) {
     (forall(i: Nat) { i < n implies family(i).subset(set_range_sSup(n, family)) }) and
@@ -1277,3 +1668,82 @@ theorem set_range_sInf_complement_eq_sSup_complement[K](n: Nat, family: Nat -> S
     set_range_sInf(n, function(i: Nat) { family(i).c }) = set_range_sSup(n, family).c
 }
 
+/// The supremum of an initial segment of an increasing family is contained in its last member.
+theorem set_range_sSup_suc_subset_of_increasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_increasing(family) implies set_range_sSup(n.suc, family).subset(family(n))
+} by {
+    if is_increasing(family) {
+        range_indexed_union_suc_subset_of_increasing(n, family)
+        range_indexed_union(n.suc, family).subset(family(n))
+        set_range_sSup(n.suc, family).subset(family(n))
+    }
+}
+
+/// The last member of an initial segment is contained in its supremum.
+theorem set_family_subset_range_sSup_suc[K](n: Nat, family: Nat -> Set[K]) {
+    family(n).subset(set_range_sSup(n.suc, family))
+} by {
+    family_subset_range_indexed_union_suc(n, family)
+    family(n).subset(range_indexed_union(n.suc, family))
+    family(n).subset(set_range_sSup(n.suc, family))
+}
+
+/// The supremum of an initial segment of an increasing family is its last member.
+theorem set_range_sSup_suc_of_increasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_increasing(family) implies set_range_sSup(n.suc, family) = family(n)
+} by {
+    if is_increasing(family) {
+        range_indexed_union_suc_of_increasing(n, family)
+        range_indexed_union(n.suc, family) = family(n)
+        set_range_sSup(n.suc, family) = family(n)
+    }
+}
+
+/// A decreasing family's last member is contained in the infimum of its initial segment.
+theorem set_decreasing_subset_range_sInf_suc[K](n: Nat, family: Nat -> Set[K]) {
+    is_decreasing(family) implies family(n).subset(set_range_sInf(n.suc, family))
+} by {
+    if is_decreasing(family) {
+        decreasing_subset_range_indexed_intersection_suc(n, family)
+        family(n).subset(range_indexed_intersection(n.suc, family))
+        family(n).subset(set_range_sInf(n.suc, family))
+    }
+}
+
+/// The infimum of an initial segment is contained in its last member.
+theorem set_range_sInf_suc_subset_family[K](n: Nat, family: Nat -> Set[K]) {
+    set_range_sInf(n.suc, family).subset(family(n))
+} by {
+    range_indexed_intersection_suc_subset_family(n, family)
+    range_indexed_intersection(n.suc, family).subset(family(n))
+    set_range_sInf(n.suc, family).subset(family(n))
+}
+
+/// The infimum of an initial segment of a decreasing family is its last member.
+theorem set_range_sInf_suc_of_decreasing[K](n: Nat, family: Nat -> Set[K]) {
+    is_decreasing(family) implies set_range_sInf(n.suc, family) = family(n)
+} by {
+    if is_decreasing(family) {
+        range_indexed_intersection_suc_of_decreasing(n, family)
+        range_indexed_intersection(n.suc, family) = family(n)
+        set_range_sInf(n.suc, family) = family(n)
+    }
+}
+
+/// A bounded supremum is contained in the sequential supremum.
+theorem set_range_sSup_subset_seq_union[K](n: Nat, family: Nat -> Set[K]) {
+    set_range_sSup(n, family).subset(seq_union(family))
+} by {
+    range_indexed_union_subset_seq_union(n, family)
+    range_indexed_union(n, family).subset(seq_union(family))
+    set_range_sSup(n, family).subset(seq_union(family))
+}
+
+/// The sequential infimum is contained in every bounded infimum.
+theorem set_seq_intersection_subset_range_sInf[K](n: Nat, family: Nat -> Set[K]) {
+    seq_intersection(family).subset(set_range_sInf(n, family))
+} by {
+    seq_intersection_subset_range_indexed_intersection(n, family)
+    seq_intersection(family).subset(range_indexed_intersection(n, family))
+    seq_intersection(family).subset(set_range_sInf(n, family))
+}
