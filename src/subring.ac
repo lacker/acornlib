@@ -306,6 +306,14 @@ theorem subring_as_set_contains_eq[R: Ring](s: Subring[R], x: R) {
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in a subring is membership in its underlying set.
+theorem subring_contains_as_set_eq[R: Ring](s: Subring[R], x: R) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    subring_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal subrings have equal underlying sets.
 theorem subring_eq_as_set[R: Ring](a: Subring[R], b: Subring[R]) {
     a = b implies a.as_set = b.as_set
@@ -456,6 +464,26 @@ theorem subring_subset_as_set_eq[R: Ring](a: Subring[R], b: Subring[R]) {
         subring_subset(a, b)
     }
     subring_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Subring containment gives containment of underlying sets.
+theorem subring_as_set_subset_of_subset[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if subring_subset(a, b) {
+        subring_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives subring containment.
+theorem subring_subset_of_as_set_subset[R: Ring](a: Subring[R], b: Subring[R]) {
+    a.as_set.subset(b.as_set) implies subring_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        subring_subset_as_set_eq(a, b)
+        subring_subset(a, b)
+    }
 }
 
 /// Subring inclusion is reflexive.
@@ -653,6 +681,13 @@ theorem full_subring_contains_everything[R: Ring](a: R) {
     full_subring[R].contains(a)
 }
 
+/// Membership in the full subring is always true.
+theorem full_subring_contains_eq[R: Ring](a: R) {
+    full_subring[R].contains(a) = true
+} by {
+    full_subring_contains_everything(a)
+}
+
 /// Every subring is contained in the full subring.
 theorem subring_subset_full[R: Ring](s: Subring[R]) {
     subring_subset(s, full_subring[R])
@@ -699,6 +734,26 @@ theorem set_subset_subring_as_set_eq[R: Ring](a: Set[R], s: Subring[R]) {
         set_subset_subring(a, s)
     }
     set_subset_subring(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in a subring gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_subring[R: Ring](a: Set[R], s: Subring[R]) {
+    set_subset_subring(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_subring(a, s) {
+        set_subset_subring_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the subring.
+theorem set_subset_subring_of_as_set_subset[R: Ring](a: Set[R], s: Subring[R]) {
+    a.subset(s.as_set) implies set_subset_subring(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_subring_as_set_eq(a, s)
+        set_subset_subring(a, s)
+    }
 }
 
 /// The underlying set of a subring is contained in the subring.

@@ -140,6 +140,14 @@ theorem subsemigroup_as_set_contains_eq[S: Semigroup](s: Subsemigroup[S], x: S) 
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in a subsemigroup is membership in its underlying set.
+theorem subsemigroup_contains_as_set_eq[S: Semigroup](s: Subsemigroup[S], x: S) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    subsemigroup_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal subsemigroups have equal underlying sets.
 theorem subsemigroup_eq_as_set[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
     a = b implies a.as_set = b.as_set
@@ -312,6 +320,26 @@ theorem subsemigroup_subset_as_set_eq[S: Semigroup](a: Subsemigroup[S], b: Subse
     subsemigroup_subset(a, b) = a.as_set.subset(b.as_set)
 }
 
+/// Subsemigroup containment gives containment of underlying sets.
+theorem subsemigroup_as_set_subset_of_subset[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if subsemigroup_subset(a, b) {
+        subsemigroup_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives subsemigroup containment.
+theorem subsemigroup_subset_of_as_set_subset[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    a.as_set.subset(b.as_set) implies subsemigroup_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        subsemigroup_subset_as_set_eq(a, b)
+        subsemigroup_subset(a, b)
+    }
+}
+
 /// Subsemigroup inclusion is reflexive.
 theorem subsemigroup_subset_refl[S: Semigroup](a: Subsemigroup[S]) {
     subsemigroup_subset(a, a)
@@ -437,6 +465,13 @@ theorem empty_subsemigroup_contains_nothing[S: Semigroup](s: S) {
     not empty_subsemigroup[S].contains(s)
 }
 
+/// Membership in the empty subsemigroup is false.
+theorem empty_subsemigroup_contains_eq[S: Semigroup](s: S) {
+    empty_subsemigroup[S].contains(s) = false
+} by {
+    empty_subsemigroup_contains_nothing(s)
+}
+
 /// The empty subsemigroup is contained in every subsemigroup.
 theorem empty_subsemigroup_subset[S: Semigroup](s: Subsemigroup[S]) {
     subsemigroup_subset(empty_subsemigroup[S], s)
@@ -465,6 +500,13 @@ let full_subsemigroup[S: Semigroup]: Subsemigroup[S] satisfy {
 
 theorem full_subsemigroup_contains_everything[S: Semigroup](s: S) {
     full_subsemigroup[S].contains(s)
+}
+
+/// Membership in the full subsemigroup is always true.
+theorem full_subsemigroup_contains_eq[S: Semigroup](s: S) {
+    full_subsemigroup[S].contains(s) = true
+} by {
+    full_subsemigroup_contains_everything(s)
 }
 
 /// Every subsemigroup is contained in the full subsemigroup.
@@ -620,6 +662,26 @@ theorem set_subset_subsemigroup_as_set_eq[S: Semigroup](a: Set[S], s: Subsemigro
         set_subset_subsemigroup(a, s)
     }
     set_subset_subsemigroup(a, s) = a.subset(s.as_set)
+}
+
+/// Set containment in a subsemigroup gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_subsemigroup[S: Semigroup](a: Set[S], s: Subsemigroup[S]) {
+    set_subset_subsemigroup(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_subsemigroup(a, s) {
+        set_subset_subsemigroup_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the subsemigroup.
+theorem set_subset_subsemigroup_of_as_set_subset[S: Semigroup](a: Set[S], s: Subsemigroup[S]) {
+    a.subset(s.as_set) implies set_subset_subsemigroup(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_subsemigroup_as_set_eq(a, s)
+        set_subset_subsemigroup(a, s)
+    }
 }
 
 /// The underlying set of a subsemigroup is contained in the subsemigroup.

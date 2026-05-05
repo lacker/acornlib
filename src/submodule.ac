@@ -417,6 +417,14 @@ theorem submodule_as_set_contains_eq[R: Ring, M: AddCommGroup](s: Submodule[R, M
     s.as_set.contains(x) = s.contains(x)
 }
 
+/// Membership in a submodule is membership in its underlying set.
+theorem submodule_contains_as_set_eq[R: Ring, M: AddCommGroup](s: Submodule[R, M], x: M) {
+    s.contains(x) = s.as_set.contains(x)
+} by {
+    submodule_as_set_contains_eq(s, x)
+    s.contains(x) = s.as_set.contains(x)
+}
+
 /// Equal submodules have equal underlying sets.
 theorem submodule_eq_as_set[R: Ring, M: AddCommGroup](
     a: Submodule[R, M], b: Submodule[R, M]
@@ -695,6 +703,26 @@ theorem set_subset_submodule_as_set_eq[R: Ring, M: AddCommGroup](a: Set[M], s: S
     set_subset_submodule(a, s) = a.subset(s.as_set)
 }
 
+/// Set containment in a submodule gives containment in its underlying set.
+theorem set_as_set_subset_of_subset_submodule[R: Ring, M: AddCommGroup](a: Set[M], s: Submodule[R, M]) {
+    set_subset_submodule(a, s) implies a.subset(s.as_set)
+} by {
+    if set_subset_submodule(a, s) {
+        set_subset_submodule_as_set_eq(a, s)
+        a.subset(s.as_set)
+    }
+}
+
+/// Containment in the underlying set gives set containment in the submodule.
+theorem set_subset_submodule_of_as_set_subset[R: Ring, M: AddCommGroup](a: Set[M], s: Submodule[R, M]) {
+    a.subset(s.as_set) implies set_subset_submodule(a, s)
+} by {
+    if a.subset(s.as_set) {
+        set_subset_submodule_as_set_eq(a, s)
+        set_subset_submodule(a, s)
+    }
+}
+
 /// Submodule containment is containment of the underlying sets.
 theorem submodule_subset_as_set_eq[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
     submodule_subset(a, b) = a.as_set.subset(b.as_set)
@@ -727,6 +755,26 @@ theorem submodule_subset_as_set_eq[R: Ring, M: AddCommGroup](a: Submodule[R, M],
         submodule_subset(a, b)
     }
     submodule_subset(a, b) = a.as_set.subset(b.as_set)
+}
+
+/// Submodule containment gives containment of underlying sets.
+theorem submodule_as_set_subset_of_subset[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    submodule_subset(a, b) implies a.as_set.subset(b.as_set)
+} by {
+    if submodule_subset(a, b) {
+        submodule_subset_as_set_eq(a, b)
+        a.as_set.subset(b.as_set)
+    }
+}
+
+/// Containment of underlying sets gives submodule containment.
+theorem submodule_subset_of_as_set_subset[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    a.as_set.subset(b.as_set) implies submodule_subset(a, b)
+} by {
+    if a.as_set.subset(b.as_set) {
+        submodule_subset_as_set_eq(a, b)
+        submodule_subset(a, b)
+    }
 }
 
 /// The underlying set of a submodule is contained in the submodule.
