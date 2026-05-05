@@ -1075,3 +1075,117 @@ theorem add_submonoid_contains_map_of_preimage_contains[A: AddMonoid, B: AddMono
         s.contains(f.hom(a))
     }
 }
+
+/// Inverse images are monotone with respect to additive submonoid containment.
+theorem add_submonoid_preimage_subset_of_subset[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    t: AddSubmonoid[B]
+) {
+    add_submonoid_subset(s, t) implies
+        add_submonoid_subset(add_submonoid_preimage(f, s), add_submonoid_preimage(f, t))
+} by {
+    if add_submonoid_subset(s, t) {
+        forall(a: A) {
+            if add_submonoid_preimage(f, s).contains(a) {
+                add_submonoid_preimage_contains_eq(f, s, a)
+                s.contains(f.hom(a))
+                add_submonoid_subset(s, t) = forall(x: B) {
+                    s.contains(x) implies t.contains(x)
+                }
+                t.contains(f.hom(a))
+                add_submonoid_preimage_contains_eq(f, t, a)
+                add_submonoid_preimage(f, t).contains(a)
+            }
+        }
+    }
+}
+
+/// The inverse image of an intersection is the intersection of the inverse images.
+theorem add_submonoid_preimage_intersection[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    s: AddSubmonoid[B],
+    t: AddSubmonoid[B]
+) {
+    add_submonoid_preimage(f, s.intersection(t)) =
+        add_submonoid_preimage(f, s).intersection(add_submonoid_preimage(f, t))
+} by {
+    forall(a: A) {
+        add_submonoid_preimage_contains_eq(f, s.intersection(t), a)
+        add_submonoid_preimage_contains_eq(f, s, a)
+        add_submonoid_preimage_contains_eq(f, t, a)
+        add_submonoid_intersection_contains_eq(s, t, f.hom(a))
+        add_submonoid_intersection_contains_eq(add_submonoid_preimage(f, s), add_submonoid_preimage(f, t), a)
+        add_submonoid_preimage(f, s.intersection(t)).contains(a) =
+            add_submonoid_preimage(f, s).intersection(add_submonoid_preimage(f, t)).contains(a)
+    }
+    add_submonoid_ext(add_submonoid_preimage(f, s.intersection(t)),
+        add_submonoid_preimage(f, s).intersection(add_submonoid_preimage(f, t)))
+}
+
+/// The inverse image of the full additive submonoid is the full additive submonoid.
+theorem add_submonoid_preimage_full[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) {
+    add_submonoid_preimage(f, full_add_submonoid[B]) = full_add_submonoid[A]
+} by {
+    add_submonoid_subset_full(add_submonoid_preimage(f, full_add_submonoid[B]))
+    forall(a: A) {
+        if full_add_submonoid[A].contains(a) {
+            full_add_submonoid_contains_everything(f.hom(a))
+            add_submonoid_preimage_contains_eq(f, full_add_submonoid[B], a)
+            add_submonoid_preimage(f, full_add_submonoid[B]).contains(a)
+        }
+    }
+    add_submonoid_subset(full_add_submonoid[A], add_submonoid_preimage(f, full_add_submonoid[B]))
+    add_submonoid_subset_antisymm(add_submonoid_preimage(f, full_add_submonoid[B]), full_add_submonoid[A])
+}
+
+/// The kernel of an additive monoid homomorphism as an additive submonoid.
+define add_monoid_hom_kernel[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B]) -> AddSubmonoid[A] {
+    add_submonoid_preimage(f, zero_add_submonoid[B])
+}
+
+/// Membership in the kernel means the homomorphism maps the element to zero.
+theorem add_monoid_hom_kernel_contains_eq[A: AddMonoid, B: AddMonoid](f: AddMonoidHom[A, B], a: A) {
+    add_monoid_hom_kernel(f).contains(a) = (f.hom(a) = B.0)
+} by {
+    add_monoid_hom_kernel(f) = add_submonoid_preimage(f, zero_add_submonoid[B])
+    add_submonoid_preimage_contains_eq(f, zero_add_submonoid[B], a)
+    if add_monoid_hom_kernel(f).contains(a) {
+        zero_add_submonoid[B].contains(f.hom(a))
+        zero_add_submonoid_only_has_zero(f.hom(a))
+        f.hom(a) = B.0
+    }
+    if f.hom(a) = B.0 {
+        add_submonoid_contains_zero(zero_add_submonoid[B])
+        zero_add_submonoid[B].contains(B.0)
+        zero_add_submonoid[B].contains(f.hom(a))
+        add_monoid_hom_kernel(f).contains(a)
+    }
+    add_monoid_hom_kernel(f).contains(a) = (f.hom(a) = B.0)
+}
+
+/// An element belongs to the kernel when its image is zero.
+theorem add_monoid_hom_kernel_contains_of_maps_to_zero[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    a: A
+) {
+    f.hom(a) = B.0 implies add_monoid_hom_kernel(f).contains(a)
+} by {
+    if f.hom(a) = B.0 {
+        add_monoid_hom_kernel_contains_eq(f, a)
+        add_monoid_hom_kernel(f).contains(a)
+    }
+}
+
+/// A kernel element maps to zero.
+theorem add_monoid_hom_maps_to_zero_of_kernel_contains[A: AddMonoid, B: AddMonoid](
+    f: AddMonoidHom[A, B],
+    a: A
+) {
+    add_monoid_hom_kernel(f).contains(a) implies f.hom(a) = B.0
+} by {
+    if add_monoid_hom_kernel(f).contains(a) {
+        add_monoid_hom_kernel_contains_eq(f, a)
+        f.hom(a) = B.0
+    }
+}

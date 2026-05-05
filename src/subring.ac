@@ -1272,3 +1272,65 @@ theorem subring_contains_map_of_preimage_contains[R: Ring, S: Ring](
         t.contains(f.hom(a))
     }
 }
+
+/// Inverse images are monotone with respect to subring containment.
+theorem subring_preimage_subset_of_subset[R: Ring, S: Ring](
+    f: RingHom[R, S],
+    t: Subring[S],
+    u: Subring[S]
+) {
+    subring_subset(t, u) implies subring_subset(subring_preimage(f, t), subring_preimage(f, u))
+} by {
+    if subring_subset(t, u) {
+        forall(a: R) {
+            if subring_preimage(f, t).contains(a) {
+                subring_preimage_contains_eq(f, t, a)
+                t.contains(f.hom(a))
+                subring_subset(t, u) = forall(x: S) {
+                    t.contains(x) implies u.contains(x)
+                }
+                u.contains(f.hom(a))
+                subring_preimage_contains_eq(f, u, a)
+                subring_preimage(f, u).contains(a)
+            }
+        }
+    }
+}
+
+/// The inverse image of an intersection is the intersection of the inverse images.
+theorem subring_preimage_intersection[R: Ring, S: Ring](
+    f: RingHom[R, S],
+    t: Subring[S],
+    u: Subring[S]
+) {
+    subring_preimage(f, t.intersection(u)) =
+        subring_preimage(f, t).intersection(subring_preimage(f, u))
+} by {
+    forall(a: R) {
+        subring_preimage_contains_eq(f, t.intersection(u), a)
+        subring_preimage_contains_eq(f, t, a)
+        subring_preimage_contains_eq(f, u, a)
+        subring_intersection_contains_eq(t, u, f.hom(a))
+        subring_intersection_contains_eq(subring_preimage(f, t), subring_preimage(f, u), a)
+        subring_preimage(f, t.intersection(u)).contains(a) =
+            subring_preimage(f, t).intersection(subring_preimage(f, u)).contains(a)
+    }
+    subring_ext(subring_preimage(f, t.intersection(u)),
+        subring_preimage(f, t).intersection(subring_preimage(f, u)))
+}
+
+/// The inverse image of the full subring is the full subring.
+theorem subring_preimage_full[R: Ring, S: Ring](f: RingHom[R, S]) {
+    subring_preimage(f, full_subring[S]) = full_subring[R]
+} by {
+    subring_subset_full(subring_preimage(f, full_subring[S]))
+    forall(a: R) {
+        if full_subring[R].contains(a) {
+            full_subring_contains_everything(f.hom(a))
+            subring_preimage_contains_eq(f, full_subring[S], a)
+            subring_preimage(f, full_subring[S]).contains(a)
+        }
+    }
+    subring_subset(full_subring[R], subring_preimage(f, full_subring[S]))
+    subring_subset_antisymm(subring_preimage(f, full_subring[S]), full_subring[R])
+}
