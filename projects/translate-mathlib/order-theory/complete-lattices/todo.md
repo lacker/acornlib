@@ -26,6 +26,8 @@ Status:
 - `src/set_lattice.ac` now has preimage universal-property wrappers characterizing upper bounds of preimage suprema and lower bounds of preimage infima for indexed, list-indexed, and bounded natural families.
 - `src/set_lattice.ac` now has image transport wrappers for binary set suprema and indexed, list-indexed, and bounded natural-family set suprema, plus target-subset characterizations through preimages.
 - `src/set_lattice.ac` now has image transport subset wrappers for indexed, list-indexed, and bounded natural-family set infima.
+- `src/set_lattice.ac` now has exact image transport wrappers for indexed, list-indexed, and bounded natural-family set infima under injective maps with explicit nonempty witnesses, and under bijective maps without nonempty side conditions.
+- `src/set_lattice.ac` now has exact image transport wrappers for binary set infima under injective and bijective maps, plus lower-bound characterizations for binary, indexed, list-indexed, and bounded natural-family exact image infima.
 - `src/set_lattice.ac` now has indexed-family cofinal refinement inclusions and equalities, exact-occurrence inclusion and equality wrappers, and reindexing inclusions plus equality wrappers for section-backed, surjective, and bijective reindexing maps.
 - `src/set_lattice.ac` now has constant-family `set_sSup` / `set_sInf` wrappers, including inhabited-index equalities.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.

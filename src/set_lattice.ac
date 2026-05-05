@@ -1,6 +1,7 @@
 from list import List
-from functions import Inhabited, is_surjective_fn, is_bijection_fn, bijection_fn_is_surjective,
-    surjective_fn_has_preimage
+from functions import Inhabited, inverse_fn, is_injective_fn, is_surjective_fn,
+    is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective,
+    injective_fn_eq, surjective_fn_has_preimage
 from nat import Nat
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     empty_set_contains_eq, universal_set_contains_eq,
@@ -41,9 +42,11 @@ from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     range_indexed_union_suc_of_increasing, decreasing_subset_range_indexed_intersection_suc,
     range_indexed_intersection_suc_subset_family, range_indexed_intersection_suc_of_decreasing,
     range_indexed_union_subset_seq_union, seq_intersection_subset_range_indexed_intersection,
-    set_image, set_image_contains_witness, maps_into_set_image,
-    set_image_union, set_image_intersection_subset, set_image_monotone,
-    set_image_subset_iff_subset_preimage, set_preimage, set_preimage_contains_eq
+    set_image, set_image_contains_witness, set_image_contains_inverse_of_bijection,
+    set_inverse_contains_imp_image_contains, maps_into_set_image,
+    set_image_union, set_image_intersection_subset, set_image_intersection_reverse_of_injective,
+    set_image_monotone, set_image_subset_iff_subset_preimage, set_preimage,
+    set_preimage_contains_eq
 
 /// The infimum of two sets.
 define set_inf[K](a: Set[K], b: Set[K]) -> Set[K] {
@@ -362,6 +365,81 @@ theorem set_image_inf_subset[T, U](a: Set[T], b: Set[T], f: T -> U) {
     set_image(set_inf(a, b), f).subset(set_inf(set_image(a, f), set_image(b, f)))
 } by {
     set_image_intersection_subset(a, b, f)
+}
+
+/// Under injectivity, the infimum of two images is contained in the image of the infimum.
+theorem set_image_inf_reverse_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    set_inf(set_image(a, f), set_image(b, f)).subset(set_image(set_inf(a, b), f))
+} by {
+    if is_injective_fn(f) {
+        forall(x1: T, x2: T) {
+            if f(x1) = f(x2) {
+                injective_fn_eq(f, x1, x2)
+                x1 = x2
+            }
+        }
+        set_image_intersection_reverse_of_injective(a, b, f)
+        set_image(a, f).intersection(set_image(b, f)).subset(set_image(a.intersection(b), f))
+        set_inf(set_image(a, f), set_image(b, f)).subset(set_image(set_inf(a, b), f))
+    }
+}
+
+/// An injective map preserves binary set infima by image.
+theorem set_image_inf_of_injective[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    set_image(set_inf(a, b), f) = set_inf(set_image(a, f), set_image(b, f))
+} by {
+    if is_injective_fn(f) {
+        set_image_inf_subset(a, b, f)
+        set_image_inf_reverse_of_injective(a, b, f)
+        subset_antisymm(set_image(set_inf(a, b), f), set_inf(set_image(a, f), set_image(b, f)))
+    }
+}
+
+/// A bijective map preserves binary set infima by image.
+theorem set_image_inf_of_bijection[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    set_image(set_inf(a, b), f) = set_inf(set_image(a, f), set_image(b, f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_injective(f)
+        is_injective_fn(f)
+        set_image_inf_of_injective(a, b, f)
+        set_image(set_inf(a, b), f) = set_inf(set_image(a, f), set_image(b, f))
+    }
+}
+
+/// A set is contained in an injective image of a binary infimum exactly when it is contained in both images.
+theorem set_subset_image_inf_iff_of_injective[T, U](s: Set[U], a: Set[T], b: Set[T],
+    f: T -> U) {
+    is_injective_fn(f) implies
+    s.subset(set_image(set_inf(a, b), f)) =
+        (s.subset(set_image(a, f)) and s.subset(set_image(b, f)))
+} by {
+    if is_injective_fn(f) {
+        set_image_inf_of_injective(a, b, f)
+        set_image(set_inf(a, b), f) = set_inf(set_image(a, f), set_image(b, f))
+        set_subset_inf_iff(s, set_image(a, f), set_image(b, f))
+        s.subset(set_image(set_inf(a, b), f)) =
+            (s.subset(set_image(a, f)) and s.subset(set_image(b, f)))
+    }
+}
+
+/// A set is contained in a bijective image of a binary infimum exactly when it is contained in both images.
+theorem set_subset_image_inf_iff_of_bijection[T, U](s: Set[U], a: Set[T], b: Set[T],
+    f: T -> U) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(set_inf(a, b), f)) =
+        (s.subset(set_image(a, f)) and s.subset(set_image(b, f)))
+} by {
+    if is_bijection_fn(f) {
+        set_image_inf_of_bijection(a, b, f)
+        set_image(set_inf(a, b), f) = set_inf(set_image(a, f), set_image(b, f))
+        set_subset_inf_iff(s, set_image(a, f), set_image(b, f))
+        s.subset(set_image(set_inf(a, b), f)) =
+            (s.subset(set_image(a, f)) and s.subset(set_image(b, f)))
+    }
 }
 
 /// The supremum of an indexed family of sets.
@@ -1089,6 +1167,140 @@ theorem set_image_sInf_subset[T, U, I](family: I -> Set[T], f: T -> U) {
     }
     set_subset_sInf_of_subset_family(set_image(set_sInf(family), f), set_image_family(family, f))
     set_image(set_sInf(family), f).subset(set_sInf(set_image_family(family, f)))
+}
+
+/// Under an injective map, the infimum of an inhabited family of images is contained in the image of the infimum.
+theorem set_image_sInf_reverse_of_injective[T, U, I: Inhabited](family: I -> Set[T],
+    f: T -> U) {
+    is_injective_fn(f) implies
+    set_sInf(set_image_family(family, f)).subset(set_image(set_sInf(family), f))
+} by {
+    if is_injective_fn(f) {
+        let i0: I satisfy {
+            true
+        }
+        forall(y: U) {
+            if set_sInf(set_image_family(family, f)).contains(y) {
+                set_sInf_contains_eq(set_image_family(family, f), y)
+                set_image_family(family, f, i0).contains(y)
+                set_image_family(family, f, i0) = set_image(family(i0), f)
+                set_image_contains_witness(family(i0), f, y)
+                let x: T satisfy {
+                    family(i0).contains(x) and y = f(x)
+                }
+                forall(i: I) {
+                    set_image_family(family, f, i).contains(y)
+                    set_image_family(family, f, i) = set_image(family(i), f)
+                    set_image_contains_witness(family(i), f, y)
+                    let xi: T satisfy {
+                        family(i).contains(xi) and y = f(xi)
+                    }
+                    f(x) = f(xi)
+                    injective_fn_eq(f, x, xi)
+                    x = xi
+                    family(i).contains(x)
+                }
+                set_sInf_contains_eq(family, x)
+                set_sInf(family).contains(x)
+                maps_into_set_image(set_sInf(family), f, x)
+                set_image(set_sInf(family), f).contains(f(x))
+                set_image(set_sInf(family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// An injective map preserves infima of inhabited set families by image.
+theorem set_image_sInf_of_injective[T, U, I: Inhabited](family: I -> Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+} by {
+    if is_injective_fn(f) {
+        set_image_sInf_subset(family, f)
+        set_image_sInf_reverse_of_injective(family, f)
+        subset_antisymm(set_image(set_sInf(family), f), set_sInf(set_image_family(family, f)))
+    }
+}
+
+/// Under a bijective map, the infimum of a family of images is contained in the image of the infimum.
+theorem set_image_sInf_reverse_of_bijection[T: Inhabited, U, I](family: I -> Set[T],
+    f: T -> U) {
+    is_bijection_fn(f) implies
+    set_sInf(set_image_family(family, f)).subset(set_image(set_sInf(family), f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(y: U) {
+            if set_sInf(set_image_family(family, f)).contains(y) {
+                set_sInf_contains_eq(set_image_family(family, f), y)
+                forall(i: I) {
+                    set_image_family(family, f, i).contains(y)
+                    set_image_family(family, f, i) = set_image(family(i), f)
+                    set_image_contains_inverse_of_bijection(family(i), f, y)
+                    family(i).contains(inverse_fn(f, y))
+                }
+                set_sInf_contains_eq(family, inverse_fn(f, y))
+                set_sInf(family).contains(inverse_fn(f, y))
+                set_inverse_contains_imp_image_contains(set_sInf(family), f, y)
+                set_image(set_sInf(family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// A bijective map preserves arbitrary set-family infima by image.
+theorem set_image_sInf_of_bijection[T: Inhabited, U, I](family: I -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+} by {
+    if is_bijection_fn(f) {
+        let u = set_image(set_sInf(family), f)
+        let v = set_sInf(set_image_family(family, f))
+        set_image_sInf_subset(family, f)
+        u.subset(v)
+        set_image_sInf_reverse_of_bijection(family, f)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+    }
+}
+
+/// A set is contained in an injective image of an inhabited family infimum exactly when it is contained in every member image.
+theorem set_subset_image_sInf_iff_of_injective[T, U, I: Inhabited](s: Set[U],
+    family: I -> Set[T], f: T -> U) {
+    is_injective_fn(f) implies
+    s.subset(set_image(set_sInf(family), f)) = forall(i: I) {
+        s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_injective_fn(f) {
+        set_image_sInf_of_injective(family, f)
+        set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+        set_subset_sInf_iff(s, set_image_family(family, f))
+        s.subset(set_image(set_sInf(family), f)) = forall(i: I) {
+            s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// A set is contained in a bijective image of a family infimum exactly when it is contained in every member image.
+theorem set_subset_image_sInf_iff_of_bijection[T: Inhabited, U, I](s: Set[U],
+    family: I -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(set_sInf(family), f)) = forall(i: I) {
+        s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_bijection_fn(f) {
+        set_image_sInf_of_bijection(family, f)
+        set_image(set_sInf(family), f) = set_sInf(set_image_family(family, f))
+        set_subset_sInf_iff(s, set_image_family(family, f))
+        s.subset(set_image(set_sInf(family), f)) = forall(i: I) {
+            s.subset(set_image_family(family, f, i))
+        }
+    }
 }
 
 /// A family supremum is the least upper bound of the family.
@@ -1867,6 +2079,151 @@ theorem set_image_list_sInf_subset[T, U, I](items: List[I], family: I -> Set[T],
         set_list_sInf(items, set_image_family(family, f)))
 }
 
+/// Under an injective map, a nonempty listed infimum of images is contained in the image of the listed infimum.
+theorem set_image_list_sInf_reverse_of_injective[T, U, I](items: List[I],
+    family: I -> Set[T], f: T -> U, i0: I) {
+    is_injective_fn(f) and items.contains(i0) implies
+    set_list_sInf(items, set_image_family(family, f)).subset(
+        set_image(set_list_sInf(items, family), f))
+} by {
+    if is_injective_fn(f) and items.contains(i0) {
+        forall(y: U) {
+            if set_list_sInf(items, set_image_family(family, f)).contains(y) {
+                set_list_sInf_contains_eq(items, set_image_family(family, f), y)
+                set_image_family(family, f, i0).contains(y)
+                set_image_family(family, f, i0) = set_image(family(i0), f)
+                set_image_contains_witness(family(i0), f, y)
+                let x: T satisfy {
+                    family(i0).contains(x) and y = f(x)
+                }
+                forall(i: I) {
+                    if items.contains(i) {
+                        set_image_family(family, f, i).contains(y)
+                        set_image_family(family, f, i) = set_image(family(i), f)
+                        set_image_contains_witness(family(i), f, y)
+                        let xi: T satisfy {
+                            family(i).contains(xi) and y = f(xi)
+                        }
+                        f(x) = f(xi)
+                        injective_fn_eq(f, x, xi)
+                        x = xi
+                        family(i).contains(x)
+                    }
+                }
+                set_list_sInf_contains_eq(items, family, x)
+                set_list_sInf(items, family).contains(x)
+                maps_into_set_image(set_list_sInf(items, family), f, x)
+                set_image(set_list_sInf(items, family), f).contains(f(x))
+                set_image(set_list_sInf(items, family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// An injective map preserves nonempty listed infima by image.
+theorem set_image_list_sInf_of_injective[T, U, I](items: List[I], family: I -> Set[T],
+    f: T -> U, i0: I) {
+    is_injective_fn(f) and items.contains(i0) implies
+    set_image(set_list_sInf(items, family), f) =
+        set_list_sInf(items, set_image_family(family, f))
+} by {
+    if is_injective_fn(f) and items.contains(i0) {
+        set_image_list_sInf_subset(items, family, f)
+        set_image_list_sInf_reverse_of_injective(items, family, f, i0)
+        subset_antisymm(set_image(set_list_sInf(items, family), f),
+            set_list_sInf(items, set_image_family(family, f)))
+    }
+}
+
+/// Under a bijective map, a listed infimum of images is contained in the image of the listed infimum.
+theorem set_image_list_sInf_reverse_of_bijection[T: Inhabited, U, I](items: List[I],
+    family: I -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    set_list_sInf(items, set_image_family(family, f)).subset(
+        set_image(set_list_sInf(items, family), f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(y: U) {
+            if set_list_sInf(items, set_image_family(family, f)).contains(y) {
+                set_list_sInf_contains_eq(items, set_image_family(family, f), y)
+                forall(i: I) {
+                    if items.contains(i) {
+                        set_image_family(family, f, i).contains(y)
+                        set_image_family(family, f, i) = set_image(family(i), f)
+                        set_image_contains_inverse_of_bijection(family(i), f, y)
+                        family(i).contains(inverse_fn(f, y))
+                    }
+                }
+                set_list_sInf_contains_eq(items, family, inverse_fn(f, y))
+                set_list_sInf(items, family).contains(inverse_fn(f, y))
+                set_inverse_contains_imp_image_contains(set_list_sInf(items, family), f, y)
+                set_image(set_list_sInf(items, family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// A bijective map preserves listed infima by image.
+theorem set_image_list_sInf_of_bijection[T: Inhabited, U, I](items: List[I],
+    family: I -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    set_image(set_list_sInf(items, family), f) =
+        set_list_sInf(items, set_image_family(family, f))
+} by {
+    if is_bijection_fn(f) {
+        let u = set_image(set_list_sInf(items, family), f)
+        let v = set_list_sInf(items, set_image_family(family, f))
+        set_image_list_sInf_subset(items, family, f)
+        u.subset(v)
+        set_image_list_sInf_reverse_of_bijection(items, family, f)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_image(set_list_sInf(items, family), f) =
+            set_list_sInf(items, set_image_family(family, f))
+    }
+}
+
+/// A set is contained in an injective image of a nonempty listed infimum exactly when it is contained in every listed member image.
+theorem set_subset_image_list_sInf_iff_of_injective[T, U, I](s: Set[U], items: List[I],
+    family: I -> Set[T], f: T -> U, i0: I) {
+    is_injective_fn(f) and items.contains(i0) implies
+    s.subset(set_image(set_list_sInf(items, family), f)) = forall(i: I) {
+        items.contains(i) implies s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_injective_fn(f) and items.contains(i0) {
+        set_image_list_sInf_of_injective(items, family, f, i0)
+        set_image(set_list_sInf(items, family), f) =
+            set_list_sInf(items, set_image_family(family, f))
+        set_subset_list_sInf_iff(items, s, set_image_family(family, f))
+        s.subset(set_image(set_list_sInf(items, family), f)) = forall(i: I) {
+            items.contains(i) implies s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// A set is contained in a bijective image of a listed infimum exactly when it is contained in every listed member image.
+theorem set_subset_image_list_sInf_iff_of_bijection[T: Inhabited, U, I](s: Set[U],
+    items: List[I], family: I -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(set_list_sInf(items, family), f)) = forall(i: I) {
+        items.contains(i) implies s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_bijection_fn(f) {
+        set_image_list_sInf_of_bijection(items, family, f)
+        set_image(set_list_sInf(items, family), f) =
+            set_list_sInf(items, set_image_family(family, f))
+        set_subset_list_sInf_iff(items, s, set_image_family(family, f))
+        s.subset(set_image(set_list_sInf(items, family), f)) = forall(i: I) {
+            items.contains(i) implies s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
 /// A list supremum is the least upper bound of its listed family.
 theorem set_list_sSup_is_lub[K, I](items: List[I], family: I -> Set[K], s: Set[K]) {
     (forall(i: I) { items.contains(i) implies family(i).subset(set_list_sSup(items, family)) }) and
@@ -2310,6 +2667,157 @@ theorem set_image_range_sInf_subset[T, U](n: Nat, family: Nat -> Set[T], f: T ->
         set_image_family(family, f))
     set_image(set_range_sInf(n, family), f).subset(
         set_range_sInf(n, set_image_family(family, f)))
+}
+
+/// Under an injective map, a nonempty bounded infimum of images is contained in the image of the bounded infimum.
+theorem set_image_range_sInf_reverse_of_injective[T, U](n: Nat, family: Nat -> Set[T],
+    f: T -> U, i0: Nat) {
+    is_injective_fn(f) and i0 < n implies
+    set_range_sInf(n, set_image_family(family, f)).subset(
+        set_image(set_range_sInf(n, family), f))
+} by {
+    if is_injective_fn(f) and i0 < n {
+        forall(y: U) {
+            if set_range_sInf(n, set_image_family(family, f)).contains(y) {
+                set_range_sInf_contains_eq(n, set_image_family(family, f), y)
+                set_image_family(family, f, i0).contains(y)
+                set_image_family(family, f, i0) = set_image(family(i0), f)
+                set_image_contains_witness(family(i0), f, y)
+                let x: T satisfy {
+                    family(i0).contains(x) and y = f(x)
+                }
+                forall(i: Nat) {
+                    if i < n {
+                        set_image_family(family, f, i).contains(y)
+                        set_image_family(family, f, i) = set_image(family(i), f)
+                        set_image_contains_witness(family(i), f, y)
+                        let xi: T satisfy {
+                            family(i).contains(xi) and y = f(xi)
+                        }
+                        f(x) = f(xi)
+                        injective_fn_eq(f, x, xi)
+                        x = xi
+                        family(i).contains(x)
+                    }
+                }
+                set_range_sInf_contains_eq(n, family, x)
+                set_range_sInf(n, family).contains(x)
+                maps_into_set_image(set_range_sInf(n, family), f, x)
+                set_image(set_range_sInf(n, family), f).contains(f(x))
+                set_image(set_range_sInf(n, family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// An injective map preserves nonempty bounded infima by image.
+theorem set_image_range_sInf_of_injective[T, U](n: Nat, family: Nat -> Set[T],
+    f: T -> U, i0: Nat) {
+    is_injective_fn(f) and i0 < n implies
+    set_image(set_range_sInf(n, family), f) =
+        set_range_sInf(n, set_image_family(family, f))
+} by {
+    if is_injective_fn(f) and i0 < n {
+        let u = set_image(set_range_sInf(n, family), f)
+        let v = set_range_sInf(n, set_image_family(family, f))
+        set_image_range_sInf_subset(n, family, f)
+        u.subset(v)
+        set_image_range_sInf_reverse_of_injective(n, family, f, i0)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_image(set_range_sInf(n, family), f) =
+            set_range_sInf(n, set_image_family(family, f))
+    }
+}
+
+/// Under a bijective map, a bounded infimum of images is contained in the image of the bounded infimum.
+theorem set_image_range_sInf_reverse_of_bijection[T: Inhabited, U](n: Nat,
+    family: Nat -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    set_range_sInf(n, set_image_family(family, f)).subset(
+        set_image(set_range_sInf(n, family), f))
+} by {
+    if is_bijection_fn(f) {
+        bijection_fn_is_surjective(f)
+        is_surjective_fn(f)
+        forall(y: U) {
+            if set_range_sInf(n, set_image_family(family, f)).contains(y) {
+                set_range_sInf_contains_eq(n, set_image_family(family, f), y)
+                forall(i: Nat) {
+                    if i < n {
+                        set_image_family(family, f, i).contains(y)
+                        set_image_family(family, f, i) = set_image(family(i), f)
+                        set_image_contains_inverse_of_bijection(family(i), f, y)
+                        family(i).contains(inverse_fn(f, y))
+                    }
+                }
+                set_range_sInf_contains_eq(n, family, inverse_fn(f, y))
+                set_range_sInf(n, family).contains(inverse_fn(f, y))
+                set_inverse_contains_imp_image_contains(set_range_sInf(n, family), f, y)
+                set_image(set_range_sInf(n, family), f).contains(y)
+            }
+        }
+    }
+}
+
+/// A bijective map preserves bounded natural-family infima by image.
+theorem set_image_range_sInf_of_bijection[T: Inhabited, U](n: Nat, family: Nat -> Set[T],
+    f: T -> U) {
+    is_bijection_fn(f) implies
+    set_image(set_range_sInf(n, family), f) =
+        set_range_sInf(n, set_image_family(family, f))
+} by {
+    if is_bijection_fn(f) {
+        let u = set_image(set_range_sInf(n, family), f)
+        let v = set_range_sInf(n, set_image_family(family, f))
+        set_image_range_sInf_subset(n, family, f)
+        u.subset(v)
+        set_image_range_sInf_reverse_of_bijection(n, family, f)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_image(set_range_sInf(n, family), f) =
+            set_range_sInf(n, set_image_family(family, f))
+    }
+}
+
+/// A set is contained in an injective image of a nonempty bounded infimum exactly when it is contained in every bounded member image.
+theorem set_subset_image_range_sInf_iff_of_injective[T, U](s: Set[U], n: Nat,
+    family: Nat -> Set[T], f: T -> U, i0: Nat) {
+    is_injective_fn(f) and i0 < n implies
+    s.subset(set_image(set_range_sInf(n, family), f)) = forall(i: Nat) {
+        i < n implies s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_injective_fn(f) and i0 < n {
+        set_image_range_sInf_of_injective(n, family, f, i0)
+        set_image(set_range_sInf(n, family), f) =
+            set_range_sInf(n, set_image_family(family, f))
+        set_subset_range_sInf_iff(n, s, set_image_family(family, f))
+        s.subset(set_image(set_range_sInf(n, family), f)) = forall(i: Nat) {
+            i < n implies s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// A set is contained in a bijective image of a bounded infimum exactly when it is contained in every bounded member image.
+theorem set_subset_image_range_sInf_iff_of_bijection[T: Inhabited, U](s: Set[U],
+    n: Nat, family: Nat -> Set[T], f: T -> U) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(set_range_sInf(n, family), f)) = forall(i: Nat) {
+        i < n implies s.subset(set_image_family(family, f, i))
+    }
+} by {
+    if is_bijection_fn(f) {
+        set_image_range_sInf_of_bijection(n, family, f)
+        set_image(set_range_sInf(n, family), f) =
+            set_range_sInf(n, set_image_family(family, f))
+        set_subset_range_sInf_iff(n, s, set_image_family(family, f))
+        s.subset(set_image(set_range_sInf(n, family), f)) = forall(i: Nat) {
+            i < n implies s.subset(set_image_family(family, f, i))
+        }
+    }
 }
 
 /// A range supremum is the least upper bound of the bounded family.
