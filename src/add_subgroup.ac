@@ -1,6 +1,7 @@
 from add_comm_group import AddCommGroup
 from add_group import AddGroup, AddGroupHom, add_group_hom_zero, add_group_hom_add, add_group_hom_neg
 from functions import predicate_extensionality
+from set import Set
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
@@ -275,6 +276,11 @@ let add_subgroup_intersection[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G])
 attributes AddSubgroup[G: AddGroup] {
     /// Additive subgroup extensionality from pointwise equality of membership.
     let ext = add_subgroup_ext[G]
+
+    /// The subset of additive group elements belonging to this additive subgroup.
+    define as_set(self) -> Set[G] {
+        Set[G].new(self.contains)
+    }
 
     /// The common part of two additive subgroups.
     let intersection: (AddSubgroup[G], AddSubgroup[G]) -> AddSubgroup[G] = add_subgroup_intersection
@@ -739,6 +745,320 @@ theorem full_add_subgroup_intersection_right[G: AddGroup](s: AddSubgroup[G]) {
 } by {
     add_subgroup_subset_full(s)
     add_subgroup_intersection_eq_left_of_subset(s, full_add_subgroup[G])
+}
+
+/// True if every element of a set belongs to an additive subgroup.
+define set_subset_add_subgroup[G: AddGroup](a: Set[G], s: AddSubgroup[G]) -> Bool {
+    forall(x: G) {
+        a.contains(x) implies s.contains(x)
+    }
+}
+
+/// The underlying set of an additive subgroup is contained in the additive subgroup.
+theorem add_subgroup_as_set_subset_self[G: AddGroup](s: AddSubgroup[G]) {
+    set_subset_add_subgroup(s.as_set, s)
+} by {
+    forall(x: G) {
+        if s.as_set.contains(x) {
+            s.contains(x)
+        }
+    }
+}
+
+/// Set containment is preserved by enlarging the target additive subgroup.
+theorem set_subset_add_subgroup_trans[G: AddGroup](
+    a: Set[G],
+    s: AddSubgroup[G],
+    t: AddSubgroup[G]
+) {
+    set_subset_add_subgroup(a, s) and add_subgroup_subset(s, t) implies set_subset_add_subgroup(a, t)
+} by {
+    if set_subset_add_subgroup(a, s) and add_subgroup_subset(s, t) {
+        forall(x: G) {
+            if a.contains(x) {
+                s.contains(x)
+                t.contains(x)
+            }
+        }
+    }
+}
+
+/// Set containment in an additive subgroup is preserved by enlarging the set.
+theorem set_subset_add_subgroup_of_set_subset[G: AddGroup](
+    a: Set[G],
+    b: Set[G],
+    s: AddSubgroup[G]
+) {
+    a.subset(b) and set_subset_add_subgroup(b, s) implies set_subset_add_subgroup(a, s)
+} by {
+    if a.subset(b) and set_subset_add_subgroup(b, s) {
+        forall(x: G) {
+            if a.contains(x) {
+                a.subset(b) = forall(y: G) {
+                    a.contains(y) implies b.contains(y)
+                }
+                b.contains(x)
+                s.contains(x)
+            }
+        }
+    }
+}
+
+/// True if an element belongs to every additive subgroup that contains a given set.
+define add_subgroup_closure_contains[G: AddGroup](a: Set[G], x: G) -> Bool {
+    forall(s: AddSubgroup[G]) {
+        set_subset_add_subgroup(a, s) implies s.contains(x)
+    }
+}
+
+/// Membership in the closure gives membership in each additive subgroup that contains the set.
+theorem add_subgroup_closure_contains_of_set_subset_raw[G: AddGroup](
+    a: Set[G],
+    s: AddSubgroup[G],
+    x: G
+) {
+    add_subgroup_closure_contains(a, x) and set_subset_add_subgroup(a, s) implies s.contains(x)
+} by {
+    if add_subgroup_closure_contains(a, x) and set_subset_add_subgroup(a, s) {
+        add_subgroup_closure_contains(a, x) = forall(t: AddSubgroup[G]) {
+            set_subset_add_subgroup(a, t) implies t.contains(x)
+        }
+        s.contains(x)
+    }
+}
+
+/// The additive subgroup closure of a set contains zero.
+theorem add_subgroup_closure_zero_constraint[G: AddGroup](a: Set[G]) {
+    add_zero_constraint(add_subgroup_closure_contains(a))
+} by {
+    forall(s: AddSubgroup[G]) {
+        if set_subset_add_subgroup(a, s) {
+            add_subgroup_contains_zero(s)
+            s.contains(G.0)
+        }
+    }
+    add_subgroup_closure_contains(a, G.0)
+    add_zero_constraint(add_subgroup_closure_contains(a))
+}
+
+/// The additive subgroup closure of a set is closed under addition.
+theorem add_subgroup_closure_closure_constraint[G: AddGroup](a: Set[G]) {
+    add_closure_constraint(add_subgroup_closure_contains(a))
+} by {
+    forall(x: G, y: G) {
+        if add_subgroup_closure_contains(a, x) and add_subgroup_closure_contains(a, y) {
+            forall(s: AddSubgroup[G]) {
+                if set_subset_add_subgroup(a, s) {
+                    add_subgroup_closure_contains_of_set_subset_raw(a, s, x)
+                    s.contains(x)
+                    add_subgroup_closure_contains_of_set_subset_raw(a, s, y)
+                    s.contains(y)
+                    add_subgroup_contains_add(s, x, y)
+                    s.contains(x + y)
+                }
+            }
+            add_subgroup_closure_contains(a, x + y)
+        }
+    }
+}
+
+/// The additive subgroup closure of a set is closed under negation.
+theorem add_subgroup_closure_neg_constraint[G: AddGroup](a: Set[G]) {
+    neg_constraint(add_subgroup_closure_contains(a))
+} by {
+    forall(x: G) {
+        if add_subgroup_closure_contains(a, x) {
+            forall(s: AddSubgroup[G]) {
+                if set_subset_add_subgroup(a, s) {
+                    add_subgroup_closure_contains_of_set_subset_raw(a, s, x)
+                    s.contains(x)
+                    add_subgroup_contains_neg(s, x)
+                    s.contains(-x)
+                }
+            }
+            add_subgroup_closure_contains(a, -x)
+        }
+    }
+}
+
+/// The additive subgroup generated by a set satisfies the additive subgroup laws.
+theorem add_subgroup_generated_constraint[G: AddGroup](a: Set[G]) {
+    add_subgroup_constraint(add_subgroup_closure_contains(a))
+} by {
+    add_subgroup_closure_zero_constraint(a)
+    add_subgroup_closure_closure_constraint(a)
+    add_subgroup_closure_neg_constraint(a)
+}
+
+/// The smallest additive subgroup containing a set.
+let add_subgroup_closure[G: AddGroup](a: Set[G]) -> result: AddSubgroup[G] satisfy {
+    AddSubgroup.new(add_subgroup_closure_contains(a)) = Option.some(result)
+} by {
+    add_subgroup_generated_constraint(a)
+}
+
+/// Membership in the closure means membership in every additive subgroup containing the set.
+theorem add_subgroup_closure_contains_eq[G: AddGroup](a: Set[G], x: G) {
+    add_subgroup_closure(a).contains(x) = add_subgroup_closure_contains(a, x)
+} by {
+    add_subgroup_closure(a).contains(x) = add_subgroup_closure_contains(a, x)
+}
+
+/// Every generator belongs to the additive subgroup closure.
+theorem add_subgroup_subset_closure[G: AddGroup](a: Set[G]) {
+    set_subset_add_subgroup(a, add_subgroup_closure(a))
+} by {
+    forall(x: G) {
+        if a.contains(x) {
+            forall(s: AddSubgroup[G]) {
+                if set_subset_add_subgroup(a, s) {
+                    s.contains(x)
+                }
+            }
+            add_subgroup_closure_contains(a, x)
+            add_subgroup_closure_contains_eq(a, x)
+            add_subgroup_closure(a).contains(x)
+        }
+    }
+}
+
+/// A generator is a member of the additive subgroup closure.
+theorem add_subgroup_closure_contains_of_set_contains[G: AddGroup](a: Set[G], x: G) {
+    a.contains(x) implies add_subgroup_closure(a).contains(x)
+} by {
+    if a.contains(x) {
+        add_subgroup_subset_closure(a)
+        add_subgroup_closure(a).contains(x)
+    }
+}
+
+/// The additive subgroup closure is contained in any additive subgroup containing the set.
+theorem add_subgroup_closure_subset_of_set_subset[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    set_subset_add_subgroup(a, s) implies add_subgroup_subset(add_subgroup_closure(a), s)
+} by {
+    if set_subset_add_subgroup(a, s) {
+        forall(x: G) {
+            if add_subgroup_closure(a).contains(x) {
+                add_subgroup_closure_contains_eq(a, x)
+                add_subgroup_closure_contains(a, x)
+                add_subgroup_closure_contains_of_set_subset_raw(a, s, x)
+            }
+        }
+    }
+}
+
+/// The additive subgroup closure is the least additive subgroup containing the set.
+theorem add_subgroup_closure_le_iff_set_subset[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    add_subgroup_subset(add_subgroup_closure(a), s) = set_subset_add_subgroup(a, s)
+} by {
+    if add_subgroup_subset(add_subgroup_closure(a), s) {
+        add_subgroup_subset_closure(a)
+        set_subset_add_subgroup_trans(a, add_subgroup_closure(a), s)
+        set_subset_add_subgroup(a, s)
+    }
+    if set_subset_add_subgroup(a, s) {
+        add_subgroup_closure_subset_of_set_subset(a, s)
+        add_subgroup_subset(add_subgroup_closure(a), s)
+    }
+    add_subgroup_subset(add_subgroup_closure(a), s) = set_subset_add_subgroup(a, s)
+}
+
+/// The closure of the underlying set of an additive subgroup is the additive subgroup itself.
+theorem add_subgroup_closure_as_set[G: AddGroup](s: AddSubgroup[G]) {
+    add_subgroup_closure(s.as_set) = s
+} by {
+    add_subgroup_as_set_subset_self(s)
+    add_subgroup_closure_subset_of_set_subset(s.as_set, s)
+    add_subgroup_subset(add_subgroup_closure(s.as_set), s)
+    add_subgroup_subset_closure(s.as_set)
+    forall(x: G) {
+        if s.contains(x) {
+            s.as_set.contains(x)
+            add_subgroup_closure(s.as_set).contains(x)
+        }
+    }
+    add_subgroup_subset(s, add_subgroup_closure(s.as_set))
+    add_subgroup_subset_antisymm(add_subgroup_closure(s.as_set), s)
+}
+
+/// Additive subgroup closure is monotone with respect to set inclusion.
+theorem add_subgroup_closure_mono[G: AddGroup](a: Set[G], b: Set[G]) {
+    a.subset(b) implies add_subgroup_subset(add_subgroup_closure(a), add_subgroup_closure(b))
+} by {
+    if a.subset(b) {
+        add_subgroup_subset_closure(b)
+        set_subset_add_subgroup_of_set_subset(a, b, add_subgroup_closure(b))
+        set_subset_add_subgroup(a, add_subgroup_closure(b))
+        add_subgroup_closure_subset_of_set_subset(a, add_subgroup_closure(b))
+        add_subgroup_subset(add_subgroup_closure(a), add_subgroup_closure(b))
+    }
+}
+
+/// Equal sets have equal additive subgroup closures.
+theorem add_subgroup_closure_eq_of_set_eq[G: AddGroup](a: Set[G], b: Set[G]) {
+    a = b implies add_subgroup_closure(a) = add_subgroup_closure(b)
+} by {
+    if a = b {
+        add_subgroup_closure(a) = add_subgroup_closure(b)
+    }
+}
+
+/// Applying additive subgroup closure twice gives the same additive subgroup.
+theorem add_subgroup_closure_idempotent[G: AddGroup](a: Set[G]) {
+    add_subgroup_closure(add_subgroup_closure(a).as_set) = add_subgroup_closure(a)
+} by {
+    add_subgroup_closure_as_set(add_subgroup_closure(a))
+}
+
+/// The closure of the empty set is the zero additive subgroup.
+theorem add_subgroup_closure_empty[G: AddGroup] {
+    add_subgroup_closure(Set[G].empty_set) = zero_add_subgroup[G]
+} by {
+    set_subset_add_subgroup(Set[G].empty_set, zero_add_subgroup[G])
+    add_subgroup_closure_subset_of_set_subset(Set[G].empty_set, zero_add_subgroup[G])
+    add_subgroup_subset(add_subgroup_closure(Set[G].empty_set), zero_add_subgroup[G])
+    zero_add_subgroup_subset(add_subgroup_closure(Set[G].empty_set))
+    add_subgroup_subset_antisymm(add_subgroup_closure(Set[G].empty_set), zero_add_subgroup[G])
+}
+
+/// The closure of the universal set is the full additive subgroup.
+theorem add_subgroup_closure_universal[G: AddGroup] {
+    add_subgroup_closure(Set[G].universal_set) = full_add_subgroup[G]
+} by {
+    add_subgroup_subset_full(add_subgroup_closure(Set[G].universal_set))
+    forall(x: G) {
+        if full_add_subgroup[G].contains(x) {
+            Set[G].universal_set.contains(x)
+            add_subgroup_closure_contains_of_set_contains(Set[G].universal_set, x)
+            add_subgroup_closure(Set[G].universal_set).contains(x)
+        }
+    }
+    add_subgroup_subset(full_add_subgroup[G], add_subgroup_closure(Set[G].universal_set))
+    add_subgroup_subset_antisymm(add_subgroup_closure(Set[G].universal_set), full_add_subgroup[G])
+}
+
+attributes AddSubgroup[G: AddGroup] {
+    /// The smallest additive subgroup containing a set.
+    let closure: Set[G] -> AddSubgroup[G] = add_subgroup_closure
+}
+
+/// True if an additive subgroup is generated by a finite set.
+define add_subgroup_is_finitely_generated[G: AddGroup](s: AddSubgroup[G]) -> Bool {
+    exists(a: Set[G]) {
+        a.is_finite and add_subgroup_closure(a) = s
+    }
+}
+
+/// The closure of a finite set is a finitely generated additive subgroup.
+theorem add_subgroup_closure_is_finitely_generated[G: AddGroup](a: Set[G]) {
+    a.is_finite implies add_subgroup_is_finitely_generated(add_subgroup_closure(a))
+} by {
+    if a.is_finite {
+        exists(b: Set[G]) {
+            b.is_finite and add_subgroup_closure(b) = add_subgroup_closure(a)
+        }
+        add_subgroup_is_finitely_generated(add_subgroup_closure(a))
+    }
 }
 
 /// The equivalence relation on `G` defined by an additive subgroup: `a ~ b` iff `a - b` lies in the subgroup.
