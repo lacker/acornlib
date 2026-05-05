@@ -4,10 +4,11 @@ Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
 - [ ] Finish subobject lattice work: valid union/closure APIs and eventual lattice structures after design choices settle
 - [ ] Add finite-generation predicates for ideals and modules after their bundled APIs settle
-- [ ] Refactor existing finite subgroup and finite set code toward the shared subobject conventions
+- [ ] Refactor remaining finite set code toward the shared subobject conventions after downstream needs are clearer
 
 Status:
 
+- `src/finite_group.ac` now exposes finite subgroup bridges to `Subgroup`, `Set`, and `FiniteSet`, proves finite subsemigroups/submonoids/subgroups of finite groups are finitely generated, and adds cyclic finite subgroup membership lemmas.
 - `src/add_subgroup.ac` now supports closure from subsets, with generator inclusion, least-property, monotonicity, idempotence, and empty/universal closure lemmas.
 - `src/subring.ac` now supports closure from subsets, with generator inclusion, least-property, monotonicity, idempotence, and universal closure lemmas.
 - `src/subsemigroup.ac`, `src/submonoid.ac`, `src/subgroup.ac`, `src/add_submonoid.ac`, `src/add_subgroup.ac`, and `src/subring.ac` now define finite-generation predicates from finite generating sets.
