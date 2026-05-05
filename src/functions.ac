@@ -370,6 +370,59 @@ theorem injective_fn_eq[T, U](f: T -> U, x1: T, x2: T) {
     }
 }
 
+/// Injectivity turns distinct inputs into distinct outputs.
+theorem injective_fn_ne[T, U](f: T -> U, x1: T, x2: T) {
+    is_injective_fn(f) and x1 != x2 implies f(x1) != f(x2)
+} by {
+    if is_injective_fn(f) and x1 != x2 {
+        if f(x1) = f(x2) {
+            injective_fn_eq(f, x1, x2)
+            x1 = x2
+            false
+        }
+    }
+}
+
+/// A function is injective when distinct inputs always have distinct outputs.
+theorem injective_fn_of_ne[T, U](f: T -> U) {
+    forall(x1: T, x2: T) {
+        x1 != x2 implies f(x1) != f(x2)
+    }
+    implies is_injective_fn(f)
+} by {
+    if forall(x1: T, x2: T) { x1 != x2 implies f(x1) != f(x2) } {
+        forall(x1: T, x2: T) {
+            if f(x1) = f(x2) {
+                if x1 != x2 {
+                    f(x1) != f(x2)
+                    false
+                }
+            }
+        }
+        is_injective_fn(f)
+    }
+}
+
+/// Injectivity is equivalent to preserving apartness of inputs.
+theorem injective_fn_iff_ne[T, U](f: T -> U) {
+    is_injective_fn(f) = forall(x1: T, x2: T) {
+        x1 != x2 implies f(x1) != f(x2)
+    }
+} by {
+    if is_injective_fn(f) {
+        forall(x1: T, x2: T) {
+            if x1 != x2 {
+                injective_fn_ne(f, x1, x2)
+                f(x1) != f(x2)
+            }
+        }
+    }
+    if forall(x1: T, x2: T) { x1 != x2 implies f(x1) != f(x2) } {
+        injective_fn_of_ne(f)
+        is_injective_fn(f)
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
