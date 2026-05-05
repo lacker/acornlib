@@ -263,3 +263,21 @@ theorem nat_crt_three_moduli(m: Nat, n: Nat, p: Nat, a: Nat, b: Nat, c: Nat) {
         x.congr_mod(a, m) and x.congr_mod(b, n) and x.congr_mod(c, p)
     }
 }
+
+/// CRT combine on the naturals: when m and n are coprime and a is congruent to
+/// b modulo each of them, a is congruent to b modulo their product.
+theorem nat_congr_combine_coprime(m: Nat, n: Nat, a: Nat, b: Nat) {
+    m.coprime(n) and a.congr_mod(b, m) and a.congr_mod(b, n)
+        implies a.congr_mod(b, m * n)
+} by {
+    if m.coprime(n) and a.congr_mod(b, m) and a.congr_mod(b, n) {
+        nat_congr_mod_iff_int_mod_rel(a, b, m)
+        int_mod_rel(m, Int.from_nat(a), Int.from_nat(b))
+        nat_congr_mod_iff_int_mod_rel(a, b, n)
+        int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))
+        int_mod_rel_combine_coprime(m, n, Int.from_nat(a), Int.from_nat(b))
+        int_mod_rel(m * n, Int.from_nat(a), Int.from_nat(b))
+        nat_congr_mod_iff_int_mod_rel(a, b, m * n)
+        a.congr_mod(b, m * n)
+    }
+}

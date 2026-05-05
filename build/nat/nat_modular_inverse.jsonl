@@ -37,3 +37,74 @@
 {"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, Nat.0) }","proof":[]}
 {"goal":"(a * b0).congr_mod(Nat.1, n)","proof":[]}
 {"goal":"nat_modular_inverse_exists","proof":[]}
+{"goal":"b1.congr_mod(b1, n)","proof":[]}
+{"goal":"mod_inv_unique_left_scale","proof":["function(x0: Nat, x1: Nat) { x0.congr_mod(x0, x1) }(b1, n)","function(x0: Nat) { x0 * Nat.1 = x0 }(b1)"]}
+{"goal":"b2.congr_mod(b2, n)","proof":[]}
+{"goal":"mod_inv_unique_right_scale","proof":["function(x0: Nat, x1: Nat) { x0.congr_mod(x0, x1) }(b2, n)","function(x0: Nat) { Nat.1 * x0 = x0 }(b2)"]}
+{"goal":"b1 * (a * b2) = b1 * a * b2","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(b1, a, b2)"]}
+{"goal":"b1 * a = a * b1","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(b1, a)"]}
+{"goal":"mod_inv_assoc_swap","proof":[]}
+{"goal":"lhs.congr_mod(b1, n)","proof":[]}
+{"goal":"lhs = prod","proof":[]}
+{"goal":"prod.congr_mod(b1, n)","proof":[]}
+{"goal":"prod.congr_mod(b2, n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(prod)(n) = lib(nat.nat_base).nat_mod(b1)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(prod, n, b1)"]}
+{"goal":"lib(nat.nat_base).nat_mod(prod)(n) = lib(nat.nat_base).nat_mod(b2)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(prod, n, b2)"]}
+{"goal":"lib(nat.nat_base).nat_mod(b1)(n) = lib(nat.nat_base).nat_mod(b2)(n)","proof":[]}
+{"goal":"b1.congr_mod(b2, n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(b1, n, b2)"]}
+{"goal":"mod_inv_unique_congr","proof":[]}
+{"goal":"is_mod_inv_iff_congr","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (x0 * x1).congr_mod(Nat.1, x2) = x0.is_mod_inv(x1, x2) }(a, b, n)"]}
+{"goal":"(a * b1).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"(a * b2).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"mod_inv_unique","proof":[]}
+{"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, n) }","proof":[]}
+{"goal":"a.is_mod_inv(b0, n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (x0 * x1).congr_mod(Nat.1, x2) = x0.is_mod_inv(x1, x2) }(a, b0, n)"]}
+{"goal":"Nat.0 = Nat.0","proof":[]}
+{"goal":"exists(k0: Nat) { if a.coprime(n) { a.is_mod_inv(k0, n) } else { k0 = Nat.0 } }","proof":["function(x0: Nat) { not if a.coprime(n) { a.is_mod_inv(x0, n) } else { x0 = Nat.0 } }(Nat.0)","function(x0: Nat) { Nat.0 != x0 or a.coprime(n) }(Nat.0)","a.coprime(n)","let w0: Nat satisfy { a.is_mod_inv(w0, n) }","function(x0: Nat) { not if a.coprime(n) { a.is_mod_inv(x0, n) } else { x0 = Nat.0 } }(w0)"]}
+{"goal":"mod_inv_correct","proof":["function(x0: Nat, x1: Nat) { if x0.coprime(x1) { x0.is_mod_inv(mod_inv(x0, x1), x1) } else { mod_inv(x0, x1) = Nat.0 } }(a, n)"]}
+{"goal":"mod_inv_mul_congr_one","proof":["function(x0: Nat, x1: Nat, x2: Nat) { (x0 * x1).congr_mod(Nat.1, x2) = x0.is_mod_inv(x1, x2) }(a, mod_inv(a, n), n)","function(x0: Nat, x1: Nat) { not x0.coprime(x1) or x0.is_mod_inv(mod_inv(x0, x1), x1) }(a, n)"]}
+{"goal":"c.congr_mod(c, n)","proof":[]}
+{"goal":"mul_left_compat","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(c, n, c)"]}
+{"goal":"x.congr_mod(x, n)","proof":[]}
+{"goal":"(c * x).congr_mod(Nat.1 * x, n)","proof":[]}
+{"goal":"Nat.1 * x = x","proof":["function(x0: Nat) { Nat.1 * x0 = x0 }(x)"]}
+{"goal":"(c * x).congr_mod(x, n)","proof":[]}
+{"goal":"mul_one_congr_left","proof":[]}
+{"goal":"(b * a * x).congr_mod(x, n)","proof":[]}
+{"goal":"x.congr_mod(b * a * x, n)","proof":[]}
+{"goal":"(b * a * y).congr_mod(y, n)","proof":[]}
+{"goal":"cancel_coprime_pin","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { not (x0 * x1).congr_mod(Nat.1, x2) or (x0 * x1 * x3).congr_mod(x3, x2) }(b, a, n, x)","function(x0: Nat, x1: Nat, x2: Nat) { not x0.congr_mod(x1, x2) or x1.congr_mod(x0, x2) }(b * a * x, x, n)"]}
+{"goal":"(c * x).congr_mod(x, n)","proof":[]}
+{"goal":"x.congr_mod(c * x, n)","proof":[]}
+{"goal":"cancel_one_chain_left","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.congr_mod(Nat.1, x1) or (x0 * x2).congr_mod(x2, x1) }(c, n, x)","function(x0: Nat, x1: Nat, x2: Nat) { not x0.congr_mod(x1, x2) or x1.congr_mod(x0, x2) }(c * x, x, n)"]}
+{"goal":"(c * y).congr_mod(y, n)","proof":[]}
+{"goal":"cancel_one_chain_right","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.congr_mod(Nat.1, x1) or (x0 * x2).congr_mod(x2, x1) }(c, n, y)"]}
+{"goal":"x.congr_mod(c * y, n)","proof":[]}
+{"goal":"cancel_one_chain","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat) { not (x0 * x1).congr_mod(x0 * x2, x3) or not x0.congr_mod(Nat.1, x3) or x1.congr_mod(x0 * x2, x3) }(c, x, y, n)"]}
+{"goal":"(b * (a * x)).congr_mod(b * (a * y), n)","proof":[]}
+{"goal":"b * (a * x) = b * a * x","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(b, a, x)"]}
+{"goal":"b * (a * y) = b * a * y","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 * x1 * x2 = x0 * (x1 * x2) }(b, a, y)"]}
+{"goal":"(b * a * x).congr_mod(b * a * y, n)","proof":[]}
+{"goal":"cancel_with_inverse_setup","proof":[]}
+{"goal":"(b * a * x).congr_mod(b * a * y, n)","proof":[]}
+{"goal":"cancel_with_inverse","proof":["function(x0: Nat, x1: Nat, x2: Nat, x3: Nat, x4: Nat) { not (x0 * x1).congr_mod(x0 * x2, x3) or (x4 * x0 * x1).congr_mod(x4 * x0 * x2, x3) }(a, x, y, n, b)"]}
+{"goal":"exists(k0: Nat) { (a * k0).congr_mod(Nat.1, n) }","proof":[]}
+{"goal":"(a * b).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"b * a = a * b","proof":["function(x0: Nat, x1: Nat) { x0 * x1 = x1 * x0 }(b, a)"]}
+{"goal":"(b * a).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"(a * x).congr_mod(a * y, n)","proof":[]}
+{"goal":"x.congr_mod(y, n)","proof":[]}
+{"goal":"cancel_coprime","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n) = lib(nat.nat_base).nat_mod(Nat.1)(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat) { lib(nat.nat_base).nat_mod(x0, x1) = lib(nat.nat_base).nat_mod(x2, x1) = x0.congr_mod(x2, x1) }(a * b, n, Nat.1)"]}
+{"goal":"Nat.1.coprime(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(Nat.1)(n).coprime(n)","proof":[]}
+{"goal":"lib(nat.nat_base).nat_mod(a * b)(n).coprime(n)","proof":[]}
+{"goal":"(a * b).coprime(n)","proof":[]}
+{"goal":"inverse_imp_product_coprime","proof":[]}
+{"goal":"n.coprime(a * b)","proof":[]}
+{"goal":"n.coprime(b)","proof":[]}
+{"goal":"product_coprime_imp_right","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.coprime(x1 * x2) or x0.coprime(x2) }(n, a, b)","function(x0: Nat, x1: Nat) { not x0.coprime(x1) or x1.coprime(x0) }(a * b, n)","not (a * b).coprime(n) or not n.coprime(b)","not n.coprime(b)","function(x0: Nat) { not n.coprime(x0 * b) }(a)"]}
+{"goal":"(a * b).coprime(n)","proof":[]}
+{"goal":"inverse_imp_coprime","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not (x0 * x1).congr_mod(Nat.1, x2) or (x0 * x1).coprime(x2) }(a, b, n)","not (a * b).congr_mod(Nat.1, n) or not (a * b).coprime(n)","not (a * b).coprime(n)"]}
+{"goal":"(a * mod_inv(a, n)).congr_mod(Nat.1, n)","proof":[]}
+{"goal":"mod_inv_coprime","proof":["function(x0: Nat, x1: Nat) { not x0.coprime(x1) or (x0 * mod_inv(x0, x1)).congr_mod(Nat.1, x1) }(a, n)"]}

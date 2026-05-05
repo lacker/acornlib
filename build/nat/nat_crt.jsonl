@@ -97,3 +97,8 @@
 {"goal":"x.congr_mod(c, p)","proof":[]}
 {"goal":"x.congr_mod(a, m) and x.congr_mod(b, n) and x.congr_mod(c, p)","proof":[]}
 {"goal":"nat_crt_three_moduli","proof":[]}
+{"goal":"int_mod_rel(m, Int.from_nat(a), Int.from_nat(b))","proof":[]}
+{"goal":"int_mod_rel(n, Int.from_nat(a), Int.from_nat(b))","proof":[]}
+{"goal":"int_mod_rel(m * n, Int.from_nat(a), Int.from_nat(b))","proof":[]}
+{"goal":"a.congr_mod(b, m * n)","proof":[]}
+{"goal":"nat_congr_combine_coprime","proof":[]}
