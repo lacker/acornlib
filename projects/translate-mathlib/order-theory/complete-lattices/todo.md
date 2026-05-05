@@ -10,10 +10,10 @@ Goal: support arbitrary suprema and infima, not just binary ones.
 - [ ] Support complete sublattices and closure operators
 - [ ] Add least and greatest fixed point infrastructure based on completeness
 - [ ] Connect complete lattices to topology and measure-theoretic constructions
-- [ ] Add convenient finite-family specializations of complete-lattice theorems
 - [ ] Record which downstream libraries should be migrated once this exists
 
 Status:
 
 - `src/set_lattice.ac` now has unbundled set-family `set_sSup` / `set_sInf` wrappers over indexed union/intersection, with membership characterizations, least-upper-bound and greatest-lower-bound universal properties, and monotonicity lemmas.
+- `src/set_lattice.ac` now has finite-family `set_list_sSup` / `set_list_sInf` and bounded natural-family `set_range_sSup` / `set_range_sInf` wrappers, with membership, universal-property, monotonicity, empty/successor range, and comparison-to-full-family lemmas.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.

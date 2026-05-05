@@ -1,3 +1,5 @@
+from list import List
+from nat import Nat
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     union_contains_eq, intersection_contains_eq, sets_subset_union, sets_subset_contain_union,
     sets_subset_intersection, set_supset_contains_intersection, union_comm, intersection_comm,
@@ -8,7 +10,22 @@ from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     indexed_union_subset_of_family_subset, indexed_intersection_contains_eq,
     indexed_intersection_contains_at, indexed_intersection_contains_of_forall,
     indexed_intersection_superset_of_subset_family, indexed_union_monotone,
-    indexed_intersection_monotone
+    indexed_intersection_monotone, list_indexed_union, list_indexed_intersection,
+    list_indexed_union_contains_eq, list_indexed_union_contains_of_contains,
+    list_indexed_union_subset_of_family_subset, subset_list_indexed_intersection_of_subset_family,
+    list_indexed_intersection_contains_eq, list_indexed_intersection_contains_at,
+    list_indexed_intersection_contains_of_forall, list_indexed_union_monotone,
+    list_indexed_intersection_monotone, list_indexed_union_subset_indexed_union,
+    indexed_intersection_subset_list_indexed_intersection, range_indexed_union,
+    range_indexed_intersection,
+    range_indexed_union_contains_eq, range_indexed_union_contains_of_lt,
+    range_indexed_union_subset_of_family_subset,
+    subset_range_indexed_intersection_of_subset_family,
+    range_indexed_intersection_contains_eq, range_indexed_intersection_contains_at,
+    range_indexed_intersection_contains_of_forall, range_indexed_union_monotone,
+    range_indexed_intersection_monotone, range_indexed_union_zero,
+    range_indexed_intersection_zero, range_indexed_union_suc_eq_union,
+    range_indexed_intersection_suc_eq_intersection
 
 /// The infimum of two sets.
 define set_inf[K](a: Set[K], b: Set[K]) -> Set[K] {
@@ -478,4 +495,452 @@ theorem set_sInf_is_glb[K, I](family: I -> Set[K], s: Set[K]) {
         set_sInf_subset_family(family, i)
     }
     set_subset_sInf_iff(s, family)
+}
+
+/// The supremum of the members whose indices occur in a list.
+define set_list_sSup[K, I](items: List[I], family: I -> Set[K]) -> Set[K] {
+    list_indexed_union(items, family)
+}
+
+/// The infimum of the members whose indices occur in a list.
+define set_list_sInf[K, I](items: List[I], family: I -> Set[K]) -> Set[K] {
+    list_indexed_intersection(items, family)
+}
+
+/// Membership in a list supremum is membership in some listed member.
+theorem set_list_sSup_contains_eq[K, I](items: List[I], family: I -> Set[K], x: K) {
+    set_list_sSup(items, family).contains(x) = exists(i: I) {
+        items.contains(i) and family(i).contains(x)
+    }
+} by {
+    list_indexed_union_contains_eq(items, family, x)
+}
+
+/// Membership in a list infimum is membership in every listed member.
+theorem set_list_sInf_contains_eq[K, I](items: List[I], family: I -> Set[K], x: K) {
+    set_list_sInf(items, family).contains(x) = forall(i: I) {
+        items.contains(i) implies family(i).contains(x)
+    }
+} by {
+    list_indexed_intersection_contains_eq(items, family, x)
+}
+
+/// Every listed member is contained in the list supremum.
+theorem set_list_family_subset_sSup[K, I](items: List[I], family: I -> Set[K], i: I) {
+    items.contains(i) implies family(i).subset(set_list_sSup(items, family))
+} by {
+    if items.contains(i) {
+        forall(x: K) {
+            if family(i).contains(x) {
+                list_indexed_union_contains_of_contains(items, family, i, x)
+                set_list_sSup(items, family).contains(x)
+            }
+        }
+    }
+}
+
+/// The list supremum is contained in every common superset of the listed members.
+theorem set_list_sSup_subset_of_family_subset[K, I](items: List[I], family: I -> Set[K],
+    s: Set[K]) {
+    (forall(i: I) { items.contains(i) implies family(i).subset(s) }) implies
+    set_list_sSup(items, family).subset(s)
+} by {
+    if forall(i: I) { items.contains(i) implies family(i).subset(s) } {
+        list_indexed_union_subset_of_family_subset(items, family, s)
+        set_list_sSup(items, family).subset(s)
+    }
+}
+
+/// A list supremum is contained in a set exactly when every listed member is contained in it.
+theorem set_list_sSup_subset_iff[K, I](items: List[I], family: I -> Set[K], s: Set[K]) {
+    set_list_sSup(items, family).subset(s) = forall(i: I) {
+        items.contains(i) implies family(i).subset(s)
+    }
+} by {
+    if set_list_sSup(items, family).subset(s) {
+        forall(i: I) {
+            if items.contains(i) {
+                set_list_family_subset_sSup(items, family, i)
+                subset_trans(family(i), set_list_sSup(items, family), s)
+                family(i).subset(s)
+            }
+        }
+    }
+    if forall(i: I) { items.contains(i) implies family(i).subset(s) } {
+        set_list_sSup_subset_of_family_subset(items, family, s)
+        set_list_sSup(items, family).subset(s)
+    }
+    set_list_sSup(items, family).subset(s) = forall(i: I) {
+        items.contains(i) implies family(i).subset(s)
+    }
+}
+
+/// A list infimum is contained in every listed member.
+theorem set_list_sInf_subset_family[K, I](items: List[I], family: I -> Set[K], i: I) {
+    items.contains(i) implies set_list_sInf(items, family).subset(family(i))
+} by {
+    if items.contains(i) {
+        forall(x: K) {
+            if set_list_sInf(items, family).contains(x) {
+                list_indexed_intersection_contains_at(items, family, i, x)
+                family(i).contains(x)
+            }
+        }
+    }
+}
+
+/// Every common subset of the listed members is contained in the list infimum.
+theorem set_subset_list_sInf_of_subset_family[K, I](items: List[I], s: Set[K],
+    family: I -> Set[K]) {
+    (forall(i: I) { items.contains(i) implies s.subset(family(i)) }) implies
+    s.subset(set_list_sInf(items, family))
+} by {
+    if forall(i: I) { items.contains(i) implies s.subset(family(i)) } {
+        subset_list_indexed_intersection_of_subset_family(items, family, s)
+        s.subset(set_list_sInf(items, family))
+    }
+}
+
+/// A set is contained in a list infimum exactly when it is contained in every listed member.
+theorem set_subset_list_sInf_iff[K, I](items: List[I], s: Set[K], family: I -> Set[K]) {
+    s.subset(set_list_sInf(items, family)) = forall(i: I) {
+        items.contains(i) implies s.subset(family(i))
+    }
+} by {
+    if s.subset(set_list_sInf(items, family)) {
+        forall(i: I) {
+            if items.contains(i) {
+                set_list_sInf_subset_family(items, family, i)
+                subset_trans(s, set_list_sInf(items, family), family(i))
+                s.subset(family(i))
+            }
+        }
+    }
+    if forall(i: I) { items.contains(i) implies s.subset(family(i)) } {
+        set_subset_list_sInf_of_subset_family(items, s, family)
+        s.subset(set_list_sInf(items, family))
+    }
+    s.subset(set_list_sInf(items, family)) = forall(i: I) {
+        items.contains(i) implies s.subset(family(i))
+    }
+}
+
+/// Pointwise inclusion of listed families preserves list suprema.
+theorem set_list_sSup_monotone[K, I](items: List[I], a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { items.contains(i) implies a(i).subset(b(i)) }) implies
+    set_list_sSup(items, a).subset(set_list_sSup(items, b))
+} by {
+    if forall(i: I) { items.contains(i) implies a(i).subset(b(i)) } {
+        list_indexed_union_monotone(items, a, b)
+        set_list_sSup(items, a) = list_indexed_union(items, a)
+        set_list_sSup(items, b) = list_indexed_union(items, b)
+        list_indexed_union(items, a).subset(list_indexed_union(items, b))
+        set_list_sSup(items, a).subset(set_list_sSup(items, b))
+    }
+}
+
+/// Pointwise inclusion of listed families preserves list infima.
+theorem set_list_sInf_monotone[K, I](items: List[I], a: I -> Set[K], b: I -> Set[K]) {
+    (forall(i: I) { items.contains(i) implies a(i).subset(b(i)) }) implies
+    set_list_sInf(items, a).subset(set_list_sInf(items, b))
+} by {
+    if forall(i: I) { items.contains(i) implies a(i).subset(b(i)) } {
+        list_indexed_intersection_monotone(items, a, b)
+        set_list_sInf(items, a) = list_indexed_intersection(items, a)
+        set_list_sInf(items, b) = list_indexed_intersection(items, b)
+        list_indexed_intersection(items, a).subset(list_indexed_intersection(items, b))
+        set_list_sInf(items, a).subset(set_list_sInf(items, b))
+    }
+}
+
+/// A list supremum is the least upper bound of its listed family.
+theorem set_list_sSup_is_lub[K, I](items: List[I], family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { items.contains(i) implies family(i).subset(set_list_sSup(items, family)) }) and
+    (set_list_sSup(items, family).subset(s) = forall(i: I) {
+        items.contains(i) implies family(i).subset(s)
+    })
+} by {
+    forall(i: I) {
+        if items.contains(i) {
+            set_list_family_subset_sSup(items, family, i)
+            family(i).subset(set_list_sSup(items, family))
+        }
+    }
+    set_list_sSup_subset_iff(items, family, s)
+}
+
+/// A list infimum is the greatest lower bound of its listed family.
+theorem set_list_sInf_is_glb[K, I](items: List[I], family: I -> Set[K], s: Set[K]) {
+    (forall(i: I) { items.contains(i) implies set_list_sInf(items, family).subset(family(i)) }) and
+    (s.subset(set_list_sInf(items, family)) = forall(i: I) {
+        items.contains(i) implies s.subset(family(i))
+    })
+} by {
+    forall(i: I) {
+        if items.contains(i) {
+            set_list_sInf_subset_family(items, family, i)
+            set_list_sInf(items, family).subset(family(i))
+        }
+    }
+    set_subset_list_sInf_iff(items, s, family)
+}
+
+/// The list supremum is contained in the supremum of the full indexed family.
+theorem set_list_sSup_subset_sSup[K, I](items: List[I], family: I -> Set[K]) {
+    set_list_sSup(items, family).subset(set_sSup(family))
+} by {
+    list_indexed_union_subset_indexed_union(items, family)
+    set_list_sSup(items, family) = list_indexed_union(items, family)
+    set_sSup(family) = indexed_union(family)
+    set_list_sSup(items, family).subset(set_sSup(family))
+}
+
+/// The infimum of the full indexed family is contained in the list infimum.
+theorem set_sInf_subset_list_sInf[K, I](items: List[I], family: I -> Set[K]) {
+    set_sInf(family).subset(set_list_sInf(items, family))
+} by {
+    indexed_intersection_subset_list_indexed_intersection(items, family)
+    set_sInf(family) = indexed_intersection(family)
+    set_list_sInf(items, family) = list_indexed_intersection(items, family)
+    set_sInf(family).subset(set_list_sInf(items, family))
+}
+
+/// The supremum of the members whose natural indices are less than a bound.
+define set_range_sSup[K](n: Nat, family: Nat -> Set[K]) -> Set[K] {
+    range_indexed_union(n, family)
+}
+
+/// The infimum of the members whose natural indices are less than a bound.
+define set_range_sInf[K](n: Nat, family: Nat -> Set[K]) -> Set[K] {
+    range_indexed_intersection(n, family)
+}
+
+/// Membership in a range supremum is membership in some member below the bound.
+theorem set_range_sSup_contains_eq[K](n: Nat, family: Nat -> Set[K], x: K) {
+    set_range_sSup(n, family).contains(x) = exists(i: Nat) {
+        i < n and family(i).contains(x)
+    }
+} by {
+    range_indexed_union_contains_eq(n, family, x)
+}
+
+/// Membership in a range infimum is membership in every member below the bound.
+theorem set_range_sInf_contains_eq[K](n: Nat, family: Nat -> Set[K], x: K) {
+    set_range_sInf(n, family).contains(x) = forall(i: Nat) {
+        i < n implies family(i).contains(x)
+    }
+} by {
+    range_indexed_intersection_contains_eq(n, family, x)
+}
+
+/// Every member below the bound is contained in the range supremum.
+theorem set_range_family_subset_sSup[K](n: Nat, family: Nat -> Set[K], i: Nat) {
+    i < n implies family(i).subset(set_range_sSup(n, family))
+} by {
+    if i < n {
+        forall(x: K) {
+            if family(i).contains(x) {
+                range_indexed_union_contains_of_lt(n, family, i, x)
+                set_range_sSup(n, family).contains(x)
+            }
+        }
+    }
+}
+
+/// The range supremum is contained in every common superset below the bound.
+theorem set_range_sSup_subset_of_family_subset[K](n: Nat, family: Nat -> Set[K],
+    s: Set[K]) {
+    (forall(i: Nat) { i < n implies family(i).subset(s) }) implies
+    set_range_sSup(n, family).subset(s)
+} by {
+    if forall(i: Nat) { i < n implies family(i).subset(s) } {
+        range_indexed_union_subset_of_family_subset(n, family, s)
+        set_range_sSup(n, family).subset(s)
+    }
+}
+
+/// A range supremum is contained in a set exactly when every member below the bound is contained in it.
+theorem set_range_sSup_subset_iff[K](n: Nat, family: Nat -> Set[K], s: Set[K]) {
+    set_range_sSup(n, family).subset(s) = forall(i: Nat) {
+        i < n implies family(i).subset(s)
+    }
+} by {
+    if set_range_sSup(n, family).subset(s) {
+        forall(i: Nat) {
+            if i < n {
+                set_range_family_subset_sSup(n, family, i)
+                subset_trans(family(i), set_range_sSup(n, family), s)
+                family(i).subset(s)
+            }
+        }
+    }
+    if forall(i: Nat) { i < n implies family(i).subset(s) } {
+        set_range_sSup_subset_of_family_subset(n, family, s)
+        set_range_sSup(n, family).subset(s)
+    }
+    set_range_sSup(n, family).subset(s) = forall(i: Nat) {
+        i < n implies family(i).subset(s)
+    }
+}
+
+/// A range infimum is contained in every member below the bound.
+theorem set_range_sInf_subset_family[K](n: Nat, family: Nat -> Set[K], i: Nat) {
+    i < n implies set_range_sInf(n, family).subset(family(i))
+} by {
+    if i < n {
+        forall(x: K) {
+            if set_range_sInf(n, family).contains(x) {
+                range_indexed_intersection_contains_at(n, family, i, x)
+                family(i).contains(x)
+            }
+        }
+    }
+}
+
+/// Every common subset below the bound is contained in the range infimum.
+theorem set_subset_range_sInf_of_subset_family[K](n: Nat, s: Set[K],
+    family: Nat -> Set[K]) {
+    (forall(i: Nat) { i < n implies s.subset(family(i)) }) implies
+    s.subset(set_range_sInf(n, family))
+} by {
+    if forall(i: Nat) { i < n implies s.subset(family(i)) } {
+        subset_range_indexed_intersection_of_subset_family(n, family, s)
+        s.subset(set_range_sInf(n, family))
+    }
+}
+
+/// A set is contained in a range infimum exactly when it is contained in every member below the bound.
+theorem set_subset_range_sInf_iff[K](n: Nat, s: Set[K], family: Nat -> Set[K]) {
+    s.subset(set_range_sInf(n, family)) = forall(i: Nat) {
+        i < n implies s.subset(family(i))
+    }
+} by {
+    if s.subset(set_range_sInf(n, family)) {
+        forall(i: Nat) {
+            if i < n {
+                set_range_sInf_subset_family(n, family, i)
+                subset_trans(s, set_range_sInf(n, family), family(i))
+                s.subset(family(i))
+            }
+        }
+    }
+    if forall(i: Nat) { i < n implies s.subset(family(i)) } {
+        set_subset_range_sInf_of_subset_family(n, s, family)
+        s.subset(set_range_sInf(n, family))
+    }
+    s.subset(set_range_sInf(n, family)) = forall(i: Nat) {
+        i < n implies s.subset(family(i))
+    }
+}
+
+/// Pointwise inclusion below the bound preserves range suprema.
+theorem set_range_sSup_monotone[K](n: Nat, a: Nat -> Set[K], b: Nat -> Set[K]) {
+    (forall(i: Nat) { i < n implies a(i).subset(b(i)) }) implies
+    set_range_sSup(n, a).subset(set_range_sSup(n, b))
+} by {
+    if forall(i: Nat) { i < n implies a(i).subset(b(i)) } {
+        range_indexed_union_monotone(n, a, b)
+        set_range_sSup(n, a) = range_indexed_union(n, a)
+        set_range_sSup(n, b) = range_indexed_union(n, b)
+        range_indexed_union(n, a).subset(range_indexed_union(n, b))
+        set_range_sSup(n, a).subset(set_range_sSup(n, b))
+    }
+}
+
+/// Pointwise inclusion below the bound preserves range infima.
+theorem set_range_sInf_monotone[K](n: Nat, a: Nat -> Set[K], b: Nat -> Set[K]) {
+    (forall(i: Nat) { i < n implies a(i).subset(b(i)) }) implies
+    set_range_sInf(n, a).subset(set_range_sInf(n, b))
+} by {
+    if forall(i: Nat) { i < n implies a(i).subset(b(i)) } {
+        range_indexed_intersection_monotone(n, a, b)
+        set_range_sInf(n, a) = range_indexed_intersection(n, a)
+        set_range_sInf(n, b) = range_indexed_intersection(n, b)
+        range_indexed_intersection(n, a).subset(range_indexed_intersection(n, b))
+        set_range_sInf(n, a).subset(set_range_sInf(n, b))
+    }
+}
+
+/// A range supremum is the least upper bound of the bounded family.
+theorem set_range_sSup_is_lub[K](n: Nat, family: Nat -> Set[K], s: Set[K]) {
+    (forall(i: Nat) { i < n implies family(i).subset(set_range_sSup(n, family)) }) and
+    (set_range_sSup(n, family).subset(s) = forall(i: Nat) {
+        i < n implies family(i).subset(s)
+    })
+} by {
+    forall(i: Nat) {
+        if i < n {
+            set_range_family_subset_sSup(n, family, i)
+            family(i).subset(set_range_sSup(n, family))
+        }
+    }
+    set_range_sSup_subset_iff(n, family, s)
+}
+
+/// A range infimum is the greatest lower bound of the bounded family.
+theorem set_range_sInf_is_glb[K](n: Nat, family: Nat -> Set[K], s: Set[K]) {
+    (forall(i: Nat) { i < n implies set_range_sInf(n, family).subset(family(i)) }) and
+    (s.subset(set_range_sInf(n, family)) = forall(i: Nat) {
+        i < n implies s.subset(family(i))
+    })
+} by {
+    forall(i: Nat) {
+        if i < n {
+            set_range_sInf_subset_family(n, family, i)
+            set_range_sInf(n, family).subset(family(i))
+        }
+    }
+    set_subset_range_sInf_iff(n, s, family)
+}
+
+/// The supremum over an empty range is empty.
+theorem set_range_sSup_zero[K](family: Nat -> Set[K]) {
+    set_range_sSup(Nat.0, family) = Set[K].empty_set
+} by {
+    range_indexed_union_zero(family)
+}
+
+/// The infimum over an empty range is universal.
+theorem set_range_sInf_zero[K](family: Nat -> Set[K]) {
+    set_range_sInf(Nat.0, family) = Set[K].universal_set
+} by {
+    range_indexed_intersection_zero(family)
+}
+
+/// The supremum over a successor range adds the last member by binary supremum.
+theorem set_range_sSup_suc_eq_sup[K](n: Nat, family: Nat -> Set[K]) {
+    set_range_sSup(n.suc, family) = set_sup(set_range_sSup(n, family), family(n))
+} by {
+    range_indexed_union_suc_eq_union(n, family)
+}
+
+/// The infimum over a successor range adds the last member by binary infimum.
+theorem set_range_sInf_suc_eq_inf[K](n: Nat, family: Nat -> Set[K]) {
+    set_range_sInf(n.suc, family) = set_inf(set_range_sInf(n, family), family(n))
+} by {
+    range_indexed_intersection_suc_eq_intersection(n, family)
+}
+
+/// The range supremum is contained in the supremum of the full natural family.
+theorem set_range_sSup_subset_sSup[K](n: Nat, family: Nat -> Set[K]) {
+    set_range_sSup(n, family).subset(set_sSup(family))
+} by {
+    forall(x: K) {
+        if set_range_sSup(n, family).contains(x) {
+            set_range_sSup_contains_eq(n, family, x)
+            let i: Nat satisfy {
+                i < n and family(i).contains(x)
+            }
+            set_sSup_contains_eq(family, x)
+            set_sSup(family).contains(x)
+        }
+    }
+}
+
+/// The infimum of the full natural family is contained in the range infimum.
+theorem set_sInf_subset_range_sInf[K](n: Nat, family: Nat -> Set[K]) {
+    set_sInf(family).subset(set_range_sInf(n, family))
+} by {
+    set_subset_range_sInf_of_subset_family(n, set_sInf(family), family)
+    set_sInf(family).subset(set_range_sInf(n, family))
 }
