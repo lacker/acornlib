@@ -364,8 +364,20 @@
 {"goal":"bundled_ideal_subset[R](a, b) = ideal_subset[R](a.contains, b.contains)","proof":[]}
 {"goal":"bundled_ideal_subset_eq","proof":[]}
 {"goal":"a.contains(x)","proof":[]}
-{"goal":"bundled_ideal_subset_refl","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { ideal_subset[T0](x0.contains, x1.contains) = bundled_ideal_subset[T0](x0, x1) }[R](a, a)","function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, x0) }[R](a.contains)"]}
+{"goal":"bundled_ideal_subset[R](a, b) = forall(x0: R) { a.contains(x0) implies b.contains(x0) }","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)"]}
 {"goal":"b.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, b.contains, x)"]}
+{"goal":"b.as_set.contains(x)","proof":[]}
+{"goal":"a.as_set.subset(b.as_set)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[R](a.as_set, b.as_set)","function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { ideal_subset[T0](x0.contains, x1.contains) = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0: CommRing](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = ideal_subset[T0](x0, x1) }[R](a.as_set.contains, b.as_set.contains)","function[T0: CommRing](x0: Ideal[T0]) { x0.as_set.contains = x0.contains }[R](b)","function[T0: CommRing](x0: Ideal[T0]) { x0.as_set.contains = x0.contains }[R](a)"]}
+{"goal":"a.as_set.contains(x)","proof":[]}
+{"goal":"a.as_set.subset(b.as_set) = forall(x0: R) { a.as_set.contains(x0) implies b.as_set.contains(x0) }","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[R](a.as_set, b.as_set)"]}
+{"goal":"b.as_set.contains(x)","proof":["(forall(x0: R) { not x0 ∈ a.as_set or x0 ∈ b.as_set } = true)","function(x0: R) { not (x0 ∈ a.as_set and not x0 ∈ b.as_set) }(x)"]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset[R](a, b)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","let w0: R satisfy { w0 ∈ a and not w0 ∈ b }","function(x0: R) { not x0 ∈ a or x0 ∈ b }(w0)"]}
+{"goal":"bundled_ideal_subset[R](a, b) = a.as_set.subset(b.as_set)","proof":[]}
+{"goal":"bundled_ideal_subset_as_set_eq","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"bundled_ideal_subset_refl","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { ideal_subset[T0](x0.contains, x1.contains) = bundled_ideal_subset[T0](x0, x1) }[R](a, a)","function[T0: CommRing](x0: T0 -> Bool) { ideal_subset[T0](x0, x0) }[R](a.contains)"]}
+{"goal":"b.contains(x)","proof":["x ∈ a and x ∈ b"]}
 {"goal":"c.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](b, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](b.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](b.contains, c.contains, x)"]}
 {"goal":"bundled_ideal_subset_trans","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, c)"]}
 {"goal":"ideal_subset[R](a.contains, b.contains)","proof":[]}
@@ -554,6 +566,8 @@
 {"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), i)","proof":[]}
 {"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), i) = set_subset_ideal[R](a, i)","proof":[]}
 {"goal":"ideal_closure_le_iff_set_subset","proof":[]}
+{"goal":"Ideal.closure[R](a).as_set.subset(i.as_set) = a.subset(i.as_set)","proof":["Ideal.closure[R](a).as_set ⊂ i.as_set != set_subset_ideal[R](a, i)","Ideal.closure[R](a).as_set ⊂ i.as_set = set_subset_ideal[R](a, i)"]}
+{"goal":"ideal_closure_as_set_galois_connection","proof":[]}
 {"goal":"bundled_ideal_subset[R](Ideal.closure[R](i.as_set), i)","proof":[]}
 {"goal":"i.as_set.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[R](i, x)"]}
 {"goal":"Ideal.closure[R](i.as_set).contains(x)","proof":["function[T0: CommRing](x0: Set[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ Ideal.closure[T0](x0) }[R](i.as_set, x)"]}
@@ -565,6 +579,24 @@
 {"goal":"Ideal.closure[R](a) = Ideal.closure[R](b)","proof":[]}
 {"goal":"ideal_closure_eq_of_set_eq","proof":[]}
 {"goal":"ideal_closure_idempotent","proof":[]}
+{"goal":"ideal_set_closure_at","proof":["function[T0: CommRing](x0: Set[T0]) { Ideal.closure[T0](x0).as_set = ideal_set_closure[T0](x0) }[R](a)"]}
+{"goal":"a.subset(Ideal.closure[R](a).as_set)","proof":[]}
+{"goal":"a.subset(ideal_set_closure[R](a))","proof":[]}
+{"goal":"ideal_set_closure_extensive","proof":[]}
+{"goal":"bundled_ideal_subset[R](Ideal.closure[R](a), Ideal.closure[R](b))","proof":["not a ⊂ b"]}
+{"goal":"Ideal.closure[R](a).as_set.subset(Ideal.closure[R](b).as_set)","proof":[]}
+{"goal":"ideal_set_closure[R](a).subset(ideal_set_closure[R](b))","proof":["not Ideal.closure[R](a).as_set ⊂ ideal_set_closure[R](b)","Ideal.closure[R](a).as_set ⊂ ideal_set_closure[R](b)"]}
+{"goal":"ideal_set_closure_mono","proof":["not a ⊂ b"]}
+{"goal":"ideal_set_closure[R](ideal_set_closure[R](a)) = ideal_set_closure[R](a)","proof":[]}
+{"goal":"ideal_set_closure_idempotent","proof":[]}
+{"goal":"ideal_set_closure[R](a).subset(ideal_set_closure[R](b))","proof":["not a ⊂ b"]}
+{"goal":"ideal_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[R, R](ideal_set_closure[R])","let w0: Set[R] satisfy { exists(k0: Set[R]) { w0 ⊂ k0 and not ideal_set_closure[R](w0) ⊂ ideal_set_closure[R](k0) } }","let w1: Set[R] satisfy { w0 ⊂ w1 and not ideal_set_closure[R](w0) ⊂ ideal_set_closure[R](w1) }","let w2: Set[R] satisfy { w0 ⊂ w2 and not ideal_set_closure[R](w0) ⊂ ideal_set_closure[R](w2) }","function[T0: CommRing](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or ideal_set_closure[T0](x0) ⊂ ideal_set_closure[T0](x1) }[R](w0, w2)","w0 ⊂ w2","not ideal_set_closure[R](w0) ⊂ ideal_set_closure[R](w2)","ideal_set_closure[R](w0) ⊂ ideal_set_closure[R](w2)"]}
+{"goal":"a.subset(ideal_set_closure[R](a))","proof":[]}
+{"goal":"ideal_set_closure_is_extensive","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x1 ⊂ x0(x1) } = is_set_extensive_map[T0](x0) }[R](ideal_set_closure[R])","let w0: Set[R] satisfy { not w0 ⊂ ideal_set_closure[R](w0) }","function[T0: CommRing](x0: Set[T0]) { x0 ⊂ ideal_set_closure[T0](x0) }[R](w0)"]}
+{"goal":"ideal_set_closure[R](ideal_set_closure[R](a)) = ideal_set_closure[R](a)","proof":[]}
+{"goal":"ideal_set_closure_is_idempotent","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x0(x0(x1)) = x0(x1) } = is_set_idempotent_map[T0](x0) }[R](ideal_set_closure[R])","let w0: Set[R] satisfy { ideal_set_closure[R](ideal_set_closure[R](w0)) != ideal_set_closure[R](w0) }","function[T0: CommRing](x0: Set[T0]) { ideal_set_closure[T0](ideal_set_closure[T0](x0)) = ideal_set_closure[T0](x0) }[R](w0)"]}
+{"goal":"is_set_closure_operator[R](ideal_set_closure[R])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[R](ideal_set_closure[R])","function[T0: CommRing] { is_subset_monotone_map[T0, T0](ideal_set_closure[T0]) }[R]","function[T0: CommRing] { is_set_idempotent_map[T0](ideal_set_closure[T0]) }[R]","function[T0: CommRing] { is_set_extensive_map[T0](ideal_set_closure[T0]) }[R]","not (is_subset_monotone_map[R, R](ideal_set_closure[R]) and is_set_extensive_map[R](ideal_set_closure[R]) and is_set_idempotent_map[R](ideal_set_closure[R]))","not (is_subset_monotone_map[R, R](ideal_set_closure[R]) and is_set_extensive_map[R](ideal_set_closure[R]))"]}
+{"goal":"ideal_set_closure_operator","proof":[]}
 {"goal":"bundled_ideal_subset[R](Ideal.closure[R](Set.empty_set[R]), Ideal.zero[R])","proof":["function[T0: CommRing](x0: Set[T0], x1: Ideal[T0]) { x0 ⊂ x1.as_set = set_subset_ideal[T0](x0, x1) }[R](Set.empty_set[R], Ideal.zero[R])","function[T0](x0: Set[T0]) { Set.empty_set[T0] ⊂ x0 }[R](Ideal.zero[R].as_set)"]}
 {"goal":"ideal_closure_empty","proof":[]}
 {"goal":"Set.universal_set[R].contains(x)","proof":["function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[R](x)"]}

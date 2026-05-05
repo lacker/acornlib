@@ -180,6 +180,8 @@
 {"goal":"subsemigroup_subset[S](subsemigroup_closure[S](a), s)","proof":[]}
 {"goal":"subsemigroup_subset[S](subsemigroup_closure[S](a), s) = set_subset_subsemigroup[S](a, s)","proof":[]}
 {"goal":"subsemigroup_closure_le_iff_set_subset","proof":[]}
+{"goal":"subsemigroup_closure[S](a).as_set.subset(s.as_set) = a.subset(s.as_set)","proof":["subsemigroup_closure[S](a).as_set ⊂ s.as_set != set_subset_subsemigroup[S](a, s)","subsemigroup_closure[S](a).as_set ⊂ s.as_set = set_subset_subsemigroup[S](a, s)"]}
+{"goal":"subsemigroup_closure_as_set_galois_connection","proof":[]}
 {"goal":"subsemigroup_subset[S](subsemigroup_closure[S](s.as_set), s)","proof":[]}
 {"goal":"s.as_set.contains(x)","proof":["function[T0: Semigroup](x0: Subsemigroup[T0], x1: T0) { x1 ∈ x0.as_set = x1 ∈ x0 }[S](s, x)"]}
 {"goal":"subsemigroup_closure[S](s.as_set).contains(x)","proof":["function[T0: Semigroup](x0: Set[T0], x1: T0) { not x1 ∈ x0 or x1 ∈ subsemigroup_closure[T0](x0) }[S](s.as_set, x)"]}
@@ -191,6 +193,24 @@
 {"goal":"subsemigroup_closure[S](a) = subsemigroup_closure[S](b)","proof":[]}
 {"goal":"subsemigroup_closure_eq_of_set_eq","proof":[]}
 {"goal":"subsemigroup_closure_idempotent","proof":[]}
+{"goal":"subsemigroup_set_closure_at","proof":["function[T0: Semigroup](x0: Set[T0]) { subsemigroup_closure[T0](x0).as_set = subsemigroup_set_closure[T0](x0) }[S](a)"]}
+{"goal":"a.subset(subsemigroup_closure[S](a).as_set)","proof":[]}
+{"goal":"a.subset(subsemigroup_set_closure[S](a))","proof":[]}
+{"goal":"subsemigroup_set_closure_extensive","proof":[]}
+{"goal":"subsemigroup_subset[S](subsemigroup_closure[S](a), subsemigroup_closure[S](b))","proof":["not a ⊂ b"]}
+{"goal":"subsemigroup_closure[S](a).as_set.subset(subsemigroup_closure[S](b).as_set)","proof":[]}
+{"goal":"subsemigroup_set_closure[S](a).subset(subsemigroup_set_closure[S](b))","proof":["not subsemigroup_closure[S](a).as_set ⊂ subsemigroup_set_closure[S](b)","subsemigroup_closure[S](a).as_set ⊂ subsemigroup_set_closure[S](b)"]}
+{"goal":"subsemigroup_set_closure_mono","proof":["not a ⊂ b"]}
+{"goal":"subsemigroup_set_closure[S](subsemigroup_set_closure[S](a)) = subsemigroup_set_closure[S](a)","proof":[]}
+{"goal":"subsemigroup_set_closure_idempotent","proof":[]}
+{"goal":"subsemigroup_set_closure[S](a).subset(subsemigroup_set_closure[S](b))","proof":["not a ⊂ b"]}
+{"goal":"subsemigroup_set_closure_is_monotone","proof":["function[T0, T1](x0: Set[T0] -> Set[T1]) { forall(x1: Set[T0], x2: Set[T0]) { not x1 ⊂ x2 or x0(x1) ⊂ x0(x2) } = is_subset_monotone_map[T0, T1](x0) }[S, S](subsemigroup_set_closure[S])","let w0: Set[S] satisfy { exists(k0: Set[S]) { w0 ⊂ k0 and not subsemigroup_set_closure[S](w0) ⊂ subsemigroup_set_closure[S](k0) } }","let w1: Set[S] satisfy { w0 ⊂ w1 and not subsemigroup_set_closure[S](w0) ⊂ subsemigroup_set_closure[S](w1) }","let w2: Set[S] satisfy { w0 ⊂ w2 and not subsemigroup_set_closure[S](w0) ⊂ subsemigroup_set_closure[S](w2) }","function[T0: Semigroup](x0: Set[T0], x1: Set[T0]) { not x0 ⊂ x1 or subsemigroup_set_closure[T0](x0) ⊂ subsemigroup_set_closure[T0](x1) }[S](w0, w2)","w0 ⊂ w2","not subsemigroup_set_closure[S](w0) ⊂ subsemigroup_set_closure[S](w2)","subsemigroup_set_closure[S](w0) ⊂ subsemigroup_set_closure[S](w2)"]}
+{"goal":"a.subset(subsemigroup_set_closure[S](a))","proof":[]}
+{"goal":"subsemigroup_set_closure_is_extensive","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x1 ⊂ x0(x1) } = is_set_extensive_map[T0](x0) }[S](subsemigroup_set_closure[S])","let w0: Set[S] satisfy { not w0 ⊂ subsemigroup_set_closure[S](w0) }","function[T0: Semigroup](x0: Set[T0]) { x0 ⊂ subsemigroup_set_closure[T0](x0) }[S](w0)"]}
+{"goal":"subsemigroup_set_closure[S](subsemigroup_set_closure[S](a)) = subsemigroup_set_closure[S](a)","proof":[]}
+{"goal":"subsemigroup_set_closure_is_idempotent","proof":["function[T0](x0: Set[T0] -> Set[T0]) { forall(x1: Set[T0]) { x0(x0(x1)) = x0(x1) } = is_set_idempotent_map[T0](x0) }[S](subsemigroup_set_closure[S])","let w0: Set[S] satisfy { subsemigroup_set_closure[S](subsemigroup_set_closure[S](w0)) != subsemigroup_set_closure[S](w0) }","function[T0: Semigroup](x0: Set[T0]) { subsemigroup_set_closure[T0](subsemigroup_set_closure[T0](x0)) = subsemigroup_set_closure[T0](x0) }[S](w0)"]}
+{"goal":"is_set_closure_operator[S](subsemigroup_set_closure[S])","proof":["function[T0](x0: Set[T0] -> Set[T0]) { (is_subset_monotone_map[T0, T0](x0) and is_set_extensive_map[T0](x0) and is_set_idempotent_map[T0](x0)) = is_set_closure_operator[T0](x0) }[S](subsemigroup_set_closure[S])","function[T0: Semigroup] { is_subset_monotone_map[T0, T0](subsemigroup_set_closure[T0]) }[S]","function[T0: Semigroup] { is_set_idempotent_map[T0](subsemigroup_set_closure[T0]) }[S]","function[T0: Semigroup] { is_set_extensive_map[T0](subsemigroup_set_closure[T0]) }[S]","not (is_subset_monotone_map[S, S](subsemigroup_set_closure[S]) and is_set_extensive_map[S](subsemigroup_set_closure[S]) and is_set_idempotent_map[S](subsemigroup_set_closure[S]))","not (is_subset_monotone_map[S, S](subsemigroup_set_closure[S]) and is_set_extensive_map[S](subsemigroup_set_closure[S]))"]}
+{"goal":"subsemigroup_set_closure_operator","proof":[]}
 {"goal":"set_subset_subsemigroup[S](Set.empty_set[S], empty_subsemigroup[S])","proof":["function[T0: Semigroup](x0: Set[T0], x1: Subsemigroup[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_subsemigroup[T0](x0, x1) }[S](Set.empty_set[S], empty_subsemigroup[S])","let w0: S satisfy { w0 ∈ Set.empty_set[S] and not w0 ∈ empty_subsemigroup[S] }","function[T0](x0: T0) { not x0 ∈ Set.empty_set[T0] }[S](w0)"]}
 {"goal":"subsemigroup_subset[S](subsemigroup_closure[S](Set.empty_set[S]), empty_subsemigroup[S])","proof":[]}
 {"goal":"subsemigroup_closure_empty","proof":[]}
