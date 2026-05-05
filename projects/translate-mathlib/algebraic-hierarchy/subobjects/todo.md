@@ -2,7 +2,7 @@
 
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
-- [ ] Finish remaining subobject lattice work: submodule joins and eventual bundled lattice structures after receiver design choices settle
+- [ ] Decide eventual bundled lattice structures after receiver design choices settle
 - [ ] Refactor remaining finite set code toward the shared subobject conventions after downstream needs are clearer
 
 Status:
@@ -35,3 +35,4 @@ Status:
 - `src/submodule.ac` now has the linear-map kernel-injectivity bridge: `is_kernel_trivial` predicate, `linear_map_kernel_trivial_of_injective`, `linear_map_injective_of_kernel_trivial`, and bundled-form bridges `linear_map_kernel_submodule_contains_eq_zero_of_trivial` (pointwise) and `linear_map_kernel_trivial_of_kernel_submodule_eq_zero`.
 - `src/submodule.ac` now has finite-generation predicates and basic generation lemmas for submodules: finite closures, finite underlying sets, singleton closures, zero submodules, and equality transport.
 - `src/subsemigroup.ac`, `src/submonoid.ac`, `src/subgroup.ac`, `src/add_submonoid.ac`, `src/add_subgroup.ac`, and `src/subring.ac` now have binary join operations defined as closures of underlying-set unions, with left/right inclusion and least-upper-bound subset characterizations.
+- `src/submodule.ac` now has a binary join operation defined as the closure of the union of underlying sets, with same-carrier carrier, commutativity, idempotence, absorption, zero/full identity laws, left/right inclusion, and least-upper-bound subset characterizations.
