@@ -2502,6 +2502,143 @@ theorem set_list_sInf_nil[K, I](family: I -> Set[K]) {
     set_ext(u, Set[K].universal_set)
 }
 
+/// The list supremum of constantly empty sets is empty.
+theorem set_list_sSup_empty_family[K, I](items: List[I]) {
+    set_list_sSup(items, set_empty_family[K, I]) = Set[K].empty_set
+} by {
+    forall(i: I) {
+        set_empty_family[K, I](i) = Set[K].empty_set
+        set_empty_family[K, I](i).subset(Set[K].empty_set)
+    }
+    set_list_sSup_subset_of_family_subset(items, set_empty_family[K, I], Set[K].empty_set)
+    set_list_sSup(items, set_empty_family[K, I]).subset(Set[K].empty_set)
+    Set[K].empty_set.subset(set_list_sSup(items, set_empty_family[K, I]))
+    subset_antisymm(set_list_sSup(items, set_empty_family[K, I]), Set[K].empty_set)
+}
+
+/// The list infimum of constantly universal sets is universal.
+theorem set_list_sInf_universal_family[K, I](items: List[I]) {
+    set_list_sInf(items, set_universal_family[K, I]) = Set[K].universal_set
+} by {
+    let u = set_list_sInf(items, set_universal_family[K, I])
+    forall(x: K) {
+        set_list_sInf_contains_eq(items, set_universal_family[K, I], x)
+        forall(i: I) {
+            if items.contains(i) {
+                set_universal_family[K, I](i) = Set[K].universal_set
+                universal_set_contains_eq[K](x)
+                set_universal_family[K, I](i).contains(x)
+            }
+        }
+        u.contains(x)
+        universal_set_contains_eq[K](x)
+        u.contains(x) = (Set[K].universal_set).contains(x)
+    }
+    set_ext(u, Set[K].universal_set)
+}
+
+/// The list supremum of a constant family is contained in the constant member.
+theorem set_list_sSup_constant_family_subset[K, I](items: List[I], s: Set[K]) {
+    set_list_sSup(items, set_constant_family[K, I](s)).subset(s)
+} by {
+    forall(i: I) {
+        if items.contains(i) {
+            set_constant_family(s, i) = s
+            set_constant_family(s, i).subset(s)
+        }
+    }
+    set_list_sSup_subset_of_family_subset(items, set_constant_family[K, I](s), s)
+}
+
+/// If a list contains an index, the constant member is contained in its list supremum.
+theorem set_subset_list_sSup_constant_family[K, I](items: List[I], s: Set[K], i0: I) {
+    items.contains(i0) implies s.subset(set_list_sSup(items, set_constant_family[K, I](s)))
+} by {
+    if items.contains(i0) {
+        set_list_family_subset_sSup(items, set_constant_family[K, I](s), i0)
+        set_constant_family(s, i0) = s
+        s.subset(set_list_sSup(items, set_constant_family[K, I](s)))
+    }
+}
+
+/// If a list contains an index, the list supremum of a constant family is the constant member.
+theorem set_list_sSup_constant_family[K, I](items: List[I], s: Set[K], i0: I) {
+    items.contains(i0) implies set_list_sSup(items, set_constant_family[K, I](s)) = s
+} by {
+    if items.contains(i0) {
+        set_list_sSup_constant_family_subset(items, s)
+        set_subset_list_sSup_constant_family(items, s, i0)
+        subset_antisymm(set_list_sSup(items, set_constant_family[K, I](s)), s)
+    }
+}
+
+/// The constant member is contained in the list infimum of a constant family.
+theorem set_subset_list_sInf_constant_family[K, I](items: List[I], s: Set[K]) {
+    s.subset(set_list_sInf(items, set_constant_family[K, I](s)))
+} by {
+    forall(i: I) {
+        if items.contains(i) {
+            set_constant_family(s, i) = s
+            s.subset(set_constant_family(s, i))
+        }
+    }
+    set_subset_list_sInf_of_subset_family(items, s, set_constant_family[K, I](s))
+}
+
+/// If a list contains an index, its list infimum of a constant family is contained in the constant member.
+theorem set_list_sInf_constant_family_subset[K, I](items: List[I], s: Set[K], i0: I) {
+    items.contains(i0) implies set_list_sInf(items, set_constant_family[K, I](s)).subset(s)
+} by {
+    if items.contains(i0) {
+        set_list_sInf_subset_family(items, set_constant_family[K, I](s), i0)
+        set_constant_family(s, i0) = s
+        set_list_sInf(items, set_constant_family[K, I](s)).subset(s)
+    }
+}
+
+/// If a list contains an index, the list infimum of a constant family is the constant member.
+theorem set_list_sInf_constant_family[K, I](items: List[I], s: Set[K], i0: I) {
+    items.contains(i0) implies set_list_sInf(items, set_constant_family[K, I](s)) = s
+} by {
+    if items.contains(i0) {
+        set_list_sInf_constant_family_subset(items, s, i0)
+        set_subset_list_sInf_constant_family(items, s)
+        subset_antisymm(set_list_sInf(items, set_constant_family[K, I](s)), s)
+    }
+}
+
+/// If a list contains an index, the list supremum of constantly universal sets is universal.
+theorem set_list_sSup_universal_family[K, I](items: List[I], i0: I) {
+    items.contains(i0) implies set_list_sSup(items, set_universal_family[K, I]) = Set[K].universal_set
+} by {
+    if items.contains(i0) {
+        set_list_sSup_constant_family(items, Set[K].universal_set, i0)
+        set_list_sSup(items, set_constant_family[K, I](Set[K].universal_set)) = Set[K].universal_set
+        forall(x: I) {
+            set_universal_family[K, I](x) = set_constant_family[K, I](Set[K].universal_set, x)
+        }
+        set_sSup_eq_of_family_subset(set_universal_family[K, I],
+            set_constant_family[K, I](Set[K].universal_set))
+        set_list_sSup(items, set_universal_family[K, I]) = Set[K].universal_set
+    }
+}
+
+/// If a list contains an index, the list infimum of constantly empty sets is empty.
+theorem set_list_sInf_empty_family[K, I](items: List[I], i0: I) {
+    items.contains(i0) implies set_list_sInf(items, set_empty_family[K, I]) = Set[K].empty_set
+} by {
+    if items.contains(i0) {
+        set_list_sInf_constant_family(items, Set[K].empty_set, i0)
+        set_list_sInf(items, set_constant_family[K, I](Set[K].empty_set)) = Set[K].empty_set
+        forall(x: I) {
+            set_empty_family[K, I](x) = set_constant_family[K, I](Set[K].empty_set, x)
+        }
+        set_sInf_eq_of_family_subset(set_empty_family[K, I],
+            set_constant_family[K, I](Set[K].empty_set))
+        set_list_sInf(items, set_empty_family[K, I]) = Set[K].empty_set
+    }
+}
+
 
 /// The list supremum is contained in the supremum of the full indexed family.
 theorem set_list_sSup_subset_sSup[K, I](items: List[I], family: I -> Set[K]) {
@@ -3070,6 +3207,145 @@ theorem set_range_sInf_zero[K](family: Nat -> Set[K]) {
     set_range_sInf(Nat.0, family) = Set[K].universal_set
 } by {
     range_indexed_intersection_zero(family)
+}
+
+/// The bounded supremum of constantly empty sets is empty.
+theorem set_range_sSup_empty_family[K](n: Nat) {
+    set_range_sSup(n, set_empty_family[K, Nat]) = Set[K].empty_set
+} by {
+    forall(i: Nat) {
+        if i < n {
+            set_empty_family[K, Nat](i) = Set[K].empty_set
+            set_empty_family[K, Nat](i).subset(Set[K].empty_set)
+        }
+    }
+    set_range_sSup_subset_of_family_subset(n, set_empty_family[K, Nat], Set[K].empty_set)
+    set_range_sSup(n, set_empty_family[K, Nat]).subset(Set[K].empty_set)
+    Set[K].empty_set.subset(set_range_sSup(n, set_empty_family[K, Nat]))
+    subset_antisymm(set_range_sSup(n, set_empty_family[K, Nat]), Set[K].empty_set)
+}
+
+/// The bounded infimum of constantly universal sets is universal.
+theorem set_range_sInf_universal_family[K](n: Nat) {
+    set_range_sInf(n, set_universal_family[K, Nat]) = Set[K].universal_set
+} by {
+    let u = set_range_sInf(n, set_universal_family[K, Nat])
+    forall(x: K) {
+        set_range_sInf_contains_eq(n, set_universal_family[K, Nat], x)
+        forall(i: Nat) {
+            if i < n {
+                set_universal_family[K, Nat](i) = Set[K].universal_set
+                universal_set_contains_eq[K](x)
+                set_universal_family[K, Nat](i).contains(x)
+            }
+        }
+        u.contains(x)
+        universal_set_contains_eq[K](x)
+        u.contains(x) = (Set[K].universal_set).contains(x)
+    }
+    set_ext(u, Set[K].universal_set)
+}
+
+/// The bounded supremum of a constant family is contained in the constant member.
+theorem set_range_sSup_constant_family_subset[K](n: Nat, s: Set[K]) {
+    set_range_sSup(n, set_constant_family[K, Nat](s)).subset(s)
+} by {
+    forall(i: Nat) {
+        if i < n {
+            set_constant_family(s, i) = s
+            set_constant_family(s, i).subset(s)
+        }
+    }
+    set_range_sSup_subset_of_family_subset(n, set_constant_family[K, Nat](s), s)
+}
+
+/// If a natural index lies below the bound, the constant member is contained in the bounded supremum.
+theorem set_subset_range_sSup_constant_family[K](n: Nat, s: Set[K], i0: Nat) {
+    i0 < n implies s.subset(set_range_sSup(n, set_constant_family[K, Nat](s)))
+} by {
+    if i0 < n {
+        set_range_family_subset_sSup(n, set_constant_family[K, Nat](s), i0)
+        set_constant_family(s, i0) = s
+        s.subset(set_range_sSup(n, set_constant_family[K, Nat](s)))
+    }
+}
+
+/// If a natural index lies below the bound, the bounded supremum of a constant family is the constant member.
+theorem set_range_sSup_constant_family[K](n: Nat, s: Set[K], i0: Nat) {
+    i0 < n implies set_range_sSup(n, set_constant_family[K, Nat](s)) = s
+} by {
+    if i0 < n {
+        set_range_sSup_constant_family_subset(n, s)
+        set_subset_range_sSup_constant_family(n, s, i0)
+        subset_antisymm(set_range_sSup(n, set_constant_family[K, Nat](s)), s)
+    }
+}
+
+/// The constant member is contained in the bounded infimum of a constant family.
+theorem set_subset_range_sInf_constant_family[K](n: Nat, s: Set[K]) {
+    s.subset(set_range_sInf(n, set_constant_family[K, Nat](s)))
+} by {
+    forall(i: Nat) {
+        if i < n {
+            set_constant_family(s, i) = s
+            s.subset(set_constant_family(s, i))
+        }
+    }
+    set_subset_range_sInf_of_subset_family(n, s, set_constant_family[K, Nat](s))
+}
+
+/// If a natural index lies below the bound, the bounded infimum of a constant family is contained in the constant member.
+theorem set_range_sInf_constant_family_subset[K](n: Nat, s: Set[K], i0: Nat) {
+    i0 < n implies set_range_sInf(n, set_constant_family[K, Nat](s)).subset(s)
+} by {
+    if i0 < n {
+        set_range_sInf_subset_family(n, set_constant_family[K, Nat](s), i0)
+        set_constant_family(s, i0) = s
+        set_range_sInf(n, set_constant_family[K, Nat](s)).subset(s)
+    }
+}
+
+/// If a natural index lies below the bound, the bounded infimum of a constant family is the constant member.
+theorem set_range_sInf_constant_family[K](n: Nat, s: Set[K], i0: Nat) {
+    i0 < n implies set_range_sInf(n, set_constant_family[K, Nat](s)) = s
+} by {
+    if i0 < n {
+        set_range_sInf_constant_family_subset(n, s, i0)
+        set_subset_range_sInf_constant_family(n, s)
+        subset_antisymm(set_range_sInf(n, set_constant_family[K, Nat](s)), s)
+    }
+}
+
+/// If a natural index lies below the bound, the bounded supremum of constantly universal sets is universal.
+theorem set_range_sSup_universal_family[K](n: Nat, i0: Nat) {
+    i0 < n implies set_range_sSup(n, set_universal_family[K, Nat]) = Set[K].universal_set
+} by {
+    if i0 < n {
+        set_range_sSup_constant_family(n, Set[K].universal_set, i0)
+        set_range_sSup(n, set_constant_family[K, Nat](Set[K].universal_set)) = Set[K].universal_set
+        forall(x: Nat) {
+            set_universal_family[K, Nat](x) = set_constant_family[K, Nat](Set[K].universal_set, x)
+        }
+        set_sSup_eq_of_family_subset(set_universal_family[K, Nat],
+            set_constant_family[K, Nat](Set[K].universal_set))
+        set_range_sSup(n, set_universal_family[K, Nat]) = Set[K].universal_set
+    }
+}
+
+/// If a natural index lies below the bound, the bounded infimum of constantly empty sets is empty.
+theorem set_range_sInf_empty_family[K](n: Nat, i0: Nat) {
+    i0 < n implies set_range_sInf(n, set_empty_family[K, Nat]) = Set[K].empty_set
+} by {
+    if i0 < n {
+        set_range_sInf_constant_family(n, Set[K].empty_set, i0)
+        set_range_sInf(n, set_constant_family[K, Nat](Set[K].empty_set)) = Set[K].empty_set
+        forall(x: Nat) {
+            set_empty_family[K, Nat](x) = set_constant_family[K, Nat](Set[K].empty_set, x)
+        }
+        set_sInf_eq_of_family_subset(set_empty_family[K, Nat],
+            set_constant_family[K, Nat](Set[K].empty_set))
+        set_range_sInf(n, set_empty_family[K, Nat]) = Set[K].empty_set
+    }
 }
 
 /// The supremum over a successor range adds the last member by binary supremum.
