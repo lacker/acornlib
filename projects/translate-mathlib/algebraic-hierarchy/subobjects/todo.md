@@ -20,3 +20,4 @@ Status:
 - `src/add_submonoid.ac` now supports closure from subsets, with generator inclusion, least-property, monotonicity, idempotence, and empty/universal closure lemmas.
 - `src/subsemigroup.ac`, `src/submonoid.ac`, and `src/subgroup.ac` now support closure from subsets, with generator inclusion, least-property, monotonicity, idempotence, and empty/universal closure lemmas.
 - `src/subgroup.ac`, `src/add_subgroup.ac`, and `src/submonoid.ac` now have stronger membership/closure lemmas for inverse/negation equivalences, products/sums of three, powers, identity/full membership characterizations, and kernel membership directions.
+- `src/submodule.ac` now has an underlying-set attribute, inclusion order lemmas, zero/full submodules, and closure from subsets with generator inclusion, least-property, and underlying-set idempotence lemmas.

@@ -4,6 +4,8 @@ from add_comm_group import AddCommGroupHom, is_add_comm_group_hom,
     add_comm_group_hom_zero, add_comm_group_hom_neg
 from module import Module, module_smul_zero_right
 from module_hom import is_linear_map, preserves_add, preserves_smul
+from set import Set
+from functions import predicate_extensionality
 
 /// True if a subset of a module contains the additive identity.
 define submodule_zero_constraint[R: Ring, M: AddCommGroup](
@@ -268,6 +270,517 @@ theorem submodule_intersection_is_submodule[R: Ring, M: AddCommGroup](
     }
 }
 
+attributes Submodule[R: Ring, M: AddCommGroup] {
+    /// Submodule extensionality from equality of ambient modules and pointwise equality of membership.
+    let ext = submodule_ext[R, M]
+
+    /// The subset of module elements belonging to this submodule.
+    define as_set(self) -> Set[M] {
+        Set[M].new(self.contains)
+    }
+}
+
+/// True if every element of one submodule belongs to another.
+define submodule_subset[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) -> Bool {
+    forall(x: M) {
+        a.contains(x) implies b.contains(x)
+    }
+}
+
+/// Submodule inclusion is reflexive.
+theorem submodule_subset_refl[R: Ring, M: AddCommGroup](a: Submodule[R, M]) {
+    submodule_subset(a, a)
+} by {
+    forall(x: M) {
+        a.contains(x) implies a.contains(x)
+    }
+}
+
+/// Submodule inclusion is transitive.
+theorem submodule_subset_trans[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M],
+    b: Submodule[R, M],
+    c: Submodule[R, M]
+) {
+    submodule_subset(a, b) and submodule_subset(b, c) implies submodule_subset(a, c)
+} by {
+    if submodule_subset(a, b) and submodule_subset(b, c) {
+        submodule_subset(a, b) = forall(y: M) {
+            a.contains(y) implies b.contains(y)
+        }
+        submodule_subset(b, c) = forall(y: M) {
+            b.contains(y) implies c.contains(y)
+        }
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+                c.contains(x)
+            }
+        }
+    }
+}
+
+/// Mutual inclusion gives equality of membership predicates.
+theorem submodule_contains_eq_of_subset_both[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    submodule_subset(a, b) and submodule_subset(b, a) implies a.contains = b.contains
+} by {
+    if submodule_subset(a, b) and submodule_subset(b, a) {
+        submodule_subset(a, b) = forall(y: M) {
+            a.contains(y) implies b.contains(y)
+        }
+        submodule_subset(b, a) = forall(y: M) {
+            b.contains(y) implies a.contains(y)
+        }
+        forall(x: M) {
+            if a.contains(x) {
+                b.contains(x)
+            }
+            if b.contains(x) {
+                a.contains(x)
+            }
+            a.contains(x) = b.contains(x)
+        }
+        predicate_extensionality(a.contains, b.contains)
+    }
+}
+
+/// Mutual inclusion of submodules forces equality.
+theorem submodule_subset_antisymm[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    a.carrier = b.carrier and submodule_subset(a, b) and submodule_subset(b, a) implies a = b
+} by {
+    if a.carrier = b.carrier and submodule_subset(a, b) and submodule_subset(b, a) {
+        submodule_contains_eq_of_subset_both(a, b)
+        a.contains = b.contains
+        submodule_ext(a, b)
+    }
+}
+
+/// Equality of submodules is equivalent to mutual inclusion.
+theorem submodule_eq_iff_subset_both[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    a.carrier = b.carrier implies (a = b = (submodule_subset(a, b) and submodule_subset(b, a)))
+} by {
+    if a.carrier = b.carrier {
+        if a = b {
+            submodule_subset_refl(a)
+            submodule_subset(a, b)
+            submodule_subset(b, a)
+            submodule_subset(a, b) and submodule_subset(b, a)
+        }
+        if submodule_subset(a, b) and submodule_subset(b, a) {
+            submodule_subset_antisymm(a, b)
+            a = b
+        }
+        a = b = (submodule_subset(a, b) and submodule_subset(b, a))
+    }
+}
+
+/// True if an element is the additive identity.
+define zero_submodule_contains[M: AddCommGroup](x: M) -> Bool {
+    x = M.0
+}
+
+/// The additive identity predicate is a submodule predicate.
+theorem zero_submodule_is_submodule[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_submodule(carrier, zero_submodule_contains[M])
+} by {
+    zero_submodule_contains[M](M.0)
+    submodule_zero_constraint(carrier, zero_submodule_contains[M])
+    forall(x: M, y: M) {
+        if zero_submodule_contains[M](x) and zero_submodule_contains[M](y) {
+            x = M.0
+            y = M.0
+            M.0 + M.0 = M.0
+            zero_submodule_contains[M](x + y)
+        }
+    }
+    submodule_add_constraint(carrier, zero_submodule_contains[M])
+    forall(x: M) {
+        if zero_submodule_contains[M](x) {
+            x = M.0
+            -M.0 = M.0
+            zero_submodule_contains[M](-x)
+        }
+    }
+    submodule_neg_constraint(carrier, zero_submodule_contains[M])
+    forall(r: R, x: M) {
+        if zero_submodule_contains[M](x) {
+            x = M.0
+            module_smul_zero_right(carrier, r)
+            carrier.smul(r, M.0) = M.0
+            zero_submodule_contains[M](carrier.smul(r, x))
+        }
+    }
+    submodule_smul_constraint(carrier, zero_submodule_contains[M])
+}
+
+/// The zero submodule of a module.
+let zero_submodule[R: Ring, M: AddCommGroup](carrier: Module[R, M]) -> result: Submodule[R, M] satisfy {
+    Submodule.new(carrier, zero_submodule_contains[M]) = Option.some(result)
+} by {
+    zero_submodule_is_submodule(carrier)
+}
+
+/// Membership in the zero submodule is equality to the additive identity.
+theorem zero_submodule_contains_eq[R: Ring, M: AddCommGroup](carrier: Module[R, M], x: M) {
+    zero_submodule(carrier).contains(x) = (x = M.0)
+} by {
+    zero_submodule(carrier).contains(x) = zero_submodule_contains[M](x)
+    zero_submodule_contains[M](x) = (x = M.0)
+}
+
+/// The zero submodule is contained in every submodule of its module.
+theorem zero_submodule_subset[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_subset(zero_submodule(s.carrier), s)
+} by {
+    forall(x: M) {
+        if zero_submodule(s.carrier).contains(x) {
+            zero_submodule_contains_eq(s.carrier, x)
+            x = M.0
+            submodule_contains_zero(s)
+            s.contains(M.0)
+            s.contains(x)
+        }
+    }
+}
+
+/// The universal predicate on a module.
+define full_submodule_contains[M: AddCommGroup](x: M) -> Bool {
+    true
+}
+
+/// The universal predicate is a submodule predicate.
+theorem full_submodule_is_submodule[R: Ring, M: AddCommGroup](carrier: Module[R, M]) {
+    is_submodule(carrier, full_submodule_contains[M])
+} by {
+    full_submodule_contains[M](M.0)
+    submodule_zero_constraint(carrier, full_submodule_contains[M])
+    forall(x: M, y: M) {
+        if full_submodule_contains[M](x) and full_submodule_contains[M](y) {
+            full_submodule_contains[M](x + y)
+        }
+    }
+    submodule_add_constraint(carrier, full_submodule_contains[M])
+    forall(x: M) {
+        if full_submodule_contains[M](x) {
+            full_submodule_contains[M](-x)
+        }
+    }
+    submodule_neg_constraint(carrier, full_submodule_contains[M])
+    forall(r: R, x: M) {
+        if full_submodule_contains[M](x) {
+            full_submodule_contains[M](carrier.smul(r, x))
+        }
+    }
+    submodule_smul_constraint(carrier, full_submodule_contains[M])
+}
+
+/// The full submodule of a module.
+let full_submodule[R: Ring, M: AddCommGroup](carrier: Module[R, M]) -> result: Submodule[R, M] satisfy {
+    Submodule.new(carrier, full_submodule_contains[M]) = Option.some(result)
+} by {
+    full_submodule_is_submodule(carrier)
+}
+
+/// Every element belongs to the full submodule.
+theorem full_submodule_contains_everything[R: Ring, M: AddCommGroup](carrier: Module[R, M], x: M) {
+    full_submodule(carrier).contains(x)
+}
+
+/// Membership in the full submodule is always true.
+theorem full_submodule_contains_eq[R: Ring, M: AddCommGroup](carrier: Module[R, M], x: M) {
+    full_submodule(carrier).contains(x) = true
+} by {
+    full_submodule_contains_everything(carrier, x)
+}
+
+/// Every submodule is contained in the full submodule of its module.
+theorem submodule_subset_full[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_subset(s, full_submodule(s.carrier))
+} by {
+    forall(x: M) {
+        if s.contains(x) {
+            full_submodule_contains_everything(s.carrier, x)
+        }
+    }
+}
+
+/// True if every element of a set belongs to a submodule.
+define set_subset_submodule[R: Ring, M: AddCommGroup](a: Set[M], s: Submodule[R, M]) -> Bool {
+    forall(x: M) {
+        a.contains(x) implies s.contains(x)
+    }
+}
+
+/// The underlying set of a submodule is contained in the submodule.
+theorem submodule_as_set_subset_self[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    set_subset_submodule(s.as_set, s)
+} by {
+    forall(x: M) {
+        if s.as_set.contains(x) {
+            s.contains(x)
+        }
+    }
+}
+
+/// Set containment is preserved by enlarging the target submodule.
+theorem set_subset_submodule_trans[R: Ring, M: AddCommGroup](
+    a: Set[M],
+    s: Submodule[R, M],
+    t: Submodule[R, M]
+) {
+    set_subset_submodule(a, s) and submodule_subset(s, t) implies set_subset_submodule(a, t)
+} by {
+    if set_subset_submodule(a, s) and submodule_subset(s, t) {
+        forall(x: M) {
+            if a.contains(x) {
+                s.contains(x)
+                t.contains(x)
+            }
+        }
+    }
+}
+
+/// Set containment in a submodule is preserved by enlarging the set.
+theorem set_subset_submodule_of_set_subset[R: Ring, M: AddCommGroup](
+    a: Set[M],
+    b: Set[M],
+    s: Submodule[R, M]
+) {
+    a.subset(b) and set_subset_submodule(b, s) implies set_subset_submodule(a, s)
+} by {
+    if a.subset(b) and set_subset_submodule(b, s) {
+        forall(x: M) {
+            if a.contains(x) {
+                a.subset(b) = forall(y: M) {
+                    a.contains(y) implies b.contains(y)
+                }
+                b.contains(x)
+                s.contains(x)
+            }
+        }
+    }
+}
+
+/// True if an element belongs to every submodule that contains a given set.
+define submodule_closure_contains[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], a: Set[M], x: M
+) -> Bool {
+    forall(s: Submodule[R, M]) {
+        s.carrier = carrier and set_subset_submodule(a, s) implies s.contains(x)
+    }
+}
+
+/// Membership in the closure gives membership in each submodule that contains the set.
+theorem submodule_closure_contains_of_set_subset_raw[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M],
+    a: Set[M],
+    s: Submodule[R, M],
+    x: M
+) {
+    submodule_closure_contains(carrier, a, x) and s.carrier = carrier and set_subset_submodule(a, s)
+    implies s.contains(x)
+} by {
+    if submodule_closure_contains(carrier, a, x) and s.carrier = carrier and set_subset_submodule(a, s) {
+        submodule_closure_contains(carrier, a, x) = forall(t: Submodule[R, M]) {
+            t.carrier = carrier and set_subset_submodule(a, t) implies t.contains(x)
+        }
+        s.contains(x)
+    }
+}
+
+/// The submodule closure of a set contains the additive identity.
+theorem submodule_closure_zero_constraint[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_zero_constraint(carrier, submodule_closure_contains(carrier, a))
+} by {
+    forall(s: Submodule[R, M]) {
+        if s.carrier = carrier and set_subset_submodule(a, s) {
+            submodule_contains_zero(s)
+            s.contains(M.0)
+        }
+    }
+    submodule_closure_contains(carrier, a, M.0)
+    submodule_zero_constraint(carrier, submodule_closure_contains(carrier, a))
+}
+
+/// The submodule closure of a set is closed under addition.
+theorem submodule_closure_add_constraint[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_add_constraint(carrier, submodule_closure_contains(carrier, a))
+} by {
+    forall(x: M, y: M) {
+        if submodule_closure_contains(carrier, a, x) and submodule_closure_contains(carrier, a, y) {
+            forall(s: Submodule[R, M]) {
+                if s.carrier = carrier and set_subset_submodule(a, s) {
+                    submodule_closure_contains_of_set_subset_raw(carrier, a, s, x)
+                    s.contains(x)
+                    submodule_closure_contains_of_set_subset_raw(carrier, a, s, y)
+                    s.contains(y)
+                    submodule_contains_add(s, x, y)
+                    s.contains(x + y)
+                }
+            }
+            submodule_closure_contains(carrier, a, x + y)
+        }
+    }
+}
+
+/// The submodule closure of a set is closed under additive negation.
+theorem submodule_closure_neg_constraint[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_neg_constraint(carrier, submodule_closure_contains(carrier, a))
+} by {
+    forall(x: M) {
+        if submodule_closure_contains(carrier, a, x) {
+            forall(s: Submodule[R, M]) {
+                if s.carrier = carrier and set_subset_submodule(a, s) {
+                    submodule_closure_contains_of_set_subset_raw(carrier, a, s, x)
+                    s.contains(x)
+                    submodule_contains_neg(s, x)
+                    s.contains(-x)
+                }
+            }
+            submodule_closure_contains(carrier, a, -x)
+        }
+    }
+}
+
+/// The submodule closure of a set is closed under scalar multiplication.
+theorem submodule_closure_smul_constraint[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    submodule_smul_constraint(carrier, submodule_closure_contains(carrier, a))
+} by {
+    forall(r: R, x: M) {
+        if submodule_closure_contains(carrier, a, x) {
+            forall(s: Submodule[R, M]) {
+                if s.carrier = carrier and set_subset_submodule(a, s) {
+                    submodule_closure_contains_of_set_subset_raw(carrier, a, s, x)
+                    s.contains(x)
+                    submodule_contains_smul(s, r, x)
+                    s.carrier.smul(r, x) = carrier.smul(r, x)
+                    s.contains(carrier.smul(r, x))
+                }
+            }
+            submodule_closure_contains(carrier, a, carrier.smul(r, x))
+        }
+    }
+}
+
+/// The submodule closure of a set is a submodule.
+theorem submodule_closure_is_submodule[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    is_submodule(carrier, submodule_closure_contains(carrier, a))
+} by {
+    submodule_closure_zero_constraint(carrier, a)
+    submodule_closure_add_constraint(carrier, a)
+    submodule_closure_neg_constraint(carrier, a)
+    submodule_closure_smul_constraint(carrier, a)
+}
+
+/// The smallest submodule of a module containing a set.
+let submodule_closure[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) -> result: Submodule[R, M] satisfy {
+    Submodule.new(carrier, submodule_closure_contains(carrier, a)) = Option.some(result)
+} by {
+    submodule_closure_is_submodule(carrier, a)
+}
+
+/// Membership in the closure means membership in every submodule containing the set.
+theorem submodule_closure_contains_eq[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], a: Set[M], x: M
+) {
+    submodule_closure(carrier, a).contains(x) = submodule_closure_contains(carrier, a, x)
+} by {
+    submodule_closure(carrier, a).contains(x) = submodule_closure_contains(carrier, a, x)
+}
+
+/// Every generator belongs to the submodule closure.
+theorem submodule_subset_closure[R: Ring, M: AddCommGroup](carrier: Module[R, M], a: Set[M]) {
+    set_subset_submodule(a, submodule_closure(carrier, a))
+} by {
+    forall(x: M) {
+        if a.contains(x) {
+            forall(s: Submodule[R, M]) {
+                if s.carrier = carrier and set_subset_submodule(a, s) {
+                    s.contains(x)
+                }
+            }
+            submodule_closure_contains(carrier, a, x)
+            submodule_closure_contains_eq(carrier, a, x)
+            submodule_closure(carrier, a).contains(x)
+        }
+    }
+}
+
+/// A generator is a member of the submodule closure.
+theorem submodule_closure_contains_of_set_contains[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M], a: Set[M], x: M
+) {
+    a.contains(x) implies submodule_closure(carrier, a).contains(x)
+} by {
+    if a.contains(x) {
+        submodule_subset_closure(carrier, a)
+        submodule_closure(carrier, a).contains(x)
+    }
+}
+
+/// The submodule closure is contained in any submodule containing the set.
+theorem submodule_closure_subset_of_set_subset[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M],
+    a: Set[M],
+    s: Submodule[R, M]
+) {
+    s.carrier = carrier and set_subset_submodule(a, s) implies submodule_subset(submodule_closure(carrier, a), s)
+} by {
+    if s.carrier = carrier and set_subset_submodule(a, s) {
+        forall(x: M) {
+            if submodule_closure(carrier, a).contains(x) {
+                submodule_closure_contains_eq(carrier, a, x)
+                submodule_closure_contains(carrier, a, x)
+                submodule_closure_contains_of_set_subset_raw(carrier, a, s, x)
+                s.contains(x)
+            }
+        }
+        submodule_subset(submodule_closure(carrier, a), s)
+    }
+}
+
+/// The submodule closure is the least submodule containing the set.
+theorem submodule_closure_le_iff_set_subset[R: Ring, M: AddCommGroup](
+    carrier: Module[R, M],
+    a: Set[M],
+    s: Submodule[R, M]
+) {
+    s.carrier = carrier implies
+        (submodule_subset(submodule_closure(carrier, a), s) = set_subset_submodule(a, s))
+} by {
+    if s.carrier = carrier {
+        if submodule_subset(submodule_closure(carrier, a), s) {
+            submodule_subset_closure(carrier, a)
+            set_subset_submodule_trans(a, submodule_closure(carrier, a), s)
+            set_subset_submodule(a, s)
+        }
+        if set_subset_submodule(a, s) {
+            submodule_closure_subset_of_set_subset(carrier, a, s)
+            submodule_subset(submodule_closure(carrier, a), s)
+        }
+        submodule_subset(submodule_closure(carrier, a), s) = set_subset_submodule(a, s)
+    }
+}
+
+/// The closure of the underlying set of a submodule is the submodule itself.
+theorem submodule_closure_as_set[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_closure(s.carrier, s.as_set) = s
+} by {
+    submodule_as_set_subset_self(s)
+    submodule_closure_subset_of_set_subset(s.carrier, s.as_set, s)
+    submodule_subset(submodule_closure(s.carrier, s.as_set), s)
+    submodule_subset_closure(s.carrier, s.as_set)
+    forall(x: M) {
+        if s.contains(x) {
+            s.as_set.contains(x)
+            submodule_closure(s.carrier, s.as_set).contains(x)
+        }
+    }
+    submodule_subset(s, submodule_closure(s.carrier, s.as_set))
+    submodule_subset(s, submodule_closure(s.carrier, s.as_set))
+    submodule_subset_antisymm(submodule_closure(s.carrier, s.as_set), s)
+}
+
 /// Membership in the kernel of a linear map.
 define linear_map_kernel[R: Ring, M: AddCommGroup, N: AddCommGroup](
     f: M -> N, x: M
@@ -500,4 +1013,3 @@ theorem linear_map_image_smul_constraint[R: Ring, M: AddCommGroup, N: AddCommGro
         }
     }
 }
-
