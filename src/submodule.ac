@@ -404,6 +404,84 @@ theorem submodule_intersection_is_submodule[R: Ring, M: AddCommGroup](
     }
 }
 
+/// The bundled common part of two submodules, using the left submodule when the ambient modules differ.
+define submodule_bundled_intersection_contains[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) -> Bool {
+    if a.carrier = b.carrier {
+        submodule_intersection_contains(a, b, x)
+    } else {
+        a.contains(x)
+    }
+}
+
+/// The bundled common part agrees with common membership when the ambient modules are equal.
+theorem submodule_bundled_intersection_contains_eq_of_carrier_eq[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) {
+    a.carrier = b.carrier implies
+        submodule_bundled_intersection_contains(a, b, x) = submodule_intersection_contains(a, b, x)
+} by {
+    if a.carrier = b.carrier {
+        submodule_bundled_intersection_contains(a, b, x) = submodule_intersection_contains(a, b, x)
+    }
+}
+
+/// The bundled common part agrees with the left submodule when the ambient modules differ.
+theorem submodule_bundled_intersection_contains_eq_left_of_carrier_ne[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) {
+    a.carrier != b.carrier implies
+        submodule_bundled_intersection_contains(a, b, x) = a.contains(x)
+} by {
+    if a.carrier != b.carrier {
+        submodule_bundled_intersection_contains(a, b, x) = a.contains(x)
+    }
+}
+
+/// The bundled common part is a submodule of the left ambient module.
+theorem submodule_bundled_intersection_is_submodule[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    is_submodule(a.carrier, submodule_bundled_intersection_contains(a, b))
+} by {
+    if a.carrier = b.carrier {
+        submodule_intersection_is_submodule(a, b)
+        is_submodule(a.carrier, submodule_intersection_contains(a, b))
+        forall(x: M) {
+            submodule_bundled_intersection_contains_eq_of_carrier_eq(a, b, x)
+            submodule_bundled_intersection_contains(a, b, x) = submodule_intersection_contains(a, b, x)
+        }
+        predicate_extensionality(
+            submodule_bundled_intersection_contains(a, b),
+            submodule_intersection_contains(a, b)
+        )
+        submodule_bundled_intersection_contains(a, b) = submodule_intersection_contains(a, b)
+        is_submodule(a.carrier, submodule_bundled_intersection_contains(a, b))
+    } else {
+        forall(x: M) {
+            submodule_bundled_intersection_contains_eq_left_of_carrier_ne(a, b, x)
+            submodule_bundled_intersection_contains(a, b, x) = a.contains(x)
+        }
+        predicate_extensionality(submodule_bundled_intersection_contains(a, b), a.contains)
+        submodule_bundled_intersection_contains(a, b) = a.contains
+        is_submodule(a.carrier, a.contains)
+        is_submodule(a.carrier, submodule_bundled_intersection_contains(a, b))
+    }
+}
+
+/// The bundled common part of two submodules.
+let submodule_intersection[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) -> result: Submodule[R, M] satisfy {
+    Submodule.new(a.carrier, submodule_bundled_intersection_contains(a, b)) = Option.some(result)
+} by {
+    submodule_bundled_intersection_is_submodule(a, b)
+}
+
+/// The bundled common part has the left ambient module.
+theorem submodule_intersection_carrier_eq[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) {
+    submodule_intersection(a, b).carrier = a.carrier
+}
+
 /// Common membership is symmetric.
 theorem submodule_intersection_contains_comm_at[R: Ring, M: AddCommGroup](
     a: Submodule[R, M], b: Submodule[R, M], x: M
@@ -467,6 +545,9 @@ attributes Submodule[R: Ring, M: AddCommGroup] {
     define as_set(self) -> Set[M] {
         Set[M].new(self.contains)
     }
+
+    /// The common part of this submodule and another submodule.
+    let intersection: (Submodule[R, M], Submodule[R, M]) -> Submodule[R, M] = submodule_intersection
 }
 
 /// Membership in the underlying set is membership in the submodule.
@@ -621,6 +702,124 @@ theorem submodule_subset_intersection_contains_iff[R: Ring, M: AddCommGroup](
     }
     (forall(x: M) { c.contains(x) implies submodule_intersection_contains(a, b, x) }) =
         (submodule_subset(c, a) and submodule_subset(c, b))
+}
+
+/// Membership in a same-carrier intersection means membership in both submodules.
+theorem submodule_intersection_contains_eq_of_carrier_eq[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) {
+    a.carrier = b.carrier implies a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+} by {
+    if a.carrier = b.carrier {
+        a.intersection(b) = submodule_intersection(a, b)
+        submodule_intersection(a, b).contains(x) = submodule_bundled_intersection_contains(a, b, x)
+        a.intersection(b).contains(x) = submodule_bundled_intersection_contains(a, b, x)
+        submodule_bundled_intersection_contains_eq_of_carrier_eq(a, b, x)
+        a.intersection(b).contains(x) = submodule_intersection_contains(a, b, x)
+        submodule_intersection_contains_eq(a, b, x)
+        a.intersection(b).contains(x) = (a.contains(x) and b.contains(x))
+    }
+}
+
+/// The same-carrier intersection is contained in the left submodule.
+theorem submodule_intersection_subset_left_relation[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier implies submodule_subset(a.intersection(b), a)
+} by {
+    if a.carrier = b.carrier {
+        forall(x: M) {
+            if a.intersection(b).contains(x) {
+                submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+                a.contains(x)
+            }
+        }
+    }
+}
+
+/// The same-carrier intersection is contained in the right submodule.
+theorem submodule_intersection_subset_right_relation[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier implies submodule_subset(a.intersection(b), b)
+} by {
+    if a.carrier = b.carrier {
+        forall(x: M) {
+            if a.intersection(b).contains(x) {
+                submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+                b.contains(x)
+            }
+        }
+    }
+}
+
+/// Every common submodule of two same-carrier submodules is contained in their intersection.
+theorem submodule_subset_intersection_of_subset_left_right_bundled[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    c.carrier = a.carrier and a.carrier = b.carrier and submodule_subset(c, a) and submodule_subset(c, b)
+    implies submodule_subset(c, a.intersection(b))
+} by {
+    if c.carrier = a.carrier and a.carrier = b.carrier and submodule_subset(c, a) and submodule_subset(c, b) {
+        forall(x: M) {
+            if c.contains(x) {
+                a.contains(x)
+                b.contains(x)
+                submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+                a.intersection(b).contains(x)
+            }
+        }
+    }
+}
+
+/// Containment in a same-carrier intersection is equivalent to containment in both submodules.
+theorem submodule_subset_intersection_iff_bundled[R: Ring, M: AddCommGroup](
+    c: Submodule[R, M],
+    a: Submodule[R, M],
+    b: Submodule[R, M]
+) {
+    c.carrier = a.carrier and a.carrier = b.carrier implies
+        (submodule_subset(c, a.intersection(b)) = (submodule_subset(c, a) and submodule_subset(c, b)))
+} by {
+    if c.carrier = a.carrier and a.carrier = b.carrier {
+        if submodule_subset(c, a.intersection(b)) {
+            submodule_intersection_subset_left_relation(a, b)
+            submodule_subset_trans(c, a.intersection(b), a)
+            submodule_subset(c, a)
+            submodule_intersection_subset_right_relation(a, b)
+            submodule_subset_trans(c, a.intersection(b), b)
+            submodule_subset(c, b)
+            submodule_subset(c, a) and submodule_subset(c, b)
+        }
+        if submodule_subset(c, a) and submodule_subset(c, b) {
+            submodule_subset_intersection_of_subset_left_right_bundled(c, a, b)
+            submodule_subset(c, a.intersection(b))
+        }
+        submodule_subset(c, a.intersection(b)) = (submodule_subset(c, a) and submodule_subset(c, b))
+    }
+}
+
+/// Same-carrier submodule intersection is idempotent.
+theorem submodule_intersection_idempotent[R: Ring, M: AddCommGroup](a: Submodule[R, M]) {
+    a.intersection(a) = a
+} by {
+    forall(x: M) {
+        if a.intersection(a).contains(x) {
+            submodule_intersection_contains_eq_of_carrier_eq(a, a, x)
+            a.contains(x)
+        }
+        if a.contains(x) {
+            submodule_intersection_contains_eq_of_carrier_eq(a, a, x)
+            a.intersection(a).contains(x)
+        }
+        a.intersection(a).contains(x) = a.contains(x)
+    }
+    a.intersection(a) = submodule_intersection(a, a)
+    submodule_intersection_carrier_eq(a, a)
+    a.intersection(a).carrier = a.carrier
+    submodule_ext(a.intersection(a), a)
 }
 
 /// Mutual inclusion gives equality of membership predicates.
