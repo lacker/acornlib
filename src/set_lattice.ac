@@ -1,4 +1,6 @@
 from list import List
+from functions import Inhabited, is_surjective_fn, is_bijection_fn, bijection_fn_is_surjective,
+    surjective_fn_has_preimage
 from nat import Nat
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     empty_set_contains_eq, universal_set_contains_eq,
@@ -382,6 +384,11 @@ define set_universal_family[K, I](i: I) -> Set[K] {
     Set[K].universal_set
 }
 
+/// The constant family whose members are a fixed set.
+define set_constant_family[K, I](s: Set[K], i: I) -> Set[K] {
+    s
+}
+
 /// The family formed by taking preimages of an indexed family.
 define set_preimage_family[T, U, I](f: T -> U, family: I -> Set[U], i: I) -> Set[T] {
     set_preimage(f, family(i))
@@ -640,6 +647,90 @@ theorem set_sInf_subset_of_family_occurs[K, I, J](a: I -> Set[K], b: J -> Set[K]
     }
 }
 
+/// Mutually cofinal family refinements give the same supremum.
+theorem set_sSup_eq_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) and
+    (forall(j: J) { exists(i: I) { b(j).subset(a(i)) } })
+    implies
+    set_sSup(a) = set_sSup(b)
+} by {
+    if (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) and
+        (forall(j: J) { exists(i: I) { b(j).subset(a(i)) } }) {
+        let u = set_sSup(a)
+        let v = set_sSup(b)
+        set_sSup_subset_of_family_refines(a, b)
+        u.subset(v)
+        set_sSup_subset_of_family_refines(b, a)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(a) = set_sSup(b)
+    }
+}
+
+/// Mutually cofinal lower-bound refinements give the same infimum.
+theorem set_sInf_eq_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(j: J) { exists(i: I) { a(i).subset(b(j)) } }) and
+    (forall(i: I) { exists(j: J) { b(j).subset(a(i)) } })
+    implies
+    set_sInf(a) = set_sInf(b)
+} by {
+    if (forall(j: J) { exists(i: I) { a(i).subset(b(j)) } }) and
+        (forall(i: I) { exists(j: J) { b(j).subset(a(i)) } }) {
+        let u = set_sInf(a)
+        let v = set_sInf(b)
+        set_sInf_subset_of_family_refines(a, b)
+        u.subset(v)
+        set_sInf_subset_of_family_refines(b, a)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(a) = set_sInf(b)
+    }
+}
+
+/// Families with the same occurring members have the same supremum.
+theorem set_sSup_eq_of_family_occurs[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) { exists(j: J) { a(i) = b(j) } }) and
+    (forall(j: J) { exists(i: I) { b(j) = a(i) } })
+    implies
+    set_sSup(a) = set_sSup(b)
+} by {
+    if (forall(i: I) { exists(j: J) { a(i) = b(j) } }) and
+        (forall(j: J) { exists(i: I) { b(j) = a(i) } }) {
+        let u = set_sSup(a)
+        let v = set_sSup(b)
+        set_sSup_subset_of_family_occurs(a, b)
+        u.subset(v)
+        set_sSup_subset_of_family_occurs(b, a)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(a) = set_sSup(b)
+    }
+}
+
+/// Families with the same occurring lower-bound members have the same infimum.
+theorem set_sInf_eq_of_family_occurs[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(j: J) { exists(i: I) { a(i) = b(j) } }) and
+    (forall(i: I) { exists(j: J) { b(j) = a(i) } })
+    implies
+    set_sInf(a) = set_sInf(b)
+} by {
+    if (forall(j: J) { exists(i: I) { a(i) = b(j) } }) and
+        (forall(i: I) { exists(j: J) { b(j) = a(i) } }) {
+        let u = set_sInf(a)
+        let v = set_sInf(b)
+        set_sInf_subset_of_family_occurs(a, b)
+        u.subset(v)
+        set_sInf_subset_of_family_occurs(b, a)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(a) = set_sInf(b)
+    }
+}
+
 /// A reindexed family supremum is contained in the original supremum.
 theorem set_sSup_reindex_subset[K, I, J](family: I -> Set[K], h: J -> I) {
     set_sSup(set_reindex_family(family, h)).subset(set_sSup(family))
@@ -700,6 +791,125 @@ theorem set_sInf_reindex_subset_of_section[K, I, J](family: I -> Set[K], h: J ->
         }
         set_subset_sInf_of_subset_family(set_sInf(set_reindex_family(family, h)), family)
         set_sInf(set_reindex_family(family, h)).subset(set_sInf(family))
+    }
+}
+
+/// Reindexing by a map with a section preserves the family supremum.
+theorem set_sSup_reindex_eq_of_section[K, I, J](family: I -> Set[K], h: J -> I, g: I -> J) {
+    (forall(i: I) { h(g(i)) = i }) implies
+    set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+} by {
+    if forall(i: I) { h(g(i)) = i } {
+        let u = set_sSup(set_reindex_family(family, h))
+        let v = set_sSup(family)
+        set_sSup_reindex_subset(family, h)
+        u.subset(v)
+        set_sSup_subset_reindex_of_section(family, h, g)
+        set_sSup(family).subset(set_sSup(set_reindex_family(family, h)))
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+    }
+}
+
+/// Reindexing by a map with a section preserves the family infimum.
+theorem set_sInf_reindex_eq_of_section[K, I, J](family: I -> Set[K], h: J -> I, g: I -> J) {
+    (forall(i: I) { h(g(i)) = i }) implies
+    set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+} by {
+    if forall(i: I) { h(g(i)) = i } {
+        let u = set_sInf(set_reindex_family(family, h))
+        let v = set_sInf(family)
+        set_sInf_subset_reindex(family, h)
+        v.subset(u)
+        set_sInf_reindex_subset_of_section(family, h, g)
+        set_sInf(set_reindex_family(family, h)).subset(set_sInf(family))
+        u.subset(v)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+    }
+}
+
+/// Reindexing by a surjective map preserves the family supremum.
+theorem set_sSup_reindex_eq_of_surjective[K, I, J](family: I -> Set[K], h: J -> I) {
+    is_surjective_fn(h) implies
+    set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+} by {
+    if is_surjective_fn(h) {
+        let u = set_sSup(set_reindex_family(family, h))
+        let v = set_sSup(family)
+        set_sSup_reindex_subset(family, h)
+        u.subset(v)
+        forall(i: I) {
+            surjective_fn_has_preimage(h, i)
+            let j: J satisfy {
+                h(j) = i
+            }
+            set_reindex_family(family, h, j) = family(h(j))
+            set_reindex_family(family, h, j) = family(i)
+            family(i) = set_reindex_family(family, h, j)
+        }
+        set_sSup_subset_of_family_occurs(family, set_reindex_family(family, h))
+        set_sSup(family).subset(set_sSup(set_reindex_family(family, h)))
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+    }
+}
+
+/// Reindexing by a surjective map preserves the family infimum.
+theorem set_sInf_reindex_eq_of_surjective[K, I, J](family: I -> Set[K], h: J -> I) {
+    is_surjective_fn(h) implies
+    set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+} by {
+    if is_surjective_fn(h) {
+        let u = set_sInf(set_reindex_family(family, h))
+        let v = set_sInf(family)
+        set_sInf_subset_reindex(family, h)
+        v.subset(u)
+        forall(i: I) {
+            surjective_fn_has_preimage(h, i)
+            let j: J satisfy {
+                h(j) = i
+            }
+            set_reindex_family(family, h, j) = family(h(j))
+            set_reindex_family(family, h, j) = family(i)
+        }
+        set_sInf_subset_of_family_occurs(set_reindex_family(family, h), family)
+        set_sInf(set_reindex_family(family, h)).subset(set_sInf(family))
+        u.subset(v)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+    }
+}
+
+/// Reindexing by a bijective map preserves the family supremum.
+theorem set_sSup_reindex_eq_of_bijection[K, I, J](family: I -> Set[K], h: J -> I) {
+    is_bijection_fn(h) implies
+    set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+} by {
+    if is_bijection_fn(h) {
+        bijection_fn_is_surjective(h)
+        is_surjective_fn(h)
+        set_sSup_reindex_eq_of_surjective(family, h)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+    }
+}
+
+/// Reindexing by a bijective map preserves the family infimum.
+theorem set_sInf_reindex_eq_of_bijection[K, I, J](family: I -> Set[K], h: J -> I) {
+    is_bijection_fn(h) implies
+    set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+} by {
+    if is_bijection_fn(h) {
+        bijection_fn_is_surjective(h)
+        is_surjective_fn(h)
+        set_sInf_reindex_eq_of_surjective(family, h)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
     }
 }
 
@@ -1007,6 +1217,70 @@ theorem set_sInf_universal_family[K, I] {
     set_sInf(set_universal_family[K, I]) = Set[K].universal_set
 } by {
     set_sInf_universal_of_forall_universal(set_universal_family[K, I])
+}
+
+/// The supremum of a constant family is contained in the constant member.
+theorem set_sSup_constant_family_subset[K, I](s: Set[K]) {
+    set_sSup(set_constant_family[K, I](s)).subset(s)
+} by {
+    forall(i: I) {
+        set_constant_family(s, i) = s
+        set_constant_family(s, i).subset(s)
+    }
+    set_sSup_subset_of_family_subset(set_constant_family[K, I](s), s)
+}
+
+/// In an inhabited family, the constant member is contained in its supremum.
+theorem set_subset_sSup_constant_family[K, I: Inhabited](s: Set[K]) {
+    s.subset(set_sSup(set_constant_family[K, I](s)))
+} by {
+    let i: I satisfy {
+        true
+    }
+    set_family_subset_sSup(set_constant_family[K, I](s), i)
+    set_constant_family(s, i) = s
+    s.subset(set_sSup(set_constant_family[K, I](s)))
+}
+
+/// In an inhabited family, the supremum of a constant family is the constant member.
+theorem set_sSup_constant_family[K, I: Inhabited](s: Set[K]) {
+    set_sSup(set_constant_family[K, I](s)) = s
+} by {
+    set_sSup_constant_family_subset[K, I](s)
+    set_subset_sSup_constant_family[K, I](s)
+    subset_antisymm(set_sSup(set_constant_family[K, I](s)), s)
+}
+
+/// The constant member is contained in the infimum of a constant family.
+theorem set_subset_sInf_constant_family[K, I](s: Set[K]) {
+    s.subset(set_sInf(set_constant_family[K, I](s)))
+} by {
+    forall(i: I) {
+        set_constant_family(s, i) = s
+        s.subset(set_constant_family(s, i))
+    }
+    set_subset_sInf_of_subset_family(s, set_constant_family[K, I](s))
+}
+
+/// In an inhabited family, the infimum of a constant family is contained in the constant member.
+theorem set_sInf_constant_family_subset[K, I: Inhabited](s: Set[K]) {
+    set_sInf(set_constant_family[K, I](s)).subset(s)
+} by {
+    let i: I satisfy {
+        true
+    }
+    set_sInf_subset_family(set_constant_family[K, I](s), i)
+    set_constant_family(s, i) = s
+    set_sInf(set_constant_family[K, I](s)).subset(s)
+}
+
+/// In an inhabited family, the infimum of a constant family is the constant member.
+theorem set_sInf_constant_family[K, I: Inhabited](s: Set[K]) {
+    set_sInf(set_constant_family[K, I](s)) = s
+} by {
+    set_sInf_constant_family_subset[K, I](s)
+    set_subset_sInf_constant_family[K, I](s)
+    subset_antisymm(set_sInf(set_constant_family[K, I](s)), s)
 }
 
 /// The supremum of complements is the complement of the infimum.
