@@ -19,3 +19,5 @@ Status:
 - `src/ideal.ac` now has an unbundled ideal lattice API: mutual-inclusion equality, meet/intersection GLB iff, commutativity, associativity, idempotence, absorption under inclusion, zero/unit meet identities, join/sum LUB iff, commutativity, associativity, idempotence, absorption under inclusion, and zero/unit join identities.
 - `src/list/list_order.ac` now has iff bridges between list lower/upper/interval bounds and the corresponding membership-predicate bounds from `order_interval`.
 - `src/list/list_order.ac` now has recursive lower-bound, upper-bound, and interval-bound split lemmas for nil, cons, concatenation, singleton, and append, plus exported aliases connecting list minima/maxima to the shared `list_lower_bound` / `list_upper_bound` predicates.
+- `src/submodule.ac` now has bundled commutativity, associativity, and zero/full submodule identity laws for `Submodule.intersection` on equal-carrier submodules, completing the meet semilattice axioms at the bundled level.
+- `src/submodule.ac` now has bundled `submodule_intersection_eq_left_of_subset` / `submodule_intersection_eq_right_of_subset` absorption laws for same-carrier submodules.

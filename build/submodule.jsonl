@@ -179,6 +179,48 @@
 {"goal":"a = b","proof":[]}
 {"goal":"a = b = (submodule_subset[R, M](a, b) and submodule_subset[R, M](b, a))","proof":[]}
 {"goal":"submodule_eq_iff_subset_both","proof":[]}
+{"goal":"a.intersection(b).contains(x) = submodule_intersection_contains[R, M](a, b, x)","proof":[]}
+{"goal":"b.intersection(a).contains(x) = submodule_intersection_contains[R, M](b, a, x)","proof":[]}
+{"goal":"a.intersection(b).contains(x) = b.intersection(a).contains(x)","proof":[]}
+{"goal":"submodule_intersection_contains_comm_pointwise","proof":[]}
+{"goal":"submodule_intersection_contains_comm_pred","proof":["let w0: M satisfy { w0 ∈ a ∩ b != w0 ∈ b ∩ a }","function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1], x2: T1) { x0.carrier != x1.carrier or x2 ∈ x0 ∩ x1 = x2 ∈ x1 ∩ x0 }[R, M](b, a, w0)"]}
+{"goal":"a.intersection(b).contains = b.intersection(a).contains","proof":[]}
+{"goal":"a.intersection(b).carrier = b.intersection(a).carrier","proof":[]}
+{"goal":"submodule_intersection_comm","proof":["function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1]) { x0.contains != x1.contains or x0.carrier != x1.carrier or x0 = x1 }[R, M](b ∩ a, a ∩ b)","(b ∩ a).carrier = (a ∩ b).carrier","function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1]) { x0.carrier != x1.carrier or (x0 ∩ x1).contains = (x1 ∩ x0).contains }[R, M](b, a)"]}
+{"goal":"a.intersection(b).carrier = c.carrier","proof":[]}
+{"goal":"a.carrier = b.intersection(c).carrier","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"a.intersection(b.intersection(c)).contains(x)","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"b.intersection(c).contains(x)","proof":[]}
+{"goal":"b.contains(x)","proof":[]}
+{"goal":"c.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"a.intersection(b).intersection(c).contains(x)","proof":[]}
+{"goal":"a.intersection(b).intersection(c).contains(x) = a.intersection(b.intersection(c)).contains(x)","proof":[]}
+{"goal":"submodule_intersection_contains_assoc_pointwise","proof":[]}
+{"goal":"submodule_intersection_contains_assoc_pred","proof":["let w0: M satisfy { w0 ∈ a ∩ (b ∩ c) != w0 ∈ a ∩ b ∩ c }","function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1], x2: Submodule[T0, T1], x3: T1) { x0.carrier != x1.carrier or x1.carrier != x2.carrier or x3 ∈ x0 ∩ x1 ∩ x2 = x3 ∈ x0 ∩ (x1 ∩ x2) }[R, M](a, b, c, w0)"]}
+{"goal":"a.intersection(b).intersection(c).carrier = a.carrier","proof":[]}
+{"goal":"a.intersection(b.intersection(c)).carrier = a.carrier","proof":[]}
+{"goal":"submodule_intersection_assoc_carrier_eq","proof":[]}
+{"goal":"submodule_intersection_assoc","proof":["function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1], x2: Submodule[T0, T1]) { (x0 ∩ x1 ∩ x2).carrier = (x0 ∩ (x1 ∩ x2)).carrier }[R, M](a, b, c)","(a ∩ (b ∩ c)).contains != (a ∩ b ∩ c).contains or (a ∩ (b ∩ c)).carrier != (a ∩ b ∩ c).carrier or c.carrier != b.carrier or b.carrier != a.carrier","c.carrier = b.carrier","b.carrier = a.carrier","(a ∩ (b ∩ c)).contains != (a ∩ b ∩ c).contains","function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1], x2: Submodule[T0, T1]) { x0.carrier != x1.carrier or x1.carrier != x2.carrier or (x0 ∩ x1 ∩ x2).contains = (x0 ∩ (x1 ∩ x2)).contains }[R, M](a, b, c)"]}
+{"goal":"a.intersection(b).carrier = a.carrier","proof":[]}
+{"goal":"a.contains(x)","proof":[]}
+{"goal":"submodule_subset[R, M](a, b) = forall(x0: M) { a.contains(x0) implies b.contains(x0) }","proof":["function[T0: AddCommGroup, T1: Ring](x0: Submodule[T1, T0], x1: Submodule[T1, T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = submodule_subset[T1, T0](x0, x1) }[M, R](a, b)"]}
+{"goal":"b.contains(x)","proof":["function[T0: AddCommGroup, T1: Ring](x0: Submodule[T1, T0], x1: Submodule[T1, T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = submodule_subset[T1, T0](x0, x1) }[M, R](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[M](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[M](a.contains, b.contains, x)"]}
+{"goal":"a.intersection(b).contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains(x) = a.contains(x)","proof":[]}
+{"goal":"a.intersection(b).contains = a.contains","proof":[]}
+{"goal":"submodule_intersection_eq_left_of_subset","proof":["function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1]) { x0.contains != x1.contains or x0.carrier != x1.carrier or x0 = x1 }[R, M](a, submodule_intersection[R, M](a, b))","function[T0: Ring, T1: AddCommGroup](x0: Submodule[T0, T1], x1: Submodule[T0, T1]) { submodule_intersection[T0, T1](x0, x1).carrier = x0.carrier }[R, M](a, b)"]}
+{"goal":"a.intersection(b) = b.intersection(a)","proof":[]}
+{"goal":"b.carrier = a.carrier","proof":[]}
+{"goal":"b.intersection(a) = b","proof":[]}
+{"goal":"a.intersection(b) = b","proof":[]}
+{"goal":"submodule_intersection_eq_right_of_subset","proof":[]}
 {"goal":"zero_submodule_contains(M.0)","proof":["function[T0: AddCommGroup](x0: T0) { T0.0 = x0 = zero_submodule_contains[T0](x0) }[M](M.0)"]}
 {"goal":"submodule_zero_constraint[R, M](carrier, zero_submodule_contains[M])","proof":["function[T0: AddCommGroup, T2: Ring](x0: T0 -> Bool, x1: Module[T2, T0]) { x0(T0.0) = submodule_zero_constraint[T2, T0](x1, x0) }[M, R](zero_submodule_contains[M], carrier)"]}
 {"goal":"x = M.0","proof":["function[T0: AddCommGroup](x0: T0) { T0.0 = x0 = zero_submodule_contains[T0](x0) }[M](x)"]}
@@ -231,6 +273,10 @@
 {"goal":"full_submodule_intersection_contains_left","proof":[]}
 {"goal":"submodule_intersection_contains[R, M](s, full_submodule[R, M](carrier), x) = s.contains(x)","proof":[]}
 {"goal":"full_submodule_intersection_contains_right","proof":[]}
+{"goal":"zero_submodule_intersection_left","proof":[]}
+{"goal":"zero_submodule_intersection_right","proof":[]}
+{"goal":"full_submodule_intersection_left","proof":[]}
+{"goal":"full_submodule_intersection_right","proof":[]}
 {"goal":"s.contains(x)","proof":["function[T0: AddCommGroup, T2: Ring](x0: Set[T0], x1: Submodule[T2, T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = set_subset_submodule[T2, T0](x0, x1) }[M, R](a, s)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[M](a.contains, s.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[M](a.contains, s.contains, x)"]}
 {"goal":"s.as_set.contains(x)","proof":[]}
 {"goal":"a.subset(s.as_set)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[M](a, s.as_set)","let w0: M satisfy { w0 ∈ a and not w0 ∈ s.as_set }","function(x0: M) { not x0 ∈ a or x0 ∈ s.as_set }(w0)"]}

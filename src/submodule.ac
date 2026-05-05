@@ -876,6 +876,182 @@ theorem submodule_eq_iff_subset_both[R: Ring, M: AddCommGroup](a: Submodule[R, M
     }
 }
 
+/// The bundled common part is symmetric on equal carriers.
+theorem submodule_intersection_contains_comm_pointwise[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], x: M
+) {
+    a.carrier = b.carrier implies a.intersection(b).contains(x) = b.intersection(a).contains(x)
+} by {
+    if a.carrier = b.carrier {
+        submodule_intersection_contains_comm_at(a, b, x)
+        submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+        submodule_intersection_contains_eq_of_carrier_eq(b, a, x)
+        submodule_intersection_contains_eq(a, b, x)
+        submodule_intersection_contains_eq(b, a, x)
+        a.intersection(b).contains(x) = submodule_intersection_contains(a, b, x)
+        b.intersection(a).contains(x) = submodule_intersection_contains(b, a, x)
+        a.intersection(b).contains(x) = b.intersection(a).contains(x)
+    }
+}
+
+/// The bundled common part membership predicate is symmetric on equal carriers.
+theorem submodule_intersection_contains_comm_pred[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier implies a.intersection(b).contains = b.intersection(a).contains
+} by {
+    if a.carrier = b.carrier {
+        forall(x: M) {
+            submodule_intersection_contains_comm_pointwise(a, b, x)
+        }
+        predicate_extensionality(a.intersection(b).contains, b.intersection(a).contains)
+    }
+}
+
+/// Same-carrier submodule intersection is commutative.
+theorem submodule_intersection_comm[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier implies a.intersection(b) = b.intersection(a)
+} by {
+    if a.carrier = b.carrier {
+        submodule_intersection_carrier_eq(a, b)
+        submodule_intersection_carrier_eq(b, a)
+        submodule_intersection_contains_comm_pred(a, b)
+        a.intersection(b).contains = b.intersection(a).contains
+        a.intersection(b).carrier = b.intersection(a).carrier
+    }
+}
+
+/// The bundled triple intersection associates pointwise on equal carriers.
+theorem submodule_intersection_contains_assoc_pointwise[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M], x: M
+) {
+    a.carrier = b.carrier and b.carrier = c.carrier implies
+        a.intersection(b).intersection(c).contains(x) = a.intersection(b.intersection(c)).contains(x)
+} by {
+    if a.carrier = b.carrier and b.carrier = c.carrier {
+        submodule_intersection_carrier_eq(a, b)
+        submodule_intersection_carrier_eq(b, c)
+        a.intersection(b).carrier = c.carrier
+        a.carrier = b.intersection(c).carrier
+        submodule_intersection_contains_eq_of_carrier_eq(a.intersection(b), c, x)
+        submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+        submodule_intersection_contains_eq_of_carrier_eq(b, c, x)
+        submodule_intersection_contains_eq_of_carrier_eq(a, b.intersection(c), x)
+        if a.intersection(b).intersection(c).contains(x) {
+            a.intersection(b).contains(x)
+            c.contains(x)
+            a.contains(x)
+            b.contains(x)
+            b.intersection(c).contains(x)
+            a.intersection(b.intersection(c)).contains(x)
+        }
+        if a.intersection(b.intersection(c)).contains(x) {
+            a.contains(x)
+            b.intersection(c).contains(x)
+            b.contains(x)
+            c.contains(x)
+            a.intersection(b).contains(x)
+            a.intersection(b).intersection(c).contains(x)
+        }
+        a.intersection(b).intersection(c).contains(x) = a.intersection(b.intersection(c)).contains(x)
+    }
+}
+
+/// The bundled triple intersection associates as a predicate on equal carriers.
+theorem submodule_intersection_contains_assoc_pred[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M]
+) {
+    a.carrier = b.carrier and b.carrier = c.carrier implies
+        a.intersection(b).intersection(c).contains = a.intersection(b.intersection(c)).contains
+} by {
+    if a.carrier = b.carrier and b.carrier = c.carrier {
+        forall(x: M) {
+            submodule_intersection_contains_assoc_pointwise(a, b, c, x)
+        }
+        predicate_extensionality(
+            a.intersection(b).intersection(c).contains,
+            a.intersection(b.intersection(c)).contains
+        )
+    }
+}
+
+/// The carrier of an iterated bundled intersection is the leftmost carrier.
+theorem submodule_intersection_assoc_carrier_eq[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M]
+) {
+    a.intersection(b).intersection(c).carrier = a.intersection(b.intersection(c)).carrier
+} by {
+    submodule_intersection_carrier_eq(a, b)
+    submodule_intersection_carrier_eq(a.intersection(b), c)
+    submodule_intersection_carrier_eq(a, b.intersection(c))
+    a.intersection(b).intersection(c).carrier = a.carrier
+    a.intersection(b.intersection(c)).carrier = a.carrier
+}
+
+/// Same-carrier submodule intersection is associative.
+theorem submodule_intersection_assoc[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M], c: Submodule[R, M]
+) {
+    a.carrier = b.carrier and b.carrier = c.carrier implies
+        a.intersection(b).intersection(c) = a.intersection(b.intersection(c))
+} by {
+    if a.carrier = b.carrier and b.carrier = c.carrier {
+        submodule_intersection_assoc_carrier_eq(a, b, c)
+        submodule_intersection_contains_assoc_pred(a, b, c)
+        submodule_eq_of_carrier_contains_eq(
+            a.intersection(b).intersection(c),
+            a.intersection(b.intersection(c))
+        )
+    }
+}
+
+/// Intersecting with a larger same-carrier submodule on the right gives the smaller submodule.
+theorem submodule_intersection_eq_left_of_subset[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier and submodule_subset(a, b) implies a.intersection(b) = a
+} by {
+    if a.carrier = b.carrier and submodule_subset(a, b) {
+        submodule_intersection_carrier_eq(a, b)
+        a.intersection(b).carrier = a.carrier
+        forall(x: M) {
+            if a.intersection(b).contains(x) {
+                submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+                a.contains(x)
+            }
+            if a.contains(x) {
+                submodule_subset(a, b) = forall(y: M) {
+                    a.contains(y) implies b.contains(y)
+                }
+                b.contains(x)
+                submodule_intersection_contains_eq_of_carrier_eq(a, b, x)
+                a.intersection(b).contains(x)
+            }
+            a.intersection(b).contains(x) = a.contains(x)
+        }
+        predicate_extensionality(a.intersection(b).contains, a.contains)
+        a.intersection(b).contains = a.contains
+    }
+}
+
+/// Intersecting with a larger same-carrier submodule on the left gives the smaller submodule.
+theorem submodule_intersection_eq_right_of_subset[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier and submodule_subset(b, a) implies a.intersection(b) = b
+} by {
+    if a.carrier = b.carrier and submodule_subset(b, a) {
+        submodule_intersection_comm(a, b)
+        a.intersection(b) = b.intersection(a)
+        b.carrier = a.carrier
+        submodule_intersection_eq_left_of_subset(b, a)
+        b.intersection(a) = b
+        a.intersection(b) = b
+    }
+}
+
 /// True if an element is the additive identity.
 define zero_submodule_contains[M: AddCommGroup](x: M) -> Bool {
     x = M.0
@@ -1075,6 +1251,42 @@ theorem full_submodule_intersection_contains_right[R: Ring, M: AddCommGroup](
     submodule_intersection_contains_comm_at(s, full_submodule(carrier), x)
     full_submodule_intersection_contains_left(carrier, s, x)
     submodule_intersection_contains(s, full_submodule(carrier), x) = s.contains(x)
+}
+
+/// The zero submodule is absorbing under intersection on the left.
+theorem zero_submodule_intersection_left[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    zero_submodule(s.carrier).intersection(s) = zero_submodule(s.carrier)
+} by {
+    zero_submodule_carrier_eq(s.carrier)
+    zero_submodule_subset(s)
+    submodule_intersection_eq_left_of_subset(zero_submodule(s.carrier), s)
+}
+
+/// The zero submodule is absorbing under intersection on the right.
+theorem zero_submodule_intersection_right[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    s.intersection(zero_submodule(s.carrier)) = zero_submodule(s.carrier)
+} by {
+    zero_submodule_carrier_eq(s.carrier)
+    zero_submodule_subset(s)
+    submodule_intersection_eq_right_of_subset(s, zero_submodule(s.carrier))
+}
+
+/// The full submodule is the identity for intersection on the left.
+theorem full_submodule_intersection_left[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    full_submodule(s.carrier).intersection(s) = s
+} by {
+    full_submodule_carrier_eq(s.carrier)
+    submodule_subset_full(s)
+    submodule_intersection_eq_right_of_subset(full_submodule(s.carrier), s)
+}
+
+/// The full submodule is the identity for intersection on the right.
+theorem full_submodule_intersection_right[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    s.intersection(full_submodule(s.carrier)) = s
+} by {
+    full_submodule_carrier_eq(s.carrier)
+    submodule_subset_full(s)
+    submodule_intersection_eq_left_of_subset(s, full_submodule(s.carrier))
 }
 
 /// True if every element of a set belongs to a submodule.
