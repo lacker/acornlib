@@ -517,6 +517,21 @@ theorem zero_add_submonoid_only_has_zero[M: AddMonoid](m: M) {
     }
 }
 
+/// Membership in the zero additive submonoid is equality to the additive identity.
+theorem zero_add_submonoid_contains_eq[M: AddMonoid](m: M) {
+    zero_add_submonoid[M].contains(m) = (m = M.0)
+} by {
+    if zero_add_submonoid[M].contains(m) {
+        zero_add_submonoid_only_has_zero(m)
+    }
+    if m = M.0 {
+        add_submonoid_contains_zero(zero_add_submonoid[M])
+        zero_add_submonoid[M].contains(M.0)
+        zero_add_submonoid[M].contains(m)
+    }
+    zero_add_submonoid[M].contains(m) = (m = M.0)
+}
+
 /// The zero additive submonoid is contained in every additive submonoid.
 theorem zero_add_submonoid_subset[M: AddMonoid](s: AddSubmonoid[M]) {
     add_submonoid_subset(zero_add_submonoid[M], s)
@@ -559,6 +574,13 @@ let full_add_submonoid[M: AddMonoid]: AddSubmonoid[M] satisfy {
 /// Every element belongs to the full additive submonoid.
 theorem full_add_submonoid_contains_everything[M: AddMonoid](m: M) {
     full_add_submonoid[M].contains(m)
+}
+
+/// Membership in the full additive submonoid is always true.
+theorem full_add_submonoid_contains_eq[M: AddMonoid](m: M) {
+    full_add_submonoid[M].contains(m) = true
+} by {
+    full_add_submonoid_contains_everything(m)
 }
 
 /// Every additive submonoid is contained in the full additive submonoid.
