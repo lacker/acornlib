@@ -39,6 +39,8 @@ from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     range_indexed_union_suc_of_increasing, decreasing_subset_range_indexed_intersection_suc,
     range_indexed_intersection_suc_subset_family, range_indexed_intersection_suc_of_decreasing,
     range_indexed_union_subset_seq_union, seq_intersection_subset_range_indexed_intersection,
+    set_image, set_image_contains_witness, maps_into_set_image,
+    set_image_union, set_image_intersection_subset, set_image_subset_iff_subset_preimage,
     set_preimage, set_preimage_contains_eq
 
 /// The infimum of two sets.
@@ -346,6 +348,20 @@ theorem set_sup_inf_distrib_left[K](a: Set[K], b: Set[K], c: Set[K]) {
     union_intersection_distrib(a, b, c)
 }
 
+/// Image preserves binary set suprema.
+theorem set_image_sup[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    set_image(set_sup(a, b), f) = set_sup(set_image(a, f), set_image(b, f))
+} by {
+    set_image_union(a, b, f)
+}
+
+/// Image of a binary set infimum is contained in the infimum of the images.
+theorem set_image_inf_subset[T, U](a: Set[T], b: Set[T], f: T -> U) {
+    set_image(set_inf(a, b), f).subset(set_inf(set_image(a, f), set_image(b, f)))
+} by {
+    set_image_intersection_subset(a, b, f)
+}
+
 /// The supremum of an indexed family of sets.
 define set_sSup[K, I](family: I -> Set[K]) -> Set[K] {
     indexed_union(family)
@@ -369,6 +385,11 @@ define set_universal_family[K, I](i: I) -> Set[K] {
 /// The family formed by taking preimages of an indexed family.
 define set_preimage_family[T, U, I](f: T -> U, family: I -> Set[U], i: I) -> Set[T] {
     set_preimage(f, family(i))
+}
+
+/// The family formed by taking images of an indexed family.
+define set_image_family[T, U, I](family: I -> Set[T], f: T -> U, i: I) -> Set[U] {
+    set_image(family(i), f)
 }
 
 /// Membership in the supremum of a family is membership in some member.
@@ -609,6 +630,64 @@ theorem set_preimage_sInf[T, U, I](f: T -> U, family: I -> Set[U]) {
         u.contains(x) = v.contains(x)
     }
     set_ext(u, v)
+}
+
+/// Image commutes with indexed set suprema.
+theorem set_image_sSup[T, U, I](family: I -> Set[T], f: T -> U) {
+    set_image(set_sSup(family), f) = set_sSup(set_image_family(family, f))
+} by {
+    let u = set_image(set_sSup(family), f)
+    let v = set_sSup(set_image_family(family, f))
+    forall(y: U) {
+        if u.contains(y) {
+            set_image_contains_witness(set_sSup(family), f, y)
+            let x: T satisfy {
+                set_sSup(family).contains(x) and y = f(x)
+            }
+            set_sSup_contains_eq(family, x)
+            let i: I satisfy {
+                family(i).contains(x)
+            }
+            maps_into_set_image(family(i), f, x)
+            set_image(family(i), f).contains(f(x))
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_family(family, f, i).contains(y)
+            set_sSup_contains_eq(set_image_family(family, f), y)
+            v.contains(y)
+        }
+        if v.contains(y) {
+            set_sSup_contains_eq(set_image_family(family, f), y)
+            let i: I satisfy {
+                set_image_family(family, f, i).contains(y)
+            }
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_contains_witness(family(i), f, y)
+            let x: T satisfy {
+                family(i).contains(x) and y = f(x)
+            }
+            set_sSup_contains_eq(family, x)
+            set_sSup(family).contains(x)
+            maps_into_set_image(set_sSup(family), f, x)
+            u.contains(f(x))
+            u.contains(y)
+        }
+        u.contains(y) = v.contains(y)
+    }
+    set_ext(u, v)
+}
+
+/// Image of a family supremum is contained in a target exactly when every member maps into it.
+theorem set_image_sSup_subset_iff[T, U, I](family: I -> Set[T], s: Set[U], f: T -> U) {
+    set_image(set_sSup(family), f).subset(s) = forall(i: I) {
+        family(i).subset(set_preimage(f, s))
+    }
+} by {
+    set_image_subset_iff_subset_preimage(set_sSup(family), s, f)
+    set_image(set_sSup(family), f).subset(s) = set_sSup(family).subset(set_preimage(f, s))
+    set_sSup_subset_iff(family, set_preimage(f, s))
+    set_image(set_sSup(family), f).subset(s) = forall(i: I) {
+        family(i).subset(set_preimage(f, s))
+    }
 }
 
 /// A family supremum is the least upper bound of the family.
@@ -1210,6 +1289,67 @@ theorem set_preimage_list_sInf[T, U, I](f: T -> U, items: List[I], family: I -> 
     set_ext(u, v)
 }
 
+/// Image commutes with list-indexed set suprema.
+theorem set_image_list_sSup[T, U, I](items: List[I], family: I -> Set[T], f: T -> U) {
+    set_image(set_list_sSup(items, family), f) =
+    set_list_sSup(items, set_image_family(family, f))
+} by {
+    let u = set_image(set_list_sSup(items, family), f)
+    let v = set_list_sSup(items, set_image_family(family, f))
+    forall(y: U) {
+        if u.contains(y) {
+            set_image_contains_witness(set_list_sSup(items, family), f, y)
+            let x: T satisfy {
+                set_list_sSup(items, family).contains(x) and y = f(x)
+            }
+            set_list_sSup_contains_eq(items, family, x)
+            let i: I satisfy {
+                items.contains(i) and family(i).contains(x)
+            }
+            maps_into_set_image(family(i), f, x)
+            set_image(family(i), f).contains(f(x))
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_family(family, f, i).contains(y)
+            set_list_sSup_contains_eq(items, set_image_family(family, f), y)
+            v.contains(y)
+        }
+        if v.contains(y) {
+            set_list_sSup_contains_eq(items, set_image_family(family, f), y)
+            let i: I satisfy {
+                items.contains(i) and set_image_family(family, f, i).contains(y)
+            }
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_contains_witness(family(i), f, y)
+            let x: T satisfy {
+                family(i).contains(x) and y = f(x)
+            }
+            set_list_sSup_contains_eq(items, family, x)
+            set_list_sSup(items, family).contains(x)
+            maps_into_set_image(set_list_sSup(items, family), f, x)
+            u.contains(f(x))
+            u.contains(y)
+        }
+        u.contains(y) = v.contains(y)
+    }
+    set_ext(u, v)
+}
+
+/// Image of a list supremum is contained in a target exactly when every listed member maps into it.
+theorem set_image_list_sSup_subset_iff[T, U, I](items: List[I], family: I -> Set[T],
+    s: Set[U], f: T -> U) {
+    set_image(set_list_sSup(items, family), f).subset(s) = forall(i: I) {
+        items.contains(i) implies family(i).subset(set_preimage(f, s))
+    }
+} by {
+    set_image_subset_iff_subset_preimage(set_list_sSup(items, family), s, f)
+    set_image(set_list_sSup(items, family), f).subset(s) =
+        set_list_sSup(items, family).subset(set_preimage(f, s))
+    set_list_sSup_subset_iff(items, family, set_preimage(f, s))
+    set_image(set_list_sSup(items, family), f).subset(s) = forall(i: I) {
+        items.contains(i) implies family(i).subset(set_preimage(f, s))
+    }
+}
+
 /// A list supremum is the least upper bound of its listed family.
 theorem set_list_sSup_is_lub[K, I](items: List[I], family: I -> Set[K], s: Set[K]) {
     (forall(i: I) { items.contains(i) implies family(i).subset(set_list_sSup(items, family)) }) and
@@ -1540,6 +1680,67 @@ theorem set_preimage_range_sInf[T, U](f: T -> U, n: Nat, family: Nat -> Set[U]) 
         u.contains(x) = v.contains(x)
     }
     set_ext(u, v)
+}
+
+/// Image commutes with bounded natural-family set suprema.
+theorem set_image_range_sSup[T, U](n: Nat, family: Nat -> Set[T], f: T -> U) {
+    set_image(set_range_sSup(n, family), f) =
+    set_range_sSup(n, set_image_family(family, f))
+} by {
+    let u = set_image(set_range_sSup(n, family), f)
+    let v = set_range_sSup(n, set_image_family(family, f))
+    forall(y: U) {
+        if u.contains(y) {
+            set_image_contains_witness(set_range_sSup(n, family), f, y)
+            let x: T satisfy {
+                set_range_sSup(n, family).contains(x) and y = f(x)
+            }
+            set_range_sSup_contains_eq(n, family, x)
+            let i: Nat satisfy {
+                i < n and family(i).contains(x)
+            }
+            maps_into_set_image(family(i), f, x)
+            set_image(family(i), f).contains(f(x))
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_family(family, f, i).contains(y)
+            set_range_sSup_contains_eq(n, set_image_family(family, f), y)
+            v.contains(y)
+        }
+        if v.contains(y) {
+            set_range_sSup_contains_eq(n, set_image_family(family, f), y)
+            let i: Nat satisfy {
+                i < n and set_image_family(family, f, i).contains(y)
+            }
+            set_image_family(family, f, i) = set_image(family(i), f)
+            set_image_contains_witness(family(i), f, y)
+            let x: T satisfy {
+                family(i).contains(x) and y = f(x)
+            }
+            set_range_sSup_contains_eq(n, family, x)
+            set_range_sSup(n, family).contains(x)
+            maps_into_set_image(set_range_sSup(n, family), f, x)
+            u.contains(f(x))
+            u.contains(y)
+        }
+        u.contains(y) = v.contains(y)
+    }
+    set_ext(u, v)
+}
+
+/// Image of a bounded natural supremum is contained in a target exactly when every bounded member maps into it.
+theorem set_image_range_sSup_subset_iff[T, U](n: Nat, family: Nat -> Set[T],
+    s: Set[U], f: T -> U) {
+    set_image(set_range_sSup(n, family), f).subset(s) = forall(i: Nat) {
+        i < n implies family(i).subset(set_preimage(f, s))
+    }
+} by {
+    set_image_subset_iff_subset_preimage(set_range_sSup(n, family), s, f)
+    set_image(set_range_sSup(n, family), f).subset(s) =
+        set_range_sSup(n, family).subset(set_preimage(f, s))
+    set_range_sSup_subset_iff(n, family, set_preimage(f, s))
+    set_image(set_range_sSup(n, family), f).subset(s) = forall(i: Nat) {
+        i < n implies family(i).subset(set_preimage(f, s))
+    }
 }
 
 /// A range supremum is the least upper bound of the bounded family.
