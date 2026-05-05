@@ -276,7 +276,7 @@
 {"goal":"subgroup_closure_universal","proof":[]}
 {"goal":"exists(k0: Set[G]) { k0.is_finite and subgroup_closure[G](k0) = s }","proof":["function(x0: Set[G]) { not (x0.is_finite and subgroup_closure[G](x0) = s) }(a)"]}
 {"goal":"subgroup_is_finitely_generated[G](s)","proof":["let w0: Set[G] satisfy { w0.is_finite and subgroup_closure[G](w0) = s }","function[T0: Group](x0: Subgroup[T0]) { exists(k0: Set[T0]) { k0.is_finite and subgroup_closure[T0](k0) = x0 } = subgroup_is_finitely_generated[T0](x0) }[G](s)"]}
-{"goal":"subgroup_is_finitely_generated_of_closure_eq","proof":["subgroup_closure[G](a) != s or not a.is_finite","a.is_finite","subgroup_closure[G](a) = s","subgroup_closure[G](a) != s"]}
+{"goal":"subgroup_is_finitely_generated_of_closure_eq","proof":[]}
 {"goal":"subgroup_closure_is_finitely_generated","proof":[]}
 {"goal":"subgroup_closure_singleton_is_finitely_generated","proof":[]}
 {"goal":"subgroup_closure_singleton_contains","proof":[]}

@@ -332,15 +332,15 @@
 {"goal":"b.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, b)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](a.contains, b.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](a.contains, b.contains, x)"]}
 {"goal":"c.contains(x)","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](b, c)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool) { forall(x2: T0) { not x0(x2) or x1(x2) } = lib(relation_transport).predicate_subset[T0](x0, x1) }[R](b.contains, c.contains)","function[T0](x0: T0 -> Bool, x1: T0 -> Bool, x2: T0) { not lib(relation_transport).predicate_subset[T0](x0, x1) or not x0(x2) or x1(x2) }[R](b.contains, c.contains, x)"]}
 {"goal":"bundled_ideal_subset_trans","proof":["function[T0: CommRing](x0: Ideal[T0], x1: Ideal[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = bundled_ideal_subset[T0](x0, x1) }[R](a, c)"]}
-{"goal":"ideal_subset[R](a.contains, b.contains)","proof":["bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
-{"goal":"ideal_subset[R](b.contains, a.contains)","proof":["bundled_ideal_subset[R](b, a)","not bundled_ideal_subset[R](b, a)"]}
+{"goal":"ideal_subset[R](a.contains, b.contains)","proof":[]}
+{"goal":"ideal_subset[R](b.contains, a.contains)","proof":[]}
 {"goal":"a.contains = b.contains","proof":[]}
 {"goal":"a = b","proof":[]}
-{"goal":"bundled_ideal_subset_antisymm","proof":["not bundled_ideal_subset[R](b, a) or not bundled_ideal_subset[R](a, b)","bundled_ideal_subset[R](b, a)","bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
+{"goal":"bundled_ideal_subset_antisymm","proof":[]}
 {"goal":"bundled_ideal_subset[R](a, b)","proof":[]}
 {"goal":"bundled_ideal_subset[R](b, a)","proof":[]}
 {"goal":"bundled_ideal_subset[R](a, b) and bundled_ideal_subset[R](b, a)","proof":[]}
-{"goal":"a = b","proof":["not bundled_ideal_subset[R](b, a) or not bundled_ideal_subset[R](a, b)","bundled_ideal_subset[R](b, a)","bundled_ideal_subset[R](a, b)","not bundled_ideal_subset[R](a, b)"]}
+{"goal":"a = b","proof":[]}
 {"goal":"a = b = (bundled_ideal_subset[R](a, b) and bundled_ideal_subset[R](b, a))","proof":[]}
 {"goal":"bundled_ideal_eq_iff_subset_both","proof":[]}
 {"goal":"x = R.0","proof":[]}
