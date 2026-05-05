@@ -2,8 +2,7 @@
 
 Goal: make subgroup-like constructions uniform across the algebraic hierarchy.
 
-- [ ] Audit remaining bridge API aliases for subobjects after the underlying-set coercion pass
-- [ ] Support intersections, unions where valid, and lattices of subobjects
+- [ ] Finish subobject lattice work: bundled same-carrier submodule intersections, valid union/closure APIs, and eventual lattice structures after design choices settle
 - [ ] Add finite-generation predicates for ideals and modules after their bundled APIs settle
 - [ ] Refactor existing finite subgroup and finite set code toward the shared subobject conventions
 
@@ -26,3 +25,5 @@ Status:
 - Bundled subobjects now have underlying-set membership equivalences, subset-as-underlying-set equivalences, and set-subset-as-underlying-set equivalences across subsemigroups, submonoids, subgroups, additive submonoids, additive subgroups, subrings, and submodules; `src/submodule.ac` also has additional extensionality, intersection, carrier, and additive-closure helper lemmas.
 - Underlying-set coercion APIs now include reverse-orientation membership aliases, implication lemmas for bundled containment versus underlying set containment, and implication lemmas for set containment versus underlying set containment across subsemigroups, submonoids, subgroups, additive submonoids, additive subgroups, subrings, and submodules; full/empty membership boolean aliases were added where they were still missing.
 - Preimage APIs now include monotonicity, intersection preservation, and full-subobject preservation for submonoids, subgroups, additive submonoids, additive subgroups, and subrings; `src/add_submonoid.ac` also has the additive monoid homomorphism kernel API.
+- Bridge APIs now include adjacent forgetful views from submonoids to subsemigroups, subgroups to submonoids, and additive subgroups to additive submonoids, plus reverse membership and underlying-set aliases for those views and the existing subring/submodule additive and multiplicative views.
+- `src/submodule.ac` now has raw common-membership meet laws for submodule intersections: commutativity, associativity directions, idempotence, lower-bound characterization, and zero/full membership simplification aliases.

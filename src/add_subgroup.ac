@@ -1,5 +1,7 @@
 from add_comm_group import AddCommGroup
 from add_group import AddGroup, AddGroupHom, add_group_hom_zero, add_group_hom_add, add_group_hom_neg
+from add_submonoid import AddSubmonoid, add_submonoid_zero_constraint,
+    add_submonoid_closure_constraint, add_submonoid_constraint
 from functions import predicate_extensionality
 from set import Set
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
@@ -1183,6 +1185,54 @@ theorem add_subgroup_closure_is_finitely_generated[G: AddGroup](a: Set[G]) {
         }
         add_subgroup_is_finitely_generated(add_subgroup_closure(a))
     }
+}
+
+/// The additive submonoid predicate associated to an additive subgroup.
+theorem add_subgroup_add_submonoid_constraint[G: AddGroup](s: AddSubgroup[G]) {
+    add_submonoid_constraint(s.contains)
+} by {
+    add_subgroup_contains_zero(s)
+    add_submonoid_zero_constraint(s.contains)
+    forall(a: G, b: G) {
+        if s.contains(a) and s.contains(b) {
+            add_subgroup_contains_add(s, a, b)
+            s.contains(a + b)
+        }
+    }
+    add_submonoid_closure_constraint(s.contains)
+}
+
+/// The additive submonoid associated to an additive subgroup.
+let add_subgroup_to_add_submonoid[G: AddGroup](s: AddSubgroup[G]) -> result: AddSubmonoid[G] satisfy {
+    AddSubmonoid.new(s.contains) = Option.some(result)
+} by {
+    add_subgroup_add_submonoid_constraint(s)
+}
+
+/// The additive submonoid associated to an additive subgroup has the same membership predicate.
+theorem add_subgroup_to_add_submonoid_contains[G: AddGroup](s: AddSubgroup[G]) {
+    add_subgroup_to_add_submonoid(s).contains = s.contains
+}
+
+/// Membership in the additive submonoid associated to an additive subgroup is membership in the additive subgroup.
+theorem add_subgroup_to_add_submonoid_contains_eq[G: AddGroup](s: AddSubgroup[G], x: G) {
+    add_subgroup_to_add_submonoid(s).contains(x) = s.contains(x)
+} by {
+    add_subgroup_to_add_submonoid_contains(s)
+    add_subgroup_to_add_submonoid(s).contains(x) = s.contains(x)
+}
+
+/// Membership in an additive subgroup is membership in its associated additive submonoid.
+theorem add_subgroup_contains_to_add_submonoid_eq[G: AddGroup](s: AddSubgroup[G], x: G) {
+    s.contains(x) = add_subgroup_to_add_submonoid(s).contains(x)
+} by {
+    add_subgroup_to_add_submonoid_contains_eq(s, x)
+    s.contains(x) = add_subgroup_to_add_submonoid(s).contains(x)
+}
+
+/// The associated additive submonoid has the same underlying set as the additive subgroup.
+theorem add_subgroup_to_add_submonoid_as_set[G: AddGroup](s: AddSubgroup[G]) {
+    add_subgroup_to_add_submonoid(s).as_set = s.as_set
 }
 
 /// The equivalence relation on `G` defined by an additive subgroup: `a ~ b` iff `a - b` lies in the subgroup.
