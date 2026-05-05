@@ -3,6 +3,7 @@ from functions import Inhabited, inverse_fn, is_injective_fn, is_surjective_fn,
     is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective,
     injective_fn_eq, surjective_fn_has_preimage
 from nat import Nat
+from pair import Pair
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
     empty_set_contains_eq, universal_set_contains_eq,
     union_contains_eq, intersection_contains_eq, sets_subset_union, sets_subset_contain_union,
@@ -482,6 +483,46 @@ define set_reindex_family[K, I, J](family: I -> Set[K], h: J -> I, j: J) -> Set[
     family(h(j))
 }
 
+/// Membership in a binary set family at a point.
+define set_binary_family_contains[K, I, J](family: (I, J) -> Set[K], x: K, i: I, j: J) -> Bool {
+    family(i, j).contains(x)
+}
+
+/// A binary set family viewed as a family over pairs.
+define set_pair_family[K, I, J](family: (I, J) -> Set[K], p: Pair[I, J]) -> Set[K] {
+    family(p.first, p.second)
+}
+
+/// A binary set family with the left index fixed.
+define set_right_slice_family[K, I, J](family: (I, J) -> Set[K], i: I, j: J) -> Set[K] {
+    family(i, j)
+}
+
+/// A binary set family with the right index fixed.
+define set_left_slice_family[K, I, J](family: (I, J) -> Set[K], j: J, i: I) -> Set[K] {
+    family(i, j)
+}
+
+/// The family obtained by taking suprema over the right index.
+define set_sSup_right_family[K, I, J](family: (I, J) -> Set[K], i: I) -> Set[K] {
+    set_sSup(set_right_slice_family(family, i))
+}
+
+/// The family obtained by taking suprema over the left index.
+define set_sSup_left_family[K, I, J](family: (I, J) -> Set[K], j: J) -> Set[K] {
+    set_sSup(set_left_slice_family(family, j))
+}
+
+/// The family obtained by taking infima over the right index.
+define set_sInf_right_family[K, I, J](family: (I, J) -> Set[K], i: I) -> Set[K] {
+    set_sInf(set_right_slice_family(family, i))
+}
+
+/// The family obtained by taking infima over the left index.
+define set_sInf_left_family[K, I, J](family: (I, J) -> Set[K], j: J) -> Set[K] {
+    set_sInf(set_left_slice_family(family, j))
+}
+
 /// Membership in the supremum of a family is membership in some member.
 theorem set_sSup_contains_eq[K, I](family: I -> Set[K], x: K) {
     set_sSup(family).contains(x) = exists(i: I) {
@@ -498,6 +539,264 @@ theorem set_sInf_contains_eq[K, I](family: I -> Set[K], x: K) {
     }
 } by {
     indexed_intersection_contains_eq(family, x)
+}
+
+/// Membership in an indexed member gives membership in the supremum of a binary family.
+theorem set_sSup_pair_family_contains_of_contains[K, I, J](family: (I, J) -> Set[K], x: K) {
+    (exists(i: I) {
+        exists(j: J) {
+            family(i, j).contains(x)
+        }
+    }) implies set_sSup(set_pair_family(family)).contains(x)
+} by {
+    if exists(i: I) { exists(j: J) { family(i, j).contains(x) } } {
+        let i: I satisfy {
+            exists(j: J) {
+                family(i, j).contains(x)
+            }
+        }
+        let j: J satisfy {
+            family(i, j).contains(x)
+        }
+        set_pair_family(family, Pair.new(i, j)) = family(i, j)
+        set_pair_family(family, Pair.new(i, j)).contains(x)
+        set_sSup_contains_eq(set_pair_family(family), x)
+        set_sSup(set_pair_family(family)).contains(x)
+    }
+}
+
+/// Membership in the supremum of a binary family gives membership in an indexed member.
+theorem set_sSup_pair_family_exists_of_contains[K, I, J](family: (I, J) -> Set[K], x: K) {
+    set_sSup(set_pair_family(family)).contains(x) implies exists(i: I) {
+        exists(j: J) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    if set_sSup(set_pair_family(family)).contains(x) {
+        set_sSup_contains_eq(set_pair_family(family), x)
+        let p: Pair[I, J] satisfy {
+            set_pair_family(family, p).contains(x)
+        }
+        family(p.first, p.second).contains(x)
+        exists(i: I) {
+            i = p.first and exists(j: J) {
+                j = p.second and family(i, j).contains(x)
+            }
+        }
+    }
+}
+
+/// Membership in the supremum of a binary family is membership in some indexed member.
+theorem set_sSup_pair_family_contains_eq[K, I, J](family: (I, J) -> Set[K], x: K) {
+    set_sSup(set_pair_family(family)).contains(x) = exists(i: I) {
+        exists(j: J) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    set_sSup_pair_family_contains_of_contains(family, x)
+    set_sSup_pair_family_exists_of_contains(family, x)
+}
+
+/// Membership in the infimum of a binary family is membership in every indexed member.
+theorem set_sInf_pair_family_contains_eq[K, I, J](family: (I, J) -> Set[K], x: K) {
+    set_sInf(set_pair_family(family)).contains(x) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    if set_sInf(set_pair_family(family)).contains(x) {
+        set_sInf_contains_eq(set_pair_family(family), x)
+        forall(i: I) {
+            forall(j: J) {
+                set_pair_family(family, Pair.new(i, j)) = family(i, j)
+                set_pair_family(family, Pair.new(i, j)).contains(x)
+                family(i, j).contains(x)
+            }
+        }
+    }
+    if forall(i: I) {
+        forall(j: J) {
+            family(i, j).contains(x)
+        }
+    } {
+        forall(p: Pair[I, J]) {
+            family(p.first, p.second).contains(x)
+            set_pair_family(family, p).contains(x)
+        }
+        set_sInf_contains_eq(set_pair_family(family), x)
+        set_sInf(set_pair_family(family)).contains(x)
+    }
+}
+
+/// Flattening a binary family agrees with first taking right-index suprema.
+theorem set_sSup_pair_family_eq_sSup_right[K, I, J](family: (I, J) -> Set[K]) {
+    set_sSup(set_pair_family(family)) = set_sSup(set_sSup_right_family(family))
+} by {
+    let u = set_sSup(set_pair_family(family))
+    let v = set_sSup(set_sSup_right_family(family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sSup_pair_family_exists_of_contains(family, x)
+            let i: I satisfy {
+                exists(j: J) {
+                    family(i, j).contains(x)
+                }
+            }
+            let j: J satisfy {
+                family(i, j).contains(x)
+            }
+            set_sSup_contains_eq(set_right_slice_family(family, i), x)
+            set_sSup(set_right_slice_family(family, i)).contains(x)
+            set_sSup_right_family(family, i).contains(x)
+            set_sSup_contains_eq(set_sSup_right_family(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_sSup_right_family(family), x)
+            let i: I satisfy {
+                set_sSup_right_family(family, i).contains(x)
+            }
+            set_sSup_contains_eq(set_right_slice_family(family, i), x)
+            let j: J satisfy {
+                set_right_slice_family(family, i, j).contains(x)
+            }
+            family(i, j).contains(x)
+            set_sSup_pair_family_contains_of_contains(family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Flattening a binary family agrees with first taking left-index suprema.
+theorem set_sSup_pair_family_eq_sSup_left[K, I, J](family: (I, J) -> Set[K]) {
+    set_sSup(set_pair_family(family)) = set_sSup(set_sSup_left_family(family))
+} by {
+    let u = set_sSup(set_pair_family(family))
+    let v = set_sSup(set_sSup_left_family(family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sSup_pair_family_exists_of_contains(family, x)
+            let i: I satisfy {
+                exists(j: J) {
+                    family(i, j).contains(x)
+                }
+            }
+            let j: J satisfy {
+                family(i, j).contains(x)
+            }
+            set_sSup_contains_eq(set_left_slice_family(family, j), x)
+            set_sSup(set_left_slice_family(family, j)).contains(x)
+            set_sSup_left_family(family, j).contains(x)
+            set_sSup_contains_eq(set_sSup_left_family(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_sSup_left_family(family), x)
+            let j: J satisfy {
+                set_sSup_left_family(family, j).contains(x)
+            }
+            set_sSup_contains_eq(set_left_slice_family(family, j), x)
+            let i: I satisfy {
+                set_left_slice_family(family, j, i).contains(x)
+            }
+            family(i, j).contains(x)
+            set_sSup_pair_family_contains_of_contains(family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Flattening a binary family agrees with first taking right-index infima.
+theorem set_sInf_pair_family_eq_sInf_right[K, I, J](family: (I, J) -> Set[K]) {
+    set_sInf(set_pair_family(family)) = set_sInf(set_sInf_right_family(family))
+} by {
+    let u = set_sInf(set_pair_family(family))
+    let v = set_sInf(set_sInf_right_family(family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sInf_pair_family_contains_eq(family, x)
+            forall(i: I) {
+                set_sInf_contains_eq(set_right_slice_family(family, i), x)
+                set_sInf(set_right_slice_family(family, i)).contains(x)
+                set_sInf_right_family(family, i).contains(x)
+            }
+            set_sInf_contains_eq(set_sInf_right_family(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_sInf_right_family(family), x)
+            forall(i: I) {
+                set_sInf_right_family(family, i).contains(x)
+                set_sInf_contains_eq(set_right_slice_family(family, i), x)
+                forall(j: J) {
+                    set_right_slice_family(family, i, j).contains(x)
+                    family(i, j).contains(x)
+                }
+            }
+            set_sInf_pair_family_contains_eq(family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Flattening a binary family agrees with first taking left-index infima.
+theorem set_sInf_pair_family_eq_sInf_left[K, I, J](family: (I, J) -> Set[K]) {
+    set_sInf(set_pair_family(family)) = set_sInf(set_sInf_left_family(family))
+} by {
+    let u = set_sInf(set_pair_family(family))
+    let v = set_sInf(set_sInf_left_family(family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sInf_pair_family_contains_eq(family, x)
+            forall(j: J) {
+                set_sInf_contains_eq(set_left_slice_family(family, j), x)
+                set_sInf(set_left_slice_family(family, j)).contains(x)
+                set_sInf_left_family(family, j).contains(x)
+            }
+            set_sInf_contains_eq(set_sInf_left_family(family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_sInf_left_family(family), x)
+            forall(j: J) {
+                set_sInf_left_family(family, j).contains(x)
+                set_sInf_contains_eq(set_left_slice_family(family, j), x)
+                forall(i: I) {
+                    set_left_slice_family(family, j, i).contains(x)
+                    family(i, j).contains(x)
+                }
+            }
+            set_sInf_pair_family_contains_eq(family, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The order of taking two suprema over a binary family does not matter.
+theorem set_sSup_right_family_eq_sSup_left_family[K, I, J](family: (I, J) -> Set[K]) {
+    set_sSup(set_sSup_right_family(family)) = set_sSup(set_sSup_left_family(family))
+} by {
+    set_sSup_pair_family_eq_sSup_right(family)
+    set_sSup_pair_family_eq_sSup_left(family)
+}
+
+/// The order of taking two infima over a binary family does not matter.
+theorem set_sInf_right_family_eq_sInf_left_family[K, I, J](family: (I, J) -> Set[K]) {
+    set_sInf(set_sInf_right_family(family)) = set_sInf(set_sInf_left_family(family))
+} by {
+    set_sInf_pair_family_eq_sInf_right(family)
+    set_sInf_pair_family_eq_sInf_left(family)
 }
 
 /// Every member of a family is contained in the supremum of that family.
@@ -586,6 +885,154 @@ theorem set_subset_sInf_iff[K, I](s: Set[K], family: I -> Set[K]) {
     }
     s.subset(set_sInf(family)) = forall(i: I) {
         s.subset(family(i))
+    }
+}
+
+/// A right-nested binary supremum is contained in a set exactly when every member is contained in it.
+theorem set_sSup_right_family_subset_iff[K, I, J](family: (I, J) -> Set[K], s: Set[K]) {
+    set_sSup(set_sSup_right_family(family)).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    }
+} by {
+    if set_sSup(set_sSup_right_family(family)).subset(s) {
+        set_sSup_subset_iff(set_sSup_right_family(family), s)
+        forall(i: I) {
+            set_sSup_right_family(family, i).subset(s)
+            set_sSup_subset_iff(set_right_slice_family(family, i), s)
+            forall(j: J) {
+                set_right_slice_family(family, i, j).subset(s)
+                family(i, j).subset(s)
+            }
+        }
+    }
+    if forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    } {
+        forall(i: I) {
+            forall(j: J) {
+                family(i, j).subset(s)
+                set_right_slice_family(family, i, j).subset(s)
+            }
+            set_sSup_subset_iff(set_right_slice_family(family, i), s)
+            set_sSup_right_family(family, i).subset(s)
+        }
+        set_sSup_subset_iff(set_sSup_right_family(family), s)
+        set_sSup(set_sSup_right_family(family)).subset(s)
+    }
+}
+
+/// A left-nested binary supremum is contained in a set exactly when every member is contained in it.
+theorem set_sSup_left_family_subset_iff[K, I, J](family: (I, J) -> Set[K], s: Set[K]) {
+    set_sSup(set_sSup_left_family(family)).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    }
+} by {
+    if set_sSup(set_sSup_left_family(family)).subset(s) {
+        set_sSup_subset_iff(set_sSup_left_family(family), s)
+        forall(i: I) {
+            forall(j: J) {
+                set_sSup_left_family(family, j).subset(s)
+                set_sSup_subset_iff(set_left_slice_family(family, j), s)
+                set_left_slice_family(family, j, i).subset(s)
+                family(i, j).subset(s)
+            }
+        }
+    }
+    if forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(s)
+        }
+    } {
+        forall(j: J) {
+            forall(i: I) {
+                family(i, j).subset(s)
+                set_left_slice_family(family, j, i).subset(s)
+            }
+            set_sSup_subset_iff(set_left_slice_family(family, j), s)
+            set_sSup_left_family(family, j).subset(s)
+        }
+        set_sSup_subset_iff(set_sSup_left_family(family), s)
+        set_sSup(set_sSup_left_family(family)).subset(s)
+    }
+}
+
+/// A set is contained in a right-nested binary infimum exactly when it is contained in every member.
+theorem set_subset_sInf_right_family_iff[K, I, J](s: Set[K], family: (I, J) -> Set[K]) {
+    s.subset(set_sInf(set_sInf_right_family(family))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    }
+} by {
+    if s.subset(set_sInf(set_sInf_right_family(family))) {
+        set_subset_sInf_iff(s, set_sInf_right_family(family))
+        forall(i: I) {
+            s.subset(set_sInf_right_family(family, i))
+            set_subset_sInf_iff(s, set_right_slice_family(family, i))
+            forall(j: J) {
+                s.subset(set_right_slice_family(family, i, j))
+                s.subset(family(i, j))
+            }
+        }
+    }
+    if forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    } {
+        forall(i: I) {
+            forall(j: J) {
+                s.subset(family(i, j))
+                s.subset(set_right_slice_family(family, i, j))
+            }
+            set_subset_sInf_iff(s, set_right_slice_family(family, i))
+            s.subset(set_sInf_right_family(family, i))
+        }
+        set_subset_sInf_iff(s, set_sInf_right_family(family))
+        s.subset(set_sInf(set_sInf_right_family(family)))
+    }
+}
+
+/// A set is contained in a left-nested binary infimum exactly when it is contained in every member.
+theorem set_subset_sInf_left_family_iff[K, I, J](s: Set[K], family: (I, J) -> Set[K]) {
+    s.subset(set_sInf(set_sInf_left_family(family))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    }
+} by {
+    if s.subset(set_sInf(set_sInf_left_family(family))) {
+        set_subset_sInf_iff(s, set_sInf_left_family(family))
+        forall(i: I) {
+            forall(j: J) {
+                s.subset(set_sInf_left_family(family, j))
+                set_subset_sInf_iff(s, set_left_slice_family(family, j))
+                s.subset(set_left_slice_family(family, j, i))
+                s.subset(family(i, j))
+            }
+        }
+    }
+    if forall(i: I) {
+        forall(j: J) {
+            s.subset(family(i, j))
+        }
+    } {
+        forall(j: J) {
+            forall(i: I) {
+                s.subset(family(i, j))
+                s.subset(set_left_slice_family(family, j, i))
+            }
+            set_subset_sInf_iff(s, set_left_slice_family(family, j))
+            s.subset(set_sInf_left_family(family, j))
+        }
+        set_subset_sInf_iff(s, set_sInf_left_family(family))
+        s.subset(set_sInf(set_sInf_left_family(family)))
     }
 }
 
