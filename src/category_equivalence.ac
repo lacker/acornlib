@@ -5,7 +5,8 @@ from functor import Functor, identity_functor, compose_functor,
     identity_functor_src_cat, identity_functor_dst_cat,
     identity_functor_obj_map, identity_functor_mor_map,
     compose_functor_src_cat, compose_functor_dst_cat,
-    compose_functor_obj_map, compose_functor_mor_map
+    compose_functor_obj_map, compose_functor_mor_map,
+    functor_ext
 from natural_transformation import NaturalTransformation, identity_nat_trans
 from natural_isomorphism import is_natural_isomorphism_pair
 from functions import compose, identity_fn, compose_identity_left
@@ -271,5 +272,36 @@ theorem identity_functor_self_compose_mor_map[O, M](c: Category[O, M], h: Functo
         compose_identity_left(identity_fn[M])
         compose(identity_fn[M], identity_fn[M]) = identity_fn[M]
         h.mor_map = identity_fn[M]
+    }
+}
+
+/// The composition of `identity_functor(c)` with itself is the identity functor.
+theorem identity_functor_self_compose_eq_identity[O, M](c: Category[O, M], h: Functor[O, M, O, M]) {
+    compose_functor(identity_functor(c), identity_functor(c)) = Option.some(h)
+    implies h = identity_functor(c)
+} by {
+    if compose_functor(identity_functor(c), identity_functor(c)) = Option.some(h) {
+        identity_functor_self_compose_src_cat(c, h)
+        h.src_cat = c
+        identity_functor_src_cat(c)
+        h.src_cat = identity_functor(c).src_cat
+
+        identity_functor_self_compose_dst_cat(c, h)
+        h.dst_cat = c
+        identity_functor_dst_cat(c)
+        h.dst_cat = identity_functor(c).dst_cat
+
+        identity_functor_self_compose_obj_map(c, h)
+        h.obj_map = identity_fn[O]
+        identity_functor_obj_map(c)
+        h.obj_map = identity_functor(c).obj_map
+
+        identity_functor_self_compose_mor_map(c, h)
+        h.mor_map = identity_fn[M]
+        identity_functor_mor_map(c)
+        h.mor_map = identity_functor(c).mor_map
+
+        functor_ext(h, identity_functor(c))
+        h = identity_functor(c)
     }
 }

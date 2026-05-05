@@ -42,3 +42,13 @@
 {"goal":"compose[M, M, M](identity_fn[M], identity_fn[M]) = identity_fn[M]","proof":[]}
 {"goal":"h.mor_map = identity_fn[M]","proof":[]}
 {"goal":"identity_functor_self_compose_mor_map","proof":[]}
+{"goal":"h.src_cat = c","proof":["compose_functor[O, M, O, M, O, M](identity_functor[O, M](c), identity_functor[O, M](c)) != Option.some(h)"]}
+{"goal":"h.src_cat = identity_functor[O, M](c).src_cat","proof":["identity_functor[O, M](c).src_cat != c"]}
+{"goal":"h.dst_cat = c","proof":["compose_functor[O, M, O, M, O, M](identity_functor[O, M](c), identity_functor[O, M](c)) != Option.some(h)"]}
+{"goal":"h.dst_cat = identity_functor[O, M](c).dst_cat","proof":["identity_functor[O, M](c).dst_cat != c"]}
+{"goal":"h.obj_map = identity_fn[O]","proof":[]}
+{"goal":"h.obj_map = identity_functor[O, M](c).obj_map","proof":["h.obj_map = identity_fn[O]","identity_functor[O, M](c).obj_map = identity_fn[O]","identity_functor[O, M](c).obj_map != identity_fn[O]"]}
+{"goal":"h.mor_map = identity_fn[M]","proof":[]}
+{"goal":"h.mor_map = identity_functor[O, M](c).mor_map","proof":["h.mor_map = identity_fn[M]","identity_functor[O, M](c).mor_map = identity_fn[M]","identity_functor[O, M](c).mor_map != identity_fn[M]"]}
+{"goal":"h = identity_functor[O, M](c)","proof":["identity_functor[O, M](c).mor_map != h.mor_map or identity_functor[O, M](c).obj_map != h.obj_map or identity_functor[O, M](c).src_cat != h.src_cat","identity_functor[O, M](c).mor_map != h.mor_map or identity_functor[O, M](c).obj_map != h.obj_map","identity_functor[O, M](c).obj_map = h.obj_map","identity_functor[O, M](c).mor_map = h.mor_map","identity_functor[O, M](c).mor_map != h.mor_map"]}
+{"goal":"identity_functor_self_compose_eq_identity","proof":["compose_functor[O, M, O, M, O, M](identity_functor[O, M](c), identity_functor[O, M](c)) != Option.some(h)"]}

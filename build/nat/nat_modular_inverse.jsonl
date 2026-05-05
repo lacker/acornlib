@@ -103,8 +103,8 @@
 {"goal":"inverse_imp_product_coprime","proof":[]}
 {"goal":"n.coprime(a * b)","proof":[]}
 {"goal":"n.coprime(b)","proof":[]}
-{"goal":"product_coprime_imp_right","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.coprime(x1 * x2) or x0.coprime(x2) }(n, a, b)","function(x0: Nat, x1: Nat) { not x0.coprime(x1) or x1.coprime(x0) }(a * b, n)","not (a * b).coprime(n) or not n.coprime(b)","not n.coprime(b)","function(x0: Nat) { not n.coprime(x0 * b) }(a)"]}
+{"goal":"product_coprime_imp_right","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not x0.coprime(x1 * x2) or x0.coprime(x2) }(n, a, b)","function(x0: Nat, x1: Nat) { not x0.coprime(x1) or x1.coprime(x0) }(a * b, n)"]}
 {"goal":"(a * b).coprime(n)","proof":[]}
-{"goal":"inverse_imp_coprime","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not (x0 * x1).congr_mod(Nat.1, x2) or (x0 * x1).coprime(x2) }(a, b, n)","not (a * b).congr_mod(Nat.1, n) or not (a * b).coprime(n)","not (a * b).coprime(n)"]}
+{"goal":"inverse_imp_coprime","proof":["function(x0: Nat, x1: Nat, x2: Nat) { not (x0 * x1).congr_mod(Nat.1, x2) or (x0 * x1).coprime(x2) }(a, b, n)"]}
 {"goal":"(a * mod_inv(a, n)).congr_mod(Nat.1, n)","proof":[]}
 {"goal":"mod_inv_coprime","proof":["function(x0: Nat, x1: Nat) { not x0.coprime(x1) or (x0 * mod_inv(x0, x1)).congr_mod(Nat.1, x1) }(a, n)"]}

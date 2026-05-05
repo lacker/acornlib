@@ -10,6 +10,8 @@ Goal: provide the categorical abstractions that Mathlib uses to organize large m
 - [ ] Add `swap` and `is_iso_pair` propagation theorems for natural-isomorphism pairs (deferred: per-x swap proof times out; symmetry of `is_iso_pair` chains through `nat_trans_dst_cat_eq` resists factoring)
 - [ ] Add vertical composition of natural transformations (deferred: prover times out on `d.dst(d.compose(b, a)) = beta.dst_functor.obj_map(x)` chain; the symmetric `src` case verifies, but `dst` resists every factoring tried so far - needs further lemma decomposition)
 
+Status: `src/functor.ac` now has `functor_ext`, and `src/category_equivalence.ac` proves that the self-composition witness for `identity_functor(c)` is definitionally the identity functor.
+
 ## Universal Constructions
 
 - [ ] Implement limits and colimits

@@ -73,6 +73,15 @@ structure Functor[O1, M1, O2, M2] {
     is_functor(src_cat, dst_cat, obj_map, mor_map)
 }
 
+/// Functor extensionality from equality of categories and maps.
+theorem functor_ext[O1, M1, O2, M2](
+    f: Functor[O1, M1, O2, M2],
+    g: Functor[O1, M1, O2, M2]
+) {
+    f.src_cat = g.src_cat and f.dst_cat = g.dst_cat and
+    f.obj_map = g.obj_map and f.mor_map = g.mor_map implies f = g
+}
+
 /// Construction of a functor remembers its source category.
 theorem functor_new_src_cat[O1, M1, O2, M2](
     c: Category[O1, M1], d: Category[O2, M2],
