@@ -1256,6 +1256,68 @@ theorem subgroup_contains_map_of_preimage_contains[G: Group, H: Group](
     }
 }
 
+/// Inverse images are monotone with respect to subgroup containment.
+theorem subgroup_preimage_subset_of_subset[G: Group, H: Group](
+    f: GroupHom[G, H],
+    s: Subgroup[H],
+    t: Subgroup[H]
+) {
+    subgroup_subset(s, t) implies subgroup_subset(subgroup_preimage(f, s), subgroup_preimage(f, t))
+} by {
+    if subgroup_subset(s, t) {
+        forall(a: G) {
+            if subgroup_preimage(f, s).contains(a) {
+                subgroup_preimage_contains_eq(f, s, a)
+                s.contains(f.hom(a))
+                subgroup_subset(s, t) = forall(x: H) {
+                    s.contains(x) implies t.contains(x)
+                }
+                t.contains(f.hom(a))
+                subgroup_preimage_contains_eq(f, t, a)
+                subgroup_preimage(f, t).contains(a)
+            }
+        }
+    }
+}
+
+/// The inverse image of an intersection is the intersection of the inverse images.
+theorem subgroup_preimage_intersection[G: Group, H: Group](
+    f: GroupHom[G, H],
+    s: Subgroup[H],
+    t: Subgroup[H]
+) {
+    subgroup_preimage(f, s.intersection(t)) =
+        subgroup_preimage(f, s).intersection(subgroup_preimage(f, t))
+} by {
+    forall(a: G) {
+        subgroup_preimage_contains_eq(f, s.intersection(t), a)
+        subgroup_preimage_contains_eq(f, s, a)
+        subgroup_preimage_contains_eq(f, t, a)
+        subgroup_intersection_contains_eq(s, t, f.hom(a))
+        subgroup_intersection_contains_eq(subgroup_preimage(f, s), subgroup_preimage(f, t), a)
+        subgroup_preimage(f, s.intersection(t)).contains(a) =
+            subgroup_preimage(f, s).intersection(subgroup_preimage(f, t)).contains(a)
+    }
+    subgroup_ext(subgroup_preimage(f, s.intersection(t)),
+        subgroup_preimage(f, s).intersection(subgroup_preimage(f, t)))
+}
+
+/// The inverse image of the full subgroup is the full subgroup.
+theorem subgroup_preimage_full[G: Group, H: Group](f: GroupHom[G, H]) {
+    subgroup_preimage(f, full_subgroup[H]) = full_subgroup[G]
+} by {
+    subgroup_subset_full(subgroup_preimage(f, full_subgroup[H]))
+    forall(a: G) {
+        if full_subgroup[G].contains(a) {
+            full_subgroup_contains_everything(f.hom(a))
+            subgroup_preimage_contains_eq(f, full_subgroup[H], a)
+            subgroup_preimage(f, full_subgroup[H]).contains(a)
+        }
+    }
+    subgroup_subset(full_subgroup[G], subgroup_preimage(f, full_subgroup[H]))
+    subgroup_subset_antisymm(subgroup_preimage(f, full_subgroup[H]), full_subgroup[G])
+}
+
 /// The kernel of a group homomorphism as a subgroup.
 define group_hom_kernel[G: Group, H: Group](f: GroupHom[G, H]) -> Subgroup[G] {
     subgroup_preimage(f, identity_subgroup[H])

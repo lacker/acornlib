@@ -1759,6 +1759,69 @@ theorem add_subgroup_contains_map_of_preimage_contains[A: AddGroup, B: AddGroup]
     }
 }
 
+/// Inverse images are monotone with respect to additive subgroup containment.
+theorem add_subgroup_preimage_subset_of_subset[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    t: AddSubgroup[B]
+) {
+    add_subgroup_subset(s, t) implies
+        add_subgroup_subset(add_subgroup_preimage(f, s), add_subgroup_preimage(f, t))
+} by {
+    if add_subgroup_subset(s, t) {
+        forall(a: A) {
+            if add_subgroup_preimage(f, s).contains(a) {
+                add_subgroup_preimage_contains_eq(f, s, a)
+                s.contains(f.hom(a))
+                add_subgroup_subset(s, t) = forall(x: B) {
+                    s.contains(x) implies t.contains(x)
+                }
+                t.contains(f.hom(a))
+                add_subgroup_preimage_contains_eq(f, t, a)
+                add_subgroup_preimage(f, t).contains(a)
+            }
+        }
+    }
+}
+
+/// The inverse image of an intersection is the intersection of the inverse images.
+theorem add_subgroup_preimage_intersection[A: AddGroup, B: AddGroup](
+    f: AddGroupHom[A, B],
+    s: AddSubgroup[B],
+    t: AddSubgroup[B]
+) {
+    add_subgroup_preimage(f, s.intersection(t)) =
+        add_subgroup_preimage(f, s).intersection(add_subgroup_preimage(f, t))
+} by {
+    forall(a: A) {
+        add_subgroup_preimage_contains_eq(f, s.intersection(t), a)
+        add_subgroup_preimage_contains_eq(f, s, a)
+        add_subgroup_preimage_contains_eq(f, t, a)
+        add_subgroup_intersection_contains_eq(s, t, f.hom(a))
+        add_subgroup_intersection_contains_eq(add_subgroup_preimage(f, s), add_subgroup_preimage(f, t), a)
+        add_subgroup_preimage(f, s.intersection(t)).contains(a) =
+            add_subgroup_preimage(f, s).intersection(add_subgroup_preimage(f, t)).contains(a)
+    }
+    add_subgroup_ext(add_subgroup_preimage(f, s.intersection(t)),
+        add_subgroup_preimage(f, s).intersection(add_subgroup_preimage(f, t)))
+}
+
+/// The inverse image of the full additive subgroup is the full additive subgroup.
+theorem add_subgroup_preimage_full[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) {
+    add_subgroup_preimage(f, full_add_subgroup[B]) = full_add_subgroup[A]
+} by {
+    add_subgroup_subset_full(add_subgroup_preimage(f, full_add_subgroup[B]))
+    forall(a: A) {
+        if full_add_subgroup[A].contains(a) {
+            full_add_subgroup_contains_everything(f.hom(a))
+            add_subgroup_preimage_contains_eq(f, full_add_subgroup[B], a)
+            add_subgroup_preimage(f, full_add_subgroup[B]).contains(a)
+        }
+    }
+    add_subgroup_subset(full_add_subgroup[A], add_subgroup_preimage(f, full_add_subgroup[B]))
+    add_subgroup_subset_antisymm(add_subgroup_preimage(f, full_add_subgroup[B]), full_add_subgroup[A])
+}
+
 /// The kernel of an additive group homomorphism as an additive subgroup.
 define add_group_hom_kernel[A: AddGroup, B: AddGroup](f: AddGroupHom[A, B]) -> AddSubgroup[A] {
     add_subgroup_preimage(f, zero_add_subgroup[B])

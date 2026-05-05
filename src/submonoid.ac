@@ -1124,6 +1124,68 @@ theorem submonoid_contains_map_of_preimage_contains[M: Monoid, N: Monoid](
     }
 }
 
+/// Inverse images are monotone with respect to submonoid containment.
+theorem submonoid_preimage_subset_of_subset[M: Monoid, N: Monoid](
+    f: MonoidHom[M, N],
+    s: Submonoid[N],
+    t: Submonoid[N]
+) {
+    submonoid_subset(s, t) implies submonoid_subset(submonoid_preimage(f, s), submonoid_preimage(f, t))
+} by {
+    if submonoid_subset(s, t) {
+        forall(a: M) {
+            if submonoid_preimage(f, s).contains(a) {
+                submonoid_preimage_contains_eq(f, s, a)
+                s.contains(f.hom(a))
+                submonoid_subset(s, t) = forall(x: N) {
+                    s.contains(x) implies t.contains(x)
+                }
+                t.contains(f.hom(a))
+                submonoid_preimage_contains_eq(f, t, a)
+                submonoid_preimage(f, t).contains(a)
+            }
+        }
+    }
+}
+
+/// The inverse image of an intersection is the intersection of the inverse images.
+theorem submonoid_preimage_intersection[M: Monoid, N: Monoid](
+    f: MonoidHom[M, N],
+    s: Submonoid[N],
+    t: Submonoid[N]
+) {
+    submonoid_preimage(f, s.intersection(t)) =
+        submonoid_preimage(f, s).intersection(submonoid_preimage(f, t))
+} by {
+    forall(a: M) {
+        submonoid_preimage_contains_eq(f, s.intersection(t), a)
+        submonoid_preimage_contains_eq(f, s, a)
+        submonoid_preimage_contains_eq(f, t, a)
+        submonoid_intersection_contains_eq(s, t, f.hom(a))
+        submonoid_intersection_contains_eq(submonoid_preimage(f, s), submonoid_preimage(f, t), a)
+        submonoid_preimage(f, s.intersection(t)).contains(a) =
+            submonoid_preimage(f, s).intersection(submonoid_preimage(f, t)).contains(a)
+    }
+    submonoid_ext(submonoid_preimage(f, s.intersection(t)),
+        submonoid_preimage(f, s).intersection(submonoid_preimage(f, t)))
+}
+
+/// The inverse image of the full submonoid is the full submonoid.
+theorem submonoid_preimage_full[M: Monoid, N: Monoid](f: MonoidHom[M, N]) {
+    submonoid_preimage(f, full_submonoid[N]) = full_submonoid[M]
+} by {
+    submonoid_subset_full(submonoid_preimage(f, full_submonoid[N]))
+    forall(a: M) {
+        if full_submonoid[M].contains(a) {
+            full_submonoid_contains_everything(f.hom(a))
+            submonoid_preimage_contains_eq(f, full_submonoid[N], a)
+            submonoid_preimage(f, full_submonoid[N]).contains(a)
+        }
+    }
+    submonoid_subset(full_submonoid[M], submonoid_preimage(f, full_submonoid[N]))
+    submonoid_subset_antisymm(submonoid_preimage(f, full_submonoid[N]), full_submonoid[M])
+}
+
 /// The kernel of a monoid homomorphism as a submonoid.
 define monoid_hom_kernel[M: Monoid, N: Monoid](f: MonoidHom[M, N]) -> Submonoid[M] {
     submonoid_preimage(f, identity_submonoid[N])
