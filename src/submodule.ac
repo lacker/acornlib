@@ -9,6 +9,7 @@ from add_submonoid import AddSubmonoid, add_submonoid_zero_constraint,
 from module import Module, module_smul_zero_right
 from module_hom import is_linear_map, preserves_add, preserves_smul
 from set import Set, singleton_contains_eq, singleton_set_is_finite, empty_set_is_finite,
+    union_contains_eq, union_contains_left, union_contains_right,
     is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
     is_set_closure_operator
 from functions import predicate_extensionality, is_injective_fn
@@ -1856,6 +1857,265 @@ theorem submodule_closure_universal[R: Ring, M: AddCommGroup](carrier: Module[R,
     submodule_closure_carrier_eq(carrier, Set[M].universal_set)
     full_submodule_carrier_eq(carrier)
     submodule_subset_antisymm(submodule_closure(carrier, Set[M].universal_set), full_submodule(carrier))
+}
+
+/// The least submodule containing two submodules of the same ambient module.
+define submodule_sup[R: Ring, M: AddCommGroup](a: Submodule[R, M], b: Submodule[R, M]) -> Submodule[R, M] {
+    submodule_closure(a.carrier, a.as_set.union(b.as_set))
+}
+
+/// The join of two submodules is the closure of the union of their underlying sets.
+theorem submodule_sup_eq_closure_union[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    submodule_sup(a, b) = submodule_closure(a.carrier, a.as_set.union(b.as_set))
+}
+
+/// The left submodule is contained in the join.
+theorem submodule_subset_sup_left[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    submodule_subset(a, submodule_sup(a, b))
+} by {
+    forall(x: M) {
+        if a.contains(x) {
+            submodule_as_set_contains_eq(a, x)
+            a.as_set.contains(x)
+            union_contains_left(a.as_set, b.as_set, x)
+            a.as_set.union(b.as_set).contains(x)
+            submodule_closure_contains_of_set_contains(a.carrier, a.as_set.union(b.as_set), x)
+            submodule_closure(a.carrier, a.as_set.union(b.as_set)).contains(x)
+            submodule_sup(a, b).contains(x)
+        }
+    }
+}
+
+/// The right submodule is contained in the join.
+theorem submodule_subset_sup_right[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    submodule_subset(b, submodule_sup(a, b))
+} by {
+    forall(x: M) {
+        if b.contains(x) {
+            submodule_as_set_contains_eq(b, x)
+            b.as_set.contains(x)
+            union_contains_right(a.as_set, b.as_set, x)
+            a.as_set.union(b.as_set).contains(x)
+            submodule_closure_contains_of_set_contains(a.carrier, a.as_set.union(b.as_set), x)
+            submodule_closure(a.carrier, a.as_set.union(b.as_set)).contains(x)
+            submodule_sup(a, b).contains(x)
+        }
+    }
+}
+
+/// The join is contained in every common upper bound with the same ambient module.
+theorem submodule_sup_subset_of_subset_left_right[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M],
+    b: Submodule[R, M],
+    c: Submodule[R, M]
+) {
+    c.carrier = a.carrier and submodule_subset(a, c) and submodule_subset(b, c) implies
+        submodule_subset(submodule_sup(a, b), c)
+} by {
+    if c.carrier = a.carrier and submodule_subset(a, c) and submodule_subset(b, c) {
+        forall(x: M) {
+            if a.as_set.union(b.as_set).contains(x) {
+                union_contains_eq(a.as_set, b.as_set, x)
+                if a.as_set.contains(x) {
+                    submodule_as_set_contains_eq(a, x)
+                    a.contains(x)
+                    c.contains(x)
+                } else {
+                    b.as_set.contains(x)
+                    submodule_as_set_contains_eq(b, x)
+                    b.contains(x)
+                    c.contains(x)
+                }
+            }
+        }
+        set_subset_submodule(a.as_set.union(b.as_set), c) = forall(y: M) {
+            a.as_set.union(b.as_set).contains(y) implies c.contains(y)
+        }
+        set_subset_submodule(a.as_set.union(b.as_set), c)
+        submodule_closure_subset_of_set_subset(a.carrier, a.as_set.union(b.as_set), c)
+        submodule_subset(submodule_closure(a.carrier, a.as_set.union(b.as_set)), c)
+        submodule_subset(submodule_sup(a, b), c)
+    }
+}
+
+/// Containment of a join is equivalent to containment of both submodules.
+theorem submodule_sup_subset_iff[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M],
+    b: Submodule[R, M],
+    c: Submodule[R, M]
+) {
+    c.carrier = a.carrier implies
+        (submodule_subset(submodule_sup(a, b), c) =
+            (submodule_subset(a, c) and submodule_subset(b, c)))
+} by {
+    if c.carrier = a.carrier {
+        if submodule_subset(submodule_sup(a, b), c) {
+            submodule_subset_sup_left(a, b)
+            submodule_subset_trans(a, submodule_sup(a, b), c)
+            submodule_subset(a, c)
+            submodule_subset_sup_right(a, b)
+            submodule_subset_trans(b, submodule_sup(a, b), c)
+            submodule_subset(b, c)
+            submodule_subset(a, c) and submodule_subset(b, c)
+        }
+        if submodule_subset(a, c) and submodule_subset(b, c) {
+            submodule_sup_subset_of_subset_left_right(a, b, c)
+            submodule_subset(submodule_sup(a, b), c)
+        }
+        submodule_subset(submodule_sup(a, b), c) =
+            (submodule_subset(a, c) and submodule_subset(b, c))
+    }
+}
+
+/// The join has the same ambient module as the left submodule.
+theorem submodule_sup_carrier_eq[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    submodule_sup(a, b).carrier = a.carrier
+} by {
+    submodule_closure_carrier_eq(a.carrier, a.as_set.union(b.as_set))
+    submodule_sup(a, b).carrier = a.carrier
+}
+
+/// Submodule join is commutative for same-carrier submodules.
+theorem submodule_sup_comm[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier implies submodule_sup(a, b) = submodule_sup(b, a)
+} by {
+    if a.carrier = b.carrier {
+        submodule_sup_carrier_eq(a, b)
+        submodule_sup_carrier_eq(b, a)
+        submodule_sup(a, b).carrier = submodule_sup(b, a).carrier
+
+        submodule_subset_sup_right(b, a)
+        submodule_subset(a, submodule_sup(b, a))
+        submodule_subset_sup_left(b, a)
+        submodule_subset(b, submodule_sup(b, a))
+        submodule_sup_subset_of_subset_left_right(a, b, submodule_sup(b, a))
+        submodule_subset(submodule_sup(a, b), submodule_sup(b, a))
+
+        submodule_subset_sup_right(a, b)
+        submodule_subset(b, submodule_sup(a, b))
+        submodule_subset_sup_left(a, b)
+        submodule_subset(a, submodule_sup(a, b))
+        submodule_sup_subset_of_subset_left_right(b, a, submodule_sup(a, b))
+        submodule_subset(submodule_sup(b, a), submodule_sup(a, b))
+
+        submodule_subset_antisymm(submodule_sup(a, b), submodule_sup(b, a))
+    }
+}
+
+/// Joining a submodule with itself gives the same submodule.
+theorem submodule_sup_idempotent[R: Ring, M: AddCommGroup](a: Submodule[R, M]) {
+    submodule_sup(a, a) = a
+} by {
+    submodule_subset_refl(a)
+    submodule_subset_refl(a)
+    submodule_sup_subset_of_subset_left_right(a, a, a)
+    submodule_subset(submodule_sup(a, a), a)
+    submodule_subset_sup_left(a, a)
+    submodule_sup_carrier_eq(a, a)
+    submodule_subset_antisymm(submodule_sup(a, a), a)
+}
+
+/// Joining with a larger same-carrier submodule on the right gives the larger submodule.
+theorem submodule_sup_eq_right_of_subset[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier and submodule_subset(a, b) implies submodule_sup(a, b) = b
+} by {
+    if a.carrier = b.carrier and submodule_subset(a, b) {
+        b.carrier = a.carrier
+        submodule_subset_refl(b)
+        submodule_sup_subset_of_subset_left_right(a, b, b)
+        submodule_subset(submodule_sup(a, b), b)
+        submodule_subset_sup_right(a, b)
+        submodule_sup_carrier_eq(a, b)
+        submodule_sup(a, b).carrier = b.carrier
+        submodule_subset_antisymm(submodule_sup(a, b), b)
+        submodule_sup(a, b) = b
+    }
+}
+
+/// Joining with a larger same-carrier submodule on the left gives the larger submodule.
+theorem submodule_sup_eq_left_of_subset[R: Ring, M: AddCommGroup](
+    a: Submodule[R, M], b: Submodule[R, M]
+) {
+    a.carrier = b.carrier and submodule_subset(b, a) implies submodule_sup(a, b) = a
+} by {
+    if a.carrier = b.carrier and submodule_subset(b, a) {
+        submodule_subset_refl(a)
+        submodule_sup_subset_of_subset_left_right(a, b, a)
+        submodule_subset(submodule_sup(a, b), a)
+        submodule_subset_sup_left(a, b)
+        submodule_sup_carrier_eq(a, b)
+        submodule_sup(a, b).carrier = a.carrier
+        submodule_subset_antisymm(submodule_sup(a, b), a)
+        submodule_sup(a, b) = a
+    }
+}
+
+/// The zero submodule is a left identity for join.
+theorem zero_submodule_sup[R: Ring, M: AddCommGroup](carrier: Module[R, M], s: Submodule[R, M]) {
+    s.carrier = carrier implies submodule_sup(zero_submodule(carrier), s) = s
+} by {
+    if s.carrier = carrier {
+        zero_submodule_carrier_eq(carrier)
+        zero_submodule(carrier).carrier = s.carrier
+        zero_submodule_subset(s)
+        submodule_sup_eq_right_of_subset(zero_submodule(carrier), s)
+        submodule_sup(zero_submodule(carrier), s) = s
+    }
+}
+
+/// The zero submodule is a right identity for join.
+theorem submodule_sup_zero[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_sup(s, zero_submodule(s.carrier)) = s
+} by {
+    zero_submodule_subset(s)
+    zero_submodule_carrier_eq(s.carrier)
+    s.carrier = zero_submodule(s.carrier).carrier
+    submodule_sup_eq_left_of_subset(s, zero_submodule(s.carrier))
+    submodule_sup(s, zero_submodule(s.carrier)) = s
+}
+
+/// The full submodule is a left absorbing element for join.
+theorem full_submodule_sup[R: Ring, M: AddCommGroup](carrier: Module[R, M], s: Submodule[R, M]) {
+    s.carrier = carrier implies submodule_sup(full_submodule(carrier), s) = full_submodule(carrier)
+} by {
+    if s.carrier = carrier {
+        full_submodule_carrier_eq(carrier)
+        full_submodule(carrier).carrier = s.carrier
+        submodule_subset_full(s)
+        submodule_sup_eq_left_of_subset(full_submodule(carrier), s)
+        submodule_sup(full_submodule(carrier), s) = full_submodule(carrier)
+    }
+}
+
+/// The full submodule is a right absorbing element for join.
+theorem submodule_sup_full[R: Ring, M: AddCommGroup](s: Submodule[R, M]) {
+    submodule_sup(s, full_submodule(s.carrier)) = full_submodule(s.carrier)
+} by {
+    submodule_subset_full(s)
+    full_submodule_carrier_eq(s.carrier)
+    s.carrier = full_submodule(s.carrier).carrier
+    submodule_sup_eq_right_of_subset(s, full_submodule(s.carrier))
+    submodule_sup(s, full_submodule(s.carrier)) = full_submodule(s.carrier)
+}
+
+attributes Submodule[R: Ring, M: AddCommGroup] {
+    /// The smallest submodule containing a set.
+    let closure: (Module[R, M], Set[M]) -> Submodule[R, M] = submodule_closure
+
+    /// The least submodule containing this submodule and another submodule.
+    let sup: (Submodule[R, M], Submodule[R, M]) -> Submodule[R, M] = submodule_sup
 }
 
 /// True if a submodule is generated by a finite set.
