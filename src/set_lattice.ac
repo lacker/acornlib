@@ -392,6 +392,11 @@ define set_image_family[T, U, I](family: I -> Set[T], f: T -> U, i: I) -> Set[U]
     set_image(family(i), f)
 }
 
+/// The family formed by reindexing another family.
+define set_reindex_family[K, I, J](family: I -> Set[K], h: J -> I, j: J) -> Set[K] {
+    family(h(j))
+}
+
 /// Membership in the supremum of a family is membership in some member.
 theorem set_sSup_contains_eq[K, I](family: I -> Set[K], x: K) {
     set_sSup(family).contains(x) = exists(i: I) {
@@ -552,6 +557,149 @@ theorem set_sInf_eq_of_family_subset[K, I](a: I -> Set[K], b: I -> Set[K]) {
         set_sInf_monotone(a, b)
         set_sInf_monotone(b, a)
         subset_antisymm(set_sInf(a), set_sInf(b))
+    }
+}
+
+/// A refinement of each member by a member of another family gives a supremum inclusion.
+theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) implies
+    set_sSup(a).subset(set_sSup(b))
+} by {
+    if forall(i: I) { exists(j: J) { a(i).subset(b(j)) } } {
+        forall(x: K) {
+            if set_sSup(a).contains(x) {
+                set_sSup_contains_eq(a, x)
+                let i: I satisfy {
+                    a(i).contains(x)
+                }
+                let j: J satisfy {
+                    a(i).subset(b(j))
+                }
+                b(j).contains(x)
+                set_sSup_contains_eq(b, x)
+                set_sSup(b).contains(x)
+            }
+        }
+    }
+}
+
+/// A cofinal refinement of lower bounds gives an infimum inclusion.
+theorem set_sInf_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(j: J) { exists(i: I) { a(i).subset(b(j)) } }) implies
+    set_sInf(a).subset(set_sInf(b))
+} by {
+    if forall(j: J) { exists(i: I) { a(i).subset(b(j)) } } {
+        forall(x: K) {
+            if set_sInf(a).contains(x) {
+                set_sInf_contains_eq(a, x)
+                forall(j: J) {
+                    let i: I satisfy {
+                        a(i).subset(b(j))
+                    }
+                    a(i).contains(x)
+                    b(j).contains(x)
+                }
+                set_sInf_contains_eq(b, x)
+                set_sInf(b).contains(x)
+            }
+        }
+    }
+}
+
+/// If every member of one family occurs in another, its supremum is contained in the other supremum.
+theorem set_sSup_subset_of_family_occurs[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) { exists(j: J) { a(i) = b(j) } }) implies
+    set_sSup(a).subset(set_sSup(b))
+} by {
+    if forall(i: I) { exists(j: J) { a(i) = b(j) } } {
+        forall(i: I) {
+            let j: J satisfy {
+                a(i) = b(j)
+            }
+            a(i).subset(b(j))
+        }
+        set_sSup_subset_of_family_refines(a, b)
+        set_sSup(a).subset(set_sSup(b))
+    }
+}
+
+/// If every lower-bound member of one family occurs in another, the first infimum is contained in the other.
+theorem set_sInf_subset_of_family_occurs[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    (forall(j: J) { exists(i: I) { a(i) = b(j) } }) implies
+    set_sInf(a).subset(set_sInf(b))
+} by {
+    if forall(j: J) { exists(i: I) { a(i) = b(j) } } {
+        forall(j: J) {
+            let i: I satisfy {
+                a(i) = b(j)
+            }
+            a(i).subset(b(j))
+        }
+        set_sInf_subset_of_family_refines(a, b)
+        set_sInf(a).subset(set_sInf(b))
+    }
+}
+
+/// A reindexed family supremum is contained in the original supremum.
+theorem set_sSup_reindex_subset[K, I, J](family: I -> Set[K], h: J -> I) {
+    set_sSup(set_reindex_family(family, h)).subset(set_sSup(family))
+} by {
+    forall(j: J) {
+        set_reindex_family(family, h, j) = family(h(j))
+        set_family_subset_sSup(family, h(j))
+        set_reindex_family(family, h, j).subset(set_sSup(family))
+    }
+    set_sSup_subset_of_family_subset(set_reindex_family(family, h), set_sSup(family))
+    set_sSup(set_reindex_family(family, h)).subset(set_sSup(family))
+}
+
+/// The original infimum is contained in a reindexed family infimum.
+theorem set_sInf_subset_reindex[K, I, J](family: I -> Set[K], h: J -> I) {
+    set_sInf(family).subset(set_sInf(set_reindex_family(family, h)))
+} by {
+    forall(j: J) {
+        set_sInf_subset_family(family, h(j))
+        set_sInf(family).subset(family(h(j)))
+        set_reindex_family(family, h, j) = family(h(j))
+        set_sInf(family).subset(set_reindex_family(family, h, j))
+    }
+    set_subset_sInf_of_subset_family(set_sInf(family), set_reindex_family(family, h))
+    set_sInf(family).subset(set_sInf(set_reindex_family(family, h)))
+}
+
+/// A reindexing map with a section gives the reverse supremum inclusion.
+theorem set_sSup_subset_reindex_of_section[K, I, J](family: I -> Set[K], h: J -> I, g: I -> J) {
+    (forall(i: I) { h(g(i)) = i }) implies
+    set_sSup(family).subset(set_sSup(set_reindex_family(family, h)))
+} by {
+    if forall(i: I) { h(g(i)) = i } {
+        forall(i: I) {
+            set_family_subset_sSup(set_reindex_family(family, h), g(i))
+            set_reindex_family(family, h, g(i)) = family(h(g(i)))
+            h(g(i)) = i
+            set_reindex_family(family, h, g(i)) = family(i)
+            family(i).subset(set_sSup(set_reindex_family(family, h)))
+        }
+        set_sSup_subset_of_family_subset(family, set_sSup(set_reindex_family(family, h)))
+        set_sSup(family).subset(set_sSup(set_reindex_family(family, h)))
+    }
+}
+
+/// A reindexing map with a section gives the reverse infimum inclusion.
+theorem set_sInf_reindex_subset_of_section[K, I, J](family: I -> Set[K], h: J -> I, g: I -> J) {
+    (forall(i: I) { h(g(i)) = i }) implies
+    set_sInf(set_reindex_family(family, h)).subset(set_sInf(family))
+} by {
+    if forall(i: I) { h(g(i)) = i } {
+        forall(i: I) {
+            set_sInf_subset_family(set_reindex_family(family, h), g(i))
+            set_sInf(set_reindex_family(family, h)).subset(set_reindex_family(family, h, g(i)))
+            set_reindex_family(family, h, g(i)) = family(h(g(i)))
+            h(g(i)) = i
+            set_sInf(set_reindex_family(family, h)).subset(family(i))
+        }
+        set_subset_sInf_of_subset_family(set_sInf(set_reindex_family(family, h)), family)
+        set_sInf(set_reindex_family(family, h)).subset(set_sInf(family))
     }
 }
 
