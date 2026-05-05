@@ -2,10 +2,10 @@
 
 Goal: make quotient constructions systematic across groups, rings, and later modules.
 
-- [ ] Define congruence relations for the main algebraic structures
+- [ ] Define congruence relations for the remaining algebraic structures
 - [ ] Add quotient monoids and quotient groups
 - [ ] Support normal subgroups as quotient data
-- [ ] Add quotient rings by ideals
+- [ ] Package quotient rings by ideals using the verified ideal quotient relation
 - [ ] Add canonical projection morphisms and universal properties
 - [ ] Support kernels and quotients-by-kernel constructions
 - [ ] Connect quotients to the first isomorphism theorem
