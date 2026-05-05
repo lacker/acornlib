@@ -1,5 +1,7 @@
 from semigroup import Semigroup
-from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite
+from set import Set, empty_set_is_finite, singleton_contains_eq, singleton_set_is_finite,
+    is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
+    is_set_closure_operator
 from functions import predicate_extensionality
 
 // We define subsemigroups with the "bundled" technique, so a subsemigroup carries along
@@ -858,6 +860,16 @@ theorem subsemigroup_closure_le_iff_set_subset[S: Semigroup](a: Set[S], s: Subse
     subsemigroup_subset(subsemigroup_closure(a), s) = set_subset_subsemigroup(a, s)
 }
 
+/// The subsemigroup closure and underlying set maps form a set-containment adjunction.
+theorem subsemigroup_closure_as_set_galois_connection[S: Semigroup](a: Set[S], s: Subsemigroup[S]) {
+    subsemigroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+} by {
+    subsemigroup_subset_as_set_eq(subsemigroup_closure(a), s)
+    subsemigroup_closure_le_iff_set_subset(a, s)
+    set_subset_subsemigroup_as_set_eq(a, s)
+    subsemigroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+}
+
 /// The closure of the underlying set of a subsemigroup is the subsemigroup itself.
 theorem subsemigroup_closure_as_set[S: Semigroup](s: Subsemigroup[S]) {
     subsemigroup_closure(s.as_set) = s
@@ -903,6 +915,94 @@ theorem subsemigroup_closure_idempotent[S: Semigroup](a: Set[S]) {
     subsemigroup_closure(subsemigroup_closure(a).as_set) = subsemigroup_closure(a)
 } by {
     subsemigroup_closure_as_set(subsemigroup_closure(a))
+}
+
+/// The set closure induced by subsemigroup generation.
+define subsemigroup_set_closure[S: Semigroup](a: Set[S]) -> Set[S] {
+    subsemigroup_closure(a).as_set
+}
+
+/// The subsemigroup set closure is the underlying set of the generated subsemigroup.
+theorem subsemigroup_set_closure_at[S: Semigroup](a: Set[S]) {
+    subsemigroup_set_closure(a) = subsemigroup_closure(a).as_set
+}
+
+/// The subsemigroup set closure contains the original set.
+theorem subsemigroup_set_closure_extensive[S: Semigroup](a: Set[S]) {
+    a.subset(subsemigroup_set_closure(a))
+} by {
+    subsemigroup_set_closure_at(a)
+    subsemigroup_subset_closure(a)
+    set_subset_subsemigroup_as_set_eq(a, subsemigroup_closure(a))
+    a.subset(subsemigroup_closure(a).as_set)
+    a.subset(subsemigroup_set_closure(a))
+}
+
+/// The subsemigroup set closure preserves inclusion.
+theorem subsemigroup_set_closure_mono[S: Semigroup](a: Set[S], b: Set[S]) {
+    a.subset(b) implies subsemigroup_set_closure(a).subset(subsemigroup_set_closure(b))
+} by {
+    if a.subset(b) {
+        subsemigroup_closure_mono(a, b)
+        subsemigroup_subset(subsemigroup_closure(a), subsemigroup_closure(b))
+        subsemigroup_subset_as_set_eq(subsemigroup_closure(a), subsemigroup_closure(b))
+        subsemigroup_closure(a).as_set.subset(subsemigroup_closure(b).as_set)
+        subsemigroup_set_closure_at(a)
+        subsemigroup_set_closure_at(b)
+        subsemigroup_set_closure(a).subset(subsemigroup_set_closure(b))
+    }
+}
+
+/// The subsemigroup set closure is unchanged after two applications.
+theorem subsemigroup_set_closure_idempotent[S: Semigroup](a: Set[S]) {
+    subsemigroup_set_closure(subsemigroup_set_closure(a)) = subsemigroup_set_closure(a)
+} by {
+    subsemigroup_set_closure_at(a)
+    subsemigroup_set_closure_at(subsemigroup_set_closure(a))
+    subsemigroup_closure_idempotent(a)
+    subsemigroup_set_closure(subsemigroup_set_closure(a)) = subsemigroup_set_closure(a)
+}
+
+/// Subsemigroup set closure is monotone as a set map.
+theorem subsemigroup_set_closure_is_monotone[S: Semigroup] {
+    is_subset_monotone_map(subsemigroup_set_closure[S])
+} by {
+    forall(a: Set[S], b: Set[S]) {
+        if a.subset(b) {
+            subsemigroup_set_closure_mono(a, b)
+            subsemigroup_set_closure(a).subset(subsemigroup_set_closure(b))
+        }
+    }
+}
+
+/// Subsemigroup set closure is extensive as a set map.
+theorem subsemigroup_set_closure_is_extensive[S: Semigroup] {
+    is_set_extensive_map(subsemigroup_set_closure[S])
+} by {
+    forall(a: Set[S]) {
+        subsemigroup_set_closure_extensive(a)
+        a.subset(subsemigroup_set_closure(a))
+    }
+}
+
+/// Subsemigroup set closure is idempotent as a set map.
+theorem subsemigroup_set_closure_is_idempotent[S: Semigroup] {
+    is_set_idempotent_map(subsemigroup_set_closure[S])
+} by {
+    forall(a: Set[S]) {
+        subsemigroup_set_closure_idempotent(a)
+        subsemigroup_set_closure(subsemigroup_set_closure(a)) = subsemigroup_set_closure(a)
+    }
+}
+
+/// Subsemigroup generation induces a closure operator on sets.
+theorem subsemigroup_set_closure_operator[S: Semigroup] {
+    is_set_closure_operator(subsemigroup_set_closure[S])
+} by {
+    subsemigroup_set_closure_is_monotone[S]
+    subsemigroup_set_closure_is_extensive[S]
+    subsemigroup_set_closure_is_idempotent[S]
+    is_set_closure_operator(subsemigroup_set_closure[S])
 }
 
 /// The closure of the empty set is the empty subsemigroup.

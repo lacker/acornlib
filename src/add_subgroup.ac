@@ -3,7 +3,8 @@ from add_group import AddGroup, AddGroupHom, add_group_hom_zero, add_group_hom_a
 from add_submonoid import AddSubmonoid, add_submonoid_zero_constraint,
     add_submonoid_closure_constraint, add_submonoid_constraint
 from functions import predicate_extensionality
-from set import Set
+from set import Set, is_subset_monotone_map, is_set_extensive_map, is_set_idempotent_map,
+    is_set_closure_operator
 from relation_basic import is_reflexive, is_symmetric, is_transitive, is_equivalence
 from relation_transport import respects_add, is_add_congruence, respects_binary_op,
     respects_unary_op, is_binary_congruence, respects_add_eq_respects_binary_op,
@@ -1089,6 +1090,16 @@ theorem add_subgroup_closure_le_iff_set_subset[G: AddGroup](a: Set[G], s: AddSub
     add_subgroup_subset(add_subgroup_closure(a), s) = set_subset_add_subgroup(a, s)
 }
 
+/// The additive subgroup closure and underlying set maps form a set-containment adjunction.
+theorem add_subgroup_closure_as_set_galois_connection[G: AddGroup](a: Set[G], s: AddSubgroup[G]) {
+    add_subgroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+} by {
+    add_subgroup_subset_as_set_eq(add_subgroup_closure(a), s)
+    add_subgroup_closure_le_iff_set_subset(a, s)
+    set_subset_add_subgroup_as_set_eq(a, s)
+    add_subgroup_closure(a).as_set.subset(s.as_set) = a.subset(s.as_set)
+}
+
 /// The closure of the underlying set of an additive subgroup is the additive subgroup itself.
 theorem add_subgroup_closure_as_set[G: AddGroup](s: AddSubgroup[G]) {
     add_subgroup_closure(s.as_set) = s
@@ -1134,6 +1145,94 @@ theorem add_subgroup_closure_idempotent[G: AddGroup](a: Set[G]) {
     add_subgroup_closure(add_subgroup_closure(a).as_set) = add_subgroup_closure(a)
 } by {
     add_subgroup_closure_as_set(add_subgroup_closure(a))
+}
+
+/// The set closure induced by additive subgroup generation.
+define add_subgroup_set_closure[G: AddGroup](a: Set[G]) -> Set[G] {
+    add_subgroup_closure(a).as_set
+}
+
+/// The additive subgroup set closure is the underlying set of the generated additive subgroup.
+theorem add_subgroup_set_closure_at[G: AddGroup](a: Set[G]) {
+    add_subgroup_set_closure(a) = add_subgroup_closure(a).as_set
+}
+
+/// The additive subgroup set closure contains the original set.
+theorem add_subgroup_set_closure_extensive[G: AddGroup](a: Set[G]) {
+    a.subset(add_subgroup_set_closure(a))
+} by {
+    add_subgroup_set_closure_at(a)
+    add_subgroup_subset_closure(a)
+    set_subset_add_subgroup_as_set_eq(a, add_subgroup_closure(a))
+    a.subset(add_subgroup_closure(a).as_set)
+    a.subset(add_subgroup_set_closure(a))
+}
+
+/// The additive subgroup set closure preserves inclusion.
+theorem add_subgroup_set_closure_mono[G: AddGroup](a: Set[G], b: Set[G]) {
+    a.subset(b) implies add_subgroup_set_closure(a).subset(add_subgroup_set_closure(b))
+} by {
+    if a.subset(b) {
+        add_subgroup_closure_mono(a, b)
+        add_subgroup_subset(add_subgroup_closure(a), add_subgroup_closure(b))
+        add_subgroup_subset_as_set_eq(add_subgroup_closure(a), add_subgroup_closure(b))
+        add_subgroup_closure(a).as_set.subset(add_subgroup_closure(b).as_set)
+        add_subgroup_set_closure_at(a)
+        add_subgroup_set_closure_at(b)
+        add_subgroup_set_closure(a).subset(add_subgroup_set_closure(b))
+    }
+}
+
+/// The additive subgroup set closure is unchanged after two applications.
+theorem add_subgroup_set_closure_idempotent[G: AddGroup](a: Set[G]) {
+    add_subgroup_set_closure(add_subgroup_set_closure(a)) = add_subgroup_set_closure(a)
+} by {
+    add_subgroup_set_closure_at(a)
+    add_subgroup_set_closure_at(add_subgroup_set_closure(a))
+    add_subgroup_closure_idempotent(a)
+    add_subgroup_set_closure(add_subgroup_set_closure(a)) = add_subgroup_set_closure(a)
+}
+
+/// Additive subgroup set closure is monotone as a set map.
+theorem add_subgroup_set_closure_is_monotone[G: AddGroup] {
+    is_subset_monotone_map(add_subgroup_set_closure[G])
+} by {
+    forall(a: Set[G], b: Set[G]) {
+        if a.subset(b) {
+            add_subgroup_set_closure_mono(a, b)
+            add_subgroup_set_closure(a).subset(add_subgroup_set_closure(b))
+        }
+    }
+}
+
+/// Additive subgroup set closure is extensive as a set map.
+theorem add_subgroup_set_closure_is_extensive[G: AddGroup] {
+    is_set_extensive_map(add_subgroup_set_closure[G])
+} by {
+    forall(a: Set[G]) {
+        add_subgroup_set_closure_extensive(a)
+        a.subset(add_subgroup_set_closure(a))
+    }
+}
+
+/// Additive subgroup set closure is idempotent as a set map.
+theorem add_subgroup_set_closure_is_idempotent[G: AddGroup] {
+    is_set_idempotent_map(add_subgroup_set_closure[G])
+} by {
+    forall(a: Set[G]) {
+        add_subgroup_set_closure_idempotent(a)
+        add_subgroup_set_closure(add_subgroup_set_closure(a)) = add_subgroup_set_closure(a)
+    }
+}
+
+/// Additive subgroup generation induces a closure operator on sets.
+theorem add_subgroup_set_closure_operator[G: AddGroup] {
+    is_set_closure_operator(add_subgroup_set_closure[G])
+} by {
+    add_subgroup_set_closure_is_monotone[G]
+    add_subgroup_set_closure_is_extensive[G]
+    add_subgroup_set_closure_is_idempotent[G]
+    is_set_closure_operator(add_subgroup_set_closure[G])
 }
 
 /// The closure of the empty set is the zero additive subgroup.
