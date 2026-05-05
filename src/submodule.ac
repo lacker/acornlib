@@ -2645,3 +2645,56 @@ theorem linear_map_injective_of_kernel_trivial[R: Ring, M: AddCommGroup, N: AddC
         }
     }
 }
+
+/// Membership in the kernel submodule equals membership in the zero submodule under a trivial-kernel linear map.
+theorem linear_map_kernel_submodule_contains_eq_zero_of_trivial[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) and is_kernel_trivial[R, M, N](f) implies
+        linear_map_kernel_submodule(src, dst, f).contains(x) = zero_submodule(src).contains(x)
+} by {
+    if is_linear_map(src, dst, f) and is_kernel_trivial[R, M, N](f) {
+        linear_map_kernel_submodule_contains_eq(src, dst, f, x)
+        zero_submodule_contains_eq(src, x)
+        if linear_map_kernel_submodule(src, dst, f).contains(x) {
+            f(x) = N.0
+            linear_map_kernel[R, M, N](f, x)
+            is_kernel_trivial[R, M, N](f) = forall(a: M) {
+                linear_map_kernel[R, M, N](f, a) implies a = M.0
+            }
+            x = M.0
+            zero_submodule(src).contains(x)
+        }
+        if zero_submodule(src).contains(x) {
+            x = M.0
+            linear_map_zero(src, dst, f)
+            f(M.0) = N.0
+            f(x) = N.0
+            linear_map_kernel_submodule_contains_of_map_eq_zero(src, dst, f, x)
+            linear_map_kernel_submodule(src, dst, f).contains(x)
+        }
+        linear_map_kernel_submodule(src, dst, f).contains(x) = zero_submodule(src).contains(x)
+    }
+}
+
+
+/// A linear map has a trivial kernel when its kernel submodule equals the zero submodule.
+theorem linear_map_kernel_trivial_of_kernel_submodule_eq_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    is_linear_map(src, dst, f) and linear_map_kernel_submodule(src, dst, f) = zero_submodule(src)
+        implies is_kernel_trivial[R, M, N](f)
+} by {
+    if is_linear_map(src, dst, f) and linear_map_kernel_submodule(src, dst, f) = zero_submodule(src) {
+        forall(x: M) {
+            if linear_map_kernel[R, M, N](f, x) {
+                f(x) = N.0
+                linear_map_kernel_submodule_contains_of_map_eq_zero(src, dst, f, x)
+                linear_map_kernel_submodule(src, dst, f).contains(x)
+                zero_submodule(src).contains(x)
+                zero_submodule_contains_eq(src, x)
+                x = M.0
+            }
+        }
+    }
+}
