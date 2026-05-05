@@ -57,7 +57,7 @@ If the proof is really `A -> B -> C -> ...`, split it.
 
 - Prove `A implies B` as one theorem.
 - Prove `B implies C` as a second theorem.
-- Continue until the original theorem becomes a short wrapper.
+- Continue until the original theorem becomes a short final proof.
 
 This is especially useful when you know the last step of the proof. If the target is `C`, ask:
 
@@ -94,13 +94,25 @@ If the proof repeatedly extracts witnesses from `exists`, do not keep asking the
 - Prove introduction lemmas that build the relevant `exists`.
 - Use those lemmas instead of repeating local witness arguments in the main theorem.
 
-### 5. Factor the Last Step Into a Wrapper
+### 5. Prove Complicated Boolean Goals by Contradiction
 
-If the substantial work is already done and only the final packaging fails, separate them.
+If the goal itself is a complicated Boolean formula, direct proof search can
+wander through many irrelevant ways to assemble the formula. This often happens
+with goals involving `and`, `or`, `implies`, `=`, or `!=` between propositions.
 
-- Keep the substantial direction lemmas as standalone theorems.
-- Make the final theorem a thin wrapper that only combines them.
-- If even the wrapper is hard, prove an intermediate packaging lemma first, such as a subset or implication form.
+- Name the important Boolean subexpressions with `let` or a small definition.
+- Cite the relevant direction or introduction lemmas under the shared
+  hypotheses, before the case split.
+- Use proof by contradiction on the whole Boolean goal.
+- Inside the contradiction, split cases on one named Boolean subexpression.
+- In each case, prove the other Boolean subexpressions explicitly, then derive
+  the contradiction.
+- After the contradiction closes, rewrite the named Booleans back to the
+  original goal.
+
+For example, if the goal is `p = q`, try proving `p = q` by contradiction. In
+the `p` case, prove `q`, so both sides are `true`. In the `not p` case, prove
+`not q`, so both sides are `false`.
 
 ### 6. Reduce Search Width
 
