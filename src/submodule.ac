@@ -1997,6 +1997,246 @@ theorem linear_map_kernel_smul_constraint[R: Ring, M: AddCommGroup, N: AddCommGr
     }
 }
 
+/// The kernel predicate when the map is linear, and the full predicate otherwise.
+define linear_map_kernel_submodule_contains[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) -> Bool {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel[R, M, N](f, x)
+    } else {
+        full_submodule_contains[M](x)
+    }
+}
+
+/// The kernel-submodule predicate agrees with the kernel predicate for a linear map.
+theorem linear_map_kernel_submodule_contains_eq_of_linear[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) implies
+        linear_map_kernel_submodule_contains(src, dst, f, x) = linear_map_kernel[R, M, N](f, x)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_submodule_contains(src, dst, f, x) = linear_map_kernel[R, M, N](f, x)
+    }
+}
+
+/// The kernel-submodule predicate is universal when the map is not known to be linear.
+theorem linear_map_kernel_submodule_contains_eq_full_of_not_linear[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    not(is_linear_map(src, dst, f)) implies
+        linear_map_kernel_submodule_contains(src, dst, f, x) = full_submodule_contains[M](x)
+} by {
+    if not(is_linear_map(src, dst, f)) {
+        linear_map_kernel_submodule_contains(src, dst, f, x) = full_submodule_contains[M](x)
+    }
+}
+
+/// The total kernel-submodule predicate is a submodule predicate.
+theorem linear_map_kernel_submodule_is_submodule[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    is_submodule(src, linear_map_kernel_submodule_contains(src, dst, f))
+} by {
+    let p = linear_map_kernel_submodule_contains(src, dst, f)
+    is_submodule(src, p) =
+        (submodule_zero_constraint(src, p)
+         and submodule_add_constraint(src, p)
+         and submodule_neg_constraint(src, p)
+         and submodule_smul_constraint(src, p))
+    if is_linear_map(src, dst, f) {
+        linear_map_kernel_zero_constraint(src, dst, f)
+        submodule_zero_constraint(src, linear_map_kernel[R, M, N](f))
+        linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, M.0)
+        linear_map_kernel_submodule_contains(src, dst, f, M.0)
+        submodule_zero_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+
+        linear_map_kernel_add_constraint(src, dst, f)
+        submodule_add_constraint(src, linear_map_kernel[R, M, N](f)) = forall(a: M, b: M) {
+            linear_map_kernel[R, M, N](f, a) and linear_map_kernel[R, M, N](f, b)
+                implies linear_map_kernel[R, M, N](f, a + b)
+        }
+        forall(x: M) {
+            forall(y: M) {
+                if linear_map_kernel_submodule_contains(src, dst, f, x)
+                    and linear_map_kernel_submodule_contains(src, dst, f, y) {
+                    linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, x)
+                    linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, y)
+                    linear_map_kernel[R, M, N](f, x)
+                    linear_map_kernel[R, M, N](f, y)
+                    submodule_add_constraint(src, linear_map_kernel[R, M, N](f))
+                    linear_map_kernel[R, M, N](f, x + y)
+                    linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, x + y)
+                    linear_map_kernel_submodule_contains(src, dst, f, x + y)
+                }
+            }
+        }
+        submodule_add_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+
+        linear_map_kernel_neg_constraint(src, dst, f)
+        submodule_neg_constraint(src, linear_map_kernel[R, M, N](f)) = forall(a: M) {
+            linear_map_kernel[R, M, N](f, a) implies linear_map_kernel[R, M, N](f, -a)
+        }
+        forall(x: M) {
+            if linear_map_kernel_submodule_contains(src, dst, f, x) {
+                linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, x)
+                linear_map_kernel[R, M, N](f, x)
+                submodule_neg_constraint(src, linear_map_kernel[R, M, N](f))
+                linear_map_kernel[R, M, N](f, -x)
+                linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, -x)
+                linear_map_kernel_submodule_contains(src, dst, f, -x)
+            }
+        }
+        submodule_neg_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+
+        linear_map_kernel_smul_constraint(src, dst, f)
+        submodule_smul_constraint(src, linear_map_kernel[R, M, N](f)) = forall(q: R, a: M) {
+            linear_map_kernel[R, M, N](f, a) implies linear_map_kernel[R, M, N](f, src.smul(q, a))
+        }
+        forall(r: R, x: M) {
+            if linear_map_kernel_submodule_contains(src, dst, f, x) {
+                linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, x)
+                linear_map_kernel[R, M, N](f, x)
+                submodule_smul_constraint(src, linear_map_kernel[R, M, N](f))
+                linear_map_kernel[R, M, N](f, src.smul(r, x))
+                linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, src.smul(r, x))
+                linear_map_kernel_submodule_contains(src, dst, f, src.smul(r, x))
+            }
+        }
+        submodule_smul_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+        is_submodule(src, p)
+    } else {
+        full_submodule_is_submodule(src)
+        forall(x: M) {
+            linear_map_kernel_submodule_contains_eq_full_of_not_linear(src, dst, f, x)
+            linear_map_kernel_submodule_contains(src, dst, f, x)
+        }
+        submodule_zero_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+        forall(x: M, y: M) {
+            if linear_map_kernel_submodule_contains(src, dst, f, x)
+                and linear_map_kernel_submodule_contains(src, dst, f, y) {
+                linear_map_kernel_submodule_contains(src, dst, f, x + y)
+            }
+        }
+        submodule_add_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+        forall(x: M) {
+            if linear_map_kernel_submodule_contains(src, dst, f, x) {
+                linear_map_kernel_submodule_contains(src, dst, f, -x)
+            }
+        }
+        submodule_neg_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+        forall(r: R, x: M) {
+            if linear_map_kernel_submodule_contains(src, dst, f, x) {
+                linear_map_kernel_submodule_contains(src, dst, f, src.smul(r, x))
+            }
+        }
+        submodule_smul_constraint(src, linear_map_kernel_submodule_contains(src, dst, f))
+        is_submodule(src, linear_map_kernel_submodule_contains(src, dst, f))
+    }
+}
+
+/// The kernel submodule of a linear map, using the full submodule when the map is not linear.
+let linear_map_kernel_submodule[R: Ring, M: AddCommGroup, N: AddCommGroup](src: Module[R, M], dst: Module[R, N], f: M -> N) -> result: Submodule[R, M] satisfy {
+    Submodule.new(src, linear_map_kernel_submodule_contains(src, dst, f)) = Option.some(result)
+} by {
+    linear_map_kernel_submodule_is_submodule(src, dst, f)
+}
+
+/// The kernel submodule has the source module as its ambient module.
+theorem linear_map_kernel_submodule_carrier_eq[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    linear_map_kernel_submodule(src, dst, f).carrier = src
+}
+
+/// Membership in the kernel submodule is equality to zero for a linear map.
+theorem linear_map_kernel_submodule_contains_eq[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) implies
+        linear_map_kernel_submodule(src, dst, f).contains(x) = (f(x) = N.0)
+} by {
+    if is_linear_map(src, dst, f) {
+        let p = linear_map_kernel_submodule_contains(src, dst, f)
+        linear_map_kernel_submodule_is_submodule(src, dst, f)
+        is_submodule(src, p)
+        let s: Submodule[R, M] satisfy {
+            Submodule.new(src, p) = Option.some(s)
+        }
+        linear_map_kernel_submodule(src, dst, f) = s
+        s.contains(x) = p(x)
+        p(x) = linear_map_kernel_submodule_contains(src, dst, f, x)
+        linear_map_kernel_submodule(src, dst, f).contains(x) = linear_map_kernel_submodule_contains(src, dst, f, x)
+        linear_map_kernel_submodule_contains_eq_of_linear(src, dst, f, x)
+        linear_map_kernel_submodule_contains(src, dst, f, x) = linear_map_kernel[R, M, N](f, x)
+        linear_map_kernel[R, M, N](f, x) = (f(x) = N.0)
+        linear_map_kernel_submodule(src, dst, f).contains(x) = (f(x) = N.0)
+    }
+}
+
+/// An element whose image is zero belongs to the kernel submodule of a linear map.
+theorem linear_map_kernel_submodule_contains_of_map_eq_zero[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) and f(x) = N.0
+    implies linear_map_kernel_submodule(src, dst, f).contains(x)
+} by {
+    if is_linear_map(src, dst, f) and f(x) = N.0 {
+        linear_map_kernel_submodule_contains_eq(src, dst, f, x)
+        linear_map_kernel_submodule(src, dst, f).contains(x) = (f(x) = N.0)
+        linear_map_kernel_submodule(src, dst, f).contains(x)
+    }
+}
+
+/// A member of the kernel submodule of a linear map has image zero.
+theorem linear_map_kernel_submodule_map_eq_zero_of_contains[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) and linear_map_kernel_submodule(src, dst, f).contains(x)
+    implies f(x) = N.0
+} by {
+    if is_linear_map(src, dst, f) and linear_map_kernel_submodule(src, dst, f).contains(x) {
+        linear_map_kernel_submodule_contains_eq(src, dst, f, x)
+        linear_map_kernel_submodule(src, dst, f).contains(x) = (f(x) = N.0)
+        f(x) = N.0
+    }
+}
+
+/// A submodule is contained in the kernel precisely when all of its elements map to zero.
+theorem linear_map_kernel_submodule_subset_iff[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, s: Submodule[R, M]
+) {
+    is_linear_map(src, dst, f) implies
+        (submodule_subset(s, linear_map_kernel_submodule(src, dst, f)) =
+            forall(x: M) { s.contains(x) implies f(x) = N.0 })
+} by {
+    if is_linear_map(src, dst, f) {
+        if submodule_subset(s, linear_map_kernel_submodule(src, dst, f)) {
+            submodule_subset(s, linear_map_kernel_submodule(src, dst, f)) = forall(y: M) {
+                s.contains(y) implies linear_map_kernel_submodule(src, dst, f).contains(y)
+            }
+            forall(x: M) {
+                if s.contains(x) {
+                    linear_map_kernel_submodule(src, dst, f).contains(x)
+                    linear_map_kernel_submodule_map_eq_zero_of_contains(src, dst, f, x)
+                    f(x) = N.0
+                }
+            }
+        }
+        if forall(x: M) { s.contains(x) implies f(x) = N.0 } {
+            forall(x: M) {
+                if s.contains(x) {
+                    f(x) = N.0
+                    linear_map_kernel_submodule_contains_of_map_eq_zero(src, dst, f, x)
+                    linear_map_kernel_submodule(src, dst, f).contains(x)
+                }
+            }
+            submodule_subset(s, linear_map_kernel_submodule(src, dst, f))
+        }
+        submodule_subset(s, linear_map_kernel_submodule(src, dst, f)) =
+            forall(x: M) { s.contains(x) implies f(x) = N.0 }
+    }
+}
 
 /// Membership in the image of a linear map.
 define linear_map_image[M: AddCommGroup, N: AddCommGroup](f: M -> N, y: N) -> Bool {
@@ -2096,5 +2336,247 @@ theorem linear_map_image_smul_constraint[R: Ring, M: AddCommGroup, N: AddCommGro
                 linear_map_image[M, N](f, dst.smul(r, y))
             }
         }
+    }
+}
+
+/// The image predicate when the map is linear, and the full predicate otherwise.
+define linear_map_image_submodule_contains[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, y: N
+) -> Bool {
+    if is_linear_map(src, dst, f) {
+        linear_map_image[M, N](f, y)
+    } else {
+        full_submodule_contains[N](y)
+    }
+}
+
+/// The image-submodule predicate agrees with the image predicate for a linear map.
+theorem linear_map_image_submodule_contains_eq_of_linear[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, y: N
+) {
+    is_linear_map(src, dst, f) implies
+        linear_map_image_submodule_contains(src, dst, f, y) = linear_map_image[M, N](f, y)
+} by {
+    if is_linear_map(src, dst, f) {
+        linear_map_image_submodule_contains(src, dst, f, y) = linear_map_image[M, N](f, y)
+    }
+}
+
+/// The image-submodule predicate is universal when the map is not known to be linear.
+theorem linear_map_image_submodule_contains_eq_full_of_not_linear[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, y: N
+) {
+    not(is_linear_map(src, dst, f)) implies
+        linear_map_image_submodule_contains(src, dst, f, y) = full_submodule_contains[N](y)
+} by {
+    if not(is_linear_map(src, dst, f)) {
+        linear_map_image_submodule_contains(src, dst, f, y) = full_submodule_contains[N](y)
+    }
+}
+
+/// The total image-submodule predicate is a submodule predicate.
+theorem linear_map_image_submodule_is_submodule[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    is_submodule(dst, linear_map_image_submodule_contains(src, dst, f))
+} by {
+    let p = linear_map_image_submodule_contains(src, dst, f)
+    is_submodule(dst, p) =
+        (submodule_zero_constraint(dst, p)
+         and submodule_add_constraint(dst, p)
+         and submodule_neg_constraint(dst, p)
+         and submodule_smul_constraint(dst, p))
+    if is_linear_map(src, dst, f) {
+        linear_map_image_zero_constraint(src, dst, f)
+        submodule_zero_constraint(dst, linear_map_image[M, N](f))
+        linear_map_image_submodule_contains_eq_of_linear(src, dst, f, N.0)
+        linear_map_image_submodule_contains(src, dst, f, N.0)
+        submodule_zero_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+
+        linear_map_image_add_constraint(src, dst, f)
+        submodule_add_constraint(dst, linear_map_image[M, N](f)) = forall(a: N, b: N) {
+            linear_map_image[M, N](f, a) and linear_map_image[M, N](f, b)
+                implies linear_map_image[M, N](f, a + b)
+        }
+        forall(y: N) {
+            forall(z: N) {
+                if linear_map_image_submodule_contains(src, dst, f, y)
+                    and linear_map_image_submodule_contains(src, dst, f, z) {
+                    linear_map_image_submodule_contains_eq_of_linear(src, dst, f, y)
+                    linear_map_image_submodule_contains_eq_of_linear(src, dst, f, z)
+                    linear_map_image[M, N](f, y)
+                    linear_map_image[M, N](f, z)
+                    submodule_add_constraint(dst, linear_map_image[M, N](f))
+                    linear_map_image[M, N](f, y + z)
+                    linear_map_image_submodule_contains_eq_of_linear(src, dst, f, y + z)
+                    linear_map_image_submodule_contains(src, dst, f, y + z)
+                }
+            }
+        }
+        submodule_add_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+
+        linear_map_image_neg_constraint(src, dst, f)
+        submodule_neg_constraint(dst, linear_map_image[M, N](f)) = forall(a: N) {
+            linear_map_image[M, N](f, a) implies linear_map_image[M, N](f, -a)
+        }
+        forall(y: N) {
+            if linear_map_image_submodule_contains(src, dst, f, y) {
+                linear_map_image_submodule_contains_eq_of_linear(src, dst, f, y)
+                linear_map_image[M, N](f, y)
+                submodule_neg_constraint(dst, linear_map_image[M, N](f))
+                linear_map_image[M, N](f, -y)
+                linear_map_image_submodule_contains_eq_of_linear(src, dst, f, -y)
+                linear_map_image_submodule_contains(src, dst, f, -y)
+            }
+        }
+        submodule_neg_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+
+        linear_map_image_smul_constraint(src, dst, f)
+        submodule_smul_constraint(dst, linear_map_image[M, N](f)) = forall(q: R, a: N) {
+            linear_map_image[M, N](f, a) implies linear_map_image[M, N](f, dst.smul(q, a))
+        }
+        forall(r: R, y: N) {
+            if linear_map_image_submodule_contains(src, dst, f, y) {
+                linear_map_image_submodule_contains_eq_of_linear(src, dst, f, y)
+                linear_map_image[M, N](f, y)
+                submodule_smul_constraint(dst, linear_map_image[M, N](f))
+                linear_map_image[M, N](f, dst.smul(r, y))
+                linear_map_image_submodule_contains_eq_of_linear(src, dst, f, dst.smul(r, y))
+                linear_map_image_submodule_contains(src, dst, f, dst.smul(r, y))
+            }
+        }
+        submodule_smul_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+        is_submodule(dst, p)
+    } else {
+        full_submodule_is_submodule(dst)
+        forall(y: N) {
+            linear_map_image_submodule_contains_eq_full_of_not_linear(src, dst, f, y)
+            linear_map_image_submodule_contains(src, dst, f, y)
+        }
+        submodule_zero_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+        forall(y: N, z: N) {
+            if linear_map_image_submodule_contains(src, dst, f, y)
+                and linear_map_image_submodule_contains(src, dst, f, z) {
+                linear_map_image_submodule_contains(src, dst, f, y + z)
+            }
+        }
+        submodule_add_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+        forall(y: N) {
+            if linear_map_image_submodule_contains(src, dst, f, y) {
+                linear_map_image_submodule_contains(src, dst, f, -y)
+            }
+        }
+        submodule_neg_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+        forall(r: R, y: N) {
+            if linear_map_image_submodule_contains(src, dst, f, y) {
+                linear_map_image_submodule_contains(src, dst, f, dst.smul(r, y))
+            }
+        }
+        submodule_smul_constraint(dst, linear_map_image_submodule_contains(src, dst, f))
+        is_submodule(dst, linear_map_image_submodule_contains(src, dst, f))
+    }
+}
+
+/// The image submodule of a linear map, using the full submodule when the map is not linear.
+let linear_map_image_submodule[R: Ring, M: AddCommGroup, N: AddCommGroup](src: Module[R, M], dst: Module[R, N], f: M -> N) -> result: Submodule[R, N] satisfy {
+    Submodule.new(dst, linear_map_image_submodule_contains(src, dst, f)) = Option.some(result)
+} by {
+    linear_map_image_submodule_is_submodule(src, dst, f)
+}
+
+/// The image submodule has the destination module as its ambient module.
+theorem linear_map_image_submodule_carrier_eq[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N
+) {
+    linear_map_image_submodule(src, dst, f).carrier = dst
+}
+
+/// Membership in the image submodule is membership in the image for a linear map.
+theorem linear_map_image_submodule_contains_eq[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, y: N
+) {
+    is_linear_map(src, dst, f) implies
+        linear_map_image_submodule(src, dst, f).contains(y) = linear_map_image[M, N](f, y)
+} by {
+    if is_linear_map(src, dst, f) {
+        let p = linear_map_image_submodule_contains(src, dst, f)
+        linear_map_image_submodule_is_submodule(src, dst, f)
+        is_submodule(dst, p)
+        let s: Submodule[R, N] satisfy {
+            Submodule.new(dst, p) = Option.some(s)
+        }
+        Submodule.new(dst, p) = Option.some(linear_map_image_submodule(src, dst, f))
+        linear_map_image_submodule(src, dst, f) = s
+        s.contains(y) = p(y)
+        p(y) = linear_map_image_submodule_contains(src, dst, f, y)
+        linear_map_image_submodule(src, dst, f).contains(y) = linear_map_image_submodule_contains(src, dst, f, y)
+        linear_map_image_submodule_contains_eq_of_linear(src, dst, f, y)
+        linear_map_image_submodule(src, dst, f).contains(y) = linear_map_image[M, N](f, y)
+    }
+}
+
+/// The value of a linear map belongs to its image submodule.
+theorem linear_map_image_submodule_contains_apply[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, x: M
+) {
+    is_linear_map(src, dst, f) implies linear_map_image_submodule(src, dst, f).contains(f(x))
+} by {
+    if is_linear_map(src, dst, f) {
+        exists(t: M) {
+            f(t) = f(x)
+        }
+        linear_map_image[M, N](f, f(x))
+        linear_map_image_submodule_contains_eq(src, dst, f, f(x))
+        linear_map_image_submodule(src, dst, f).contains(f(x))
+    }
+}
+
+/// Membership in the image submodule gives membership in the image predicate for a linear map.
+theorem linear_map_image_of_submodule_contains[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, y: N
+) {
+    is_linear_map(src, dst, f) and linear_map_image_submodule(src, dst, f).contains(y)
+    implies linear_map_image[M, N](f, y)
+} by {
+    if is_linear_map(src, dst, f) and linear_map_image_submodule(src, dst, f).contains(y) {
+        linear_map_image_submodule_contains_eq(src, dst, f, y)
+        linear_map_image_submodule(src, dst, f).contains(y) = linear_map_image[M, N](f, y)
+        linear_map_image[M, N](f, y)
+    }
+}
+
+/// The image submodule is contained in a submodule precisely when every map value belongs to it.
+theorem linear_map_image_submodule_subset_iff[R: Ring, M: AddCommGroup, N: AddCommGroup](
+    src: Module[R, M], dst: Module[R, N], f: M -> N, s: Submodule[R, N]
+) {
+    is_linear_map(src, dst, f) implies
+        (submodule_subset(linear_map_image_submodule(src, dst, f), s) =
+            forall(x: M) { s.contains(f(x)) })
+} by {
+    if is_linear_map(src, dst, f) {
+        if submodule_subset(linear_map_image_submodule(src, dst, f), s) {
+            submodule_subset(linear_map_image_submodule(src, dst, f), s) = forall(y: N) {
+                linear_map_image_submodule(src, dst, f).contains(y) implies s.contains(y)
+            }
+            forall(x: M) {
+                linear_map_image_submodule_contains_apply(src, dst, f, x)
+                linear_map_image_submodule(src, dst, f).contains(f(x))
+                s.contains(f(x))
+            }
+        }
+        if forall(x: M) { s.contains(f(x)) } {
+            forall(y: N) {
+                if linear_map_image_submodule(src, dst, f).contains(y) {
+                    linear_map_image_of_submodule_contains(src, dst, f, y)
+                    linear_map_image[M, N](f, y)
+                    let x: M satisfy { f(x) = y }
+                    s.contains(f(x))
+                    s.contains(y)
+                }
+            }
+            submodule_subset(linear_map_image_submodule(src, dst, f), s)
+        }
+        submodule_subset(linear_map_image_submodule(src, dst, f), s) =
+            forall(x: M) { s.contains(f(x)) }
     }
 }
