@@ -1,6 +1,7 @@
 from list import List
 from nat import Nat
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
+    empty_set_contains_eq, universal_set_contains_eq,
     union_contains_eq, intersection_contains_eq, sets_subset_union, sets_subset_contain_union,
     sets_subset_intersection, set_supset_contains_intersection, union_comm, intersection_comm,
     union_assoc, intersection_assoc, union_idemp, intersection_idemp, union_with_empty_is_self,
@@ -349,6 +350,16 @@ define set_sInf[K, I](family: I -> Set[K]) -> Set[K] {
     indexed_intersection(family)
 }
 
+/// The constant family whose members are empty.
+define set_empty_family[K, I](i: I) -> Set[K] {
+    Set[K].empty_set
+}
+
+/// The constant family whose members are universal.
+define set_universal_family[K, I](i: I) -> Set[K] {
+    Set[K].universal_set
+}
+
 /// Membership in the supremum of a family is membership in some member.
 theorem set_sSup_contains_eq[K, I](family: I -> Set[K], x: K) {
     set_sSup(family).contains(x) = exists(i: I) {
@@ -550,6 +561,13 @@ theorem set_sSup_empty_iff_forall_empty[K, I](family: I -> Set[K]) {
     }
 }
 
+/// The supremum of the constantly empty family is empty.
+theorem set_sSup_empty_family[K, I] {
+    set_sSup(set_empty_family[K, I]) = Set[K].empty_set
+} by {
+    set_sSup_empty_of_forall_empty(set_empty_family[K, I])
+}
+
 /// The infimum of universal sets is universal.
 theorem set_sInf_universal_of_forall_universal[K, I](family: I -> Set[K]) {
     (forall(i: I) { family(i) = Set[K].universal_set }) implies
@@ -594,6 +612,13 @@ theorem set_sInf_universal_iff_forall_universal[K, I](family: I -> Set[K]) {
     set_sInf(family) = Set[K].universal_set = forall(i: I) {
         family(i) = Set[K].universal_set
     }
+}
+
+/// The infimum of the constantly universal family is universal.
+theorem set_sInf_universal_family[K, I] {
+    set_sInf(set_universal_family[K, I]) = Set[K].universal_set
+} by {
+    set_sInf_universal_of_forall_universal(set_universal_family[K, I])
 }
 
 /// The supremum of complements is the complement of the infimum.
@@ -909,6 +934,47 @@ theorem set_list_sInf_is_glb[K, I](items: List[I], family: I -> Set[K], s: Set[K
     set_subset_list_sInf_iff(items, s, family)
 }
 
+/// The supremum indexed by the empty list is empty.
+theorem set_list_sSup_nil[K, I](family: I -> Set[K]) {
+    set_list_sSup(List.nil[I], family) = Set[K].empty_set
+} by {
+    let u = set_list_sSup(List.nil[I], family)
+    forall(x: K) {
+        if u.contains(x) {
+            set_list_sSup_contains_eq(List.nil[I], family, x)
+            let i: I satisfy {
+                List.nil[I].contains(i) and family(i).contains(x)
+            }
+            List.nil[I].contains(i) = false
+            false
+        }
+        empty_set_contains_eq[K](x)
+        u.contains(x) = (Set[K].empty_set).contains(x)
+    }
+    set_ext(u, Set[K].empty_set)
+}
+
+/// The infimum indexed by the empty list is universal.
+theorem set_list_sInf_nil[K, I](family: I -> Set[K]) {
+    set_list_sInf(List.nil[I], family) = Set[K].universal_set
+} by {
+    let u = set_list_sInf(List.nil[I], family)
+    forall(x: K) {
+        set_list_sInf_contains_eq(List.nil[I], family, x)
+        forall(i: I) {
+            if List.nil[I].contains(i) {
+                List.nil[I].contains(i) = false
+                false
+            }
+        }
+        u.contains(x)
+        universal_set_contains_eq[K](x)
+        u.contains(x) = (Set[K].universal_set).contains(x)
+    }
+    set_ext(u, Set[K].universal_set)
+}
+
+
 /// The list supremum is contained in the supremum of the full indexed family.
 theorem set_list_sSup_subset_sSup[K, I](items: List[I], family: I -> Set[K]) {
     set_list_sSup(items, family).subset(set_sSup(family))
@@ -1210,3 +1276,4 @@ theorem set_range_sInf_complement_eq_sSup_complement[K](n: Nat, family: Nat -> S
         range_indexed_union(n, family).c
     set_range_sInf(n, function(i: Nat) { family(i).c }) = set_range_sSup(n, family).c
 }
+
