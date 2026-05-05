@@ -660,7 +660,7 @@
 {"goal":"closed_interval(e.map(b), e.map(a), e.map(x))","proof":[]}
 {"goal":"order_dual_iso_closed_interval_image","proof":[]}
 {"goal":"is_antitone[B, A](e.inv)","proof":[]}
-{"goal":"closed_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":["not closed_interval(e.map(b), e.map(a), e.map(x)) or not is_antitone[B, A](e.inv)","not closed_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"closed_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":[]}
 {"goal":"closed_interval(a, b, x)","proof":[]}
 {"goal":"order_dual_iso_closed_interval_preimage","proof":[]}
 {"goal":"closed_interval(a, b, x)","proof":[]}
@@ -671,7 +671,7 @@
 {"goal":"open_interval(e.map(b), e.map(a), e.map(x))","proof":[]}
 {"goal":"order_dual_iso_open_interval_image","proof":[]}
 {"goal":"is_strict_antitone[B, A](e.inv)","proof":[]}
-{"goal":"open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":["not open_interval(e.map(b), e.map(a), e.map(x)) or not is_strict_antitone[B, A](e.inv)","not open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":[]}
 {"goal":"open_interval(a, b, x)","proof":[]}
 {"goal":"order_dual_iso_open_interval_preimage","proof":[]}
 {"goal":"open_interval(a, b, x)","proof":[]}
@@ -684,7 +684,7 @@
 {"goal":"order_dual_iso_left_open_interval_image","proof":[]}
 {"goal":"is_antitone[B, A](e.inv)","proof":[]}
 {"goal":"is_strict_antitone[B, A](e.inv)","proof":[]}
-{"goal":"left_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":["not right_open_interval(e.map(b), e.map(a), e.map(x)) or not is_strict_antitone[B, A](e.inv) or not is_antitone[B, A](e.inv)","not right_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"left_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":[]}
 {"goal":"left_open_interval(a, b, x)","proof":[]}
 {"goal":"order_dual_iso_left_open_interval_preimage","proof":[]}
 {"goal":"left_open_interval(a, b, x)","proof":[]}
@@ -697,7 +697,7 @@
 {"goal":"order_dual_iso_right_open_interval_image","proof":[]}
 {"goal":"is_antitone[B, A](e.inv)","proof":[]}
 {"goal":"is_strict_antitone[B, A](e.inv)","proof":[]}
-{"goal":"right_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":["not left_open_interval(e.map(b), e.map(a), e.map(x)) or not is_strict_antitone[B, A](e.inv) or not is_antitone[B, A](e.inv)","not left_open_interval(e.map(b), e.map(a), e.map(x))"]}
+{"goal":"right_open_interval(e.inv(e.map(a)), e.inv(e.map(b)), e.inv(e.map(x)))","proof":[]}
 {"goal":"right_open_interval(a, b, x)","proof":[]}
 {"goal":"order_dual_iso_right_open_interval_preimage","proof":[]}
 {"goal":"right_open_interval(a, b, x)","proof":[]}

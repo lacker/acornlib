@@ -5,7 +5,7 @@ from real.real_base import Real
 from real.real_series import seq_lte, neg_seq, const_seq
 from real.real_seq import converges, converges_to, limit, add_seq, tail_bound
 from real.prod_seq import prod_seq
-from order_maps import is_monotone
+from order_maps import is_monotone, monotone_from_forall
 
 /// Two sequences converge and share the same limit.
 define same_limit(a: Nat -> Real, b: Nat -> Real) -> Bool {
@@ -533,6 +533,23 @@ theorem mul_nondecreasing(k: Nat) {
     }
 }
 
+/// The function `n ↦ k * n` is monotone when `k >= 1`.
+theorem mul_monotone(k: Nat) {
+    Nat.1 <= k implies is_monotone(k.mul)
+} by {
+    if Nat.1 <= k {
+        mul_nondecreasing(k)
+        is_nondecreasing_nat(k.mul)
+        forall(i: Nat, j: Nat) {
+            if i <= j {
+                k.mul(i) <= k.mul(j)
+            }
+        }
+        monotone_from_forall(k.mul)
+        is_monotone(k.mul)
+    }
+}
+
 /// The function n -> k * n is unbounded when k >= 1.
 theorem mul_unbounded(k: Nat) {
     Nat.1 <= k implies is_unbounded(k.mul)
@@ -565,6 +582,21 @@ theorem add_nondecreasing(k: Nat) {
     }
 }
 
+/// The function `n ↦ k + n` is monotone.
+theorem add_monotone(k: Nat) {
+    is_monotone(k.add)
+} by {
+    add_nondecreasing(k)
+    is_nondecreasing_nat(k.add)
+    forall(i: Nat, j: Nat) {
+        if i <= j {
+            k.add(i) <= k.add(j)
+        }
+    }
+    monotone_from_forall(k.add)
+    is_monotone(k.add)
+}
+
 /// The function n -> k + n is unbounded.
 theorem add_unbounded(k: Nat) {
     is_unbounded(k.add)
@@ -584,9 +616,9 @@ theorem converges_compose_mul(a: Nat -> Real, k: Nat) {
     implies
     converges_to(compose(a, k.mul), limit(a))
 } by {
-    Nat.1 <= k implies is_nondecreasing_nat(k.mul)
+    Nat.1 <= k implies is_monotone(k.mul)
     Nat.1 <= k implies is_unbounded(k.mul)
-    converges(a) and is_nondecreasing_nat(k.mul) and is_unbounded(k.mul) implies converges_to(compose(a, k.mul), limit(a))
+    converges(a) and is_monotone(k.mul) and is_unbounded(k.mul) implies converges_to(compose(a, k.mul), limit(a))
 }
 
 /// If a sequence converges, then any tail (starting from index k) converges to the same limit.
@@ -595,6 +627,9 @@ theorem converges_compose_add(a: Nat -> Real, k: Nat) {
     implies
     converges_to(compose(a, k.add), limit(a))
 } by {
+    is_monotone(k.add)
+    is_unbounded(k.add)
+    converges(a) and is_monotone(k.add) and is_unbounded(k.add) implies converges_to(compose(a, k.add), limit(a))
 }
 
 /// If a sequence converges, then taking every other element (even indices) preserves convergence.

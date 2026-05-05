@@ -69,6 +69,18 @@ theorem monotone_apply[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) 
     }
 }
 
+/// A map is monotone when it carries each ordered pair to an ordered pair.
+theorem monotone_from_forall[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    forall(x: A, y: A) { x <= y implies f(x) <= f(y) } implies is_monotone(f)
+} by {
+    if forall(x: A, y: A) { x <= y implies f(x) <= f(y) } {
+        is_monotone(f) = forall(x: A, y: A) {
+            x <= y implies f(x) <= f(y)
+        }
+        is_monotone(f)
+    }
+}
+
 /// An antitone map reverses an explicitly ordered pair.
 theorem antitone_step[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) {
     is_antitone(f) and x <= y implies f(y) <= f(x)
@@ -88,6 +100,18 @@ theorem antitone_apply[A: PartialOrder, B: PartialOrder](f: A -> B, x: A, y: A) 
     if is_antitone(f) and x <= y {
         antitone_step(f, x, y)
         f(y) <= f(x)
+    }
+}
+
+/// A map is antitone when it reverses each ordered pair.
+theorem antitone_from_forall[A: PartialOrder, B: PartialOrder](f: A -> B) {
+    forall(x: A, y: A) { x <= y implies f(y) <= f(x) } implies is_antitone(f)
+} by {
+    if forall(x: A, y: A) { x <= y implies f(y) <= f(x) } {
+        is_antitone(f) = forall(x: A, y: A) {
+            x <= y implies f(y) <= f(x)
+        }
+        is_antitone(f)
     }
 }
 
