@@ -1727,6 +1727,212 @@ theorem set_sup_sInf_distrib_right[K, I](family: I -> Set[K], s: Set[K]) {
     set_ext(u, v)
 }
 
+/// Binary supremum distributes over a family supremum on the right.
+theorem set_sup_sSup_distrib_left[K, I: Inhabited](s: Set[K], family: I -> Set[K]) {
+    set_sup(s, set_sSup(family)) = set_sSup(set_sup_family(s, family))
+} by {
+    let u = set_sup(s, set_sSup(family))
+    let v = set_sSup(set_sup_family(s, family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sup_contains_eq(s, set_sSup(family), x)
+            if s.contains(x) {
+                let i: I satisfy {
+                    true
+                }
+                set_sup_contains_eq(s, family(i), x)
+                set_sup(s, family(i)).contains(x)
+                set_sup_family(s, family, i) = set_sup(s, family(i))
+                set_sup_family(s, family, i).contains(x)
+                set_sSup_contains_eq(set_sup_family(s, family), x)
+                v.contains(x)
+            } else {
+                set_sSup(family).contains(x)
+                set_sSup_contains_eq(family, x)
+                let i: I satisfy {
+                    family(i).contains(x)
+                }
+                set_sup_contains_eq(s, family(i), x)
+                set_sup(s, family(i)).contains(x)
+                set_sup_family(s, family, i) = set_sup(s, family(i))
+                set_sup_family(s, family, i).contains(x)
+                set_sSup_contains_eq(set_sup_family(s, family), x)
+                v.contains(x)
+            }
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_sup_family(s, family), x)
+            let i: I satisfy {
+                set_sup_family(s, family, i).contains(x)
+            }
+            set_sup_family(s, family, i) = set_sup(s, family(i))
+            set_sup_contains_eq(s, family(i), x)
+            if s.contains(x) {
+                set_sup_contains_eq(s, set_sSup(family), x)
+                u.contains(x)
+            } else {
+                family(i).contains(x)
+                set_sSup_contains_eq(family, x)
+                set_sSup(family).contains(x)
+                set_sup_contains_eq(s, set_sSup(family), x)
+                u.contains(x)
+            }
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Binary supremum distributes over a family supremum on the left.
+theorem set_sup_sSup_distrib_right[K, I: Inhabited](family: I -> Set[K], s: Set[K]) {
+    set_sup(set_sSup(family), s) = set_sSup(set_sup_family_right(family, s))
+} by {
+    let u = set_sup(set_sSup(family), s)
+    let v = set_sSup(set_sup_family_right(family, s))
+    forall(x: K) {
+        if u.contains(x) {
+            set_sup_contains_eq(set_sSup(family), s, x)
+            if s.contains(x) {
+                let i: I satisfy {
+                    true
+                }
+                set_sup_contains_eq(family(i), s, x)
+                set_sup(family(i), s).contains(x)
+                set_sup_family_right(family, s, i) = set_sup(family(i), s)
+                set_sup_family_right(family, s, i).contains(x)
+                set_sSup_contains_eq(set_sup_family_right(family, s), x)
+                v.contains(x)
+            } else {
+                set_sSup(family).contains(x)
+                set_sSup_contains_eq(family, x)
+                let i: I satisfy {
+                    family(i).contains(x)
+                }
+                set_sup_contains_eq(family(i), s, x)
+                set_sup(family(i), s).contains(x)
+                set_sup_family_right(family, s, i) = set_sup(family(i), s)
+                set_sup_family_right(family, s, i).contains(x)
+                set_sSup_contains_eq(set_sup_family_right(family, s), x)
+                v.contains(x)
+            }
+        }
+        if v.contains(x) {
+            set_sSup_contains_eq(set_sup_family_right(family, s), x)
+            let i: I satisfy {
+                set_sup_family_right(family, s, i).contains(x)
+            }
+            set_sup_family_right(family, s, i) = set_sup(family(i), s)
+            set_sup_contains_eq(family(i), s, x)
+            if s.contains(x) {
+                set_sup_contains_eq(set_sSup(family), s, x)
+                u.contains(x)
+            } else {
+                family(i).contains(x)
+                set_sSup_contains_eq(family, x)
+                set_sSup(family).contains(x)
+                set_sup_contains_eq(set_sSup(family), s, x)
+                u.contains(x)
+            }
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Binary infimum distributes over a family infimum on the right.
+theorem set_inf_sInf_distrib_left[K, I: Inhabited](s: Set[K], family: I -> Set[K]) {
+    set_inf(s, set_sInf(family)) = set_sInf(set_inf_family(s, family))
+} by {
+    let u = set_inf(s, set_sInf(family))
+    let v = set_sInf(set_inf_family(s, family))
+    forall(x: K) {
+        if u.contains(x) {
+            set_inf_contains_eq(s, set_sInf(family), x)
+            s.contains(x)
+            set_sInf(family).contains(x)
+            set_sInf_contains_eq(family, x)
+            forall(i: I) {
+                family(i).contains(x)
+                set_inf_contains_eq(s, family(i), x)
+                set_inf(s, family(i)).contains(x)
+                set_inf_family(s, family, i) = set_inf(s, family(i))
+                set_inf_family(s, family, i).contains(x)
+            }
+            set_sInf_contains_eq(set_inf_family(s, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_inf_family(s, family), x)
+            let i0: I satisfy {
+                true
+            }
+            set_inf_family(s, family, i0).contains(x)
+            set_inf_family(s, family, i0) = set_inf(s, family(i0))
+            set_inf_contains_eq(s, family(i0), x)
+            s.contains(x)
+            forall(i: I) {
+                set_inf_family(s, family, i).contains(x)
+                set_inf_family(s, family, i) = set_inf(s, family(i))
+                set_inf_contains_eq(s, family(i), x)
+                family(i).contains(x)
+            }
+            set_sInf_contains_eq(family, x)
+            set_sInf(family).contains(x)
+            set_inf_contains_eq(s, set_sInf(family), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Binary infimum distributes over a family infimum on the left.
+theorem set_inf_sInf_distrib_right[K, I: Inhabited](family: I -> Set[K], s: Set[K]) {
+    set_inf(set_sInf(family), s) = set_sInf(set_inf_family_right(family, s))
+} by {
+    let u = set_inf(set_sInf(family), s)
+    let v = set_sInf(set_inf_family_right(family, s))
+    forall(x: K) {
+        if u.contains(x) {
+            set_inf_contains_eq(set_sInf(family), s, x)
+            set_sInf(family).contains(x)
+            s.contains(x)
+            set_sInf_contains_eq(family, x)
+            forall(i: I) {
+                family(i).contains(x)
+                set_inf_contains_eq(family(i), s, x)
+                set_inf(family(i), s).contains(x)
+                set_inf_family_right(family, s, i) = set_inf(family(i), s)
+                set_inf_family_right(family, s, i).contains(x)
+            }
+            set_sInf_contains_eq(set_inf_family_right(family, s), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_contains_eq(set_inf_family_right(family, s), x)
+            let i0: I satisfy {
+                true
+            }
+            set_inf_family_right(family, s, i0).contains(x)
+            set_inf_family_right(family, s, i0) = set_inf(family(i0), s)
+            set_inf_contains_eq(family(i0), s, x)
+            s.contains(x)
+            forall(i: I) {
+                set_inf_family_right(family, s, i).contains(x)
+                set_inf_family_right(family, s, i) = set_inf(family(i), s)
+                set_inf_contains_eq(family(i), s, x)
+                family(i).contains(x)
+            }
+            set_sInf_contains_eq(family, x)
+            set_sInf(family).contains(x)
+            set_inf_contains_eq(set_sInf(family), s, x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
 /// The supremum of the members whose indices occur in a list.
 define set_list_sSup[K, I](items: List[I], family: I -> Set[K]) -> Set[K] {
     list_indexed_union(items, family)
