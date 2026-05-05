@@ -23,6 +23,9 @@
 {"goal":"a(m + k) = a(n)","proof":[]}
 {"goal":"a(m) <= a(n)","proof":[]}
 {"goal":"distant_increasing","proof":[]}
+{"goal":"n <= n.suc","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(n, n.suc)","function(x0: Nat) { x0 + Nat.1 = x0.suc }(n)","not exists(k0: Nat) { n.suc = n + k0 }","function(x0: Nat) { n + x0 != n.suc }(Nat.1)"]}
+{"goal":"a(n) <= a(n.suc)","proof":["function[T0: lib(order).PartialOrder, T1: lib(order).PartialOrder](x0: T0 -> T1, x1: T0, x2: T0) { not is_monotone[T0, T1](x0) or not x1 <= x2 or x0(x1) <= x0(x2) }[Nat, Real](a, n, n.suc)"]}
+{"goal":"monotone_is_increasing","proof":["function(x0: Nat -> Real) { forall(x1: Nat) { x0(x1) <= x0(x1.suc) } = is_increasing(x0) }(a)"]}
 {"goal":"limit(a) < a(n)","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { T0.gt(x0, x1) = T0.lt(x1, x0) }[Real](a(n), limit(a))"]}
 {"goal":"exists(k0: Real) { limit(a) < k0 and k0 < a(n) }","proof":["function(x0: Real, x1: Real) { not x0 < x1 or exists(k0: Rat) { x0 < lib(real.real_base).real_from_rat(k0) and lib(real.real_base).real_from_rat(k0) < x1 } }(limit(a), a(n))","exists(k0: Rat) { limit(a) < lib(real.real_base).real_from_rat(k0) and lib(real.real_base).real_from_rat(k0) < a(n) }","let w36: Rat satisfy { limit(a) < lib(real.real_base).real_from_rat(w36) and lib(real.real_base).real_from_rat(w36) < a(n) }","function(x0: Real) { not (limit(a) < x0 and x0 < a(n)) }(lib(real.real_base).real_from_rat(w36))"]}
 {"goal":"eps.is_positive","proof":["function(x0: Real, x1: Real) { not x0 < x1 or (x1 - x0).is_positive }(limit(a), ub)"]}
@@ -93,6 +96,15 @@
 {"goal":"exists(k0: Real) { is_upper_bound(a, k0) }","proof":["function(x0: Nat -> Real) { exists(k0: Real) { is_upper_bound(x0, k0) } = has_upper_bound_seq(x0) }(a)"]}
 {"goal":"converges(a)","proof":["function(x0: Nat -> Real, x1: Real) { not is_upper_bound(x0, x1) or not is_increasing(x0) or converges(x0) }(a, ub)"]}
 {"goal":"increasing_bounded_above_converges","proof":[]}
+{"goal":"is_increasing(a)","proof":["function(x0: Nat -> Real) { not is_monotone[Nat, Real](x0) or is_increasing(x0) }(a)","is_monotone[Nat, Real](a)"]}
+{"goal":"converges(a)","proof":["function(x0: Nat -> Real, x1: Real) { not is_upper_bound(x0, x1) or not is_increasing(x0) or converges(x0) }(a, b)"]}
+{"goal":"monotone_bounded_above_converges","proof":[]}
+{"goal":"is_increasing(a)","proof":["function(x0: Nat -> Real) { not is_monotone[Nat, Real](x0) or is_increasing(x0) }(a)","is_monotone[Nat, Real](a)"]}
+{"goal":"converges(a)","proof":["function(x0: Nat -> Real) { not has_upper_bound_seq(x0) or not is_increasing(x0) or converges(x0) }(a)"]}
+{"goal":"monotone_has_upper_bound_converges","proof":[]}
+{"goal":"is_increasing(a)","proof":["function(x0: Nat -> Real) { not is_monotone[Nat, Real](x0) or is_increasing(x0) }(a)","is_monotone[Nat, Real](a)"]}
+{"goal":"is_upper_bound(a, limit(a))","proof":["function(x0: Nat -> Real) { not is_increasing(x0) or not converges(x0) or is_upper_bound(x0, limit(x0)) }(a)"]}
+{"goal":"monotone_convergent_bounded_by_limit","proof":[]}
 {"goal":"0 <= a(n)","proof":["function(x0: Nat -> Real, x1: Real, x2: Nat) { not is_lower_bound(x0, x1) or x1 <= x0(x2) }(a, 0, n)"]}
 {"goal":"partial[Real](a, n) + 0 = partial[Real](a, n)","proof":["function[T0: lib(add_comm_semigroup).AddCommSemigroup](x0: T0, x1: T0) { T0.add(x0, x1) = T0.add(x1, x0) }[Real](partial[Real](a, n), 0)","function(x0: Real) { 0 + x0 = x0 }(partial[Real](a, n))"]}
 {"goal":"partial[Real](a, n) + 0 <= partial[Real](a, n) + a(n)","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 <= x1 or x2 + x0 <= x2 + x1 }(0, a(n), partial[Real](a, n))"]}
@@ -400,6 +412,9 @@
 {"goal":"-a(m) <= -a(n)","proof":[]}
 {"goal":"a(n) <= a(m)","proof":["function(x0: Real, x1: Real) { not -x0 <= x1 or -x1 <= x0 }(a(m), -a(n))","function(x0: Real) { --x0 = x0 }(a(n))"]}
 {"goal":"distant_decreasing","proof":[]}
+{"goal":"n <= n.suc","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(n, n.suc)","function(x0: Nat) { x0 + Nat.1 = x0.suc }(n)","not exists(k0: Nat) { n.suc = n + k0 }","function(x0: Nat) { n + x0 != n.suc }(Nat.1)"]}
+{"goal":"a(n.suc) <= a(n)","proof":["function[T0: lib(order).PartialOrder, T1: lib(order).PartialOrder](x0: T0 -> T1, x1: T0, x2: T0) { not is_antitone[T0, T1](x0) or not x1 <= x2 or x0(x2) <= x0(x1) }[Nat, Real](a, n, n.suc)"]}
+{"goal":"antitone_is_decreasing","proof":["function(x0: Nat -> Real) { forall(x1: Nat) { x0(x1.suc) <= x0(x1) } = is_decreasing_seq(x0) }(a)"]}
 {"goal":"Nat.0 <= n","proof":["function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(n, Nat.0)","n < Nat.0","function(x0: Nat) { not x0 <= Nat.0 or Nat.0 = x0 }(n)","function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { T0.lte(x0, x1) or T0.lte(x1, x0) }[Nat](n, Nat.0)"]}
 {"goal":"a(Nat.0) <= a(n)","proof":["function(x0: Nat, x1: Nat, x2: Nat -> Real) { not x0 <= x1 or not is_increasing(x2) or x2(x0) <= x2(x1) }(Nat.0, n, a)"]}
 {"goal":"increasing_lower_bound_first","proof":["function(x0: Real, x1: Nat -> Real) { forall(x2: Nat) { x0 <= x1(x2) } = is_lower_bound(x1, x0) }(a(Nat.0), a)","let w0: Nat satisfy { not a(Nat.0) <= a(w0) }","function(x0: Nat) { not is_increasing(a) or a(Nat.0) <= a(x0) }(w0)"]}
@@ -430,6 +445,12 @@
 {"goal":"exists(k0: Real) { is_lower_bound(a, k0) }","proof":["function(x0: Nat -> Real) { exists(k0: Real) { is_lower_bound(x0, k0) } = has_lower_bound_seq(x0) }(a)"]}
 {"goal":"converges(a)","proof":["function(x0: Nat -> Real, x1: Real) { not is_decreasing_seq(x0) or not is_lower_bound(x0, x1) or converges(x0) }(a, lb)"]}
 {"goal":"decreasing_has_lower_bound_converges","proof":[]}
+{"goal":"is_decreasing_seq(a)","proof":["function(x0: Nat -> Real) { not is_antitone[Nat, Real](x0) or is_decreasing_seq(x0) }(a)","is_antitone[Nat, Real](a)"]}
+{"goal":"converges(a)","proof":["function(x0: Nat -> Real, x1: Real) { not is_decreasing_seq(x0) or not is_lower_bound(x0, x1) or converges(x0) }(a, lb)"]}
+{"goal":"antitone_bounded_below_converges","proof":[]}
+{"goal":"is_decreasing_seq(a)","proof":["function(x0: Nat -> Real) { not is_antitone[Nat, Real](x0) or is_decreasing_seq(x0) }(a)","is_antitone[Nat, Real](a)"]}
+{"goal":"converges(a)","proof":["function(x0: Nat -> Real) { not is_decreasing_seq(x0) or not has_lower_bound_seq(x0) or converges(x0) }(a)"]}
+{"goal":"antitone_has_lower_bound_converges","proof":[]}
 {"goal":"converges(neg_seq(a))","proof":["function(x0: Nat -> Real) { not converges(x0) or converges(neg_seq(x0)) }(a)"]}
 {"goal":"converges_to(neg_seq(a), -limit(a))","proof":["function(x0: Nat -> Real) { not converges(x0) or converges_to(neg_seq(x0), -limit(x0)) }(a)"]}
 {"goal":"converges_to(neg_seq(a), limit(neg_seq(a)))","proof":["function(x0: Nat -> Real) { not converges(x0) or converges_to(x0, limit(x0)) }(neg_seq(a))"]}
@@ -444,6 +465,9 @@
 {"goal":"-a(n) <= -limit(a)","proof":[]}
 {"goal":"limit(a) <= a(n)","proof":["function(x0: Real, x1: Real) { not -x0 <= x1 or -x1 <= x0 }(a(n), -limit(a))","function(x0: Real) { --x0 = x0 }(limit(a))"]}
 {"goal":"decreasing_convergent_bounded_by_limit","proof":["function(x0: Real, x1: Nat -> Real) { forall(x2: Nat) { x0 <= x1(x2) } = is_lower_bound(x1, x0) }(limit(a), a)"]}
+{"goal":"is_decreasing_seq(a)","proof":["function(x0: Nat -> Real) { not is_antitone[Nat, Real](x0) or is_decreasing_seq(x0) }(a)","is_antitone[Nat, Real](a)"]}
+{"goal":"is_lower_bound(a, limit(a))","proof":["function(x0: Nat -> Real) { not is_decreasing_seq(x0) or not converges(x0) or is_lower_bound(x0, limit(x0)) }(a)"]}
+{"goal":"antitone_convergent_bounded_by_limit","proof":[]}
 {"goal":"add_seq(a, b, i) = a(i) + b(i)","proof":["function(x0: Nat -> Real, x1: Nat, x2: Nat -> Real) { x0(x1) + x2(x1) = add_seq(x0, x2, x1) }(a, i, b)"]}
 {"goal":"add_seq(b, a, i) = b(i) + a(i)","proof":["function(x0: Nat -> Real, x1: Nat, x2: Nat -> Real) { x0(x1) + x2(x1) = add_seq(x0, x2, x1) }(b, i, a)"]}
 {"goal":"a(i) + b(i) = b(i) + a(i)","proof":["function(x0: Real, x1: Real) { x0 + x1 = x1 + x0 }(b(i), a(i))"]}

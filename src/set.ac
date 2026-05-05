@@ -1650,6 +1650,178 @@ theorem subset_preimage_of_set_image_subset[T, U](s: Set[T], t: Set[U], f: T -> 
     }
 }
 
+/// True if a map between set families preserves inclusion.
+define is_subset_monotone_map[T, U](phi: Set[T] -> Set[U]) -> Bool {
+    forall(a: Set[T], b: Set[T]) {
+        a.subset(b) implies phi(a).subset(phi(b))
+    }
+}
+
+/// True if a self-map on sets contains every set in its image.
+define is_set_extensive_map[T](phi: Set[T] -> Set[T]) -> Bool {
+    forall(s: Set[T]) {
+        s.subset(phi(s))
+    }
+}
+
+/// True if a self-map on sets is contained in every set it acts on.
+define is_set_reductive_map[T](phi: Set[T] -> Set[T]) -> Bool {
+    forall(s: Set[T]) {
+        phi(s).subset(s)
+    }
+}
+
+/// True if a self-map on sets is unchanged after a second application.
+define is_set_idempotent_map[T](phi: Set[T] -> Set[T]) -> Bool {
+    forall(s: Set[T]) {
+        phi(phi(s)) = phi(s)
+    }
+}
+
+/// True if a self-map on sets is a closure operator for inclusion.
+define is_set_closure_operator[T](close: Set[T] -> Set[T]) -> Bool {
+    is_subset_monotone_map(close) and is_set_extensive_map(close) and
+    is_set_idempotent_map(close)
+}
+
+/// True if a self-map on sets is a kernel operator for inclusion.
+define is_set_kernel_operator[T](kernel: Set[T] -> Set[T]) -> Bool {
+    is_subset_monotone_map(kernel) and is_set_reductive_map(kernel) and
+    is_set_idempotent_map(kernel)
+}
+
+/// A set closure operator preserves inclusion.
+theorem set_closure_operator_is_monotone[T](close: Set[T] -> Set[T]) {
+    is_set_closure_operator(close) implies is_subset_monotone_map(close)
+} by {
+    if is_set_closure_operator(close) {
+        is_set_closure_operator(close) =
+            (is_subset_monotone_map(close) and is_set_extensive_map(close) and
+            is_set_idempotent_map(close))
+        is_subset_monotone_map(close)
+    }
+}
+
+/// A set closure operator contains each set.
+theorem set_closure_operator_is_extensive[T](close: Set[T] -> Set[T]) {
+    is_set_closure_operator(close) implies is_set_extensive_map(close)
+} by {
+    if is_set_closure_operator(close) {
+        is_set_closure_operator(close) =
+            (is_subset_monotone_map(close) and is_set_extensive_map(close) and
+            is_set_idempotent_map(close))
+        is_set_extensive_map(close)
+    }
+}
+
+/// A set closure operator is unchanged after two applications.
+theorem set_closure_operator_is_idempotent[T](close: Set[T] -> Set[T]) {
+    is_set_closure_operator(close) implies is_set_idempotent_map(close)
+} by {
+    if is_set_closure_operator(close) {
+        is_set_closure_operator(close) =
+            (is_subset_monotone_map(close) and is_set_extensive_map(close) and
+            is_set_idempotent_map(close))
+        is_set_idempotent_map(close)
+    }
+}
+
+/// A set kernel operator preserves inclusion.
+theorem set_kernel_operator_is_monotone[T](kernel: Set[T] -> Set[T]) {
+    is_set_kernel_operator(kernel) implies is_subset_monotone_map(kernel)
+} by {
+    if is_set_kernel_operator(kernel) {
+        is_set_kernel_operator(kernel) =
+            (is_subset_monotone_map(kernel) and is_set_reductive_map(kernel) and
+            is_set_idempotent_map(kernel))
+        is_subset_monotone_map(kernel)
+    }
+}
+
+/// A set kernel operator is contained in each set.
+theorem set_kernel_operator_is_reductive[T](kernel: Set[T] -> Set[T]) {
+    is_set_kernel_operator(kernel) implies is_set_reductive_map(kernel)
+} by {
+    if is_set_kernel_operator(kernel) {
+        is_set_kernel_operator(kernel) =
+            (is_subset_monotone_map(kernel) and is_set_reductive_map(kernel) and
+            is_set_idempotent_map(kernel))
+        is_set_reductive_map(kernel)
+    }
+}
+
+/// A set kernel operator is unchanged after two applications.
+theorem set_kernel_operator_is_idempotent[T](kernel: Set[T] -> Set[T]) {
+    is_set_kernel_operator(kernel) implies is_set_idempotent_map(kernel)
+} by {
+    if is_set_kernel_operator(kernel) {
+        is_set_kernel_operator(kernel) =
+            (is_subset_monotone_map(kernel) and is_set_reductive_map(kernel) and
+            is_set_idempotent_map(kernel))
+        is_set_idempotent_map(kernel)
+    }
+}
+
+/// True if two set maps are adjoint through inclusion.
+define is_set_galois_connection[T, U](
+    lower: Set[T] -> Set[U],
+    upper: Set[U] -> Set[T]
+) -> Bool {
+    forall(s: Set[T], t: Set[U]) {
+        lower(s).subset(t) = s.subset(upper(t))
+    }
+}
+
+/// The direct image map on subsets.
+define set_image_map[T, U](f: T -> U, s: Set[T]) -> Set[U] {
+    set_image(s, f)
+}
+
+/// The inverse image map on subsets.
+define set_preimage_map[T, U](f: T -> U, s: Set[U]) -> Set[T] {
+    set_preimage(f, s)
+}
+
+/// The direct image map is ordinary set image.
+theorem set_image_map_at[T, U](f: T -> U, s: Set[T]) {
+    set_image_map(f, s) = set_image(s, f)
+}
+
+/// The inverse image map is ordinary set preimage.
+theorem set_preimage_map_at[T, U](f: T -> U, s: Set[U]) {
+    set_preimage_map(f, s) = set_preimage(f, s)
+}
+
+/// A set Galois connection is exactly its inclusion-adjunction law.
+theorem set_galois_connection_at[T, U](
+    lower: Set[T] -> Set[U],
+    upper: Set[U] -> Set[T],
+    s: Set[T],
+    t: Set[U]
+) {
+    is_set_galois_connection(lower, upper) implies
+    (lower(s).subset(t) = s.subset(upper(t)))
+} by {
+    if is_set_galois_connection(lower, upper) {
+        is_set_galois_connection(lower, upper) = forall(a: Set[T], b: Set[U]) {
+            lower(a).subset(b) = a.subset(upper(b))
+        }
+        lower(s).subset(t) = s.subset(upper(t))
+    }
+}
+
+/// The image and preimage maps of a function form a set Galois connection.
+theorem set_image_preimage_is_set_galois_connection[T, U](f: T -> U) {
+    is_set_galois_connection(set_image_map(f), set_preimage_map(f))
+} by {
+    forall(s: Set[T], t: Set[U]) {
+        set_image_map_at(f, s)
+        set_preimage_map_at(f, t)
+        set_image_subset_iff_subset_preimage(s, t, f)
+        set_image_map(f, s).subset(t) = s.subset(set_preimage_map(f, t))
+    }
+}
+
 /// The closure of a source set induced by image followed by preimage.
 define set_image_preimage_closure[T, U](f: T -> U, s: Set[T]) -> Set[T] {
     set_preimage(f, set_image(s, f))
@@ -1741,6 +1913,31 @@ theorem set_image_preimage_closure_of_injective[T, U](f: T -> U, s: Set[T]) {
         set_image_preimage_closure(f, s) = set_preimage(f, set_image(s, f))
         set_image_preimage_closure(f, s) = s
     }
+}
+
+/// The image-preimage closure is a closure operator for inclusion.
+theorem set_image_preimage_closure_is_set_closure_operator[T, U](f: T -> U) {
+    is_set_closure_operator(set_image_preimage_closure(f))
+} by {
+    forall(s: Set[T], t: Set[T]) {
+        if s.subset(t) {
+            set_image_preimage_closure_monotone(f, s, t)
+            set_image_preimage_closure(f, s).subset(set_image_preimage_closure(f, t))
+        }
+    }
+    is_subset_monotone_map(set_image_preimage_closure(f))
+    forall(s: Set[T]) {
+        set_image_preimage_closure_extensive(f, s)
+        s.subset(set_image_preimage_closure(f, s))
+    }
+    is_set_extensive_map(set_image_preimage_closure(f))
+    forall(s: Set[T]) {
+        set_image_preimage_closure_idempotent(f, s)
+        set_image_preimage_closure(f, set_image_preimage_closure(f, s)) =
+            set_image_preimage_closure(f, s)
+    }
+    is_set_idempotent_map(set_image_preimage_closure(f))
+    is_set_closure_operator(set_image_preimage_closure(f))
 }
 
 /// The kernel of a target set induced by preimage followed by image.
@@ -1860,6 +2057,31 @@ theorem set_preimage_image_kernel_of_surjective[T, U](f: T -> U, s: Set[U]) {
         set_preimage_image_kernel(f, s) = set_image(set_preimage(f, s), f)
         set_preimage_image_kernel(f, s) = s
     }
+}
+
+/// The preimage-image kernel is a kernel operator for inclusion.
+theorem set_preimage_image_kernel_is_set_kernel_operator[T, U](f: T -> U) {
+    is_set_kernel_operator(set_preimage_image_kernel(f))
+} by {
+    forall(s: Set[U], t: Set[U]) {
+        if s.subset(t) {
+            set_preimage_image_kernel_monotone(f, s, t)
+            set_preimage_image_kernel(f, s).subset(set_preimage_image_kernel(f, t))
+        }
+    }
+    is_subset_monotone_map(set_preimage_image_kernel(f))
+    forall(s: Set[U]) {
+        set_preimage_image_kernel_reductive(f, s)
+        set_preimage_image_kernel(f, s).subset(s)
+    }
+    is_set_reductive_map(set_preimage_image_kernel(f))
+    forall(s: Set[U]) {
+        set_preimage_image_kernel_idempotent(f, s)
+        set_preimage_image_kernel(f, set_preimage_image_kernel(f, s)) =
+            set_preimage_image_kernel(f, s)
+    }
+    is_set_idempotent_map(set_preimage_image_kernel(f))
+    is_set_kernel_operator(set_preimage_image_kernel(f))
 }
 
 /// Under injectivity, image inclusion reflects to source inclusion.
