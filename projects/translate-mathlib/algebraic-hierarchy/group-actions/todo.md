@@ -2,8 +2,7 @@
 
 Goal: provide a standard language for symmetry actions before representation theory arrives.
 
-- [ ] Prove orbit transitivity and package orbits as equivalence classes when proof search can handle the composition witness
-- [ ] Support faithful and transitive actions
+- [ ] Package orbits as equivalence classes and add the `is_transitive(orbit_relation(a))` wrapper when proof search can handle the generic relation obligation
 - [ ] Add action homomorphisms and equivariant maps
 - [ ] Connect permutation actions with finite groups
 - [ ] Add product and restricted actions

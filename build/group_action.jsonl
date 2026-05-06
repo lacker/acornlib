@@ -23,6 +23,34 @@
 {"goal":"a.act(g.inverse, y) = x","proof":[]}
 {"goal":"exists(k0: G) { k0 = g.inverse and x = a.act(k0, y) }","proof":[]}
 {"goal":"orbit_contains_symmetric","proof":["function[T0: Group, T1](x0: MulAction[T0, T1], x1: T1, x2: T1) { exists(k0: T0) { x0.act(k0, x1) = x2 } = orbit_contains[T0, T1](x0, x1, x2) }[G, X](a, y, x)","function[T0, T1: Group](x0: MulAction[T1, T0], x1: T0) { Set.new[T0](orbit_contains[T1, T0](x0, x1)) = orbit[T1, T0](x0, x1) }[X, G](a, y)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[X](orbit_contains[G, X](a, y), x)","let w0: G satisfy { exists(k0: G) { w0.inverse = k0 and a.act(k0, y) = x } }","let w1: G satisfy { w0.inverse = w1 and a.act(w1, y) = x }","function[T0](x0: T0 -> Bool, x1: T0) { not x0(x1) or x1 ∈ Set.new[T0](x0) }[X](orbit_contains[G, X](a, y), x)","not x ∈ Set.new[X](orbit_contains[G, X](a, y))","function[T0: Group, T1](x0: MulAction[T0, T1], x1: T1, x2: T1) { not exists(k0: T0) { x0.act(k0, x1) = x2 } or orbit_contains[T0, T1](x0, x1, x2) }[G, X](a, y, x)","let w2: G satisfy { w0.inverse = w2 and a.act(w2, y) = x }","w0.inverse = w2 and a.act(w2, y) = x","function[T0: Group, T1](x0: MulAction[T0, T1], x1: T0, x2: T1, x3: T1) { x0.act(x1, x2) != x3 or orbit_contains[T0, T1](x0, x2, x3) }[G, X](a, w2, y, x)"]}
+{"goal":"exists(k0: G) { y = a.act(k0, x) }","proof":[]}
+{"goal":"a.act(g * h, x) = a.act(g, a.act(h, x))","proof":[]}
+{"goal":"a.act(g, y) = a.act(g * h, x)","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(a.act(g, y))","proof":[]}
+{"goal":"orbit_contains_action_of_contains","proof":[]}
+{"goal":"exists(k0: G) { z = a.act(k0, y) }","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(a.act(h, y))","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(z)","proof":[]}
+{"goal":"orbit_contains_transitive","proof":[]}
+{"goal":"orbit_relation[G, X](a, x, y) = orbit_contains[G, X](a, x, y)","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(y) = orbit_contains[G, X](a, x, y)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T0) { Set.new[T0](orbit_contains[T1, T0](x0, x1)) = orbit[T1, T0](x0, x1) }[X, G](a, x)","function[T0](x0: T0 -> Bool, x1: T0) { x1 ∈ Set.new[T0](x0) = x0(x1) }[X](orbit_contains[G, X](a, x), y)"]}
+{"goal":"orbit_relation_eq_contains","proof":[]}
+{"goal":"orbit_relation[G, X](a, x, x)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T0, x2: T0) { x2 ∈ orbit[T1, T0](x0, x1) = orbit_relation[T1, T0](x0, x1, x2) }[X, G](a, x, x)"]}
+{"goal":"orbit_relation_is_reflexive","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0) { x0(x1, x1) } = is_reflexive[T0](x0) }[X](orbit_relation[G, X](a))","let w0: X satisfy { not orbit_relation[G, X](a, w0, w0) }","function(x0: X) { orbit_relation[G, X](a, x0, x0) }(w0)"]}
+{"goal":"orbit[G, X](a, x).contains(y)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T0, x2: T0) { x2 ∈ orbit[T1, T0](x0, x1) = orbit_relation[T1, T0](x0, x1, x2) }[X, G](a, x, y)"]}
+{"goal":"orbit[G, X](a, y).contains(x)","proof":[]}
+{"goal":"orbit_relation[G, X](a, y, x)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T0, x2: T0) { x2 ∈ orbit[T1, T0](x0, x1) = orbit_relation[T1, T0](x0, x1, x2) }[X, G](a, y, x)"]}
+{"goal":"orbit_relation_is_symmetric","proof":["function[T0](x0: (T0, T0) -> Bool) { forall(x1: T0, x2: T0) { not x0(x1, x2) or x0(x2, x1) } = is_symmetric[T0](x0) }[X](orbit_relation[G, X](a))","let w0: X satisfy { exists(k0: X) { orbit_relation[G, X](a, w0, k0) and not orbit_relation[G, X](a, k0, w0) } }","let w1: X satisfy { orbit_relation[G, X](a, w0, w1) and not orbit_relation[G, X](a, w1, w0) }","let w2: X satisfy { orbit_relation[G, X](a, w0, w2) and not orbit_relation[G, X](a, w2, w0) }","function(x0: X, x1: X) { not orbit_relation[G, X](a, x0, x1) or orbit_relation[G, X](a, x1, x0) }(w0, w2)"]}
+{"goal":"orbit[G, X](a, y).contains(x)","proof":[]}
+{"goal":"orbit[G, X](a, y).contains(z)","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(z)","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(z) = orbit[G, X](a, y).contains(z)","proof":[]}
+{"goal":"orbit[G, X](a, x) = orbit[G, X](a, y)","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { x0.contains != x1.contains or x0 = x1 }[X](orbit[G, X](a, y), orbit[G, X](a, x))"]}
+{"goal":"orbit_eq_of_contains","proof":[]}
+{"goal":"orbit[G, X](a, x).contains(y)","proof":[]}
+{"goal":"orbit[G, X](a, x) = orbit[G, X](a, y)","proof":[]}
+{"goal":"orbit[G, X](a, x) = orbit[G, X](a, y) = orbit[G, X](a, x).contains(y)","proof":[]}
+{"goal":"orbit_eq_iff_contains","proof":[]}
 {"goal":"stabilizer_contains(a, x, G.1)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T1, x2: T0) { x0.act(x1, x2) = x2 = stabilizer_contains[T1, T0](x0, x2, x1) }[X, G](a, G.1, x)"]}
 {"goal":"stabilizer_identity_constraint","proof":["function[T0: Group](x0: T0 -> Bool) { identity_constraint[T0](x0) = x0(T0.1) }[G](stabilizer_contains[G, X](a, x))"]}
 {"goal":"a.act(g, x) = x","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T1, x2: T0) { x0.act(x1, x2) = x2 = stabilizer_contains[T1, T0](x0, x2, x1) }[X, G](a, g, x)"]}
@@ -49,6 +77,14 @@
 {"goal":"fixed_points_contains(a, g, x) = (a.act(g, x) = x)","proof":["function[T0, T1: Group](x0: MulAction[T1, T0], x1: T1, x2: T0) { x0.act(x1, x2) = x2 = fixed_points_contains[T1, T0](x0, x1, x2) }[X, G](a, g, x)"]}
 {"goal":"fixed_points_contains_eq","proof":[]}
 {"goal":"fixed_points_one_contains","proof":[]}
+{"goal":"is_transitive_action[G, X](a) = forall(x0: X, x1: X) { orbit[G, X](a, x0).contains(x1) }","proof":["function[T0, T1: Group](x0: MulAction[T1, T0]) { forall(x1: T0, x2: T0) { x2 ∈ orbit[T1, T0](x0, x1) } = is_transitive_action[T1, T0](x0) }[X, G](a)"]}
+{"goal":"transitive_action_orbit_contains","proof":["function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[X](y)","(forall(x0: X, x1: X) { x1 ∈ orbit[G, X](a, x0) } = is_transitive_action[G, X](a))","(forall(x2: X, x3: X) { x3 ∈ orbit[G, X](a, x2) } = true)","not lib(functions).identity_fn(y) ∈ orbit[G, X](a, x)","function(x0: X) { forall(x1: X) { x1 ∈ orbit[G, X](a, x0) } = true }(x)","function(x0: X, x1: X) { x1 ∈ orbit[G, X](a, x0) }(x, lib(functions).identity_fn(y))"]}
+{"goal":"is_transitive_action[G, X](a) = forall(x0: X, x1: X) { orbit[G, X](a, x0).contains(x1) }","proof":["function[T0, T1: Group](x0: MulAction[T1, T0]) { forall(x1: T0, x2: T0) { x2 ∈ orbit[T1, T0](x0, x1) } = is_transitive_action[T1, T0](x0) }[X, G](a)"]}
+{"goal":"transitive_action_of_universal_orbits","proof":["let w0: X satisfy { exists(k0: X) { not k0 ∈ orbit[G, X](a, w0) } }","let w1: X satisfy { not w1 ∈ orbit[G, X](a, w0) }","let w2: X satisfy { not w2 ∈ orbit[G, X](a, w0) }","function(x0: X, x1: X) { x1 ∈ orbit[G, X](a, x0) }(w0, w2)"]}
+{"goal":"is_faithful_action[G, X](a) = forall(x0: G, x1: G) { forall(x2: X) { a.act(x0, x2) = a.act(x1, x2) } implies x0 = x1 }","proof":["function[T0: Group, T1](x0: MulAction[T0, T1]) { forall(x1: T0, x2: T0) { exists(k0: T1) { x0.act(x2, k0) != x0.act(x1, k0) } or x2 = x1 } = is_faithful_action[T0, T1](x0) }[G, X](a)"]}
+{"goal":"faithful_action_eq_of_pointwise_eq","proof":["is_faithful_action[G, X](a)","(forall(x0: X) { a.act(g, x0) = a.act(h, x0) } = true)","(forall(x1: G, x2: G) { exists(k0: X) { a.act(x2, k0) != a.act(x1, k0) } or x2 = x1 } = is_faithful_action[G, X](a))","(forall(x3: G, x4: G) { exists(k1: X) { a.act(x4, k1) != a.act(x3, k1) } or x4 = x3 } = true)","function(x0: G) { forall(x1: G) { exists(k0: X) { a.act(x0, k0) != a.act(x1, k0) } or x0 = x1 } = true }(g)","function(x0: G, x1: G) { not (forall(x2: X) { a.act(x0, x2) = a.act(x1, x2) } and x0 != x1) }(g, h)","function(x0: G, x1: G) { not forall(x2: X) { a.act(x0, x2) = a.act(x1, x2) } or x0 = x1 }(g, h)"]}
+{"goal":"a.act(g, x) = a.act(G.1, x)","proof":["function[T0: Group, T1](x0: MulAction[T0, T1], x1: T1) { x0.act(T0.1, x1) = x1 }[G, X](a, x)","(forall(x0: X) { a.act(g, x0) = x0 } = true)","function(x0: X) { a.act(g, x0) = x0 }(x)"]}
+{"goal":"faithful_action_eq_one_of_pointwise_fixed","proof":["not forall(x0: X) { a.act(g, x0) = a.act(G.1, x0) } or not forall(x1: X) { a.act(g, x1) = x1 } or not is_faithful_action[G, X](a)","is_faithful_action[G, X](a)","(forall(x2: X) { a.act(g, x2) = x2 } = true)","let w0: X satisfy { a.act(g, w0) != a.act(G.1, w0) }","function[T0: Group, T1](x0: MulAction[T0, T1], x1: T1) { x0.act(T0.1, x1) = x1 }[G, X](a, a.act(g, w0))","function(x0: X) { a.act(g, x0) = x0 }(w0)"]}
 {"goal":"Set.universal_set[X].contains(a.act(g, x))","proof":["function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[X](a.act(g, x))"]}
 {"goal":"universal_set_is_invariant","proof":["function[T0: Group, T1](x0: Set[T1], x1: MulAction[T0, T1]) { forall(x2: T0, x3: T1) { not x3 ∈ x0 or x1.act(x2, x3) ∈ x0 } = is_invariant_set[T0, T1](x1, x0) }[G, X](Set.universal_set[X], a)","let w0: G satisfy { exists(k0: X) { k0 ∈ Set.universal_set[X] and not a.act(w0, k0) ∈ Set.universal_set[X] } }","let w1: X satisfy { w1 ∈ Set.universal_set[X] and not a.act(w0, w1) ∈ Set.universal_set[X] }","let w2: X satisfy { w2 ∈ Set.universal_set[X] and not a.act(w0, w2) ∈ Set.universal_set[X] }","function[T0](x0: T0) { x0 ∈ Set.universal_set[T0] }[X](a.act(w0, w2))"]}
 {"goal":"exists(k0: G) { y = a.act(k0, x) }","proof":[]}

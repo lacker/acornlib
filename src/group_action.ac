@@ -2,6 +2,7 @@ from group import Group, GroupHom, group_hom_mul, group_hom_one, inverse_left
 from subgroup import Subgroup, subgroup_constraint, identity_constraint, closure_constraint,
     inverse_constraint
 from set import Set
+from relation_basic import is_reflexive, is_symmetric
 
 /// True if the identity element acts trivially.
 define action_identity_constraint[G: Group, X](act: (G, X) -> X) -> Bool {
@@ -81,6 +82,11 @@ define orbit_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) -> Bool {
     }
 }
 
+/// True if two points lie in the same orbit.
+define orbit_relation[G: Group, X](a: MulAction[G, X], x: X, y: X) -> Bool {
+    orbit_contains(a, x, y)
+}
+
 /// The orbit of a point under a group action.
 define orbit[G: Group, X](a: MulAction[G, X], x: X) -> Set[X] {
     Set[X].new(orbit_contains(a, x))
@@ -131,6 +137,107 @@ theorem orbit_contains_symmetric[G: Group, X](a: MulAction[G, X], x: X, y: X) {
             h = g.inverse and x = a.act(h, y)
         }
     }
+}
+
+/// Acting on an orbit member stays in the same orbit.
+theorem orbit_contains_action_of_contains[G: Group, X](a: MulAction[G, X], x: X, y: X, g: G) {
+    orbit(a, x).contains(y) implies orbit(a, x).contains(a.act(g, y))
+} by {
+    if orbit(a, x).contains(y) {
+        orbit_contains_witness(a, x, y)
+        let h: G satisfy {
+            y = a.act(h, x)
+        }
+        mul_action_mul(a, g, h, x)
+        a.act(g * h, x) = a.act(g, a.act(h, x))
+        a.act(g, y) = a.act(g * h, x)
+        orbit_contains_action(a, x, g * h)
+        orbit(a, x).contains(a.act(g, y))
+    }
+}
+
+/// Orbit membership is transitive.
+theorem orbit_contains_transitive[G: Group, X](a: MulAction[G, X], x: X, y: X, z: X) {
+    orbit(a, x).contains(y) and orbit(a, y).contains(z) implies orbit(a, x).contains(z)
+} by {
+    if orbit(a, x).contains(y) and orbit(a, y).contains(z) {
+        orbit_contains_witness(a, y, z)
+        let h: G satisfy {
+            z = a.act(h, y)
+        }
+        orbit_contains_action_of_contains(a, x, y, h)
+        orbit(a, x).contains(a.act(h, y))
+        orbit(a, x).contains(z)
+    }
+}
+
+/// Orbit relation membership is exactly orbit-set membership.
+theorem orbit_relation_eq_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    orbit_relation(a, x, y) = orbit(a, x).contains(y)
+} by {
+    orbit_relation(a, x, y) = orbit_contains(a, x, y)
+    orbit(a, x).contains(y) = orbit_contains(a, x, y)
+}
+
+/// The orbit relation is reflexive.
+theorem orbit_relation_is_reflexive[G: Group, X](a: MulAction[G, X]) {
+    is_reflexive(orbit_relation(a))
+} by {
+    forall(x: X) {
+        orbit_contains_self(a, x)
+        orbit_relation(a, x, x)
+    }
+}
+
+/// The orbit relation is symmetric.
+theorem orbit_relation_is_symmetric[G: Group, X](a: MulAction[G, X]) {
+    is_symmetric(orbit_relation(a))
+} by {
+    forall(x: X, y: X) {
+        if orbit_relation(a, x, y) {
+            orbit(a, x).contains(y)
+            orbit_contains_symmetric(a, x, y)
+            orbit(a, y).contains(x)
+            orbit_relation(a, y, x)
+        }
+    }
+}
+
+/// Two points in the same orbit have the same orbit.
+theorem orbit_eq_of_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    orbit(a, x).contains(y) implies orbit(a, x) = orbit(a, y)
+} by {
+    if orbit(a, x).contains(y) {
+        forall(z: X) {
+            if orbit(a, x).contains(z) {
+                orbit_contains_symmetric(a, x, y)
+                orbit(a, y).contains(x)
+                orbit_contains_transitive(a, y, x, z)
+                orbit(a, y).contains(z)
+            }
+            if orbit(a, y).contains(z) {
+                orbit_contains_transitive(a, x, y, z)
+                orbit(a, x).contains(z)
+            }
+            orbit(a, x).contains(z) = orbit(a, y).contains(z)
+        }
+        orbit(a, x) = orbit(a, y)
+    }
+}
+
+/// Equality of orbits is equivalent to membership of the second representative in the first orbit.
+theorem orbit_eq_iff_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    orbit(a, x) = orbit(a, y) = orbit(a, x).contains(y)
+} by {
+    if orbit(a, x) = orbit(a, y) {
+        orbit_contains_self(a, y)
+        orbit(a, x).contains(y)
+    }
+    if orbit(a, x).contains(y) {
+        orbit_eq_of_contains(a, x, y)
+        orbit(a, x) = orbit(a, y)
+    }
+    orbit(a, x) = orbit(a, y) = orbit(a, x).contains(y)
 }
 
 
@@ -246,6 +353,66 @@ theorem fixed_points_one_contains[G: Group, X](a: MulAction[G, X], x: X) {
 } by {
     fixed_points_contains_eq(a, G.1, x)
     mul_action_one(a, x)
+}
+
+/// True if the action has a single orbit.
+define is_transitive_action[G: Group, X](a: MulAction[G, X]) -> Bool {
+    forall(x: X, y: X) {
+        orbit(a, x).contains(y)
+    }
+}
+
+/// In a transitive action, every point belongs to every orbit.
+theorem transitive_action_orbit_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    is_transitive_action(a) implies orbit(a, x).contains(y)
+} by {
+    if is_transitive_action(a) {
+        is_transitive_action(a) = forall(u: X, v: X) {
+            orbit(a, u).contains(v)
+        }
+    }
+}
+
+/// If every orbit is universal, the action is transitive.
+theorem transitive_action_of_universal_orbits[G: Group, X](a: MulAction[G, X]) {
+    (forall(x: X, y: X) { orbit(a, x).contains(y) }) implies is_transitive_action(a)
+} by {
+    if forall(x: X, y: X) { orbit(a, x).contains(y) } {
+        is_transitive_action(a) = forall(x: X, y: X) {
+            orbit(a, x).contains(y)
+        }
+    }
+}
+
+/// True if group elements with the same action on every point are equal.
+define is_faithful_action[G: Group, X](a: MulAction[G, X]) -> Bool {
+    forall(g: G, h: G) {
+        (forall(x: X) { a.act(g, x) = a.act(h, x) }) implies g = h
+    }
+}
+
+/// A faithful action separates group elements by their pointwise action.
+theorem faithful_action_eq_of_pointwise_eq[G: Group, X](a: MulAction[G, X], g: G, h: G) {
+    is_faithful_action(a) and (forall(x: X) { a.act(g, x) = a.act(h, x) }) implies g = h
+} by {
+    if is_faithful_action(a) and forall(x: X) { a.act(g, x) = a.act(h, x) } {
+        is_faithful_action(a) = forall(k: G, l: G) {
+            (forall(y: X) { a.act(k, y) = a.act(l, y) }) implies k = l
+        }
+    }
+}
+
+/// Pointwise equality of a group element with the identity makes it the identity in a faithful action.
+theorem faithful_action_eq_one_of_pointwise_fixed[G: Group, X](a: MulAction[G, X], g: G) {
+    is_faithful_action(a) and (forall(x: X) { a.act(g, x) = x }) implies g = G.1
+} by {
+    if is_faithful_action(a) and forall(x: X) { a.act(g, x) = x } {
+        forall(x: X) {
+            mul_action_one(a, x)
+            a.act(g, x) = a.act(G.1, x)
+        }
+        faithful_action_eq_of_pointwise_eq(a, g, G.1)
+    }
 }
 
 /// True if a set is stable under the group action.
