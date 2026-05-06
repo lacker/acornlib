@@ -1,4 +1,4 @@
-from pair import Pair, pair_ext
+from pair import Pair, pair_ext, pair_map
 from add import Add
 from add_semigroup import AddSemigroup
 from add_comm_semigroup import AddCommSemigroup
@@ -11,7 +11,8 @@ from one import One
 from zero import Zero
 from neg import Neg
 from monoid import Monoid
-from group import Group
+from group import Group, inverse_inverse, inverse_mul
+from semiring import Semiring
 
 /// Componentwise addition on a product.
 define pair_add[A: Add, B: Add](p: Pair[A, B], q: Pair[A, B]) -> Pair[A, B] {
@@ -259,4 +260,283 @@ theorem pair_mul_inverse_left[A: Group, B: Group](p: Pair[A, B]) {
     lhs.second = p.second.inverse * p.second
     lhs.second = B.1
     pair_ext(lhs, pair_one[A, B])
+}
+
+/// Componentwise maps preserve componentwise zero when both maps preserve zero.
+theorem pair_map_pair_zero[A: Zero, B: Zero, C: Zero, D: Zero](f: A -> C, g: B -> D) {
+    f(A.0) = C.0 and g(B.0) = D.0 implies
+    pair_map(f, g, pair_zero[A, B]) = pair_zero[C, D]
+} by {
+    if f(A.0) = C.0 and g(B.0) = D.0 {
+        let lhs = pair_map(f, g, pair_zero[A, B])
+        lhs.first = f(pair_zero[A, B].first)
+        pair_zero[A, B].first = A.0
+        lhs.first = f(A.0)
+        lhs.first = C.0
+        lhs.second = g(pair_zero[A, B].second)
+        pair_zero[A, B].second = B.0
+        lhs.second = g(B.0)
+        lhs.second = D.0
+        pair_ext(lhs, pair_zero[C, D])
+    }
+}
+
+/// Componentwise maps preserve componentwise one when both maps preserve one.
+theorem pair_map_pair_one[A: One, B: One, C: One, D: One](f: A -> C, g: B -> D) {
+    f(A.1) = C.1 and g(B.1) = D.1 implies
+    pair_map(f, g, pair_one[A, B]) = pair_one[C, D]
+} by {
+    if f(A.1) = C.1 and g(B.1) = D.1 {
+        let lhs = pair_map(f, g, pair_one[A, B])
+        lhs.first = f(pair_one[A, B].first)
+        pair_one[A, B].first = A.1
+        lhs.first = f(A.1)
+        lhs.first = C.1
+        lhs.second = g(pair_one[A, B].second)
+        pair_one[A, B].second = B.1
+        lhs.second = g(B.1)
+        lhs.second = D.1
+        pair_ext(lhs, pair_one[C, D])
+    }
+}
+
+/// Componentwise multiplication distributes over componentwise addition from the left.
+theorem pair_mul_add_distrib_left[A: Semiring, B: Semiring](
+    p: Pair[A, B],
+    q: Pair[A, B],
+    r: Pair[A, B]
+) {
+    pair_mul(p, pair_add(q, r)) = pair_add(pair_mul(p, q), pair_mul(p, r))
+} by {
+    let lhs = pair_mul(p, pair_add(q, r))
+    let rhs = pair_add(pair_mul(p, q), pair_mul(p, r))
+    lhs.first = p.first * pair_add(q, r).first
+    pair_add(q, r).first = q.first + r.first
+    lhs.first = p.first * (q.first + r.first)
+    lhs.first = p.first * q.first + p.first * r.first
+    rhs.first = pair_mul(p, q).first + pair_mul(p, r).first
+    pair_mul(p, q).first = p.first * q.first
+    pair_mul(p, r).first = p.first * r.first
+    rhs.first = p.first * q.first + p.first * r.first
+    lhs.first = rhs.first
+    lhs.second = p.second * pair_add(q, r).second
+    pair_add(q, r).second = q.second + r.second
+    lhs.second = p.second * (q.second + r.second)
+    lhs.second = p.second * q.second + p.second * r.second
+    rhs.second = pair_mul(p, q).second + pair_mul(p, r).second
+    pair_mul(p, q).second = p.second * q.second
+    pair_mul(p, r).second = p.second * r.second
+    rhs.second = p.second * q.second + p.second * r.second
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Componentwise multiplication distributes over componentwise addition from the right.
+theorem pair_mul_add_distrib_right[A: Semiring, B: Semiring](
+    p: Pair[A, B],
+    q: Pair[A, B],
+    r: Pair[A, B]
+) {
+    pair_mul(pair_add(p, q), r) = pair_add(pair_mul(p, r), pair_mul(q, r))
+} by {
+    let lhs = pair_mul(pair_add(p, q), r)
+    let rhs = pair_add(pair_mul(p, r), pair_mul(q, r))
+    lhs.first = pair_add(p, q).first * r.first
+    pair_add(p, q).first = p.first + q.first
+    lhs.first = (p.first + q.first) * r.first
+    lhs.first = p.first * r.first + q.first * r.first
+    rhs.first = pair_mul(p, r).first + pair_mul(q, r).first
+    pair_mul(p, r).first = p.first * r.first
+    pair_mul(q, r).first = q.first * r.first
+    rhs.first = p.first * r.first + q.first * r.first
+    lhs.first = rhs.first
+    lhs.second = pair_add(p, q).second * r.second
+    pair_add(p, q).second = p.second + q.second
+    lhs.second = (p.second + q.second) * r.second
+    lhs.second = p.second * r.second + q.second * r.second
+    rhs.second = pair_mul(p, r).second + pair_mul(q, r).second
+    pair_mul(p, r).second = p.second * r.second
+    pair_mul(q, r).second = q.second * r.second
+    rhs.second = p.second * r.second + q.second * r.second
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Multiplying by componentwise zero on the right gives componentwise zero.
+theorem pair_mul_zero_right[A: Semiring, B: Semiring](p: Pair[A, B]) {
+    pair_mul(p, pair_zero[A, B]) = pair_zero[A, B]
+} by {
+    let lhs = pair_mul(p, pair_zero[A, B])
+    lhs.first = p.first * pair_zero[A, B].first
+    pair_zero[A, B].first = A.0
+    lhs.first = p.first * A.0
+    lhs.first = A.0
+    lhs.second = p.second * pair_zero[A, B].second
+    pair_zero[A, B].second = B.0
+    lhs.second = p.second * B.0
+    lhs.second = B.0
+    pair_ext(lhs, pair_zero[A, B])
+}
+
+/// Multiplying by componentwise zero on the left gives componentwise zero.
+theorem pair_mul_zero_left[A: Semiring, B: Semiring](p: Pair[A, B]) {
+    pair_mul(pair_zero[A, B], p) = pair_zero[A, B]
+} by {
+    let lhs = pair_mul(pair_zero[A, B], p)
+    lhs.first = pair_zero[A, B].first * p.first
+    pair_zero[A, B].first = A.0
+    lhs.first = A.0 * p.first
+    lhs.first = A.0
+    lhs.second = pair_zero[A, B].second * p.second
+    pair_zero[A, B].second = B.0
+    lhs.second = B.0 * p.second
+    lhs.second = B.0
+    pair_ext(lhs, pair_zero[A, B])
+}
+
+/// Componentwise inversion is involutive.
+theorem pair_inverse_inverse[A: Group, B: Group](p: Pair[A, B]) {
+    pair_inverse[A, B](pair_inverse[A, B](p)) = p
+} by {
+    let lhs = pair_inverse[A, B](pair_inverse[A, B](p))
+    lhs.first = pair_inverse[A, B](p).first.inverse
+    pair_inverse[A, B](p).first = p.first.inverse
+    lhs.first = p.first.inverse.inverse
+    inverse_inverse(p.first)
+    lhs.first = p.first
+    lhs.second = pair_inverse[A, B](p).second.inverse
+    pair_inverse[A, B](p).second = p.second.inverse
+    lhs.second = p.second.inverse.inverse
+    inverse_inverse(p.second)
+    lhs.second = p.second
+    pair_ext(lhs, p)
+}
+
+/// Componentwise inversion reverses componentwise multiplication.
+theorem pair_inverse_mul[A: Group, B: Group](p: Pair[A, B], q: Pair[A, B]) {
+    pair_inverse[A, B](pair_mul(p, q)) = pair_mul(pair_inverse[A, B](q), pair_inverse[A, B](p))
+} by {
+    let lhs = pair_inverse[A, B](pair_mul(p, q))
+    let rhs = pair_mul(pair_inverse[A, B](q), pair_inverse[A, B](p))
+    lhs.first = pair_mul(p, q).first.inverse
+    pair_mul(p, q).first = p.first * q.first
+    lhs.first = (p.first * q.first).inverse
+    inverse_mul(p.first, q.first)
+    lhs.first = q.first.inverse * p.first.inverse
+    rhs.first = pair_inverse[A, B](q).first * pair_inverse[A, B](p).first
+    pair_inverse[A, B](q).first = q.first.inverse
+    pair_inverse[A, B](p).first = p.first.inverse
+    rhs.first = q.first.inverse * p.first.inverse
+    lhs.first = rhs.first
+    lhs.second = pair_mul(p, q).second.inverse
+    pair_mul(p, q).second = p.second * q.second
+    lhs.second = (p.second * q.second).inverse
+    inverse_mul(p.second, q.second)
+    lhs.second = q.second.inverse * p.second.inverse
+    rhs.second = pair_inverse[A, B](q).second * pair_inverse[A, B](p).second
+    pair_inverse[A, B](q).second = q.second.inverse
+    pair_inverse[A, B](p).second = p.second.inverse
+    rhs.second = q.second.inverse * p.second.inverse
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Swapping a pair transports componentwise addition.
+theorem pair_swap_add[A: Add, B: Add](p: Pair[A, B], q: Pair[A, B]) {
+    pair_add(p, q).swap = pair_add(p.swap, q.swap)
+} by {
+    let lhs = pair_add(p, q).swap
+    let rhs = pair_add(p.swap, q.swap)
+    lhs.first = pair_add(p, q).second
+    lhs.first = p.second + q.second
+    rhs.first = p.swap.first + q.swap.first
+    rhs.first = p.second + q.second
+    lhs.first = rhs.first
+    lhs.second = pair_add(p, q).first
+    lhs.second = p.first + q.first
+    rhs.second = p.swap.second + q.swap.second
+    rhs.second = p.first + q.first
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Swapping a pair transports componentwise multiplication.
+theorem pair_swap_mul[A: Mul, B: Mul](p: Pair[A, B], q: Pair[A, B]) {
+    pair_mul(p, q).swap = pair_mul(p.swap, q.swap)
+} by {
+    let lhs = pair_mul(p, q).swap
+    let rhs = pair_mul(p.swap, q.swap)
+    lhs.first = pair_mul(p, q).second
+    lhs.first = p.second * q.second
+    rhs.first = p.swap.first * q.swap.first
+    rhs.first = p.second * q.second
+    lhs.first = rhs.first
+    lhs.second = pair_mul(p, q).first
+    lhs.second = p.first * q.first
+    rhs.second = p.swap.second * q.swap.second
+    rhs.second = p.first * q.first
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Swapping a pair transports componentwise zero.
+theorem pair_swap_zero[A: Zero, B: Zero] {
+    pair_zero[A, B].swap = pair_zero[B, A]
+} by {
+    let lhs = pair_zero[A, B].swap
+    lhs.first = pair_zero[A, B].second
+    lhs.first = B.0
+    lhs.second = pair_zero[A, B].first
+    lhs.second = A.0
+    pair_ext(lhs, pair_zero[B, A])
+}
+
+/// Swapping a pair transports componentwise one.
+theorem pair_swap_one[A: One, B: One] {
+    pair_one[A, B].swap = pair_one[B, A]
+} by {
+    let lhs = pair_one[A, B].swap
+    lhs.first = pair_one[A, B].second
+    lhs.first = B.1
+    lhs.second = pair_one[A, B].first
+    lhs.second = A.1
+    pair_ext(lhs, pair_one[B, A])
+}
+
+/// Swapping a pair transports componentwise negation.
+theorem pair_swap_neg[A: Neg, B: Neg](p: Pair[A, B]) {
+    pair_neg(p).swap = pair_neg(p.swap)
+} by {
+    let lhs = pair_neg(p).swap
+    let rhs = pair_neg(p.swap)
+    lhs.first = pair_neg(p).second
+    lhs.first = -p.second
+    rhs.first = -p.swap.first
+    rhs.first = -p.second
+    lhs.first = rhs.first
+    lhs.second = pair_neg(p).first
+    lhs.second = -p.first
+    rhs.second = -p.swap.second
+    rhs.second = -p.first
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Swapping a pair transports componentwise inversion.
+theorem pair_swap_inverse[A: Group, B: Group](p: Pair[A, B]) {
+    pair_inverse[A, B](p).swap = pair_inverse[B, A](p.swap)
+} by {
+    let lhs = pair_inverse[A, B](p).swap
+    let rhs = pair_inverse[B, A](p.swap)
+    lhs.first = pair_inverse[A, B](p).second
+    lhs.first = p.second.inverse
+    rhs.first = p.swap.first.inverse
+    rhs.first = p.second.inverse
+    lhs.first = rhs.first
+    lhs.second = pair_inverse[A, B](p).first
+    lhs.second = p.first.inverse
+    rhs.second = p.swap.second.inverse
+    rhs.second = p.first.inverse
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
 }
