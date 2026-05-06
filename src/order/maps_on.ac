@@ -173,6 +173,40 @@ theorem strict_antitone_on_of_strict_antitone[Domain: PartialOrder, Value: Parti
     }
 }
 
+/// A constant-valued map is monotone on every subset.
+theorem constant_monotone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], value: Value
+) {
+    is_monotone_on(domain, constant[Domain, Value](value))
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left <= right {
+            constant[Domain, Value](value, left) = value
+            constant[Domain, Value](value, right) = value
+            lte_refl(value)
+            constant[Domain, Value](value, left) <= constant[Domain, Value](value, right)
+        }
+    }
+    is_monotone_on(domain, constant[Domain, Value](value))
+}
+
+/// A constant-valued map is antitone on every subset.
+theorem constant_antitone_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], value: Value
+) {
+    is_antitone_on(domain, constant[Domain, Value](value))
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left <= right {
+            constant[Domain, Value](value, left) = value
+            constant[Domain, Value](value, right) = value
+            lte_refl(value)
+            constant[Domain, Value](value, right) <= constant[Domain, Value](value, left)
+        }
+    }
+    is_antitone_on(domain, constant[Domain, Value](value))
+}
+
 /// Strict monotonicity on a set implies non-strict monotonicity on that set.
 theorem strict_monotone_on_imp_monotone_on[Domain: PartialOrder, Value: PartialOrder](
     domain: Set[Domain], f: Domain -> Value
