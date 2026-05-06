@@ -5402,6 +5402,116 @@ theorem set_inf_seq_intersection_distrib_right[K](family: Nat -> Set[K], s: Set[
     set_inf(seq_intersection(family), s) = seq_intersection(set_inf_family_right(family, s))
 }
 
+/// Reindexing a sequence gives a sequence union contained in the original sequence union.
+theorem set_seq_union_reindex_subset[K](family: Nat -> Set[K], h: Nat -> Nat) {
+    seq_union(set_reindex_family(family, h)).subset(seq_union(family))
+} by {
+    set_sSup_reindex_subset(family, h)
+    set_sSup_eq_seq_union(set_reindex_family(family, h))
+    set_sSup_eq_seq_union(family)
+    set_sSup(set_reindex_family(family, h)).subset(set_sSup(family))
+    seq_union(set_reindex_family(family, h)).subset(seq_union(family))
+}
+
+/// The original sequence intersection is contained in a reindexed sequence intersection.
+theorem set_seq_intersection_subset_reindex[K](family: Nat -> Set[K], h: Nat -> Nat) {
+    seq_intersection(family).subset(seq_intersection(set_reindex_family(family, h)))
+} by {
+    set_sInf_subset_reindex(family, h)
+    set_sInf_eq_seq_intersection(family)
+    set_sInf_eq_seq_intersection(set_reindex_family(family, h))
+    set_sInf(family).subset(set_sInf(set_reindex_family(family, h)))
+    seq_intersection(family).subset(seq_intersection(set_reindex_family(family, h)))
+}
+
+/// Reindexing a sequence by a map with a section preserves the sequence union.
+theorem set_seq_union_reindex_eq_of_section[K](family: Nat -> Set[K],
+    h: Nat -> Nat, g: Nat -> Nat) {
+    (forall(i: Nat) { h(g(i)) = i }) implies
+    seq_union(set_reindex_family(family, h)) = seq_union(family)
+} by {
+    if forall(i: Nat) { h(g(i)) = i } {
+        set_sSup_reindex_eq_of_section(family, h, g)
+        set_sSup_eq_seq_union(set_reindex_family(family, h))
+        set_sSup_eq_seq_union(family)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+        seq_union(set_reindex_family(family, h)) = seq_union(family)
+    }
+}
+
+/// Reindexing a sequence by a map with a section preserves the sequence intersection.
+theorem set_seq_intersection_reindex_eq_of_section[K](family: Nat -> Set[K],
+    h: Nat -> Nat, g: Nat -> Nat) {
+    (forall(i: Nat) { h(g(i)) = i }) implies
+    seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+} by {
+    if forall(i: Nat) { h(g(i)) = i } {
+        set_sInf_reindex_eq_of_section(family, h, g)
+        set_sInf_eq_seq_intersection(set_reindex_family(family, h))
+        set_sInf_eq_seq_intersection(family)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+        seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+    }
+}
+
+/// Reindexing a sequence by a surjective map preserves the sequence union.
+theorem set_seq_union_reindex_eq_of_surjective[K](family: Nat -> Set[K], h: Nat -> Nat) {
+    is_surjective_fn(h) implies
+    seq_union(set_reindex_family(family, h)) = seq_union(family)
+} by {
+    if is_surjective_fn(h) {
+        set_sSup_reindex_eq_of_surjective(family, h)
+        set_sSup_eq_seq_union(set_reindex_family(family, h))
+        set_sSup_eq_seq_union(family)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+        seq_union(set_reindex_family(family, h)) = seq_union(family)
+    }
+}
+
+/// Reindexing a sequence by a surjective map preserves the sequence intersection.
+theorem set_seq_intersection_reindex_eq_of_surjective[K](family: Nat -> Set[K],
+    h: Nat -> Nat) {
+    is_surjective_fn(h) implies
+    seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+} by {
+    if is_surjective_fn(h) {
+        set_sInf_reindex_eq_of_surjective(family, h)
+        set_sInf_eq_seq_intersection(set_reindex_family(family, h))
+        set_sInf_eq_seq_intersection(family)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+        seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+    }
+}
+
+/// Reindexing a sequence by a bijective map preserves the sequence union.
+theorem set_seq_union_reindex_eq_of_bijection[K](family: Nat -> Set[K], h: Nat -> Nat) {
+    is_bijection_fn(h) implies
+    seq_union(set_reindex_family(family, h)) = seq_union(family)
+} by {
+    if is_bijection_fn(h) {
+        set_sSup_reindex_eq_of_bijection(family, h)
+        set_sSup_eq_seq_union(set_reindex_family(family, h))
+        set_sSup_eq_seq_union(family)
+        set_sSup(set_reindex_family(family, h)) = set_sSup(family)
+        seq_union(set_reindex_family(family, h)) = seq_union(family)
+    }
+}
+
+/// Reindexing a sequence by a bijective map preserves the sequence intersection.
+theorem set_seq_intersection_reindex_eq_of_bijection[K](family: Nat -> Set[K],
+    h: Nat -> Nat) {
+    is_bijection_fn(h) implies
+    seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+} by {
+    if is_bijection_fn(h) {
+        set_sInf_reindex_eq_of_bijection(family, h)
+        set_sInf_eq_seq_intersection(set_reindex_family(family, h))
+        set_sInf_eq_seq_intersection(family)
+        set_sInf(set_reindex_family(family, h)) = set_sInf(family)
+        seq_intersection(set_reindex_family(family, h)) = seq_intersection(family)
+    }
+}
+
 /// The sequence formed by taking sequence unions over the right index.
 define set_seq_union_right_family[K](family: (Nat, Nat) -> Set[K], i: Nat) -> Set[K] {
     seq_union(set_right_slice_family(family, i))
@@ -6161,6 +6271,162 @@ theorem set_seq_intersection_left_reindex_binary_family_eq_of_surjective[K](
 } by {
     if is_surjective_fn(h) and is_surjective_fn(k) {
         set_sInf_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sInf_pair_family_eq_seq_intersection_left(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_left(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_left_family(family))
+    }
+}
+
+/// Componentwise reindexing with sections preserves iterated sequence unions.
+theorem set_seq_union_right_reindex_binary_family_eq_of_sections[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat,
+    g: Nat -> Nat, l: Nat -> Nat
+) {
+    (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) implies
+    seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_right_family(family))
+} by {
+    if (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) {
+        set_sSup_reindex_binary_family_eq_of_sections(family, h, k, g, l)
+        set_sSup_pair_family_eq_seq_union_right(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_right(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_right_family(family))
+    }
+}
+
+/// Componentwise reindexing with sections preserves the other iterated sequence unions.
+theorem set_seq_union_left_reindex_binary_family_eq_of_sections[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat,
+    g: Nat -> Nat, l: Nat -> Nat
+) {
+    (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) implies
+    seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_left_family(family))
+} by {
+    if (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) {
+        set_sSup_reindex_binary_family_eq_of_sections(family, h, k, g, l)
+        set_sSup_pair_family_eq_seq_union_left(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_left(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_left_family(family))
+    }
+}
+
+/// Componentwise reindexing with sections preserves iterated sequence intersections.
+theorem set_seq_intersection_right_reindex_binary_family_eq_of_sections[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat,
+    g: Nat -> Nat, l: Nat -> Nat
+) {
+    (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) implies
+    seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_right_family(family))
+} by {
+    if (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) {
+        set_sInf_reindex_binary_family_eq_of_sections(family, h, k, g, l)
+        set_sInf_pair_family_eq_seq_intersection_right(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_right(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_right_family(family))
+    }
+}
+
+/// Componentwise reindexing with sections preserves the other iterated sequence intersections.
+theorem set_seq_intersection_left_reindex_binary_family_eq_of_sections[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat,
+    g: Nat -> Nat, l: Nat -> Nat
+) {
+    (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) implies
+    seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_left_family(family))
+} by {
+    if (forall(i: Nat) { h(g(i)) = i }) and (forall(j: Nat) { k(l(j)) = j }) {
+        set_sInf_reindex_binary_family_eq_of_sections(family, h, k, g, l)
+        set_sInf_pair_family_eq_seq_intersection_left(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_left(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_left_family(family))
+    }
+}
+
+/// Componentwise bijective reindexing preserves iterated sequence unions.
+theorem set_seq_union_right_reindex_binary_family_eq_of_bijection[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_right_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        set_sSup_reindex_binary_family_eq_of_bijection(family, h, k)
+        set_sSup_pair_family_eq_seq_union_right(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_right(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_right_family(family))
+    }
+}
+
+/// Componentwise bijective reindexing preserves the other iterated sequence unions.
+theorem set_seq_union_left_reindex_binary_family_eq_of_bijection[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_left_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        set_sSup_reindex_binary_family_eq_of_bijection(family, h, k)
+        set_sSup_pair_family_eq_seq_union_left(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_left(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_left_family(family))
+    }
+}
+
+/// Componentwise bijective reindexing preserves iterated sequence intersections.
+theorem set_seq_intersection_right_reindex_binary_family_eq_of_bijection[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_right_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        set_sInf_reindex_binary_family_eq_of_bijection(family, h, k)
+        set_sInf_pair_family_eq_seq_intersection_right(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_right(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_right_family(family))
+    }
+}
+
+/// Componentwise bijective reindexing preserves the other iterated sequence intersections.
+theorem set_seq_intersection_left_reindex_binary_family_eq_of_bijection[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_left_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        set_sInf_reindex_binary_family_eq_of_bijection(family, h, k)
         set_sInf_pair_family_eq_seq_intersection_left(set_reindex_binary_family(family, h, k))
         set_sInf_pair_family_eq_seq_intersection_left(family)
         set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
