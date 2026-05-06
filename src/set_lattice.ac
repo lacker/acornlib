@@ -1,5 +1,5 @@
 from list import List
-from functions import Inhabited, inverse_fn, is_injective_fn, is_surjective_fn,
+from functions import Inhabited, function_extensionality, inverse_fn, is_injective_fn, is_surjective_fn,
     is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective,
     injective_fn_eq, surjective_fn_has_preimage
 from nat import Nat
@@ -516,6 +516,18 @@ define set_preimage_binary_family[T, U, I, J](f: T -> U, family: (I, J) -> Set[U
 define set_image_binary_family[T, U, I, J](family: (I, J) -> Set[T], f: T -> U,
     i: I, j: J) -> Set[U] {
     set_image(family(i, j), f)
+}
+
+/// The binary family formed by taking complements.
+define set_complement_binary_family[K, I, J](family: (I, J) -> Set[K],
+    i: I, j: J) -> Set[K] {
+    family(i, j).c
+}
+
+/// A binary set family reindexed componentwise.
+define set_reindex_binary_family[K, I, J, I2, J2](family: (I, J) -> Set[K],
+    h: I2 -> I, k: J2 -> J, i: I2, j: J2) -> Set[K] {
+    family(h(i), k(j))
 }
 
 /// A binary set family viewed as a family over pairs.
@@ -1456,6 +1468,287 @@ theorem set_sInf_empty_binary_family[K, I, J](i0: I, j0: J) {
     set_sInf(set_pair_family(set_empty_binary_family[K, I, J])) = Set[K].empty_set
 }
 
+/// Flattening the complement binary family agrees with complementing the flattened family.
+theorem set_pair_complement_binary_family_eq[K, I, J](family: (I, J) -> Set[K]) {
+    set_pair_family(set_complement_binary_family(family)) =
+        function(p: Pair[I, J]) { set_pair_family(family, p).c }
+} by {
+    let u = set_pair_family(set_complement_binary_family(family))
+    let v = function(p: Pair[I, J]) { set_pair_family(family, p).c }
+    forall(p: Pair[I, J]) {
+        u(p) = set_complement_binary_family(family, p.first, p.second)
+        set_complement_binary_family(family, p.first, p.second) =
+            family(p.first, p.second).c
+        set_pair_family(family, p) = family(p.first, p.second)
+        v(p) = set_pair_family(family, p).c
+        u(p) = v(p)
+    }
+    function_extensionality(u, v)
+}
+
+/// A componentwise reindexed flattened binary-family supremum is contained in the original supremum.
+theorem set_sSup_reindex_binary_family_subset[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+        set_sSup(set_pair_family(family)))
+} by {
+    forall(i: I2) {
+        forall(j: J2) {
+            set_pair_family_subset_sSup(family, h(i), k(j))
+            family(h(i), k(j)).subset(set_sSup(set_pair_family(family)))
+            set_reindex_binary_family(family, h, k, i, j) = family(h(i), k(j))
+            set_reindex_binary_family(family, h, k, i, j).subset(
+                set_sSup(set_pair_family(family)))
+        }
+    }
+    set_sSup_pair_family_subset_of_family_subset(set_reindex_binary_family(family, h, k),
+        set_sSup(set_pair_family(family)))
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+        set_sSup(set_pair_family(family)))
+}
+
+/// The original flattened binary-family infimum is contained in a componentwise reindexed infimum.
+theorem set_sInf_subset_reindex_binary_family[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    set_sInf(set_pair_family(family)).subset(
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))))
+} by {
+    forall(i: I2) {
+        forall(j: J2) {
+            set_sInf_pair_family_subset_family(family, h(i), k(j))
+            set_sInf(set_pair_family(family)).subset(family(h(i), k(j)))
+            set_reindex_binary_family(family, h, k, i, j) = family(h(i), k(j))
+            set_sInf(set_pair_family(family)).subset(
+                set_reindex_binary_family(family, h, k, i, j))
+        }
+    }
+    set_subset_sInf_pair_family_of_subset_family(set_sInf(set_pair_family(family)),
+        set_reindex_binary_family(family, h, k))
+    set_sInf(set_pair_family(family)).subset(
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))))
+}
+
+/// Componentwise sections give the reverse supremum inclusion for binary-family reindexing.
+theorem set_sSup_subset_reindex_binary_family_of_sections[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J, g: I -> I2, l: J -> J2
+) {
+    (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) implies
+    set_sSup(set_pair_family(family)).subset(
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))))
+} by {
+    if (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) {
+        forall(i: I) {
+            forall(j: J) {
+                set_pair_family_subset_sSup(set_reindex_binary_family(family, h, k), g(i), l(j))
+                set_reindex_binary_family(family, h, k, g(i), l(j)) =
+                    family(h(g(i)), k(l(j)))
+                h(g(i)) = i
+                k(l(j)) = j
+                set_reindex_binary_family(family, h, k, g(i), l(j)) = family(i, j)
+                family(i, j).subset(
+                    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))))
+            }
+        }
+        set_sSup_pair_family_subset_of_family_subset(family,
+            set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))))
+        set_sSup(set_pair_family(family)).subset(
+            set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))))
+    }
+}
+
+/// Componentwise sections give the reverse infimum inclusion for binary-family reindexing.
+theorem set_sInf_reindex_binary_family_subset_of_sections[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J, g: I -> I2, l: J -> J2
+) {
+    (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) implies
+    set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+        set_sInf(set_pair_family(family)))
+} by {
+    if (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) {
+        forall(i: I) {
+            forall(j: J) {
+                set_sInf_pair_family_subset_family(set_reindex_binary_family(family, h, k),
+                    g(i), l(j))
+                set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+                    set_reindex_binary_family(family, h, k, g(i), l(j)))
+                set_reindex_binary_family(family, h, k, g(i), l(j)) =
+                    family(h(g(i)), k(l(j)))
+                h(g(i)) = i
+                k(l(j)) = j
+                set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+                    family(i, j))
+            }
+        }
+        set_subset_sInf_pair_family_of_subset_family(
+            set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))), family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+            set_sInf(set_pair_family(family)))
+    }
+}
+
+/// Componentwise reindexing by maps with sections preserves flattened binary-family suprema.
+theorem set_sSup_reindex_binary_family_eq_of_sections[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J, g: I -> I2, l: J -> J2
+) {
+    (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) implies
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sSup(set_pair_family(family))
+} by {
+    if (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) {
+        let u = set_sSup(set_pair_family(set_reindex_binary_family(family, h, k)))
+        let v = set_sSup(set_pair_family(family))
+        set_sSup_reindex_binary_family_subset(family, h, k)
+        u.subset(v)
+        set_sSup_subset_reindex_binary_family_of_sections(family, h, k, g, l)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+    }
+}
+
+/// Componentwise reindexing by maps with sections preserves flattened binary-family infima.
+theorem set_sInf_reindex_binary_family_eq_of_sections[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J, g: I -> I2, l: J -> J2
+) {
+    (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) implies
+    set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sInf(set_pair_family(family))
+} by {
+    if (forall(i: I) { h(g(i)) = i }) and (forall(j: J) { k(l(j)) = j }) {
+        let u = set_sInf(set_pair_family(set_reindex_binary_family(family, h, k)))
+        let v = set_sInf(set_pair_family(family))
+        set_sInf_subset_reindex_binary_family(family, h, k)
+        v.subset(u)
+        set_sInf_reindex_binary_family_subset_of_sections(family, h, k, g, l)
+        u.subset(v)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+    }
+}
+
+/// Componentwise reindexing by surjective maps preserves flattened binary-family suprema.
+theorem set_sSup_reindex_binary_family_eq_of_surjective[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sSup(set_pair_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        let u = set_sSup(set_pair_family(set_reindex_binary_family(family, h, k)))
+        let v = set_sSup(set_pair_family(family))
+        set_sSup_reindex_binary_family_subset(family, h, k)
+        u.subset(v)
+        forall(i: I) {
+            surjective_fn_has_preimage(h, i)
+            let i2: I2 satisfy {
+                h(i2) = i
+            }
+            forall(j: J) {
+                surjective_fn_has_preimage(k, j)
+                let j2: J2 satisfy {
+                    k(j2) = j
+                }
+                set_pair_family_subset_sSup(set_reindex_binary_family(family, h, k), i2, j2)
+                set_reindex_binary_family(family, h, k, i2, j2) = family(h(i2), k(j2))
+                h(i2) = i
+                k(j2) = j
+                set_reindex_binary_family(family, h, k, i2, j2) = family(i, j)
+                family(i, j).subset(u)
+            }
+        }
+        set_sSup_pair_family_subset_of_family_subset(family, u)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+    }
+}
+
+/// Componentwise reindexing by surjective maps preserves flattened binary-family infima.
+theorem set_sInf_reindex_binary_family_eq_of_surjective[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sInf(set_pair_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        let u = set_sInf(set_pair_family(set_reindex_binary_family(family, h, k)))
+        let v = set_sInf(set_pair_family(family))
+        set_sInf_subset_reindex_binary_family(family, h, k)
+        v.subset(u)
+        forall(i: I) {
+            surjective_fn_has_preimage(h, i)
+            let i2: I2 satisfy {
+                h(i2) = i
+            }
+            forall(j: J) {
+                surjective_fn_has_preimage(k, j)
+                let j2: J2 satisfy {
+                    k(j2) = j
+                }
+                set_sInf_pair_family_subset_family(set_reindex_binary_family(family, h, k),
+                    i2, j2)
+                u.subset(set_reindex_binary_family(family, h, k, i2, j2))
+                set_reindex_binary_family(family, h, k, i2, j2) = family(h(i2), k(j2))
+                h(i2) = i
+                k(j2) = j
+                u.subset(family(i, j))
+            }
+        }
+        set_subset_sInf_pair_family_of_subset_family(u, family)
+        u.subset(v)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+    }
+}
+
+/// Componentwise reindexing by bijective maps preserves flattened binary-family suprema.
+theorem set_sSup_reindex_binary_family_eq_of_bijection[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sSup(set_pair_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        bijection_fn_is_surjective(h)
+        bijection_fn_is_surjective(k)
+        is_surjective_fn(h) and is_surjective_fn(k)
+        set_sSup_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+    }
+}
+
+/// Componentwise reindexing by bijective maps preserves flattened binary-family infima.
+theorem set_sInf_reindex_binary_family_eq_of_bijection[K, I, J, I2, J2](
+    family: (I, J) -> Set[K], h: I2 -> I, k: J2 -> J
+) {
+    is_bijection_fn(h) and is_bijection_fn(k) implies
+    set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+        set_sInf(set_pair_family(family))
+} by {
+    if is_bijection_fn(h) and is_bijection_fn(k) {
+        bijection_fn_is_surjective(h)
+        bijection_fn_is_surjective(k)
+        is_surjective_fn(h) and is_surjective_fn(k)
+        set_sInf_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+    }
+}
+
 /// Preimage commutes with flattened binary-family set suprema.
 theorem set_preimage_sSup_pair_family[T, U, I, J](f: T -> U, family: (I, J) -> Set[U]) {
     set_preimage(f, set_sSup(set_pair_family(family))) =
@@ -2208,6 +2501,92 @@ theorem set_image_sInf_pair_family_subset[T, U, I, J](family: (I, J) -> Set[T],
         set_sInf(set_pair_family(set_image_binary_family(family, f))))
 }
 
+/// Under an injective map, the infimum of an inhabited binary family of images is contained in the image of the infimum.
+theorem set_image_sInf_pair_family_reverse_of_injective[T, U, I, J](
+    family: (I, J) -> Set[T], f: T -> U, i0: I, j0: J
+) {
+    is_injective_fn(f) implies
+    set_sInf(set_pair_family(set_image_binary_family(family, f))).subset(
+        set_image(set_sInf(set_pair_family(family)), f))
+} by {
+    if is_injective_fn(f) {
+        forall(y: U) {
+            if set_sInf(set_pair_family(set_image_binary_family(family, f))).contains(y) {
+                set_sInf_pair_family_contains_eq(set_image_binary_family(family, f), y)
+                set_image_binary_family(family, f, i0, j0).contains(y)
+                set_image_binary_family(family, f, i0, j0) = set_image(family(i0, j0), f)
+                set_image_contains_witness(family(i0, j0), f, y)
+                let x: T satisfy {
+                    family(i0, j0).contains(x) and y = f(x)
+                }
+                forall(i: I, j: J) {
+                    set_image_binary_family(family, f, i, j).contains(y)
+                    set_image_binary_family(family, f, i, j) = set_image(family(i, j), f)
+                    set_image_contains_witness(family(i, j), f, y)
+                    let xi: T satisfy {
+                        family(i, j).contains(xi) and y = f(xi)
+                    }
+                    f(x) = f(xi)
+                    injective_fn_eq(f, x, xi)
+                    x = xi
+                    family(i, j).contains(x)
+                }
+                set_sInf_pair_family_contains_eq(family, x)
+                set_sInf(set_pair_family(family)).contains(x)
+                maps_into_set_image(set_sInf(set_pair_family(family)), f, x)
+                set_image(set_sInf(set_pair_family(family)), f).contains(f(x))
+                set_image(set_sInf(set_pair_family(family)), f).contains(y)
+            }
+        }
+    }
+}
+
+/// An injective map preserves infima of inhabited binary set families by image.
+theorem set_image_sInf_pair_family_of_injective[T, U, I, J](
+    family: (I, J) -> Set[T], f: T -> U, i0: I, j0: J
+) {
+    is_injective_fn(f) implies
+    set_image(set_sInf(set_pair_family(family)), f) =
+        set_sInf(set_pair_family(set_image_binary_family(family, f)))
+} by {
+    if is_injective_fn(f) {
+        let u = set_image(set_sInf(set_pair_family(family)), f)
+        let v = set_sInf(set_pair_family(set_image_binary_family(family, f)))
+        set_image_sInf_pair_family_subset(family, f)
+        u.subset(v)
+        set_image_sInf_pair_family_reverse_of_injective(family, f, i0, j0)
+        v.subset(u)
+        u.subset(v) and v.subset(u)
+        subset_antisymm(u, v)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+    }
+}
+
+/// A set is contained in an injective image of a binary-family infimum exactly when it is contained in every member image.
+theorem set_subset_image_sInf_pair_family_iff_of_injective[T, U, I, J](
+    s: Set[U], family: (I, J) -> Set[T], f: T -> U, i0: I, j0: J
+) {
+    is_injective_fn(f) implies
+    s.subset(set_image(set_sInf(set_pair_family(family)), f)) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_image_binary_family(family, f, i, j))
+        }
+    }
+} by {
+    if is_injective_fn(f) {
+        set_image_sInf_pair_family_of_injective(family, f, i0, j0)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+        set_subset_sInf_pair_family_iff(s, set_image_binary_family(family, f))
+        s.subset(set_image(set_sInf(set_pair_family(family)), f)) = forall(i: I) {
+            forall(j: J) {
+                s.subset(set_image_binary_family(family, f, i, j))
+            }
+        }
+    }
+}
+
 /// Under an injective map, the infimum of an inhabited family of images is contained in the image of the infimum.
 theorem set_image_sInf_reverse_of_injective[T, U, I: Inhabited](family: I -> Set[T],
     f: T -> U) {
@@ -2338,6 +2717,58 @@ theorem set_subset_image_sInf_iff_of_bijection[T: Inhabited, U, I](s: Set[U],
         set_subset_sInf_iff(s, set_image_family(family, f))
         s.subset(set_image(set_sInf(family), f)) = forall(i: I) {
             s.subset(set_image_family(family, f, i))
+        }
+    }
+}
+
+/// A bijective map preserves infima of binary set families by image.
+theorem set_image_sInf_pair_family_of_bijection[T: Inhabited, U, I, J](
+    family: (I, J) -> Set[T], f: T -> U
+) {
+    is_bijection_fn(f) implies
+    set_image(set_sInf(set_pair_family(family)), f) =
+        set_sInf(set_pair_family(set_image_binary_family(family, f)))
+} by {
+    if is_bijection_fn(f) {
+        let a = set_image_family(set_pair_family(family), f)
+        let b = set_pair_family(set_image_binary_family(family, f))
+        set_image_sInf_of_bijection(set_pair_family(family), f)
+        set_image(set_sInf(set_pair_family(family)), f) = set_sInf(a)
+        forall(p: Pair[I, J]) {
+            a(p) = set_image(set_pair_family(family, p), f)
+            set_pair_family(family, p) = family(p.first, p.second)
+            set_image(family(p.first, p.second), f) =
+                set_image_binary_family(family, f, p.first, p.second)
+            b(p) = set_image_binary_family(family, f, p.first, p.second)
+            a(p) = b(p)
+        }
+        set_sInf_eq_of_family_subset(a, b)
+        set_sInf(a) = set_sInf(b)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+    }
+}
+
+/// A set is contained in a bijective image of a binary-family infimum exactly when it is contained in every member image.
+theorem set_subset_image_sInf_pair_family_iff_of_bijection[T: Inhabited, U, I, J](
+    s: Set[U], family: (I, J) -> Set[T], f: T -> U
+) {
+    is_bijection_fn(f) implies
+    s.subset(set_image(set_sInf(set_pair_family(family)), f)) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_image_binary_family(family, f, i, j))
+        }
+    }
+} by {
+    if is_bijection_fn(f) {
+        set_image_sInf_pair_family_of_bijection(family, f)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+        set_subset_sInf_pair_family_iff(s, set_image_binary_family(family, f))
+        s.subset(set_image(set_sInf(set_pair_family(family)), f)) = forall(i: I) {
+            forall(j: J) {
+                s.subset(set_image_binary_family(family, f, i, j))
+            }
         }
     }
 }
