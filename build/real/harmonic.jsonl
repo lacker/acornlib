@@ -30,15 +30,34 @@
 {"goal":"lib(rat.rat_base).rat_from_int(Int.from_nat(m)) <= lib(rat.rat_base).rat_from_int(Int.from_nat(n))","proof":["function(x0: Int, x1: Int) { not x0 <= x1 or lib(rat.rat_base).rat_from_int(x0) <= lib(rat.rat_base).rat_from_int(x1) }(Int.from_nat(m), Int.from_nat(n))"]}
 {"goal":"Rat.from_nat(m) = lib(rat.rat_base).rat_from_int(Int.from_nat(m))","proof":["function(x0: Nat) { lib(rat.rat_base).rat_from_int(Int.from_nat(x0)) = Rat.from_nat(x0) }(m)"]}
 {"goal":"Rat.from_nat(n) = lib(rat.rat_base).rat_from_int(Int.from_nat(n))","proof":["function(x0: Nat) { lib(rat.rat_base).rat_from_int(Int.from_nat(x0)) = Rat.from_nat(x0) }(n)"]}
-{"goal":"rat_from_nat_lte_of_nat_lte","proof":["not lib(rat.rat_base).rat_from_int(Int.from_nat(m)) <= Rat.from_nat(n)","lib(rat.rat_base).rat_from_int(Int.from_nat(m)) <= Rat.from_nat(n)"]}
+{"goal":"rat_from_nat_lte_of_nat_lte","proof":[]}
 {"goal":"touch_real_from_nat_instance","proof":[]}
-{"goal":"m.suc <= n.suc","proof":["function(x0: Nat, x1: Nat) { not x0.suc < x1.suc or x0 < x1 }(n, m)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(n, m)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(n.suc, m.suc)","n.suc < m.suc","not n < m","n < m"]}
+{"goal":"m.suc <= n.suc","proof":["function(x0: Nat, x1: Nat) { not x0.suc < x1.suc or x0 < x1 }(n, m)","function(x0: Nat, x1: Nat) { not x0 < x1 or not x1 <= x0 }(n, m)","function(x0: Nat, x1: Nat) { x0 < x1 or x1 <= x0 }(n.suc, m.suc)"]}
 {"goal":"Rat.from_nat(m.suc) <= Rat.from_nat(n.suc)","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or Rat.from_nat(x0) <= Rat.from_nat(x1) }(m.suc, n.suc)"]}
 {"goal":"lib(real.real_base).real_from_rat(Rat.from_nat(m.suc)) <= lib(real.real_base).real_from_rat(Rat.from_nat(n.suc))","proof":["function(x0: Rat, x1: Rat) { not x0 <= x1 or lib(real.real_base).real_from_rat(x0) <= lib(real.real_base).real_from_rat(x1) }(Rat.from_nat(m.suc), Rat.from_nat(n.suc))"]}
 {"goal":"from_nat[Real](m.suc) = lib(real.real_base).real_from_rat(Rat.from_nat(m.suc))","proof":["function(x0: Nat) { from_nat[Real](x0) = lib(real.real_base).real_from_rat(Rat.from_nat(x0)) }(m.suc)"]}
 {"goal":"from_nat[Real](n.suc) = lib(real.real_base).real_from_rat(Rat.from_nat(n.suc))","proof":["function(x0: Nat) { from_nat[Real](x0) = lib(real.real_base).real_from_rat(Rat.from_nat(x0)) }(n.suc)"]}
-{"goal":"from_nat_real_suc_lte_of_nat_lte","proof":["not lib(real.real_base).real_from_rat(Rat.from_nat(m.suc)) <= from_nat[Real](n.suc)","lib(real.real_base).real_from_rat(Rat.from_nat(m.suc)) <= from_nat[Real](n.suc)"]}
+{"goal":"from_nat_real_suc_lte_of_nat_lte","proof":[]}
 {"goal":"from_nat[Real](m.suc) > Real.0","proof":["function(x0: Nat) { from_nat[Real](x0.suc) > Real.0 }(m)"]}
 {"goal":"from_nat[Real](m.suc) <= from_nat[Real](n.suc)","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or from_nat[Real](x0.suc) <= from_nat[Real](x1.suc) }(m, n)"]}
 {"goal":"Real.1 / from_nat[Real](n.suc) <= Real.1 / from_nat[Real](m.suc)","proof":["function(x0: Real, x1: Real) { not x0 > Real.0 or not x0 <= x1 or Real.1 / x1 <= Real.1 / x0 }(from_nat[Real](m.suc), from_nat[Real](n.suc))"]}
 {"goal":"nat_recip_antitone_suc","proof":[]}
+{"goal":"exists(k0: Nat) { k + k0 = n and k0 != Nat.0 }","proof":["function(x0: Nat, x1: Nat) { not x0 < x1 or exists(k0: Nat) { x0 + k0 = x1 and k0 != Nat.0 } }(k, n)","k < n","not k < n"]}
+{"goal":"exists(k0: Nat) { r = k0.suc }","proof":["function(x0: Nat) { exists(k0: Nat) { k0.suc = x0 } or Nat.0 = x0 }(r)","Nat.0 != r"]}
+{"goal":"k + q.suc = n","proof":["k + r != n","k + r = n"]}
+{"goal":"k + q + Nat.1 = n","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(k, q, Nat.1)","function(x0: Nat) { x0 + Nat.1 = x0.suc }(q)","k + (q + Nat.1) != n","k + (q + Nat.1) = n"]}
+{"goal":"n + n = n + (k + q.suc)","proof":["k + q.suc != n"]}
+{"goal":"n + (k + q.suc) = n + (k + q).suc","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (x2 + x0).suc = x2 + x1 }(q, q.suc, k)","k + q.suc != (k + q).suc"]}
+{"goal":"n + (k + q).suc = (n + (k + q)).suc","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0.suc != x1 or (x2 + x0).suc = x2 + x1 }(k + q, (k + q).suc, n)"]}
+{"goal":"n + (k + q) = n + k + q","proof":["function(x0: Nat, x1: Nat, x2: Nat) { x0 + x1 + x2 = x0 + (x1 + x2) }(n, k, q)"]}
+{"goal":"n + n = (n + k + q).suc","proof":[]}
+{"goal":"exists(k0: Nat) { k0 = q and n + n = (n + k + k0).suc }","proof":["function(x0: Nat) { not (x0 = q and (n + k + x0).suc = n + n) }(q)","function(x0: Nat) { (n + k + x0).suc != n + n or q != x0 }(q)"]}
+{"goal":"nat_block_den_eq","proof":["function(x0: Nat) { (n + k + x0).suc != n + n }(q)"]}
+{"goal":"exists(k0: Nat) { n + n = (n + k + k0).suc }","proof":["function(x0: Nat, x1: Nat) { not x0 > Nat.0 or not x1 < x0 or exists(k0: Nat) { (x0 + x1 + k0).suc = x0 + x0 } }(n, k)","k < n","n > Nat.0","not n > Nat.0"]}
+{"goal":"n + k <= n + k + q","proof":["function(x0: Nat, x1: Nat) { exists(k0: Nat) { x0 + k0 = x1 } = x0 <= x1 }(n + k, n + k + q)","not exists(k0: Nat) { n + k + k0 = n + k + q }","function(x0: Nat) { n + k + q != n + k + x0 }(q)"]}
+{"goal":"Real.1 / from_nat[Real]((n + k + q).suc) <= Real.1 / from_nat[Real]((n + k).suc)","proof":["function(x0: Nat, x1: Nat) { not x0 <= x1 or Real.1 / from_nat[Real](x1.suc) <= Real.1 / from_nat[Real](x0.suc) }(n + k, n + k + q)"]}
+{"goal":"from_nat[Real](n + n) = from_nat[Real]((n + k + q).suc)","proof":["(n + k + q).suc != n + n"]}
+{"goal":"Real.1 / from_nat[Real](n + n) = Real.1 / from_nat[Real]((n + k + q).suc)","proof":["from_nat[Real]((n + k + q).suc) != from_nat[Real](n + n)"]}
+{"goal":"harmonic(n + k) = Real.1 / from_nat[Real]((n + k).suc)","proof":["function(x0: Nat) { Real.1 / from_nat[Real](x0.suc) = harmonic(x0) }(n + k)"]}
+{"goal":"Real.1 / from_nat[Real](n + n) <= harmonic(n + k)","proof":["not Real.1 / from_nat[Real]((n + k + q).suc) <= harmonic(n + k)","Real.1 / from_nat[Real]((n + k + q).suc) <= harmonic(n + k)"]}
+{"goal":"harmonic_block_term_lower","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { x0 >= x1 = x1 <= x0 }[Real](harmonic(n + k), Real.1 / from_nat[Real](n + n))","function(x0: Real, x1: Real) { x0 <= x1 = x0 <= x1 }(Real.1 / from_nat[Real](n + n), harmonic(n + k))","not Real.1 / from_nat[Real](n + n) <= harmonic(n + k)","Real.1 / from_nat[Real](n + n) <= harmonic(n + k)"]}

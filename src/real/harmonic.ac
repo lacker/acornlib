@@ -116,3 +116,31 @@ theorem nat_recip_antitone_suc(m: Nat, n: Nat) {
     Real.1 / from_nat[Real](n.suc) <= Real.1 / from_nat[Real](m.suc)
 }
 
+/// A denominator comparison witness for terms in the dyadic block `[n, 2n)`.
+theorem nat_block_den_eq(n: Nat, k: Nat) {
+    n > Nat.0 and k < n implies exists(q: Nat) { n + n = (n + k + q).suc }
+} by {
+    let r: Nat satisfy { k + r = n and r != Nat.0 }
+    let q: Nat satisfy { r = q.suc }
+    k + q.suc = n
+    k + q + Nat.1 = n
+    n + n = n + (k + q.suc)
+    n + (k + q.suc) = n + (k + q).suc
+    n + (k + q).suc = (n + (k + q)).suc
+    n + (k + q) = n + k + q
+    n + n = (n + k + q).suc
+    exists(q0: Nat) { q0 = q and n + n = (n + k + q0).suc }
+}
+
+/// Each harmonic term in the dyadic block `[n, 2n)` is bounded below by `1 / (2n)`.
+theorem harmonic_block_term_lower(n: Nat, k: Nat) {
+    n > Nat.0 and k < n implies harmonic(n + k) >= Real.1 / from_nat[Real](n + n)
+} by {
+    let q: Nat satisfy { n + n = (n + k + q).suc }
+    n + k <= n + k + q
+    Real.1 / from_nat[Real]((n + k + q).suc) <= Real.1 / from_nat[Real]((n + k).suc)
+    from_nat[Real](n + n) = from_nat[Real]((n + k + q).suc)
+    Real.1 / from_nat[Real](n + n) = Real.1 / from_nat[Real]((n + k + q).suc)
+    harmonic(n + k) = Real.1 / from_nat[Real]((n + k).suc)
+    Real.1 / from_nat[Real](n + n) <= harmonic(n + k)
+}
