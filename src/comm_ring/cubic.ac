@@ -53,6 +53,7 @@ theorem square_add_expand_raw_comm_ring[R: CommRing](u: R, v: R) {
     (u * u + u * v) + (u * v + v * v) = u * u + (u * v + u * v) + v * v
 }
 
+/// Raw left-associated expansion of a cubic product.
 theorem left_cube_raw_comm_ring[R: CommRing](u: R, v: R) {
     (u * u + (u * v + u * v) + v * v) * (u + v) =
     ((u * u) * u + (u * u) * v) +
@@ -73,6 +74,7 @@ theorem left_cube_raw_comm_ring[R: CommRing](u: R, v: R) {
     (((u * u) * u + (u * u) * v) + (((u * v) * u + (u * v) * u) + ((u * v) * v + (u * v) * v))) + ((v * v) * u + (v * v) * v) = ((u * u) * u + (u * u) * v) + (((u * v) * u + (u * v) * u) + ((u * v) * v + (u * v) * v) + ((v * v) * u + (v * v) * v))
 }
 
+/// Three equal pairs regroup into two triples.
 theorem regroup_three_pairs_comm_ring[R: CommRing](a: R, b: R) {
     (a + b) + ((a + b) + (a + b)) = (a + (a + a)) + (b + (b + b))
 } by {
@@ -87,6 +89,7 @@ theorem regroup_three_pairs_comm_ring[R: CommRing](a: R, b: R) {
     a + (a + (a + (b + (b + b)))) = (a + (a + a)) + (b + (b + b))
 }
 
+/// A triple coefficient times a mixed product splits into three mixed products.
 theorem three_uv_raw_comm_ring[R: CommRing](u: R, v: R) {
     (((R.1 + R.1 + R.1) * u * v) * (u + v)) =
     ((u * v) * u + ((u * v) * u + (u * v) * u)) +
@@ -111,6 +114,7 @@ theorem three_uv_raw_comm_ring[R: CommRing](u: R, v: R) {
     regroup_three_pairs_comm_ring[R]((u * v) * u, (u * v) * v)
 }
 
+/// Six summands regroup into outer terms and two triples.
 theorem add_regroup_six_comm_ring[R: CommRing](x: R, y: R, a: R, b: R) {
     (x + a) + (((a + a) + (b + b)) + (b + y)) =
     x + y + ((a + (a + a)) + (b + (b + b)))
@@ -124,6 +128,7 @@ theorem add_regroup_six_comm_ring[R: CommRing](x: R, y: R, a: R, b: R) {
     x + (y + ((a + (a + a)) + (b + (b + b)))) = x + y + ((a + (a + a)) + (b + (b + b)))
 }
 
+/// Raw cubic terms regroup into pure cubes and mixed triples.
 theorem raw_cube_regroup_comm_ring[R: CommRing](u: R, v: R) {
     ((u * u) * u + (u * u) * v) +
     (((u * v) * u + (u * v) * u) +
@@ -146,6 +151,7 @@ theorem raw_cube_regroup_comm_ring[R: CommRing](u: R, v: R) {
     x + y + ((a + (a + a)) + (b + (b + b))) = u * u * u + v * v * v + (((R.1 + R.1 + R.1) * u * v) * (u + v))
 }
 
+/// The expanded square times a binomial gives the Cardano cubic form.
 theorem cube_add_expanded_square_comm_ring[R: CommRing](u: R, v: R) {
     (u * u + (u * v + u * v) + v * v) * (u + v) =
     u * u * u + v * v * v + (((R.1 + R.1 + R.1) * u * v) * (u + v))
