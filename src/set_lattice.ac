@@ -4952,6 +4952,296 @@ theorem set_sInf_sup10_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S](t:
     set_subset_sInf_sup10_product_iff(t, a, b, c, d, e, f, g, h, i, j)
 }
 
+/// The undecary family formed by first taking decary infima, then infima with an eleventh family.
+define set_inf11_product_family[K, I, J, L, M, N, O, P, Q, R, S, T](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S],
+    t: T) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j)),
+        k, v, t)
+}
+
+/// The undecary family formed by first taking decary suprema, then suprema with an eleventh family.
+define set_sup11_product_family[K, I, J, L, M, N, O, P, Q, R, S, T](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S],
+    t: T) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j)),
+        k, v, t)
+}
+
+/// Membership in an undecary infimum product family splits into decary membership and the eleventh member.
+theorem set_inf11_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S],
+    t: T, x: K) {
+    set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).contains(x) =
+        (set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v.first, v.second).contains(x) and
+            k(t).contains(x))
+} by {
+    set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t) =
+        set_inf_product_family(set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j)),
+            k, v, t)
+    set_inf_product_family_contains_eq(
+        set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j)), k, v, t, x)
+    set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j), v) =
+        set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v.first, v.second)
+}
+
+/// Membership in an undecary supremum product family splits into decary membership or the eleventh member.
+theorem set_sup11_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S],
+    t: T, x: K) {
+    set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).contains(x) =
+        (set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v.first, v.second).contains(x) or
+            k(t).contains(x))
+} by {
+    set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t) =
+        set_sup_product_family(set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j)),
+            k, v, t)
+    set_sup_product_family_contains_eq(
+        set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j)), k, v, t, x)
+    set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j), v) =
+        set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v.first, v.second)
+}
+
+/// The supremum of undecary pairwise infima is the infimum of the eleven suprema.
+theorem set_sSup_inf11_product_family[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K]) {
+    set_sSup(set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k))) =
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k))
+} by {
+    let abcdefghij = set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j))
+    let left = set_sSup(set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcdefghij, k)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t) =
+                set_inf_product_family(abcdefghij, k, v, t)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k),
+        set_inf_product_family(abcdefghij, k))
+    left = middle
+    set_sSup_inf_product_family(abcdefghij, k)
+    middle = set_inf(set_sSup(abcdefghij), set_sSup(k))
+    set_sSup_inf10_product_family(a, b, c, d, e, f, g, h, i, j)
+    set_sSup(abcdefghij) = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j))
+    middle = right
+    left = right
+}
+
+/// The infimum of undecary pairwise suprema is the supremum of the eleven infima.
+theorem set_sInf_sup11_product_family[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K]) {
+    set_sInf(set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k))) =
+        set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+            set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+            set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))
+} by {
+    let abcdefghij = set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j))
+    let left = set_sInf(set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcdefghij, k)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t) =
+                set_sup_product_family(abcdefghij, k, v, t)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k),
+        set_sup_product_family(abcdefghij, k))
+    left = middle
+    set_sInf_sup_product_family(abcdefghij, k)
+    middle = set_sup(set_sInf(abcdefghij), set_sInf(k))
+    set_sInf_sup10_product_family(a, b, c, d, e, f, g, h, i, j)
+    set_sInf(abcdefghij) = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j))
+    middle = right
+    left = right
+}
+
+/// Every undecary pairwise infimum is contained in the infimum of the eleven family suprema.
+theorem set_inf11_product_family_subset_sSup_inf[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], t: T) {
+    set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)))
+} by {
+    let member = set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t)
+    let family_sup = set_sSup(set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)))
+    let bound = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k))
+    set_pair_family_subset_sSup(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k), v, t)
+    set_sSup_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    member.subset(family_sup)
+    family_sup = bound
+    family_sup.subset(bound)
+    subset_trans(member, family_sup, bound)
+    member.subset(bound)
+}
+
+/// The supremum of the eleven family infima is contained in every undecary pairwise supremum.
+theorem set_sInf_sup_subset_sup11_product_family[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], t: T) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)).subset(
+        set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+} by {
+    set_sInf_pair_family_subset_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k), v, t)
+    set_sInf_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    set_sInf(set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k))).subset(
+        set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)).subset(
+        set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+}
+
+/// The infimum of the eleven family suprema is contained in a set exactly when every undecary pairwise infimum is.
+theorem set_sSup_inf11_product_subset_iff[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], u: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)).subset(u) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).subset(u)
+            }
+        }
+} by {
+    set_sSup_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    set_sSup_pair_family_subset_iff(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k), u)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)).subset(u) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).subset(u)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the eleven family infima exactly when it is below every undecary pairwise supremum.
+theorem set_subset_sInf_sup11_product_iff[K, I, J, L, M, N, O, P, Q, R, S, T](u: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K]) {
+    u.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                u.subset(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+            }
+        }
+} by {
+    set_sInf_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    set_subset_sInf_pair_family_iff(u, set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k))
+    u.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                u.subset(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+            }
+        }
+}
+
+/// The infimum of the eleven family suprema is the least upper bound of undecary pairwise infima.
+theorem set_sSup_inf11_product_family_is_lub[K, I, J, L, M, N, O, P, Q, R, S, T](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], u: Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+                    set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+                    set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)).subset(u) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t).subset(u)
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_inf11_product_family_subset_sSup_inf(a, b, c, d, e, f, g, h, i, j, k, v, t)
+        }
+    }
+    set_sSup_inf11_product_subset_iff(a, b, c, d, e, f, g, h, i, j, k, u)
+}
+
+/// The supremum of the eleven family infima is the greatest lower bound of undecary pairwise suprema.
+theorem set_sInf_sup11_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S, T](u: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+                set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+                set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)).subset(
+                set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+        }
+    }) and
+    (u.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+            forall(t: T) {
+                u.subset(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t))
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S]) {
+        forall(t: T) {
+            set_sInf_sup_subset_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v, t)
+        }
+    }
+    set_subset_sInf_sup11_product_iff(u, a, b, c, d, e, f, g, h, i, j, k)
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
