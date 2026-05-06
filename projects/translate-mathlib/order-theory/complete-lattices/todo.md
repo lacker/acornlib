@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family distributivity, family distributivity, preimage, image-over-supremum, binary-family, and binary-family transport API
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family reindexing/distributivity, family distributivity, preimage, image-over-supremum, binary-family, binary-family transport, and iterated binary-sequence reindexing API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -40,4 +40,5 @@ Status:
 - `src/set_lattice.ac` now has sequence-family set complete-lattice wrappers, including generic `set_sSup` / `set_sInf` bridges, universal properties, monotonicity, preimage and image transport, constant/bottom/top families, and complement duality.
 - `src/set_lattice.ac` now has sequence-family distributivity wrappers: binary infimum and supremum distributing over `seq_union` and `seq_intersection` from either side, mirroring the indexed-family distributivity API.
 - `src/set_lattice.ac` now has iterated sequence wrappers for natural binary-family suprema and infima, including Fubini equalities, membership and universal-property characterizations, preimage and image transport, constant/bottom/top cases, monotonicity, and componentwise reindexing inclusions and surjective equalities.
+- `src/set_lattice.ac` now has unary sequence-family reindexing wrappers for `seq_union` and `seq_intersection` (subset inclusions plus section-backed, surjective, and bijective equalities), and iterated natural binary-family reindexing now also has section-backed and bijective equality wrappers in addition to the existing inclusions and surjective equalities.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.
