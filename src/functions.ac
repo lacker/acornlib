@@ -543,6 +543,62 @@ theorem two_sided_inverse_fn_imp_bijection_fn[T, U](f: T -> U, g: U -> T) {
     }
 }
 
+/// Left inverse witnesses compose in the reverse order.
+theorem compose_left_inverse_fn[T, U, V](f: T -> U, g: U -> V, invf: U -> T, invg: V -> U) {
+    is_left_inverse_fn(f, invf) and is_left_inverse_fn(g, invg)
+    implies is_left_inverse_fn(compose(g, f), compose(invf, invg))
+} by {
+    if is_left_inverse_fn(f, invf) and is_left_inverse_fn(g, invg) {
+        forall(x: T) {
+            compose(invf, invg, compose(g, f)(x)) = invf(invg(compose(g, f)(x)))
+            compose(g, f, x) = g(f(x))
+            invg(g(f(x))) = f(x)
+            invf(invg(compose(g, f)(x))) = invf(f(x))
+            invf(f(x)) = x
+            compose(invf, invg, compose(g, f)(x)) = x
+        }
+        is_left_inverse_fn(compose(g, f), compose(invf, invg))
+    }
+}
+
+/// Right inverse witnesses compose in the reverse order.
+theorem compose_right_inverse_fn[T, U, V](f: T -> U, g: U -> V, invf: U -> T, invg: V -> U) {
+    is_right_inverse_fn(f, invf) and is_right_inverse_fn(g, invg)
+    implies is_right_inverse_fn(compose(g, f), compose(invf, invg))
+} by {
+    if is_right_inverse_fn(f, invf) and is_right_inverse_fn(g, invg) {
+        forall(z: V) {
+            compose(g, f, compose(invf, invg)(z)) = g(f(compose(invf, invg)(z)))
+            compose(invf, invg, z) = invf(invg(z))
+            f(invf(invg(z))) = invg(z)
+            g(f(compose(invf, invg)(z))) = g(invg(z))
+            g(invg(z)) = z
+            compose(g, f, compose(invf, invg)(z)) = z
+        }
+        is_right_inverse_fn(compose(g, f), compose(invf, invg))
+    }
+}
+
+/// Two-sided inverse witnesses compose in the reverse order.
+theorem compose_two_sided_inverse_fn[T, U, V](f: T -> U, g: U -> V, invf: U -> T, invg: V -> U) {
+    is_two_sided_inverse_fn(f, invf) and is_two_sided_inverse_fn(g, invg)
+    implies is_two_sided_inverse_fn(compose(g, f), compose(invf, invg))
+} by {
+    if is_two_sided_inverse_fn(f, invf) and is_two_sided_inverse_fn(g, invg) {
+        is_left_inverse_fn(f, invf)
+        is_left_inverse_fn(g, invg)
+        compose_left_inverse_fn(f, g, invf, invg)
+        is_left_inverse_fn(compose(g, f), compose(invf, invg))
+
+        is_right_inverse_fn(f, invf)
+        is_right_inverse_fn(g, invg)
+        compose_right_inverse_fn(f, g, invf, invg)
+        is_right_inverse_fn(compose(g, f), compose(invf, invg))
+
+        is_two_sided_inverse_fn(compose(g, f), compose(invf, invg))
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
