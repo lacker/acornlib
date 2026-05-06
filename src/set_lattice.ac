@@ -4021,6 +4021,278 @@ theorem set_sInf_sup8_product_family_is_glb[K, I, J, L, M, N, O, P, Q](t: Set[K]
     set_subset_sInf_sup8_product_iff(t, a, b, c, d, e, f, g, h)
 }
 
+/// The nonary family formed by first taking octonary infima, then infima with a ninth family.
+define set_inf9_product_family[K, I, J, L, M, N, O, P, Q, R](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf8_product_family(a, b, c, d, e, f, g, h)),
+        i, u, r)
+}
+
+/// The nonary family formed by first taking octonary suprema, then suprema with a ninth family.
+define set_sup9_product_family[K, I, J, L, M, N, O, P, Q, R](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup8_product_family(a, b, c, d, e, f, g, h)),
+        i, u, r)
+}
+
+/// Membership in a nonary infimum product family splits into octonary membership and the ninth member.
+theorem set_inf9_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R, x: K) {
+    set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).contains(x) =
+        (set_inf8_product_family(a, b, c, d, e, f, g, h, u.first, u.second).contains(x) and
+            i(r).contains(x))
+} by {
+    set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r) =
+        set_inf_product_family(set_pair_family(set_inf8_product_family(a, b, c, d, e, f, g, h)),
+            i, u, r)
+    set_inf_product_family_contains_eq(
+        set_pair_family(set_inf8_product_family(a, b, c, d, e, f, g, h)), i, u, r, x)
+    set_pair_family(set_inf8_product_family(a, b, c, d, e, f, g, h), u) =
+        set_inf8_product_family(a, b, c, d, e, f, g, h, u.first, u.second)
+}
+
+/// Membership in a nonary supremum product family splits into octonary membership or the ninth member.
+theorem set_sup9_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R, x: K) {
+    set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r).contains(x) =
+        (set_sup8_product_family(a, b, c, d, e, f, g, h, u.first, u.second).contains(x) or
+            i(r).contains(x))
+} by {
+    set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r) =
+        set_sup_product_family(set_pair_family(set_sup8_product_family(a, b, c, d, e, f, g, h)),
+            i, u, r)
+    set_sup_product_family_contains_eq(
+        set_pair_family(set_sup8_product_family(a, b, c, d, e, f, g, h)), i, u, r, x)
+    set_pair_family(set_sup8_product_family(a, b, c, d, e, f, g, h), u) =
+        set_sup8_product_family(a, b, c, d, e, f, g, h, u.first, u.second)
+}
+
+/// The supremum of nonary pairwise infima is the infimum of the nine suprema.
+theorem set_sSup_inf9_product_family[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K]) {
+    set_sSup(set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i))) =
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i))
+} by {
+    let abcdefgh = set_pair_family(set_inf8_product_family(a, b, c, d, e, f, g, h))
+    let left = set_sSup(set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcdefgh, i)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i))
+    forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r) =
+                set_inf_product_family(abcdefgh, i, u, r)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf9_product_family(a, b, c, d, e, f, g, h, i),
+        set_inf_product_family(abcdefgh, i))
+    left = middle
+    set_sSup_inf_product_family(abcdefgh, i)
+    middle = set_inf(set_sSup(abcdefgh), set_sSup(i))
+    set_sSup_inf8_product_family(a, b, c, d, e, f, g, h)
+    set_sSup(abcdefgh) = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h))
+    middle = right
+    left = right
+}
+
+/// The infimum of nonary pairwise suprema is the supremum of the nine infima.
+theorem set_sInf_sup9_product_family[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K]) {
+    set_sInf(set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i))) =
+        set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+            set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+            set_sInf(g)), set_sInf(h)), set_sInf(i))
+} by {
+    let abcdefgh = set_pair_family(set_sup8_product_family(a, b, c, d, e, f, g, h))
+    let left = set_sInf(set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcdefgh, i)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i))
+    forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r) =
+                set_sup_product_family(abcdefgh, i, u, r)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup9_product_family(a, b, c, d, e, f, g, h, i),
+        set_sup_product_family(abcdefgh, i))
+    left = middle
+    set_sInf_sup_product_family(abcdefgh, i)
+    middle = set_sup(set_sInf(abcdefgh), set_sInf(i))
+    set_sInf_sup8_product_family(a, b, c, d, e, f, g, h)
+    set_sInf(abcdefgh) = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h))
+    middle = right
+    left = right
+}
+
+/// Every nonary pairwise infimum is contained in the infimum of the nine family suprema.
+theorem set_inf9_product_family_subset_sSup_inf[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R) {
+    set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)))
+} by {
+    set_pair_family_subset_sSup(set_inf9_product_family(a, b, c, d, e, f, g, h, i), u, r)
+    set_sSup_inf9_product_family(a, b, c, d, e, f, g, h, i)
+    set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(
+        set_sSup(set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i))))
+    set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)))
+}
+
+/// The supremum of the nine family infima is contained in every nonary pairwise supremum.
+theorem set_sInf_sup_subset_sup9_product_family[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], r: R) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)).subset(
+        set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+} by {
+    set_sInf_pair_family_subset_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i), u, r)
+    set_sInf_sup9_product_family(a, b, c, d, e, f, g, h, i)
+    set_sInf(set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i))).subset(
+        set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)).subset(
+        set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+}
+
+/// The infimum of the nine family suprema is contained in a set exactly when every nonary pairwise infimum is.
+theorem set_sSup_inf9_product_subset_iff[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], t: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)).subset(t) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(t)
+            }
+        }
+} by {
+    set_sSup_inf9_product_family(a, b, c, d, e, f, g, h, i)
+    set_sSup_pair_family_subset_iff(set_inf9_product_family(a, b, c, d, e, f, g, h, i), t)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)).subset(t) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(t)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the nine family infima exactly when it is below every nonary pairwise supremum.
+theorem set_subset_sInf_sup9_product_iff[K, I, J, L, M, N, O, P, Q, R](t: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K]) {
+    t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i))) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                t.subset(set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+            }
+        }
+} by {
+    set_sInf_sup9_product_family(a, b, c, d, e, f, g, h, i)
+    set_subset_sInf_pair_family_iff(t, set_sup9_product_family(a, b, c, d, e, f, g, h, i))
+    t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i))) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                t.subset(set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+            }
+        }
+}
+
+/// The infimum of the nine family suprema is the least upper bound of nonary pairwise infima.
+theorem set_sSup_inf9_product_family_is_lub[K, I, J, L, M, N, O, P, Q, R](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], t: Set[K]) {
+    (forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+                    set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+                    set_sSup(g)), set_sSup(h)), set_sSup(i)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)).subset(t) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                set_inf9_product_family(a, b, c, d, e, f, g, h, i, u, r).subset(t)
+            }
+        })
+} by {
+    forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_inf9_product_family_subset_sSup_inf(a, b, c, d, e, f, g, h, i, u, r)
+        }
+    }
+    set_sSup_inf9_product_subset_iff(a, b, c, d, e, f, g, h, i, t)
+}
+
+/// The supremum of the nine family infima is the greatest lower bound of nonary pairwise suprema.
+theorem set_sInf_sup9_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R](t: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K]) {
+    (forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+                set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+                set_sInf(g)), set_sInf(h)), set_sInf(i)).subset(
+                set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+        }
+    }) and
+    (t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i))) =
+        forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+            forall(r: R) {
+                t.subset(set_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r))
+            }
+        })
+} by {
+    forall(u: Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q]) {
+        forall(r: R) {
+            set_sInf_sup_subset_sup9_product_family(a, b, c, d, e, f, g, h, i, u, r)
+        }
+    }
+    set_subset_sInf_sup9_product_iff(t, a, b, c, d, e, f, g, h, i)
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
