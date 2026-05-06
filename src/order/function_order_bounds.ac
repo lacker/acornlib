@@ -1,8 +1,10 @@
 /// Bounds transported along pointwise function comparisons on a set.
 
 from order import PartialOrder, lte_trans
-from order.function_order_on import function_lte_on, function_lt_on, function_lte_on_apply,
-    function_eq_on, function_eq_on_apply, function_eq_on_symm, function_lt_on_imp_lte_on
+from order.function_order_on import function_lte_on, function_lt_on, function_between_on,
+    function_strict_between_on, function_lte_on_apply, function_eq_on, function_eq_on_apply,
+    function_eq_on_symm, function_between_on_left, function_between_on_right,
+    function_between_on_of_strict_between_on, function_lt_on_imp_lte_on
 from order_function_bounds import is_upper_bound_on, is_lower_bound_on, is_bounded_above_on,
     is_bounded_below_on, is_bounded_on, attains_maximum_at, attains_minimum_at,
     attains_maximum_on, attains_minimum_on, upper_bound_on_apply, lower_bound_on_apply,
@@ -348,6 +350,328 @@ theorem bounded_on_middle_of_function_lt_on[Domain, Value: PartialOrder](
     is_bounded_on(domain, middle)
 }
 
+
+/// An upper bound for the upper function bounds the middle function in a pointwise between relation.
+theorem upper_bound_on_middle_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_upper_bound_on(domain, upper, bound)
+    implies is_upper_bound_on(domain, middle, bound)
+} by {
+    function_between_on_right(domain, lower, middle, upper)
+    upper_bound_on_of_function_lte_on(domain, middle, upper, bound)
+    is_upper_bound_on(domain, middle, bound)
+}
+
+/// A lower bound for the lower function bounds the middle function in a pointwise between relation.
+theorem lower_bound_on_middle_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_lower_bound_on(domain, lower, bound)
+    implies is_lower_bound_on(domain, middle, bound)
+} by {
+    function_between_on_left(domain, lower, middle, upper)
+    lower_bound_on_of_function_lte_on(domain, lower, middle, bound)
+    is_lower_bound_on(domain, middle, bound)
+}
+
+/// An upper bound for the upper function bounds the lower function in a pointwise between relation.
+theorem upper_bound_on_lower_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_upper_bound_on(domain, upper, bound)
+    implies is_upper_bound_on(domain, lower, bound)
+} by {
+    function_between_on_left(domain, lower, middle, upper)
+    upper_bound_on_middle_of_function_between_on(domain, lower, middle, upper, bound)
+    is_upper_bound_on(domain, middle, bound)
+    upper_bound_on_of_function_lte_on(domain, lower, middle, bound)
+    is_upper_bound_on(domain, lower, bound)
+}
+
+/// A lower bound for the lower function bounds the upper function in a pointwise between relation.
+theorem lower_bound_on_upper_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_lower_bound_on(domain, lower, bound)
+    implies is_lower_bound_on(domain, upper, bound)
+} by {
+    function_between_on_right(domain, lower, middle, upper)
+    lower_bound_on_middle_of_function_between_on(domain, lower, middle, upper, bound)
+    is_lower_bound_on(domain, middle, bound)
+    lower_bound_on_of_function_lte_on(domain, middle, upper, bound)
+    is_lower_bound_on(domain, upper, bound)
+}
+
+/// An upper bound for the upper function bounds the middle function in a strict pointwise between relation.
+theorem upper_bound_on_middle_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_upper_bound_on(domain, upper, bound)
+    implies is_upper_bound_on(domain, middle, bound)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    upper_bound_on_middle_of_function_between_on(domain, lower, middle, upper, bound)
+    is_upper_bound_on(domain, middle, bound)
+}
+
+/// A lower bound for the lower function bounds the middle function in a strict pointwise between relation.
+theorem lower_bound_on_middle_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_lower_bound_on(domain, lower, bound)
+    implies is_lower_bound_on(domain, middle, bound)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    lower_bound_on_middle_of_function_between_on(domain, lower, middle, upper, bound)
+    is_lower_bound_on(domain, middle, bound)
+}
+
+/// An upper bound for the upper function bounds the lower function in a strict pointwise between relation.
+theorem upper_bound_on_lower_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_upper_bound_on(domain, upper, bound)
+    implies is_upper_bound_on(domain, lower, bound)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    upper_bound_on_lower_of_function_between_on(domain, lower, middle, upper, bound)
+    is_upper_bound_on(domain, lower, bound)
+}
+
+/// A lower bound for the lower function bounds the upper function in a strict pointwise between relation.
+theorem lower_bound_on_upper_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value,
+    upper: Domain -> Value, bound: Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_lower_bound_on(domain, lower, bound)
+    implies is_lower_bound_on(domain, upper, bound)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    lower_bound_on_upper_of_function_between_on(domain, lower, middle, upper, bound)
+    is_lower_bound_on(domain, upper, bound)
+}
+
+/// The middle of a pointwise between relation is bounded above when the upper function is bounded above.
+theorem bounded_above_on_middle_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, middle)
+} by {
+    function_between_on_right(domain, lower, middle, upper)
+    bounded_above_on_of_function_lte_on(domain, middle, upper)
+    is_bounded_above_on(domain, middle)
+}
+
+/// The middle of a pointwise between relation is bounded below when the lower function is bounded below.
+theorem bounded_below_on_middle_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, middle)
+} by {
+    function_between_on_left(domain, lower, middle, upper)
+    bounded_below_on_of_function_lte_on(domain, lower, middle)
+    is_bounded_below_on(domain, middle)
+}
+
+/// The lower function in a pointwise between relation is bounded above when the upper function is bounded above.
+theorem bounded_above_on_lower_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, lower)
+} by {
+    function_between_on_left(domain, lower, middle, upper)
+    bounded_above_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_above_on(domain, middle)
+    bounded_above_on_of_function_lte_on(domain, lower, middle)
+    is_bounded_above_on(domain, lower)
+}
+
+/// The upper function in a pointwise between relation is bounded below when the lower function is bounded below.
+theorem bounded_below_on_upper_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, upper)
+} by {
+    function_between_on_right(domain, lower, middle, upper)
+    bounded_below_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, middle)
+    bounded_below_on_of_function_lte_on(domain, middle, upper)
+    is_bounded_below_on(domain, upper)
+}
+
+/// The middle of a pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_middle_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, middle)
+} by {
+    bounded_below_on_middle_of_function_between_on(domain, lower, middle, upper)
+    bounded_above_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, middle)
+    is_bounded_above_on(domain, middle)
+    is_bounded_on(domain, middle)
+}
+
+/// The lower function in a pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_lower_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower)
+} by {
+    bounded_above_on_lower_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_above_on(domain, lower)
+    is_bounded_below_on(domain, lower)
+    is_bounded_on(domain, lower)
+}
+
+/// The upper function in a pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_upper_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, upper)
+} by {
+    bounded_below_on_upper_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, upper)
+    is_bounded_above_on(domain, upper)
+    is_bounded_on(domain, upper)
+}
+
+/// All three functions in a pointwise between relation are bounded under endpoint bounds.
+theorem bounded_on_triple_of_function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower) and is_bounded_on(domain, middle) and is_bounded_on(domain, upper)
+} by {
+    bounded_on_lower_of_function_between_on(domain, lower, middle, upper)
+    bounded_on_middle_of_function_between_on(domain, lower, middle, upper)
+    bounded_on_upper_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_on(domain, lower)
+    is_bounded_on(domain, middle)
+    is_bounded_on(domain, upper)
+}
+
+/// The middle of a strict pointwise between relation is bounded above when the upper function is bounded above.
+theorem bounded_above_on_middle_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, middle)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_above_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_above_on(domain, middle)
+}
+
+/// The middle of a strict pointwise between relation is bounded below when the lower function is bounded below.
+theorem bounded_below_on_middle_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, middle)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_below_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, middle)
+}
+
+/// The lower function in a strict pointwise between relation is bounded above when the upper function is bounded above.
+theorem bounded_above_on_lower_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, lower)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_above_on_lower_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_above_on(domain, lower)
+}
+
+/// The upper function in a strict pointwise between relation is bounded below when the lower function is bounded below.
+theorem bounded_below_on_upper_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, upper)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_below_on_upper_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, upper)
+}
+
+/// The middle of a strict pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_middle_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, middle)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_on_middle_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_on(domain, middle)
+}
+
+/// The lower function in a strict pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_lower_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_on_lower_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_on(domain, lower)
+}
+
+/// The upper function in a strict pointwise between relation is bounded under endpoint bounds.
+theorem bounded_on_upper_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, upper)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_on_upper_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_on(domain, upper)
+}
+
+/// All three functions in a strict pointwise between relation are bounded under endpoint bounds.
+theorem bounded_on_triple_of_function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower) and is_bounded_on(domain, middle) and is_bounded_on(domain, upper)
+} by {
+    function_between_on_of_strict_between_on(domain, lower, middle, upper)
+    bounded_on_triple_of_function_between_on(domain, lower, middle, upper)
+    is_bounded_on(domain, lower)
+    is_bounded_on(domain, middle)
+    is_bounded_on(domain, upper)
+}
+
 /// An upper bound is preserved when the bounded function is replaced by an equal function on the domain.
 theorem upper_bound_on_of_function_eq_on[Domain, Value: PartialOrder](
     domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value, bound: Value
@@ -635,4 +959,5 @@ theorem attains_minimum_on_reflect_function_eq_on[Domain, Value: PartialOrder](
     function_eq_on(domain, replacement, original)
     attains_minimum_on_of_function_eq_on(domain, replacement, original)
     attains_minimum_on(domain, original)
+
 }

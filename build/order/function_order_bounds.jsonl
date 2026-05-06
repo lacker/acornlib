@@ -72,6 +72,68 @@
 {"goal":"bounded_on_pair_of_function_lt_on","proof":[]}
 {"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":[]}
 {"goal":"bounded_on_middle_of_function_lt_on","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"upper_bound_on_middle_of_function_between_on","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"lower_bound_on_middle_of_function_between_on","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, lower, bound)","proof":[]}
+{"goal":"upper_bound_on_lower_of_function_between_on","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, upper, bound)","proof":[]}
+{"goal":"lower_bound_on_upper_of_function_between_on","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"upper_bound_on_middle_of_function_strict_between_on","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, middle, bound)","proof":[]}
+{"goal":"lower_bound_on_middle_of_function_strict_between_on","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, lower, bound)","proof":[]}
+{"goal":"upper_bound_on_lower_of_function_strict_between_on","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, upper, bound)","proof":[]}
+{"goal":"lower_bound_on_upper_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_above_on_middle_of_function_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_below_on_middle_of_function_between_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"bounded_above_on_lower_of_function_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_below_on_upper_of_function_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, middle)"]}
+{"goal":"bounded_on_middle_of_function_between_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, lower)"]}
+{"goal":"bounded_on_lower_of_function_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, upper)"]}
+{"goal":"bounded_on_upper_of_function_between_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_triple_of_function_between_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_above_on_middle_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_below_on_middle_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"bounded_above_on_lower_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_below_on_upper_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_on_middle_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"bounded_on_lower_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_upper_of_function_strict_between_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_triple_of_function_strict_between_on","proof":[]}
 {"goal":"original(point) = replacement(point)","proof":["not function_eq_on[Domain, Value](domain, original, replacement) or not point ∈ domain","not function_eq_on[Domain, Value](domain, original, replacement)","function_eq_on[Domain, Value](domain, original, replacement)"]}
 {"goal":"original(point) <= bound","proof":["not is_upper_bound_on[Domain, Value](domain, original, bound) or not point ∈ domain","not is_upper_bound_on[Domain, Value](domain, original, bound)","is_upper_bound_on[Domain, Value](domain, original, bound)"]}
 {"goal":"replacement(point) <= bound","proof":["not original(point) <= bound"]}
