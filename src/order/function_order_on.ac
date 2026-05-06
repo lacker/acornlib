@@ -2,7 +2,7 @@
 
 from order import PartialOrder, lte_refl, lte_trans, lte_antisymm, lt_imp_lte, lt_trans,
     lt_of_lt_of_lte, lt_of_lte_of_lt
-from set import Set
+from set import Set, sets_subset_union, union_contains_cases
 
 /// True if two functions are equal at every point of `domain`.
 define function_eq_on[Domain, Value](
@@ -610,4 +610,249 @@ theorem function_lt_on_subset[Domain, Value: PartialOrder](
             lower(point) < upper(point)
         }
     }
+}
+
+/// Pointwise equality on two domains gives pointwise equality on their union.
+theorem function_eq_on_union[Domain, Value](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, g: Domain -> Value
+) {
+    function_eq_on(left, f, g) and function_eq_on(right, f, g)
+    implies function_eq_on(left.union(right), f, g)
+} by {
+    forall(point: Domain) {
+        if left.union(right).contains(point) {
+            union_contains_cases(left, right, point)
+            if left.contains(point) {
+                function_eq_on_apply(left, f, g, point)
+                f(point) = g(point)
+            } else {
+                right.contains(point)
+                function_eq_on_apply(right, f, g, point)
+                f(point) = g(point)
+            }
+        }
+    }
+}
+
+/// Pointwise equality on a union restricts to the left domain.
+theorem function_eq_on_union_left[Domain, Value](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, g: Domain -> Value
+) {
+    function_eq_on(left.union(right), f, g) implies function_eq_on(left, f, g)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    function_eq_on_subset(left, left.union(right), f, g)
+    function_eq_on(left, f, g)
+}
+
+/// Pointwise equality on a union restricts to the right domain.
+theorem function_eq_on_union_right[Domain, Value](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, g: Domain -> Value
+) {
+    function_eq_on(left.union(right), f, g) implies function_eq_on(right, f, g)
+} by {
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    function_eq_on_subset(right, left.union(right), f, g)
+    function_eq_on(right, f, g)
+}
+
+/// Pointwise order on two domains gives pointwise order on their union.
+theorem function_lte_on_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(left, lower, upper) and function_lte_on(right, lower, upper)
+    implies function_lte_on(left.union(right), lower, upper)
+} by {
+    forall(point: Domain) {
+        if left.union(right).contains(point) {
+            union_contains_cases(left, right, point)
+            if left.contains(point) {
+                function_lte_on_apply(left, lower, upper, point)
+                lower(point) <= upper(point)
+            } else {
+                right.contains(point)
+                function_lte_on_apply(right, lower, upper, point)
+                lower(point) <= upper(point)
+            }
+        }
+    }
+}
+
+/// Pointwise order on a union restricts to the left domain.
+theorem function_lte_on_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(left.union(right), lower, upper) implies function_lte_on(left, lower, upper)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    function_lte_on_subset(left, left.union(right), lower, upper)
+    function_lte_on(left, lower, upper)
+}
+
+/// Pointwise order on a union restricts to the right domain.
+theorem function_lte_on_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(left.union(right), lower, upper) implies function_lte_on(right, lower, upper)
+} by {
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    function_lte_on_subset(right, left.union(right), lower, upper)
+    function_lte_on(right, lower, upper)
+}
+
+/// Strict pointwise order on two domains gives strict pointwise order on their union.
+theorem function_lt_on_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(left, lower, upper) and function_lt_on(right, lower, upper)
+    implies function_lt_on(left.union(right), lower, upper)
+} by {
+    forall(point: Domain) {
+        if left.union(right).contains(point) {
+            union_contains_cases(left, right, point)
+            if left.contains(point) {
+                function_lt_on_apply(left, lower, upper, point)
+                lower(point) < upper(point)
+            } else {
+                right.contains(point)
+                function_lt_on_apply(right, lower, upper, point)
+                lower(point) < upper(point)
+            }
+        }
+    }
+}
+
+/// Strict pointwise order on a union restricts to the left domain.
+theorem function_lt_on_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(left.union(right), lower, upper) implies function_lt_on(left, lower, upper)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    function_lt_on_subset(left, left.union(right), lower, upper)
+    function_lt_on(left, lower, upper)
+}
+
+/// Strict pointwise order on a union restricts to the right domain.
+theorem function_lt_on_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(left.union(right), lower, upper) implies function_lt_on(right, lower, upper)
+} by {
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    function_lt_on_subset(right, left.union(right), lower, upper)
+    function_lt_on(right, lower, upper)
+}
+
+/// Pointwise betweenness on two domains gives pointwise betweenness on their union.
+theorem function_between_on_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(left, lower, middle, upper) and function_between_on(right, lower, middle, upper)
+    implies function_between_on(left.union(right), lower, middle, upper)
+} by {
+    function_between_on_left(left, lower, middle, upper)
+    function_between_on_left(right, lower, middle, upper)
+    function_lte_on(left, lower, middle)
+    function_lte_on(right, lower, middle)
+    function_lte_on(left, lower, middle) and function_lte_on(right, lower, middle)
+    function_lte_on_union(left, right, lower, middle)
+    function_lte_on(left.union(right), lower, middle)
+    function_between_on_right(left, lower, middle, upper)
+    function_between_on_right(right, lower, middle, upper)
+    function_lte_on(left, middle, upper)
+    function_lte_on(right, middle, upper)
+    function_lte_on(left, middle, upper) and function_lte_on(right, middle, upper)
+    function_lte_on_union(left, right, middle, upper)
+    function_lte_on(left.union(right), middle, upper)
+    function_between_on(left.union(right), lower, middle, upper)
+}
+
+/// Pointwise betweenness on a union restricts to the left domain.
+theorem function_between_on_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(left.union(right), lower, middle, upper)
+    implies function_between_on(left, lower, middle, upper)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    function_between_on_subset(left, left.union(right), lower, middle, upper)
+    function_between_on(left, lower, middle, upper)
+}
+
+/// Pointwise betweenness on a union restricts to the right domain.
+theorem function_between_on_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(left.union(right), lower, middle, upper)
+    implies function_between_on(right, lower, middle, upper)
+} by {
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    function_between_on_subset(right, left.union(right), lower, middle, upper)
+    function_between_on(right, lower, middle, upper)
+}
+
+/// Strict pointwise betweenness on two domains gives strict pointwise betweenness on their union.
+theorem function_strict_between_on_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(left, lower, middle, upper)
+    and function_strict_between_on(right, lower, middle, upper)
+    implies function_strict_between_on(left.union(right), lower, middle, upper)
+} by {
+    function_strict_between_on_left(left, lower, middle, upper)
+    function_strict_between_on_left(right, lower, middle, upper)
+    function_lt_on(left, lower, middle)
+    function_lt_on(right, lower, middle)
+    function_lt_on(left, lower, middle) and function_lt_on(right, lower, middle)
+    function_lt_on_union(left, right, lower, middle)
+    function_lt_on(left.union(right), lower, middle)
+    function_strict_between_on_right(left, lower, middle, upper)
+    function_strict_between_on_right(right, lower, middle, upper)
+    function_lt_on(left, middle, upper)
+    function_lt_on(right, middle, upper)
+    function_lt_on(left, middle, upper) and function_lt_on(right, middle, upper)
+    function_lt_on_union(left, right, middle, upper)
+    function_lt_on(left.union(right), middle, upper)
+    function_strict_between_on(left.union(right), lower, middle, upper)
+}
+
+/// Strict pointwise betweenness on a union restricts to the left domain.
+theorem function_strict_between_on_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(left.union(right), lower, middle, upper)
+    implies function_strict_between_on(left, lower, middle, upper)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    function_strict_between_on_subset(left, left.union(right), lower, middle, upper)
+    function_strict_between_on(left, lower, middle, upper)
+}
+
+/// Strict pointwise betweenness on a union restricts to the right domain.
+theorem function_strict_between_on_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(left.union(right), lower, middle, upper)
+    implies function_strict_between_on(right, lower, middle, upper)
+} by {
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    function_strict_between_on_subset(right, left.union(right), lower, middle, upper)
+    function_strict_between_on(right, lower, middle, upper)
 }
