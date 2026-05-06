@@ -1,5 +1,6 @@
 /// Monotone and antitone maps restricted to a subset of their domain.
 
+from functions import compose
 from order import PartialOrder, lte_refl, lt_imp_lte
 from order_maps import is_monotone, is_antitone, is_strict_monotone, is_strict_antitone,
     monotone_apply, antitone_apply, strict_monotone_apply, strict_antitone_apply
@@ -205,6 +206,94 @@ theorem constant_antitone_on[Domain: PartialOrder, Value: PartialOrder](
         }
     }
     is_antitone_on(domain, constant[Domain, Value](value))
+}
+
+/// Composing a monotone map after a monotone map on a set gives a monotone map on that set.
+theorem monotone_compose_monotone_on[Domain: PartialOrder, Middle: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], outer: Middle -> Value, inner: Domain -> Middle
+) {
+    is_monotone(outer) and is_monotone_on(domain, inner) implies is_monotone_on(domain, compose(outer, inner))
+} by {
+    if is_monotone(outer) and is_monotone_on(domain, inner) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                monotone_on_apply(domain, inner, left, right)
+                inner(left) <= inner(right)
+                monotone_apply(outer, inner(left), inner(right))
+                outer(inner(left)) <= outer(inner(right))
+                compose(outer, inner, left) = outer(inner(left))
+                compose(outer, inner, right) = outer(inner(right))
+                compose(outer, inner, left) <= compose(outer, inner, right)
+            }
+        }
+        is_monotone_on(domain, compose(outer, inner))
+    }
+}
+
+/// Composing an antitone map after a monotone map on a set gives an antitone map on that set.
+theorem antitone_compose_monotone_on[Domain: PartialOrder, Middle: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], outer: Middle -> Value, inner: Domain -> Middle
+) {
+    is_antitone(outer) and is_monotone_on(domain, inner) implies is_antitone_on(domain, compose(outer, inner))
+} by {
+    if is_antitone(outer) and is_monotone_on(domain, inner) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                monotone_on_apply(domain, inner, left, right)
+                inner(left) <= inner(right)
+                antitone_apply(outer, inner(left), inner(right))
+                outer(inner(right)) <= outer(inner(left))
+                compose(outer, inner, right) = outer(inner(right))
+                compose(outer, inner, left) = outer(inner(left))
+                compose(outer, inner, right) <= compose(outer, inner, left)
+            }
+        }
+        is_antitone_on(domain, compose(outer, inner))
+    }
+}
+
+/// Composing a monotone map after an antitone map on a set gives an antitone map on that set.
+theorem monotone_compose_antitone_on[Domain: PartialOrder, Middle: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], outer: Middle -> Value, inner: Domain -> Middle
+) {
+    is_monotone(outer) and is_antitone_on(domain, inner) implies is_antitone_on(domain, compose(outer, inner))
+} by {
+    if is_monotone(outer) and is_antitone_on(domain, inner) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                antitone_on_apply(domain, inner, left, right)
+                inner(right) <= inner(left)
+                monotone_apply(outer, inner(right), inner(left))
+                outer(inner(right)) <= outer(inner(left))
+                compose(outer, inner, right) = outer(inner(right))
+                compose(outer, inner, left) = outer(inner(left))
+                compose(outer, inner, right) <= compose(outer, inner, left)
+            }
+        }
+        is_antitone_on(domain, compose(outer, inner))
+    }
+}
+
+/// Composing an antitone map after an antitone map on a set gives a monotone map on that set.
+theorem antitone_compose_antitone_on[Domain: PartialOrder, Middle: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], outer: Middle -> Value, inner: Domain -> Middle
+) {
+    is_antitone(outer) and is_antitone_on(domain, inner) implies is_monotone_on(domain, compose(outer, inner))
+} by {
+    if is_antitone(outer) and is_antitone_on(domain, inner) {
+        forall(left: Domain, right: Domain) {
+            if domain.contains(left) and domain.contains(right) and left <= right {
+                antitone_on_apply(domain, inner, left, right)
+                inner(right) <= inner(left)
+                antitone_apply(outer, inner(right), inner(left))
+                outer(inner(left)) <= outer(inner(right))
+                compose(outer, inner, left) = outer(inner(left))
+                compose(outer, inner, right) = outer(inner(right))
+                compose(outer, inner, left) <= compose(outer, inner, right)
+            }
+        }
+        is_monotone_on(domain, compose(outer, inner))
+    }
 }
 
 /// Strict monotonicity on a set implies non-strict monotonicity on that set.
