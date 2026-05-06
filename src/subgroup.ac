@@ -1699,3 +1699,54 @@ theorem group_hom_maps_to_identity_of_kernel_contains[G: Group, H: Group](f: Gro
         f.hom(a) = H.1
     }
 }
+
+
+/// Subgroup join is commutative.
+theorem subgroup_sup_comm[G: Group](a: Subgroup[G], b: Subgroup[G]) {
+    subgroup_sup(a, b) = subgroup_sup(b, a)
+} by {
+    subgroup_subset_sup_right(b, a)
+    subgroup_subset_sup_left(b, a)
+    subgroup_sup_subset_of_subset_left_right(a, b, subgroup_sup(b, a))
+    subgroup_subset_sup_right(a, b)
+    subgroup_subset_sup_left(a, b)
+    subgroup_sup_subset_of_subset_left_right(b, a, subgroup_sup(a, b))
+    subgroup_subset_antisymm(subgroup_sup(a, b), subgroup_sup(b, a))
+}
+
+/// Joining a subgroup with itself gives the same subgroup.
+theorem subgroup_sup_idempotent[G: Group](a: Subgroup[G]) {
+    subgroup_sup(a, a) = a
+} by {
+    subgroup_subset_refl(a)
+    subgroup_sup_subset_of_subset_left_right(a, a, a)
+    subgroup_subset_sup_left(a, a)
+    subgroup_subset_antisymm(subgroup_sup(a, a), a)
+}
+
+/// Subgroup join is associative.
+theorem subgroup_sup_assoc[G: Group](
+    a: Subgroup[G],
+    b: Subgroup[G],
+    c: Subgroup[G]
+) {
+    subgroup_sup(subgroup_sup(a, b), c) = subgroup_sup(a, subgroup_sup(b, c))
+} by {
+    subgroup_subset_sup_left(a, subgroup_sup(b, c))
+    subgroup_subset_sup_right(a, subgroup_sup(b, c))
+    subgroup_subset_sup_left(b, c)
+    subgroup_subset_sup_right(b, c)
+    subgroup_subset_trans(b, subgroup_sup(b, c), subgroup_sup(a, subgroup_sup(b, c)))
+    subgroup_subset_trans(c, subgroup_sup(b, c), subgroup_sup(a, subgroup_sup(b, c)))
+    subgroup_sup_subset_of_subset_left_right(a, b, subgroup_sup(a, subgroup_sup(b, c)))
+    subgroup_sup_subset_of_subset_left_right(subgroup_sup(a, b), c, subgroup_sup(a, subgroup_sup(b, c)))
+    subgroup_subset_sup_left(subgroup_sup(a, b), c)
+    subgroup_subset_sup_right(subgroup_sup(a, b), c)
+    subgroup_subset_sup_left(a, b)
+    subgroup_subset_sup_right(a, b)
+    subgroup_subset_trans(a, subgroup_sup(a, b), subgroup_sup(subgroup_sup(a, b), c))
+    subgroup_subset_trans(b, subgroup_sup(a, b), subgroup_sup(subgroup_sup(a, b), c))
+    subgroup_sup_subset_of_subset_left_right(b, c, subgroup_sup(subgroup_sup(a, b), c))
+    subgroup_sup_subset_of_subset_left_right(a, subgroup_sup(b, c), subgroup_sup(subgroup_sup(a, b), c))
+    subgroup_subset_antisymm(subgroup_sup(subgroup_sup(a, b), c), subgroup_sup(a, subgroup_sup(b, c)))
+}

@@ -2,7 +2,7 @@
 
 Goal: extend the current real library into the standard theorem toolkit used across undergraduate and graduate analysis.
 
-- [ ] Add subsequence, limsup/liminf, and Cauchy-criterion APIs for sequences and series
+- [ ] Add limsup/liminf and Cauchy-criterion APIs for sequences and series
 - [ ] Add continuity theorems on intervals and subsets
 - [ ] Develop one-variable differentiation
 - [ ] Prove the mean value theorem and Taylor-style results
@@ -12,3 +12,7 @@ Goal: extend the current real library into the standard theorem toolkit used acr
 - [ ] Add asymptotic notation and asymptotic comparison lemmas
 - [ ] Develop power series and Fourier-analysis preliminaries
 - [ ] Add multivariable calculus on Euclidean spaces
+
+Status:
+
+- `src/real/limits.ac` now has a reusable subsequence API for monotone unbounded index maps, including preservation of convergence, same-limit lemmas, and standard tail/every-`k`th/even/successor subsequence aliases.

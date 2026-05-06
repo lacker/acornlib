@@ -1661,3 +1661,54 @@ theorem subring_preimage_full[R: Ring, S: Ring](f: RingHom[R, S]) {
     subring_subset(full_subring[R], subring_preimage(f, full_subring[S]))
     subring_subset_antisymm(subring_preimage(f, full_subring[S]), full_subring[R])
 }
+
+
+/// Subring join is commutative.
+theorem subring_sup_comm[R: Ring](a: Subring[R], b: Subring[R]) {
+    subring_sup(a, b) = subring_sup(b, a)
+} by {
+    subring_subset_sup_right(b, a)
+    subring_subset_sup_left(b, a)
+    subring_sup_subset_of_subset_left_right(a, b, subring_sup(b, a))
+    subring_subset_sup_right(a, b)
+    subring_subset_sup_left(a, b)
+    subring_sup_subset_of_subset_left_right(b, a, subring_sup(a, b))
+    subring_subset_antisymm(subring_sup(a, b), subring_sup(b, a))
+}
+
+/// Joining a subring with itself gives the same subring.
+theorem subring_sup_idempotent[R: Ring](a: Subring[R]) {
+    subring_sup(a, a) = a
+} by {
+    subring_subset_refl(a)
+    subring_sup_subset_of_subset_left_right(a, a, a)
+    subring_subset_sup_left(a, a)
+    subring_subset_antisymm(subring_sup(a, a), a)
+}
+
+/// Subring join is associative.
+theorem subring_sup_assoc[R: Ring](
+    a: Subring[R],
+    b: Subring[R],
+    c: Subring[R]
+) {
+    subring_sup(subring_sup(a, b), c) = subring_sup(a, subring_sup(b, c))
+} by {
+    subring_subset_sup_left(a, subring_sup(b, c))
+    subring_subset_sup_right(a, subring_sup(b, c))
+    subring_subset_sup_left(b, c)
+    subring_subset_sup_right(b, c)
+    subring_subset_trans(b, subring_sup(b, c), subring_sup(a, subring_sup(b, c)))
+    subring_subset_trans(c, subring_sup(b, c), subring_sup(a, subring_sup(b, c)))
+    subring_sup_subset_of_subset_left_right(a, b, subring_sup(a, subring_sup(b, c)))
+    subring_sup_subset_of_subset_left_right(subring_sup(a, b), c, subring_sup(a, subring_sup(b, c)))
+    subring_subset_sup_left(subring_sup(a, b), c)
+    subring_subset_sup_right(subring_sup(a, b), c)
+    subring_subset_sup_left(a, b)
+    subring_subset_sup_right(a, b)
+    subring_subset_trans(a, subring_sup(a, b), subring_sup(subring_sup(a, b), c))
+    subring_subset_trans(b, subring_sup(a, b), subring_sup(subring_sup(a, b), c))
+    subring_sup_subset_of_subset_left_right(b, c, subring_sup(subring_sup(a, b), c))
+    subring_sup_subset_of_subset_left_right(a, subring_sup(b, c), subring_sup(subring_sup(a, b), c))
+    subring_subset_antisymm(subring_sup(subring_sup(a, b), c), subring_sup(a, subring_sup(b, c)))
+}

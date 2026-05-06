@@ -1197,3 +1197,54 @@ theorem empty_subsemigroup_is_finitely_generated[S: Semigroup] {
     subsemigroup_closure_empty[S]
     subsemigroup_is_finitely_generated(empty_subsemigroup[S])
 }
+
+
+/// Subsemigroup join is commutative.
+theorem subsemigroup_sup_comm[S: Semigroup](a: Subsemigroup[S], b: Subsemigroup[S]) {
+    subsemigroup_sup(a, b) = subsemigroup_sup(b, a)
+} by {
+    subsemigroup_subset_sup_right(b, a)
+    subsemigroup_subset_sup_left(b, a)
+    subsemigroup_sup_subset_of_subset_left_right(a, b, subsemigroup_sup(b, a))
+    subsemigroup_subset_sup_right(a, b)
+    subsemigroup_subset_sup_left(a, b)
+    subsemigroup_sup_subset_of_subset_left_right(b, a, subsemigroup_sup(a, b))
+    subsemigroup_subset_antisymm(subsemigroup_sup(a, b), subsemigroup_sup(b, a))
+}
+
+/// Joining a subsemigroup with itself gives the same subsemigroup.
+theorem subsemigroup_sup_idempotent[S: Semigroup](a: Subsemigroup[S]) {
+    subsemigroup_sup(a, a) = a
+} by {
+    subsemigroup_subset_refl(a)
+    subsemigroup_sup_subset_of_subset_left_right(a, a, a)
+    subsemigroup_subset_sup_left(a, a)
+    subsemigroup_subset_antisymm(subsemigroup_sup(a, a), a)
+}
+
+/// Subsemigroup join is associative.
+theorem subsemigroup_sup_assoc[S: Semigroup](
+    a: Subsemigroup[S],
+    b: Subsemigroup[S],
+    c: Subsemigroup[S]
+) {
+    subsemigroup_sup(subsemigroup_sup(a, b), c) = subsemigroup_sup(a, subsemigroup_sup(b, c))
+} by {
+    subsemigroup_subset_sup_left(a, subsemigroup_sup(b, c))
+    subsemigroup_subset_sup_right(a, subsemigroup_sup(b, c))
+    subsemigroup_subset_sup_left(b, c)
+    subsemigroup_subset_sup_right(b, c)
+    subsemigroup_subset_trans(b, subsemigroup_sup(b, c), subsemigroup_sup(a, subsemigroup_sup(b, c)))
+    subsemigroup_subset_trans(c, subsemigroup_sup(b, c), subsemigroup_sup(a, subsemigroup_sup(b, c)))
+    subsemigroup_sup_subset_of_subset_left_right(a, b, subsemigroup_sup(a, subsemigroup_sup(b, c)))
+    subsemigroup_sup_subset_of_subset_left_right(subsemigroup_sup(a, b), c, subsemigroup_sup(a, subsemigroup_sup(b, c)))
+    subsemigroup_subset_sup_left(subsemigroup_sup(a, b), c)
+    subsemigroup_subset_sup_right(subsemigroup_sup(a, b), c)
+    subsemigroup_subset_sup_left(a, b)
+    subsemigroup_subset_sup_right(a, b)
+    subsemigroup_subset_trans(a, subsemigroup_sup(a, b), subsemigroup_sup(subsemigroup_sup(a, b), c))
+    subsemigroup_subset_trans(b, subsemigroup_sup(a, b), subsemigroup_sup(subsemigroup_sup(a, b), c))
+    subsemigroup_sup_subset_of_subset_left_right(b, c, subsemigroup_sup(subsemigroup_sup(a, b), c))
+    subsemigroup_sup_subset_of_subset_left_right(a, subsemigroup_sup(b, c), subsemigroup_sup(subsemigroup_sup(a, b), c))
+    subsemigroup_subset_antisymm(subsemigroup_sup(subsemigroup_sup(a, b), c), subsemigroup_sup(a, subsemigroup_sup(b, c)))
+}

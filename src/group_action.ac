@@ -1,0 +1,286 @@
+from group import Group, GroupHom, group_hom_mul, group_hom_one, inverse_left
+from subgroup import Subgroup, subgroup_constraint, identity_constraint, closure_constraint,
+    inverse_constraint
+from set import Set
+
+/// True if the identity element acts trivially.
+define action_identity_constraint[G: Group, X](act: (G, X) -> X) -> Bool {
+    forall(x: X) {
+        act(G.1, x) = x
+    }
+}
+
+/// True if multiplication in the group is composition of actions.
+define action_mul_constraint[G: Group, X](act: (G, X) -> X) -> Bool {
+    forall(g: G, h: G, x: X) {
+        act(g * h, x) = act(g, act(h, x))
+    }
+}
+
+/// True if a binary operation is a left action of a group on a type.
+define is_mul_action[G: Group, X](act: (G, X) -> X) -> Bool {
+    action_mul_constraint(act) and action_identity_constraint(act)
+}
+
+/// A left action of a group on a type.
+structure MulAction[G: Group, X] {
+    /// The action map.
+    act: (G, X) -> X
+} constraint {
+    is_mul_action(act)
+}
+
+/// The identity element acts trivially.
+theorem mul_action_one[G: Group, X](a: MulAction[G, X], x: X) {
+    a.act(G.1, x) = x
+} by {
+    is_mul_action(a.act)
+    action_identity_constraint(a.act)
+    action_identity_constraint(a.act) = forall(y: X) {
+        a.act(G.1, y) = y
+    }
+}
+
+/// Multiplication in the group is composition of actions.
+theorem mul_action_mul[G: Group, X](a: MulAction[G, X], g: G, h: G, x: X) {
+    a.act(g * h, x) = a.act(g, a.act(h, x))
+} by {
+    is_mul_action(a.act)
+    is_mul_action(a.act) = action_mul_constraint(a.act) and action_identity_constraint(a.act)
+    action_mul_constraint(a.act)
+    action_mul_constraint(a.act) = forall(k: G, l: G, y: X) {
+        a.act(k * l, y) = a.act(k, a.act(l, y))
+    }
+}
+
+/// Acting by the inverse on the left cancels an action.
+theorem mul_action_inv_apply_apply[G: Group, X](a: MulAction[G, X], g: G, x: X) {
+    a.act(g.inverse, a.act(g, x)) = x
+} by {
+    inverse_left(g)
+    g.inverse * g = G.1
+    a.act(g.inverse * g, x) = a.act(G.1, x)
+    mul_action_mul(a, g.inverse, g, x)
+    mul_action_one(a, x)
+}
+
+/// Acting by the inverse on the right cancels an action.
+theorem mul_action_apply_inv_apply[G: Group, X](a: MulAction[G, X], g: G, x: X) {
+    a.act(g, a.act(g.inverse, x)) = x
+} by {
+    g * g.inverse = G.1
+    a.act(g * g.inverse, x) = a.act(G.1, x)
+    mul_action_mul(a, g, g.inverse, x)
+    mul_action_one(a, x)
+}
+
+/// True if one point belongs to the orbit of another point.
+define orbit_contains[G: Group, X](a: MulAction[G, X], x: X, y: X) -> Bool {
+    exists(g: G) {
+        y = a.act(g, x)
+    }
+}
+
+/// The orbit of a point under a group action.
+define orbit[G: Group, X](a: MulAction[G, X], x: X) -> Set[X] {
+    Set[X].new(orbit_contains(a, x))
+}
+
+/// A point belongs to its own orbit.
+theorem orbit_contains_self[G: Group, X](a: MulAction[G, X], x: X) {
+    orbit(a, x).contains(x)
+} by {
+    mul_action_one(a, x)
+    exists(g: G) {
+        g = G.1 and x = a.act(g, x)
+    }
+}
+
+/// Acting on a point gives a member of its orbit.
+theorem orbit_contains_action[G: Group, X](a: MulAction[G, X], x: X, g: G) {
+    orbit(a, x).contains(a.act(g, x))
+} by {
+    exists(h: G) {
+        h = g and a.act(g, x) = a.act(h, x)
+    }
+}
+
+/// Membership in an orbit has a group element witness.
+theorem orbit_contains_witness[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    orbit(a, x).contains(y) implies exists(g: G) {
+        y = a.act(g, x)
+    }
+} by {
+    if orbit(a, x).contains(y) {
+        orbit(a, x).contains(y) = orbit_contains(a, x, y)
+    }
+}
+
+/// Orbit membership is symmetric.
+theorem orbit_contains_symmetric[G: Group, X](a: MulAction[G, X], x: X, y: X) {
+    orbit(a, x).contains(y) implies orbit(a, y).contains(x)
+} by {
+    if orbit(a, x).contains(y) {
+        orbit_contains_witness(a, x, y)
+        let g: G satisfy {
+            y = a.act(g, x)
+        }
+        mul_action_inv_apply_apply(a, g, x)
+        a.act(g.inverse, y) = x
+        exists(h: G) {
+            h = g.inverse and x = a.act(h, y)
+        }
+    }
+}
+
+
+/// True if a group element fixes a point.
+define stabilizer_contains[G: Group, X](a: MulAction[G, X], x: X, g: G) -> Bool {
+    a.act(g, x) = x
+}
+
+/// The identity element fixes every point.
+theorem stabilizer_identity_constraint[G: Group, X](a: MulAction[G, X], x: X) {
+    identity_constraint(stabilizer_contains(a, x))
+} by {
+    mul_action_one(a, x)
+    stabilizer_contains(a, x, G.1)
+}
+
+/// The product of two elements fixing a point fixes that point.
+theorem stabilizer_closure_constraint[G: Group, X](a: MulAction[G, X], x: X) {
+    closure_constraint(stabilizer_contains(a, x))
+} by {
+    forall(g: G, h: G) {
+        if stabilizer_contains(a, x, g) and stabilizer_contains(a, x, h) {
+            a.act(g, x) = x
+            a.act(h, x) = x
+            mul_action_mul(a, g, h, x)
+            a.act(g * h, x) = a.act(g, a.act(h, x))
+            a.act(g, a.act(h, x)) = a.act(g, x)
+            a.act(g * h, x) = x
+            stabilizer_contains(a, x, g * h)
+        }
+    }
+}
+
+/// The inverse of an element fixing a point fixes that point.
+theorem stabilizer_inverse_constraint[G: Group, X](a: MulAction[G, X], x: X) {
+    inverse_constraint(stabilizer_contains(a, x))
+} by {
+    forall(g: G) {
+        if stabilizer_contains(a, x, g) {
+            a.act(g, x) = x
+            mul_action_inv_apply_apply(a, g, x)
+            a.act(g.inverse, a.act(g, x)) = x
+            a.act(g.inverse, x) = x
+            stabilizer_contains(a, x, g.inverse)
+        }
+    }
+}
+
+/// The elements fixing a point form a subgroup.
+theorem stabilizer_subgroup_constraint[G: Group, X](a: MulAction[G, X], x: X) {
+    subgroup_constraint(stabilizer_contains(a, x))
+} by {
+    stabilizer_identity_constraint(a, x)
+    stabilizer_closure_constraint(a, x)
+    stabilizer_inverse_constraint(a, x)
+}
+
+/// The stabilizer subgroup of a point.
+let stabilizer[G: Group, X](a: MulAction[G, X], x: X) -> result: Subgroup[G] satisfy {
+    Subgroup.new(stabilizer_contains(a, x)) = Option.some(result)
+} by {
+    stabilizer_subgroup_constraint(a, x)
+}
+
+/// Membership in the stabilizer is fixing the point.
+theorem stabilizer_contains_eq[G: Group, X](a: MulAction[G, X], x: X, g: G) {
+    stabilizer(a, x).contains(g) = (a.act(g, x) = x)
+} by {
+    stabilizer(a, x).contains(g) = stabilizer_contains(a, x, g)
+    stabilizer_contains(a, x, g) = (a.act(g, x) = x)
+}
+
+/// A stabilizer member fixes the point.
+theorem stabilizer_fixes[G: Group, X](a: MulAction[G, X], x: X, g: G) {
+    stabilizer(a, x).contains(g) implies a.act(g, x) = x
+} by {
+    if stabilizer(a, x).contains(g) {
+        stabilizer_contains_eq(a, x, g)
+    }
+}
+
+/// A group element fixing the point belongs to its stabilizer.
+theorem stabilizer_contains_of_fixes[G: Group, X](a: MulAction[G, X], x: X, g: G) {
+    a.act(g, x) = x implies stabilizer(a, x).contains(g)
+} by {
+    if a.act(g, x) = x {
+        stabilizer_contains_eq(a, x, g)
+        stabilizer(a, x).contains(g)
+    }
+}
+
+/// True if a point is fixed by a group element.
+define fixed_points_contains[G: Group, X](a: MulAction[G, X], g: G, x: X) -> Bool {
+    a.act(g, x) = x
+}
+
+/// The fixed points of a group element.
+define fixed_points[G: Group, X](a: MulAction[G, X], g: G) -> Set[X] {
+    Set[X].new(fixed_points_contains(a, g))
+}
+
+/// Membership in the fixed-point set is being fixed by the element.
+theorem fixed_points_contains_eq[G: Group, X](a: MulAction[G, X], g: G, x: X) {
+    fixed_points(a, g).contains(x) = (a.act(g, x) = x)
+} by {
+    fixed_points(a, g).contains(x) = fixed_points_contains(a, g, x)
+    fixed_points_contains(a, g, x) = (a.act(g, x) = x)
+}
+
+/// The identity element fixes every point.
+theorem fixed_points_one_contains[G: Group, X](a: MulAction[G, X], x: X) {
+    fixed_points(a, G.1).contains(x)
+} by {
+    fixed_points_contains_eq(a, G.1, x)
+    mul_action_one(a, x)
+}
+
+/// True if a set is stable under the group action.
+define is_invariant_set[G: Group, X](a: MulAction[G, X], s: Set[X]) -> Bool {
+    forall(g: G, x: X) {
+        s.contains(x) implies s.contains(a.act(g, x))
+    }
+}
+
+/// The universal set is invariant under every group action.
+theorem universal_set_is_invariant[G: Group, X](a: MulAction[G, X]) {
+    is_invariant_set(a, Set[X].universal_set)
+} by {
+    forall(g: G, x: X) {
+        if Set[X].universal_set.contains(x) {
+            Set[X].universal_set.contains(a.act(g, x))
+        }
+    }
+}
+
+/// Every orbit is invariant under the action.
+theorem orbit_is_invariant[G: Group, X](a: MulAction[G, X], x: X) {
+    is_invariant_set(a, orbit(a, x))
+} by {
+    forall(g: G, y: X) {
+        if orbit(a, x).contains(y) {
+            orbit_contains_witness(a, x, y)
+            let h: G satisfy {
+                y = a.act(h, x)
+            }
+            mul_action_mul(a, g, h, x)
+            a.act(g * h, x) = a.act(g, a.act(h, x))
+            a.act(g, y) = a.act(g * h, x)
+            orbit_contains_action(a, x, g * h)
+            orbit(a, x).contains(a.act(g, y))
+        }
+    }
+}
