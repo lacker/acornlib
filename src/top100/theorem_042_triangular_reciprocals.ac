@@ -16,6 +16,7 @@ theorem from_nat_suc_ne_zero_real(n: Nat) { not from_nat[Real](n.suc) = Real.0 }
     from_nat[Real](n.suc) > Real.0
 }
 
+/// The reciprocal of a quotient is the reversed quotient.
 theorem one_div_div_real(a: Real, b: Real) {
     a != Real.0 and b != Real.0 implies Real.1 / (a / b) = b / a
 } by {
@@ -25,6 +26,7 @@ theorem one_div_div_real(a: Real, b: Real) {
     Real.1 / (a / b) = b / a
 }
 
+/// The product of two successive positive natural reals is nonzero.
 theorem from_nat_suc_mul_suc_ne_zero_real(k: Nat) {
     not from_nat[Real](k.suc) * from_nat[Real](k.suc.suc) = Real.0
 } by {
@@ -33,8 +35,10 @@ theorem from_nat_suc_mul_suc_ne_zero_real(k: Nat) {
     mul_not_zero[Real](from_nat[Real](k.suc), from_nat[Real](k.suc.suc))
 }
 
+/// Two is nonzero in the reals.
 theorem two_ne_zero_real { not (Real.1 + Real.1) = Real.0 }
 
+/// The difference of two reciprocals is the difference over the product.
 theorem real_one_div_sub_one_div(a: Real, b: Real) {
     a != Real.0 and b != Real.0 implies Real.1 / a - Real.1 / b = (b - a) / (a * b)
 } by {
@@ -46,6 +50,7 @@ theorem real_one_div_sub_one_div(a: Real, b: Real) {
     b / (a * b) - a / (a * b) = (b - a) / (a * b)
 }
 
+/// Adjacent reciprocal differences give the reciprocal of the adjacent product.
 theorem adjacent_reciprocal_difference(k: Nat) {
     Real.1 / from_nat[Real](k.suc) - Real.1 / from_nat[Real](k.suc.suc) =
     Real.1 / (from_nat[Real](k.suc) * from_nat[Real](k.suc.suc))
@@ -60,6 +65,7 @@ theorem adjacent_reciprocal_difference(k: Nat) {
     (b - a) / (a * b) = Real.1 / (a * b)
 }
 
+/// A triangular-number reciprocal is twice an adjacent reciprocal difference.
 theorem triangular_reciprocal_simplification(k: Nat) {
     Real.1 / ((from_nat[Real](k.suc) * from_nat[Real](k.suc.suc)) / (Real.1 + Real.1)) =
     (Real.1 + Real.1) *
@@ -76,6 +82,7 @@ theorem triangular_reciprocal_simplification(k: Nat) {
         real_two * (Real.1 / from_nat[Real](k.suc) - Real.1 / from_nat[Real](k.suc.suc))
 }
 
+/// Adjacent scaled differences telescope over the reals.
 theorem real_telescoping_cancel(a: Real, b: Real) {
     (Real.1 + Real.1) * (Real.1 - a) + (Real.1 + Real.1) * (a - b) =
     (Real.1 + Real.1) * (Real.1 - b)
@@ -93,10 +100,12 @@ theorem real_telescoping_cancel(a: Real, b: Real) {
     two * ((Real.1 - a) + (a - b)) = two * (Real.1 - b)
 }
 
+/// The reciprocal of the kth triangular number, indexed from zero.
 define triangular_term(k: Nat) -> Real {
     Real.1 / ((from_nat[Real](k.suc) * from_nat[Real](k.suc.suc)) / (Real.1 + Real.1))
 }
 
+/// The finite sum of reciprocal triangular numbers up to n.
 define triangular_reciprocal_sum(n: Nat) -> Real {
     match n {
         Nat.zero { Real.0 }
@@ -104,6 +113,7 @@ define triangular_reciprocal_sum(n: Nat) -> Real {
     }
 }
 
+/// The closed form for the partial sum is preserved by the next triangular term.
 theorem finite_telescoping_step(x: Nat) {
     triangular_reciprocal_sum(x) =
         (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](x.suc))
@@ -124,6 +134,7 @@ theorem finite_telescoping_step(x: Nat) {
         (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](x.suc.suc))
 }
 
+/// The closed form holds for the empty triangular reciprocal sum.
 theorem finite_telescoping_base {
     triangular_reciprocal_sum(Nat.0) =
     (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](Nat.1))
@@ -135,6 +146,7 @@ theorem finite_telescoping_base {
     (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](Nat.1)) = Real.0
 }
 
+/// The finite triangular reciprocal sum has the telescoping closed form.
 theorem finite_telescoping_partial_sum(n: Nat) {
     triangular_reciprocal_sum(n) =
     (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](n.suc))
@@ -154,6 +166,7 @@ theorem finite_telescoping_partial_sum(n: Nat) {
     p(n)
 }
 
+/// The telescoping closed form is the standard rational expression.
 theorem telescoping_closed_form_algebra(n: Nat) {
     (Real.1 + Real.1) * (Real.1 - Real.1 / from_nat[Real](n.suc)) =
     ((Real.1 + Real.1) * from_nat[Real](n)) / from_nat[Real](n.suc)
@@ -175,6 +188,7 @@ theorem telescoping_closed_form_algebra(n: Nat) {
     (Real.1 + Real.1) * (a / d) = ((Real.1 + Real.1) * a) / d
 }
 
+/// The finite sum of reciprocal triangular numbers has the Top 100 closed form.
 theorem top100_042_triangular_reciprocal_sum(n: Nat) {
     triangular_reciprocal_sum(n) = ((Real.1 + Real.1) * from_nat[Real](n)) / from_nat[Real](n.suc)
 } by {
