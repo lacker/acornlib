@@ -5,7 +5,7 @@ from functions import Inhabited, function_extensionality, inverse_fn, is_injecti
 from logic import forall_forall_or_eq_or_forall
 from nat import Nat
 from pair import Pair
-from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
+from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm, subset_contains,
     empty_set_contains_eq, universal_set_contains_eq,
     union_contains_eq, intersection_contains_eq, sets_subset_union, sets_subset_contain_union,
     sets_subset_intersection, set_supset_contains_intersection, union_comm, intersection_comm,
@@ -172,6 +172,55 @@ theorem set_sup_subset_iff[K](a: Set[K], b: Set[K], c: Set[K]) {
         set_sup(a, b).subset(c)
     }
     set_sup(a, b).subset(c) = (a.subset(c) and b.subset(c))
+}
+
+/// Inclusion in both arguments preserves set infimum.
+theorem set_inf_monotone[K](a: Set[K], b: Set[K], c: Set[K], d: Set[K]) {
+    a.subset(c) and b.subset(d) implies set_inf(a, b).subset(set_inf(c, d))
+} by {
+    if a.subset(c) and b.subset(d) {
+        forall(x: K) {
+            if set_inf(a, b).contains(x) {
+                set_inf_contains_eq(a, b, x)
+                a.subset(c) and a.contains(x)
+                subset_contains(a, c, x)
+                c.contains(x)
+                b.subset(d) and b.contains(x)
+                subset_contains(b, d, x)
+                d.contains(x)
+                set_inf_contains_eq(c, d, x)
+                set_inf(c, d).contains(x)
+            }
+        }
+    }
+}
+
+/// Inclusion in both arguments preserves set supremum.
+theorem set_sup_monotone[K](a: Set[K], b: Set[K], c: Set[K], d: Set[K]) {
+    a.subset(c) and b.subset(d) implies set_sup(a, b).subset(set_sup(c, d))
+} by {
+    if a.subset(c) and b.subset(d) {
+        forall(x: K) {
+            if set_sup(a, b).contains(x) {
+                set_sup_contains_eq(a, b, x)
+                if a.contains(x) {
+                    a.subset(c) and a.contains(x)
+                    subset_contains(a, c, x)
+                    c.contains(x)
+                    set_sup_contains_eq(c, d, x)
+                    set_sup(c, d).contains(x)
+                }
+                if b.contains(x) {
+                    b.subset(d) and b.contains(x)
+                    subset_contains(b, d, x)
+                    d.contains(x)
+                    set_sup_contains_eq(c, d, x)
+                    set_sup(c, d).contains(x)
+                }
+                set_sup(c, d).contains(x)
+            }
+        }
+    }
 }
 
 /// Set infimum is commutative.
@@ -3015,6 +3064,153 @@ theorem set_sInf_sup4_product_family_is_glb[K, I, J, L, M](s: Set[K],
         }
     }
     set_subset_sInf_sup4_product_iff(s, a, b, c, d)
+}
+
+/// Pointwise inclusion in all four factors preserves each quaternary pairwise infimum.
+theorem set_inf4_product_family_monotone[K, I, J, L, M](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: I -> Set[K],
+    f: J -> Set[K], g: L -> Set[K], h: M -> Set[K], p: Pair[Pair[I, J], L], m: M) {
+    a(p.first.first).subset(e(p.first.first)) and
+    b(p.first.second).subset(f(p.first.second)) and
+    c(p.second).subset(g(p.second)) and
+    d(m).subset(h(m)) implies
+    set_inf4_product_family(a, b, c, d, p, m).subset(set_inf4_product_family(e, f, g, h, p, m))
+} by {
+    if a(p.first.first).subset(e(p.first.first)) and
+        b(p.first.second).subset(f(p.first.second)) and
+        c(p.second).subset(g(p.second)) and d(m).subset(h(m)) {
+        forall(x: K) {
+            if set_inf4_product_family(a, b, c, d, p, m).contains(x) {
+                set_inf4_product_family_contains_eq(a, b, c, d, p, m, x)
+                a(p.first.first).subset(e(p.first.first)) and a(p.first.first).contains(x)
+                subset_contains(a(p.first.first), e(p.first.first), x)
+                e(p.first.first).contains(x)
+                b(p.first.second).subset(f(p.first.second)) and b(p.first.second).contains(x)
+                subset_contains(b(p.first.second), f(p.first.second), x)
+                f(p.first.second).contains(x)
+                c(p.second).subset(g(p.second)) and c(p.second).contains(x)
+                subset_contains(c(p.second), g(p.second), x)
+                g(p.second).contains(x)
+                d(m).subset(h(m)) and d(m).contains(x)
+                subset_contains(d(m), h(m), x)
+                h(m).contains(x)
+                set_inf4_product_family_contains_eq(e, f, g, h, p, m, x)
+                set_inf4_product_family(e, f, g, h, p, m).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion in all four factors preserves each quaternary pairwise supremum.
+theorem set_sup4_product_family_monotone[K, I, J, L, M](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: I -> Set[K],
+    f: J -> Set[K], g: L -> Set[K], h: M -> Set[K], p: Pair[Pair[I, J], L], m: M) {
+    a(p.first.first).subset(e(p.first.first)) and
+    b(p.first.second).subset(f(p.first.second)) and
+    c(p.second).subset(g(p.second)) and
+    d(m).subset(h(m)) implies
+    set_sup4_product_family(a, b, c, d, p, m).subset(set_sup4_product_family(e, f, g, h, p, m))
+} by {
+    if a(p.first.first).subset(e(p.first.first)) and
+        b(p.first.second).subset(f(p.first.second)) and
+        c(p.second).subset(g(p.second)) and d(m).subset(h(m)) {
+        forall(x: K) {
+            if set_sup4_product_family(a, b, c, d, p, m).contains(x) {
+                set_sup4_product_family_contains_eq(a, b, c, d, p, m, x)
+                if a(p.first.first).contains(x) {
+                    a(p.first.first).subset(e(p.first.first)) and a(p.first.first).contains(x)
+                    subset_contains(a(p.first.first), e(p.first.first), x)
+                    e(p.first.first).contains(x)
+                    set_sup4_product_family_contains_eq(e, f, g, h, p, m, x)
+                    set_sup4_product_family(e, f, g, h, p, m).contains(x)
+                }
+                if b(p.first.second).contains(x) {
+                    b(p.first.second).subset(f(p.first.second)) and b(p.first.second).contains(x)
+                    subset_contains(b(p.first.second), f(p.first.second), x)
+                    f(p.first.second).contains(x)
+                    set_sup4_product_family_contains_eq(e, f, g, h, p, m, x)
+                    set_sup4_product_family(e, f, g, h, p, m).contains(x)
+                }
+                if c(p.second).contains(x) {
+                    c(p.second).subset(g(p.second)) and c(p.second).contains(x)
+                    subset_contains(c(p.second), g(p.second), x)
+                    g(p.second).contains(x)
+                    set_sup4_product_family_contains_eq(e, f, g, h, p, m, x)
+                    set_sup4_product_family(e, f, g, h, p, m).contains(x)
+                }
+                if d(m).contains(x) {
+                    d(m).subset(h(m)) and d(m).contains(x)
+                    subset_contains(d(m), h(m), x)
+                    h(m).contains(x)
+                    set_sup4_product_family_contains_eq(e, f, g, h, p, m, x)
+                    set_sup4_product_family(e, f, g, h, p, m).contains(x)
+                }
+                set_sup4_product_family(e, f, g, h, p, m).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion in all four factors preserves suprema of quaternary pairwise infima.
+theorem set_sSup_inf4_product_family_monotone[K, I, J, L, M](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: I -> Set[K],
+    f: J -> Set[K], g: L -> Set[K], h: M -> Set[K]) {
+    (forall(i: I) { a(i).subset(e(i)) }) and
+    (forall(j: J) { b(j).subset(f(j)) }) and
+    (forall(l: L) { c(l).subset(g(l)) }) and
+    (forall(m: M) { d(m).subset(h(m)) }) implies
+    set_sSup(set_pair_family(set_inf4_product_family(a, b, c, d))).subset(
+        set_sSup(set_pair_family(set_inf4_product_family(e, f, g, h))))
+} by {
+    if (forall(i: I) { a(i).subset(e(i)) }) and
+        (forall(j: J) { b(j).subset(f(j)) }) and
+        (forall(l: L) { c(l).subset(g(l)) }) and
+        (forall(m: M) { d(m).subset(h(m)) }) {
+        forall(p: Pair[Pair[I, J], L]) {
+            forall(m: M) {
+                a(p.first.first).subset(e(p.first.first))
+                b(p.first.second).subset(f(p.first.second))
+                c(p.second).subset(g(p.second))
+                d(m).subset(h(m))
+                set_inf4_product_family_monotone(a, b, c, d, e, f, g, h, p, m)
+            }
+        }
+        set_sSup_pair_family_monotone(set_inf4_product_family(a, b, c, d),
+            set_inf4_product_family(e, f, g, h))
+        set_sSup(set_pair_family(set_inf4_product_family(a, b, c, d))).subset(
+            set_sSup(set_pair_family(set_inf4_product_family(e, f, g, h))))
+    }
+}
+
+/// Pointwise inclusion in all four factors preserves infima of quaternary pairwise suprema.
+theorem set_sInf_sup4_product_family_monotone[K, I, J, L, M](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: I -> Set[K],
+    f: J -> Set[K], g: L -> Set[K], h: M -> Set[K]) {
+    (forall(i: I) { a(i).subset(e(i)) }) and
+    (forall(j: J) { b(j).subset(f(j)) }) and
+    (forall(l: L) { c(l).subset(g(l)) }) and
+    (forall(m: M) { d(m).subset(h(m)) }) implies
+    set_sInf(set_pair_family(set_sup4_product_family(a, b, c, d))).subset(
+        set_sInf(set_pair_family(set_sup4_product_family(e, f, g, h))))
+} by {
+    if (forall(i: I) { a(i).subset(e(i)) }) and
+        (forall(j: J) { b(j).subset(f(j)) }) and
+        (forall(l: L) { c(l).subset(g(l)) }) and
+        (forall(m: M) { d(m).subset(h(m)) }) {
+        forall(p: Pair[Pair[I, J], L]) {
+            forall(m: M) {
+                a(p.first.first).subset(e(p.first.first))
+                b(p.first.second).subset(f(p.first.second))
+                c(p.second).subset(g(p.second))
+                d(m).subset(h(m))
+                set_sup4_product_family_monotone(a, b, c, d, e, f, g, h, p, m)
+            }
+        }
+        set_sInf_pair_family_monotone(set_sup4_product_family(a, b, c, d),
+            set_sup4_product_family(e, f, g, h))
+        set_sInf(set_pair_family(set_sup4_product_family(a, b, c, d))).subset(
+            set_sInf(set_pair_family(set_sup4_product_family(e, f, g, h))))
+    }
 }
 
 /// The quinary family formed by first taking quaternary infima, then infima with a fifth family.
