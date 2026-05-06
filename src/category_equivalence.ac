@@ -5,10 +5,12 @@ from functor import Functor, identity_functor, compose_functor,
     identity_functor_src_cat, identity_functor_dst_cat,
     identity_functor_obj_map, identity_functor_mor_map,
     compose_functor_src_cat, compose_functor_dst_cat,
-    compose_functor_obj_map, compose_functor_mor_map,
+    compose_functor_obj_map, compose_functor_mor_map, compose_functor_some,
     functor_ext
-from natural_transformation import NaturalTransformation, identity_nat_trans
+from natural_transformation import NaturalTransformation, identity_nat_trans,
+    identity_nat_trans_src_functor, identity_nat_trans_dst_functor
 from natural_isomorphism import is_natural_isomorphism_pair
+from natural_isomorphism import identity_nat_trans_is_natural_isomorphism
 from functions import compose, identity_fn, compose_identity_left
 
 /// True if the forward and backward functors have matching source/target categories.
@@ -304,4 +306,137 @@ theorem identity_functor_self_compose_eq_identity[O, M](c: Category[O, M], h: Fu
         functor_ext(h, identity_functor(c))
         h = identity_functor(c)
     }
+}
+
+/// The composition of the identity functor with itself is the identity functor.
+theorem identity_functor_self_compose_some[O, M](c: Category[O, M]) {
+    compose_functor(identity_functor(c), identity_functor(c)) = Option.some(identity_functor(c))
+} by {
+    identity_functor_src_cat(c)
+    identity_functor_dst_cat(c)
+    identity_functor(c).src_cat = identity_functor(c).dst_cat
+    compose_functor_some(identity_functor(c), identity_functor(c))
+    let h: Functor[O, M, O, M] satisfy {
+        compose_functor(identity_functor(c), identity_functor(c)) = Option.some(h)
+    }
+    identity_functor_self_compose_eq_identity(c, h)
+    h = identity_functor(c)
+    Option.some(h) = Option.some(identity_functor(c))
+    compose_functor(identity_functor(c), identity_functor(c)) = Option.some(identity_functor(c))
+}
+
+/// The identity natural transformation is the unit for the identity self-equivalence.
+theorem identity_category_equivalence_unit_axiom[O, M](c: Category[O, M]) {
+    category_equivalence_unit_axiom(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)))
+} by {
+    identity_nat_trans_src_functor(identity_functor(c))
+    identity_nat_trans(identity_functor(c)).src_functor = identity_functor(c)
+    identity_functor_self_compose_some(c)
+    identity_nat_trans_dst_functor(identity_functor(c))
+    identity_nat_trans(identity_functor(c)).dst_functor = identity_functor(c)
+    compose_functor(identity_functor(c), identity_functor(c)) =
+        Option.some(identity_nat_trans(identity_functor(c)).dst_functor)
+    category_equivalence_unit_axiom(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c))) =
+        (identity_nat_trans(identity_functor(c)).src_functor = identity_functor(identity_functor(c).src_cat)
+        and compose_functor(identity_functor(c), identity_functor(c)) =
+            Option.some(identity_nat_trans(identity_functor(c)).dst_functor))
+    identity_functor_src_cat(c)
+    identity_functor(c).src_cat = c
+    identity_functor(identity_functor(c).src_cat) = identity_functor(c)
+    identity_nat_trans(identity_functor(c)).src_functor = identity_functor(identity_functor(c).src_cat)
+}
+
+/// The identity natural transformation is the counit for the identity self-equivalence.
+theorem identity_category_equivalence_counit_axiom[O, M](c: Category[O, M]) {
+    category_equivalence_counit_axiom(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)))
+} by {
+    identity_nat_trans_src_functor(identity_functor(c))
+    identity_nat_trans(identity_functor(c)).src_functor = identity_functor(c)
+    identity_functor_self_compose_some(c)
+    compose_functor(identity_functor(c), identity_functor(c)) =
+        Option.some(identity_nat_trans(identity_functor(c)).src_functor)
+    identity_nat_trans_dst_functor(identity_functor(c))
+    identity_nat_trans(identity_functor(c)).dst_functor = identity_functor(c)
+    identity_functor_dst_cat(c)
+    identity_functor(c).dst_cat = c
+    identity_functor(identity_functor(c).dst_cat) = identity_functor(c)
+    identity_nat_trans(identity_functor(c)).dst_functor = identity_functor(identity_functor(c).dst_cat)
+    category_equivalence_counit_axiom(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c))) =
+        (compose_functor(identity_functor(c), identity_functor(c)) =
+            Option.some(identity_nat_trans(identity_functor(c)).src_functor)
+        and identity_nat_trans(identity_functor(c)).dst_functor = identity_functor(identity_functor(c).dst_cat))
+}
+
+/// The identity functor with identity unit and counit forms a category equivalence.
+theorem identity_category_equivalence_axiom[O, M](c: Category[O, M]) {
+    is_category_equivalence(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)))
+} by {
+    let f = identity_functor(c)
+    let n = identity_nat_trans(f)
+    identity_functor_src_cat(c)
+    f.src_cat = c
+    identity_functor_dst_cat(c)
+    f.dst_cat = c
+    category_equivalence_cats_axiom(f, f) =
+        (f.src_cat = f.dst_cat and f.dst_cat = f.src_cat)
+    category_equivalence_cats_axiom(f, f)
+    identity_category_equivalence_unit_axiom(c)
+    category_equivalence_unit_axiom(f, f, n)
+    identity_nat_trans_is_natural_isomorphism(f)
+    is_natural_isomorphism_pair(n, n)
+    identity_category_equivalence_counit_axiom(c)
+    category_equivalence_counit_axiom(f, f, n)
+    is_category_equivalence(f, f, n, n, n, n) =
+        (category_equivalence_cats_axiom(f, f)
+        and category_equivalence_unit_axiom(f, f, n)
+        and is_natural_isomorphism_pair(n, n)
+        and category_equivalence_counit_axiom(f, f, n)
+        and is_natural_isomorphism_pair(n, n))
+    is_category_equivalence(f, f, n, n, n, n)
+    f = identity_functor(c)
+    n = identity_nat_trans(identity_functor(c))
+    is_category_equivalence(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)))
+}
+
+/// The identity equivalence of a category.
+let identity_category_equivalence[O, M](c: Category[O, M]) -> result: CategoryEquivalence[O, M, O, M] satisfy {
+    CategoryEquivalence[O, M, O, M].new(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c))) = Option.some(result)
+} by {
+    identity_category_equivalence_axiom(c)
+}
+
+/// The identity category equivalence has the identity functor as its forward functor.
+theorem identity_category_equivalence_forward[O, M](c: Category[O, M]) {
+    identity_category_equivalence(c).forward = identity_functor(c)
+} by {
+    let e = identity_category_equivalence(c)
+    CategoryEquivalence[O, M, O, M].new(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c))) = Option.some(e)
+    category_equivalence_new_forward(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)), e)
+}
+
+/// The identity category equivalence has the identity functor as its backward functor.
+theorem identity_category_equivalence_backward[O, M](c: Category[O, M]) {
+    identity_category_equivalence(c).backward = identity_functor(c)
+} by {
+    let e = identity_category_equivalence(c)
+    CategoryEquivalence[O, M, O, M].new(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c))) = Option.some(e)
+    category_equivalence_new_backward(identity_functor(c), identity_functor(c),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)),
+        identity_nat_trans(identity_functor(c)), identity_nat_trans(identity_functor(c)), e)
 }

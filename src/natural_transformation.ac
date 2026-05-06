@@ -3,7 +3,9 @@
 from category import Category, category_identity_src, category_identity_dst,
     category_id_left, category_id_right, category_compose_src, category_compose_dst,
     category_compose_assoc
-from functor import Functor, functor_src, functor_dst, functor_identity, functor_compose
+from functor import Functor, functor_src, functor_dst, functor_identity, functor_compose,
+    compose_functor, compose_functor_obj_map
+from functions import compose
 
 /// True if the two functors share the same source and target categories.
 define functors_parallel[O1, M1, O2, M2](
@@ -1192,5 +1194,196 @@ theorem vertical_compose_nat_trans_component[O1, M1, O2, M2](
     if vertical_compose_nat_trans(upper, lower) = Option.some(n) {
         NaturalTransformation[O1, M1, O2, M2].new(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower)) = Option.some(n)
         nat_trans_new_component(lower.src_functor, upper.dst_functor, vertical_compose_component(upper, lower), n)
+    }
+}
+
+/// True if the outer natural transformation can be horizontally composed with the inner natural transformation.
+define horizontal_composable[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2]
+) -> Bool {
+    outer.src_functor.src_cat = inner.src_functor.dst_cat
+}
+
+/// The component morphism of the horizontal composition of two natural transformations at an object.
+define horizontal_compose_component[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    x: O1
+) -> M3 {
+    outer.src_functor.dst_cat.compose(
+        outer.component(inner.dst_functor.obj_map(x)),
+        outer.src_functor.mor_map(inner.component(x))
+    )
+}
+
+/// In a horizontal composition, the outer source functor can act on the inner component at an object.
+theorem horizontal_compose_components_composable[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    x: O1
+) {
+    horizontal_composable(outer, inner) implies
+        outer.src_functor.dst_cat.src(outer.component(inner.dst_functor.obj_map(x)))
+            = outer.src_functor.dst_cat.dst(outer.src_functor.mor_map(inner.component(x)))
+} by {
+    if horizontal_composable(outer, inner) {
+        nat_trans_component_src(outer, inner.dst_functor.obj_map(x))
+        outer.src_functor.dst_cat.src(outer.component(inner.dst_functor.obj_map(x))) = outer.src_functor.obj_map(inner.dst_functor.obj_map(x))
+        functor_dst(outer.src_functor, inner.component(x))
+        outer.src_functor.dst_cat.dst(outer.src_functor.mor_map(inner.component(x))) = outer.src_functor.obj_map(outer.src_functor.src_cat.dst(inner.component(x)))
+        horizontal_composable(outer, inner) = (outer.src_functor.src_cat = inner.src_functor.dst_cat)
+        outer.src_functor.src_cat = inner.src_functor.dst_cat
+        outer.src_functor.src_cat.dst = inner.src_functor.dst_cat.dst
+        outer.src_functor.src_cat.dst(inner.component(x)) = inner.src_functor.dst_cat.dst(inner.component(x))
+        nat_trans_component_dst(inner, x)
+        inner.src_functor.dst_cat.dst(inner.component(x)) = inner.dst_functor.obj_map(x)
+        outer.src_functor.src_cat.dst(inner.component(x)) = inner.dst_functor.obj_map(x)
+        outer.src_functor.obj_map(outer.src_functor.src_cat.dst(inner.component(x))) = outer.src_functor.obj_map(inner.dst_functor.obj_map(x))
+        outer.src_functor.dst_cat.dst(outer.src_functor.mor_map(inner.component(x))) = outer.src_functor.obj_map(inner.dst_functor.obj_map(x))
+        outer.src_functor.dst_cat.src(outer.component(inner.dst_functor.obj_map(x))) = outer.src_functor.dst_cat.dst(outer.src_functor.mor_map(inner.component(x)))
+    }
+}
+
+/// The source endpoint of a horizontal composition component in the outer target category.
+theorem horizontal_compose_component_src[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    src_comp: Functor[O1, M1, O3, M3],
+    x: O1
+) {
+    horizontal_composable(outer, inner)
+    and compose_functor(outer.src_functor, inner.src_functor) = Option.some(src_comp)
+    implies outer.src_functor.dst_cat.src(horizontal_compose_component(outer, inner, x)) = src_comp.obj_map(x)
+} by {
+    if horizontal_composable(outer, inner)
+    and compose_functor(outer.src_functor, inner.src_functor) = Option.some(src_comp) {
+        horizontal_compose_component(outer, inner, x) =
+            outer.src_functor.dst_cat.compose(
+                outer.component(inner.dst_functor.obj_map(x)),
+                outer.src_functor.mor_map(inner.component(x)))
+        horizontal_compose_components_composable(outer, inner, x)
+        category_compose_src(outer.src_functor.dst_cat,
+            outer.component(inner.dst_functor.obj_map(x)),
+            outer.src_functor.mor_map(inner.component(x)))
+        outer.src_functor.dst_cat.src(horizontal_compose_component(outer, inner, x)) = outer.src_functor.dst_cat.src(outer.src_functor.mor_map(inner.component(x)))
+        functor_src(outer.src_functor, inner.component(x))
+        outer.src_functor.dst_cat.src(outer.src_functor.mor_map(inner.component(x))) = outer.src_functor.obj_map(outer.src_functor.src_cat.src(inner.component(x)))
+        horizontal_composable(outer, inner) = (outer.src_functor.src_cat = inner.src_functor.dst_cat)
+        outer.src_functor.src_cat = inner.src_functor.dst_cat
+        outer.src_functor.src_cat.src = inner.src_functor.dst_cat.src
+        outer.src_functor.src_cat.src(inner.component(x)) = inner.src_functor.dst_cat.src(inner.component(x))
+        nat_trans_component_src(inner, x)
+        inner.src_functor.dst_cat.src(inner.component(x)) = inner.src_functor.obj_map(x)
+        outer.src_functor.src_cat.src(inner.component(x)) = inner.src_functor.obj_map(x)
+        outer.src_functor.obj_map(outer.src_functor.src_cat.src(inner.component(x))) = outer.src_functor.obj_map(inner.src_functor.obj_map(x))
+        compose_functor_obj_map(outer.src_functor, inner.src_functor, src_comp)
+        src_comp.obj_map = compose(outer.src_functor.obj_map, inner.src_functor.obj_map)
+        src_comp.obj_map(x) = compose(outer.src_functor.obj_map, inner.src_functor.obj_map, x)
+        compose(outer.src_functor.obj_map, inner.src_functor.obj_map, x) = outer.src_functor.obj_map(inner.src_functor.obj_map(x))
+        src_comp.obj_map(x) = outer.src_functor.obj_map(inner.src_functor.obj_map(x))
+        outer.src_functor.dst_cat.src(horizontal_compose_component(outer, inner, x)) = src_comp.obj_map(x)
+    }
+}
+
+/// The target endpoint of a horizontal composition component in the outer target category.
+theorem horizontal_compose_component_dst[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    dst_comp: Functor[O1, M1, O3, M3],
+    x: O1
+) {
+    horizontal_composable(outer, inner)
+    and compose_functor(outer.dst_functor, inner.dst_functor) = Option.some(dst_comp)
+    implies outer.src_functor.dst_cat.dst(horizontal_compose_component(outer, inner, x)) = dst_comp.obj_map(x)
+} by {
+    if horizontal_composable(outer, inner)
+    and compose_functor(outer.dst_functor, inner.dst_functor) = Option.some(dst_comp) {
+        horizontal_compose_component(outer, inner, x) =
+            outer.src_functor.dst_cat.compose(
+                outer.component(inner.dst_functor.obj_map(x)),
+                outer.src_functor.mor_map(inner.component(x)))
+        horizontal_compose_components_composable(outer, inner, x)
+        category_compose_dst(outer.src_functor.dst_cat,
+            outer.component(inner.dst_functor.obj_map(x)),
+            outer.src_functor.mor_map(inner.component(x)))
+        outer.src_functor.dst_cat.dst(horizontal_compose_component(outer, inner, x)) = outer.src_functor.dst_cat.dst(outer.component(inner.dst_functor.obj_map(x)))
+        nat_trans_component_dst(outer, inner.dst_functor.obj_map(x))
+        outer.src_functor.dst_cat.dst(outer.component(inner.dst_functor.obj_map(x))) = outer.dst_functor.obj_map(inner.dst_functor.obj_map(x))
+        compose_functor_obj_map(outer.dst_functor, inner.dst_functor, dst_comp)
+        dst_comp.obj_map = compose(outer.dst_functor.obj_map, inner.dst_functor.obj_map)
+        dst_comp.obj_map(x) = compose(outer.dst_functor.obj_map, inner.dst_functor.obj_map, x)
+        compose(outer.dst_functor.obj_map, inner.dst_functor.obj_map, x) = outer.dst_functor.obj_map(inner.dst_functor.obj_map(x))
+        dst_comp.obj_map(x) = outer.dst_functor.obj_map(inner.dst_functor.obj_map(x))
+        outer.src_functor.dst_cat.dst(horizontal_compose_component(outer, inner, x)) = dst_comp.obj_map(x)
+    }
+}
+
+/// The horizontal composition of two natural transformations, packaged relative to chosen composite functors.
+define horizontal_compose_nat_trans[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    src_comp: Functor[O1, M1, O3, M3],
+    dst_comp: Functor[O1, M1, O3, M3]
+) -> Option[NaturalTransformation[O1, M1, O3, M3]] {
+    NaturalTransformation[O1, M1, O3, M3].new(
+        src_comp, dst_comp, horizontal_compose_component(outer, inner)
+    )
+}
+
+/// A bundled horizontal composition has the chosen source composite as its source.
+theorem horizontal_compose_nat_trans_src_functor[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    src_comp: Functor[O1, M1, O3, M3],
+    dst_comp: Functor[O1, M1, O3, M3],
+    n: NaturalTransformation[O1, M1, O3, M3]
+) {
+    horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n)
+    implies n.src_functor = src_comp
+} by {
+    if horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n) {
+        NaturalTransformation[O1, M1, O3, M3].new(
+            src_comp, dst_comp, horizontal_compose_component(outer, inner)
+        ) = Option.some(n)
+        nat_trans_new_src_functor(src_comp, dst_comp, horizontal_compose_component(outer, inner), n)
+    }
+}
+
+/// A bundled horizontal composition has the chosen target composite as its target.
+theorem horizontal_compose_nat_trans_dst_functor[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    src_comp: Functor[O1, M1, O3, M3],
+    dst_comp: Functor[O1, M1, O3, M3],
+    n: NaturalTransformation[O1, M1, O3, M3]
+) {
+    horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n)
+    implies n.dst_functor = dst_comp
+} by {
+    if horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n) {
+        NaturalTransformation[O1, M1, O3, M3].new(
+            src_comp, dst_comp, horizontal_compose_component(outer, inner)
+        ) = Option.some(n)
+        nat_trans_new_dst_functor(src_comp, dst_comp, horizontal_compose_component(outer, inner), n)
+    }
+}
+
+/// A bundled horizontal composition has the standard component map.
+theorem horizontal_compose_nat_trans_component[O1, M1, O2, M2, O3, M3](
+    outer: NaturalTransformation[O2, M2, O3, M3],
+    inner: NaturalTransformation[O1, M1, O2, M2],
+    src_comp: Functor[O1, M1, O3, M3],
+    dst_comp: Functor[O1, M1, O3, M3],
+    n: NaturalTransformation[O1, M1, O3, M3]
+) {
+    horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n)
+    implies n.component = horizontal_compose_component(outer, inner)
+} by {
+    if horizontal_compose_nat_trans(outer, inner, src_comp, dst_comp) = Option.some(n) {
+        NaturalTransformation[O1, M1, O3, M3].new(
+            src_comp, dst_comp, horizontal_compose_component(outer, inner)
+        ) = Option.some(n)
+        nat_trans_new_component(src_comp, dst_comp, horizontal_compose_component(outer, inner), n)
     }
 }
