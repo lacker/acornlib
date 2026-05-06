@@ -5,8 +5,10 @@ from nat.nat_base import Nat
 from nat.nat_factorisation import no_proper_divisor_imp_prime
 from rat.rat_base import Rat, is_reduced
 
+/// Two is nonzero as an integer.
 theorem int_two_ne_zero { Int.1 + Int.1 != Int.0 }
 
+/// Two does not divide one as an integer.
 theorem int_two_not_divides_one { not (Int.1 + Int.1).divides(Int.1) } by {
     if (Int.1 + Int.1).divides(Int.1) {
         abs(Int.1 + Int.1).divides(abs(Int.1))
@@ -18,8 +20,10 @@ theorem int_two_not_divides_one { not (Int.1 + Int.1).divides(Int.1) } by {
     }
 }
 
+/// The numerator and denominator of a rational number are reduced.
 theorem rat_num_denom_reduced(r: Rat) { is_reduced(r.num, r.denom) }
 
+/// Reduced integers have no common factor two.
 theorem reduced_no_common_factor_two(a: Int, b: Int) {
     is_reduced(a, b) implies not ((Int.1 + Int.1).divides(a) and (Int.1 + Int.1).divides(b))
 } by {
@@ -31,6 +35,7 @@ theorem reduced_no_common_factor_two(a: Int, b: Int) {
     }
 }
 
+/// Two is prime as a natural number.
 theorem nat_two_prime { Nat.2.is_prime } by {
     Nat.1 < Nat.2
     forall(k: Nat) {
@@ -41,6 +46,7 @@ theorem nat_two_prime { Nat.2.is_prime } by {
     no_proper_divisor_imp_prime(Nat.2)
 }
 
+/// Two is prime as an integer.
 theorem int_two_prime { is_prime(Int.2) } by {
     nat_two_prime
     Nat.2.is_prime = is_prime(Int.from_nat(Nat.2))
@@ -48,6 +54,7 @@ theorem int_two_prime { is_prime(Int.2) } by {
     is_prime(Int.2)
 }
 
+/// If two divides an integer square, then two divides the integer.
 theorem int_two_divides_square(a: Int) {
     (Int.1 + Int.1).divides(a * a) implies (Int.1 + Int.1).divides(a)
 } by {
@@ -64,6 +71,7 @@ theorem int_two_divides_square(a: Int) {
     }
 }
 
+/// If one square is twice another square, then two divides the left square root.
 theorem int_two_divides_left_of_sq_eq_two_mul_sq(a: Int, b: Int) {
     a * a = (Int.1 + Int.1) * (b * b) implies (Int.1 + Int.1).divides(a)
 } by {
@@ -72,8 +80,10 @@ theorem int_two_divides_left_of_sq_eq_two_mul_sq(a: Int, b: Int) {
     int_two_divides_square(a)
 }
 
+/// The integer two, expressed as one plus one.
 define int_two(dummy: Int) -> Int { Int.1 + Int.1 }
 
+/// If one square is twice another square, then two divides the right square root.
 theorem int_two_divides_right_of_sq_eq_two_mul_sq(a: Int, b: Int) {
     a * a = (Int.1 + Int.1) * (b * b) implies (Int.1 + Int.1).divides(b)
 } by {
@@ -106,6 +116,7 @@ theorem int_two_divides_right_of_sq_eq_two_mul_sq(a: Int, b: Int) {
     (Int.1 + Int.1).divides(b)
 }
 
+/// Multiplying a rational square by two denominator factors may be rearranged as a square.
 theorem rat_square_denoms_rearrange(r: Rat) {
     (r * r) * Rat.from_int(r.denom) * Rat.from_int(r.denom) =
     (r * Rat.from_int(r.denom)) * (r * Rat.from_int(r.denom))
@@ -121,8 +132,10 @@ theorem rat_square_denoms_rearrange(r: Rat) {
     (r * r) * d * d = (r * d) * (r * d)
 }
 
+/// The integer two is one plus one.
 theorem int_two_eq_one_plus_one { Int.2 = Int.1 + Int.1 }
 
+/// A rational square equal to two gives the corresponding integer numerator-denominator equation.
 theorem rat_square_eq_two_num_denom(r: Rat) {
     r * r = Rat.2 implies r.num * r.num = (Int.1 + Int.1) * (r.denom * r.denom)
 } by {
