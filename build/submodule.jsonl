@@ -437,24 +437,24 @@
 {"goal":"submodule_sup_idempotent","proof":[]}
 {"goal":"b.carrier = a.carrier","proof":[]}
 {"goal":"submodule_subset[R, M](submodule_sup[R, M](a, b), b)","proof":[]}
-{"goal":"submodule_sup[R, M](a, b).carrier = b.carrier","proof":["submodule_sup[R, M](a, b).carrier != a.carrier"]}
-{"goal":"submodule_sup[R, M](a, b) = b","proof":["not submodule_subset[R, M](b, submodule_sup[R, M](a, b)) or not submodule_subset[R, M](submodule_sup[R, M](a, b), b) or submodule_sup[R, M](a, b).carrier != b.carrier","submodule_sup[R, M](a, b).carrier != b.carrier"]}
-{"goal":"submodule_sup_eq_right_of_subset","proof":["not submodule_subset[R, M](a, b) or b.carrier != a.carrier","submodule_subset[R, M](a, b)","b.carrier = a.carrier","b.carrier != a.carrier"]}
+{"goal":"submodule_sup[R, M](a, b).carrier = b.carrier","proof":[]}
+{"goal":"submodule_sup[R, M](a, b) = b","proof":[]}
+{"goal":"submodule_sup_eq_right_of_subset","proof":[]}
 {"goal":"submodule_subset[R, M](submodule_sup[R, M](a, b), a)","proof":[]}
 {"goal":"submodule_sup[R, M](a, b).carrier = a.carrier","proof":[]}
-{"goal":"submodule_sup[R, M](a, b) = a","proof":["not submodule_subset[R, M](a, submodule_sup[R, M](a, b)) or not submodule_subset[R, M](submodule_sup[R, M](a, b), a) or submodule_sup[R, M](a, b).carrier != a.carrier","submodule_sup[R, M](a, b).carrier != a.carrier"]}
+{"goal":"submodule_sup[R, M](a, b) = a","proof":[]}
 {"goal":"submodule_sup_eq_left_of_subset","proof":[]}
-{"goal":"zero_submodule[R, M](carrier).carrier = s.carrier","proof":["zero_submodule[R, M](carrier).carrier != carrier"]}
-{"goal":"submodule_sup[R, M](zero_submodule[R, M](carrier), s) = s","proof":["not submodule_subset[R, M](zero_submodule[R, M](carrier), s) or zero_submodule[R, M](carrier).carrier != s.carrier","submodule_subset[R, M](zero_submodule[R, M](carrier), s)","not submodule_subset[R, M](zero_submodule[R, M](carrier), s)"]}
-{"goal":"zero_submodule_sup","proof":["s.carrier != carrier"]}
+{"goal":"zero_submodule[R, M](carrier).carrier = s.carrier","proof":[]}
+{"goal":"submodule_sup[R, M](zero_submodule[R, M](carrier), s) = s","proof":[]}
+{"goal":"zero_submodule_sup","proof":[]}
 {"goal":"s.carrier = zero_submodule[R, M](s.carrier).carrier","proof":[]}
-{"goal":"submodule_sup[R, M](s, zero_submodule[R, M](s.carrier)) = s","proof":["not submodule_subset[R, M](zero_submodule[R, M](s.carrier), s) or zero_submodule[R, M](s.carrier).carrier != s.carrier","zero_submodule[R, M](s.carrier).carrier != s.carrier"]}
+{"goal":"submodule_sup[R, M](s, zero_submodule[R, M](s.carrier)) = s","proof":[]}
 {"goal":"submodule_sup_zero","proof":[]}
-{"goal":"full_submodule[R, M](carrier).carrier = s.carrier","proof":["full_submodule[R, M](carrier).carrier != carrier"]}
-{"goal":"submodule_sup[R, M](full_submodule[R, M](carrier), s) = full_submodule[R, M](carrier)","proof":["not submodule_subset[R, M](s, full_submodule[R, M](carrier)) or full_submodule[R, M](carrier).carrier != s.carrier","submodule_subset[R, M](s, full_submodule[R, M](carrier))","not submodule_subset[R, M](s, full_submodule[R, M](carrier))"]}
-{"goal":"full_submodule_sup","proof":["s.carrier != carrier"]}
+{"goal":"full_submodule[R, M](carrier).carrier = s.carrier","proof":[]}
+{"goal":"submodule_sup[R, M](full_submodule[R, M](carrier), s) = full_submodule[R, M](carrier)","proof":[]}
+{"goal":"full_submodule_sup","proof":[]}
 {"goal":"s.carrier = full_submodule[R, M](s.carrier).carrier","proof":[]}
-{"goal":"submodule_sup[R, M](s, full_submodule[R, M](s.carrier)) = full_submodule[R, M](s.carrier)","proof":["not submodule_subset[R, M](s, full_submodule[R, M](s.carrier)) or full_submodule[R, M](s.carrier).carrier != s.carrier","full_submodule[R, M](s.carrier).carrier != s.carrier"]}
+{"goal":"submodule_sup[R, M](s, full_submodule[R, M](s.carrier)) = full_submodule[R, M](s.carrier)","proof":[]}
 {"goal":"submodule_sup_full","proof":[]}
 {"goal":"exists(k0: Set[M]) { k0.is_finite and submodule_closure[R, M](s.carrier, k0) = s }","proof":["function(x0: Set[M]) { not (x0.is_finite and submodule_closure[R, M](s.carrier, x0) = s) }(a)"]}
 {"goal":"submodule_is_finitely_generated[R, M](s)","proof":["let w0: Set[M] satisfy { w0.is_finite and submodule_closure[R, M](s.carrier, w0) = s }","function[T0: AddCommGroup, T1: Ring](x0: Submodule[T1, T0]) { exists(k0: Set[T0]) { k0.is_finite and submodule_closure[T1, T0](x0.carrier, k0) = x0 } = submodule_is_finitely_generated[T1, T0](x0) }[M, R](s)"]}
