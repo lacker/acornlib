@@ -1,18 +1,74 @@
-{"goal":"lower(point) <= upper(point)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or not point ∈ domain","not function_lte_on[Domain, Value](domain, lower, upper)","function_lte_on[Domain, Value](domain, lower, upper)"]}
-{"goal":"upper(point) <= bound","proof":["not is_upper_bound_on[Domain, Value](domain, upper, bound) or not point ∈ domain","not is_upper_bound_on[Domain, Value](domain, upper, bound)","is_upper_bound_on[Domain, Value](domain, upper, bound)"]}
-{"goal":"lower(point) <= bound","proof":["not lower(point) <= upper(point) or not upper(point) <= bound","not lower(point) <= upper(point)"]}
-{"goal":"upper_bound_on_of_function_lte_on","proof":["function[T0, T2: PartialOrder](x0: Set[T0], x1: T0 -> T2, x2: T2) { forall(x3: T0) { not x3 ∈ x0 or x1(x3) <= x2 } = is_upper_bound_on[T0, T2](x0, x1, x2) }[Domain, Value](domain, lower, bound)","let w0: Domain satisfy { w0 ∈ domain and not lower(w0) <= bound }","function(x0: Domain) { not x0 ∈ domain or lower(x0) <= bound }(w0)","w0 ∈ domain and not lower(w0) <= bound","lower(w0) <= bound"]}
-{"goal":"bound <= lower(point)","proof":["not is_lower_bound_on[Domain, Value](domain, lower, bound) or not point ∈ domain","not is_lower_bound_on[Domain, Value](domain, lower, bound)","is_lower_bound_on[Domain, Value](domain, lower, bound)"]}
-{"goal":"lower(point) <= upper(point)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or not point ∈ domain","not function_lte_on[Domain, Value](domain, lower, upper)","function_lte_on[Domain, Value](domain, lower, upper)"]}
-{"goal":"bound <= upper(point)","proof":["not lower(point) <= upper(point) or not bound <= lower(point)","not lower(point) <= upper(point)"]}
-{"goal":"lower_bound_on_of_function_lte_on","proof":["function[T0, T2: PartialOrder](x0: Set[T0], x1: T2, x2: T0 -> T2) { forall(x3: T0) { not x3 ∈ x0 or x1 <= x2(x3) } = is_lower_bound_on[T0, T2](x0, x2, x1) }[Domain, Value](domain, bound, upper)","let w0: Domain satisfy { w0 ∈ domain and not bound <= upper(w0) }","function(x0: Domain) { not x0 ∈ domain or bound <= upper(x0) }(w0)","w0 ∈ domain and not bound <= upper(w0)","bound <= upper(w0)"]}
-{"goal":"exists(k0: Value) { is_upper_bound_on[Domain, Value](domain, upper, k0) }","proof":["function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_upper_bound_on[T1, T0](x0, x1, k0) } = is_bounded_above_on[T1, T0](x0, x1) }[Value, Domain](domain, upper)","is_bounded_above_on[Domain, Value](domain, upper)","not is_bounded_above_on[Domain, Value](domain, upper)"]}
-{"goal":"is_upper_bound_on[Domain, Value](domain, lower, bound)","proof":["not is_upper_bound_on[Domain, Value](domain, upper, bound) or not function_lte_on[Domain, Value](domain, lower, upper)","not function_lte_on[Domain, Value](domain, lower, upper)","function_lte_on[Domain, Value](domain, lower, upper)"]}
+{"goal":"lower(point) <= upper(point)","proof":[]}
+{"goal":"upper(point) <= bound","proof":[]}
+{"goal":"lower(point) <= bound","proof":[]}
+{"goal":"upper_bound_on_of_function_lte_on","proof":["function[T0, T2: PartialOrder](x0: Set[T0], x1: T0 -> T2, x2: T2) { forall(x3: T0) { not x3 ∈ x0 or x1(x3) <= x2 } = is_upper_bound_on[T0, T2](x0, x1, x2) }[Domain, Value](domain, lower, bound)","let w0: Domain satisfy { w0 ∈ domain and not lower(w0) <= bound }","function(x0: Domain) { not x0 ∈ domain or lower(x0) <= bound }(w0)"]}
+{"goal":"bound <= lower(point)","proof":[]}
+{"goal":"lower(point) <= upper(point)","proof":[]}
+{"goal":"bound <= upper(point)","proof":[]}
+{"goal":"lower_bound_on_of_function_lte_on","proof":["function[T0, T2: PartialOrder](x0: Set[T0], x1: T2, x2: T0 -> T2) { forall(x3: T0) { not x3 ∈ x0 or x1 <= x2(x3) } = is_lower_bound_on[T0, T2](x0, x2, x1) }[Domain, Value](domain, bound, upper)","let w0: Domain satisfy { w0 ∈ domain and not bound <= upper(w0) }","function(x0: Domain) { not x0 ∈ domain or bound <= upper(x0) }(w0)"]}
+{"goal":"exists(k0: Value) { is_upper_bound_on[Domain, Value](domain, upper, k0) }","proof":["function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_upper_bound_on[T1, T0](x0, x1, k0) } = is_bounded_above_on[T1, T0](x0, x1) }[Value, Domain](domain, upper)"]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, lower, bound)","proof":[]}
 {"goal":"exists(k0: Value) { is_upper_bound_on[Domain, Value](domain, lower, k0) }","proof":["function(x0: Value) { not is_upper_bound_on[Domain, Value](domain, lower, x0) }(bound)"]}
 {"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":["let w0: Value satisfy { is_upper_bound_on[Domain, Value](domain, lower, w0) }","function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_upper_bound_on[T1, T0](x0, x1, k0) } = is_bounded_above_on[T1, T0](x0, x1) }[Value, Domain](domain, lower)"]}
 {"goal":"bounded_above_on_of_function_lte_on","proof":[]}
-{"goal":"exists(k0: Value) { is_lower_bound_on[Domain, Value](domain, lower, k0) }","proof":["function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_lower_bound_on[T1, T0](x0, x1, k0) } = is_bounded_below_on[T1, T0](x0, x1) }[Value, Domain](domain, lower)","is_bounded_below_on[Domain, Value](domain, lower)","not is_bounded_below_on[Domain, Value](domain, lower)"]}
-{"goal":"is_lower_bound_on[Domain, Value](domain, upper, bound)","proof":["not is_lower_bound_on[Domain, Value](domain, lower, bound) or not function_lte_on[Domain, Value](domain, lower, upper)","not function_lte_on[Domain, Value](domain, lower, upper)","function_lte_on[Domain, Value](domain, lower, upper)"]}
+{"goal":"exists(k0: Value) { is_lower_bound_on[Domain, Value](domain, lower, k0) }","proof":["function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_lower_bound_on[T1, T0](x0, x1, k0) } = is_bounded_below_on[T1, T0](x0, x1) }[Value, Domain](domain, lower)"]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, upper, bound)","proof":[]}
 {"goal":"exists(k0: Value) { is_lower_bound_on[Domain, Value](domain, upper, k0) }","proof":["function(x0: Value) { not is_lower_bound_on[Domain, Value](domain, upper, x0) }(bound)"]}
 {"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":["let w0: Value satisfy { is_lower_bound_on[Domain, Value](domain, upper, w0) }","function[T0: PartialOrder, T1](x0: Set[T1], x1: T1 -> T0) { exists(k0: T0) { is_lower_bound_on[T1, T0](x0, x1, k0) } = is_bounded_below_on[T1, T0](x0, x1) }[Value, Domain](domain, upper)"]}
 {"goal":"bounded_below_on_of_function_lte_on","proof":[]}
+{"goal":"function_lte_on[Domain, Value](domain, lower, upper)","proof":[]}
+{"goal":"is_upper_bound_on[Domain, Value](domain, lower, bound)","proof":[]}
+{"goal":"upper_bound_on_of_function_lt_on","proof":[]}
+{"goal":"function_lte_on[Domain, Value](domain, lower, upper)","proof":[]}
+{"goal":"is_lower_bound_on[Domain, Value](domain, upper, bound)","proof":[]}
+{"goal":"lower_bound_on_of_function_lt_on","proof":[]}
+{"goal":"function_lte_on[Domain, Value](domain, lower, upper)","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"bounded_above_on_of_function_lt_on","proof":[]}
+{"goal":"function_lte_on[Domain, Value](domain, lower, upper)","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_below_on_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_above_on_pair_of_function_lte_on","proof":["not is_bounded_above_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_below_on_pair_of_function_lte_on","proof":["not is_bounded_below_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_above_on_middle_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_below_on_middle_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or not is_bounded_above_on[Domain, Value](domain, upper)","is_bounded_above_on[Domain, Value](domain, upper)","not function_lte_on[Domain, Value](domain, lower, upper)","function_lt_on[Domain, Value](domain, lower, upper)","not function_lt_on[Domain, Value](domain, lower, upper)"]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_above_on_pair_of_function_lt_on","proof":["not is_bounded_above_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or (is_bounded_below_on[Domain, Value](domain, lower) and is_bounded_below_on[Domain, Value](domain, upper))","not function_lte_on[Domain, Value](domain, lower, upper)","function_lt_on[Domain, Value](domain, lower, upper)","not function_lt_on[Domain, Value](domain, lower, upper)"]}
+{"goal":"bounded_below_on_pair_of_function_lt_on","proof":["not is_bounded_below_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1, x2: T0 -> T1) { not is_bounded_above_on[T0, T1](x0, x1) or not function_lt_on[T0, T1](x0, x2, x1) or is_bounded_above_on[T0, T1](x0, x2) }[Domain, Value](domain, upper, middle)","is_bounded_above_on[Domain, Value](domain, upper)","function_lt_on[Domain, Value](domain, lower, middle) and function_lt_on[Domain, Value](domain, middle, upper)"]}
+{"goal":"bounded_above_on_middle_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1, x2: T0 -> T1) { not is_bounded_below_on[T0, T1](x0, x1) or not function_lt_on[T0, T1](x0, x1, x2) or is_bounded_below_on[T0, T1](x0, x2) }[Domain, Value](domain, lower, middle)","is_bounded_below_on[Domain, Value](domain, lower)","function_lt_on[Domain, Value](domain, lower, middle) and function_lt_on[Domain, Value](domain, middle, upper)"]}
+{"goal":"bounded_below_on_middle_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, lower)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or not is_bounded_above_on[Domain, Value](domain, upper)","is_bounded_above_on[Domain, Value](domain, upper)","not function_lte_on[Domain, Value](domain, lower, upper)","function_lte_on[Domain, Value](domain, lower, upper) and is_bounded_below_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, lower)","proof":["function_lte_on[Domain, Value](domain, lower, upper) and is_bounded_below_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, lower)"]}
+{"goal":"bounded_on_lower_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, upper)","proof":["not function_lte_on[Domain, Value](domain, lower, upper) or not is_bounded_below_on[Domain, Value](domain, lower)","function_lte_on[Domain, Value](domain, lower, upper) and is_bounded_below_on[Domain, Value](domain, lower)","not function_lte_on[Domain, Value](domain, lower, upper)"]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, upper)"]}
+{"goal":"bounded_on_upper_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_pair_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_below_on[Domain, Value](domain, middle)","proof":["not function_lte_on[Domain, Value](domain, lower, middle) or not is_bounded_below_on[Domain, Value](domain, lower)","function_lte_on[Domain, Value](domain, lower, middle) and function_lte_on[Domain, Value](domain, middle, upper) and is_bounded_below_on[Domain, Value](domain, lower)","not function_lte_on[Domain, Value](domain, lower, middle)"]}
+{"goal":"is_bounded_above_on[Domain, Value](domain, middle)","proof":["not function_lte_on[Domain, Value](domain, middle, upper) or not is_bounded_above_on[Domain, Value](domain, upper)","is_bounded_above_on[Domain, Value](domain, upper)","not function_lte_on[Domain, Value](domain, middle, upper)","function_lte_on[Domain, Value](domain, lower, middle) and function_lte_on[Domain, Value](domain, middle, upper) and is_bounded_below_on[Domain, Value](domain, lower)"]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":["function[T0, T1: PartialOrder](x0: Set[T0], x1: T0 -> T1) { (is_bounded_above_on[T0, T1](x0, x1) and is_bounded_below_on[T0, T1](x0, x1)) = is_bounded_on[T0, T1](x0, x1) }[Domain, Value](domain, middle)"]}
+{"goal":"bounded_on_middle_of_function_lte_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"bounded_on_lower_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_upper_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, lower)","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, upper)","proof":[]}
+{"goal":"bounded_on_pair_of_function_lt_on","proof":[]}
+{"goal":"is_bounded_on[Domain, Value](domain, middle)","proof":[]}
+{"goal":"bounded_on_middle_of_function_lt_on","proof":[]}

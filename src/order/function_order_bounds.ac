@@ -1,9 +1,10 @@
 /// Bounds transported along pointwise function comparisons on a set.
 
 from order import PartialOrder, lte_trans
-from order.function_order_on import function_lte_on, function_lte_on_apply
+from order.function_order_on import function_lte_on, function_lt_on, function_lte_on_apply,
+    function_lt_on_imp_lte_on
 from order_function_bounds import is_upper_bound_on, is_lower_bound_on, is_bounded_above_on,
-    is_bounded_below_on, upper_bound_on_apply, lower_bound_on_apply
+    is_bounded_below_on, is_bounded_on, upper_bound_on_apply, lower_bound_on_apply
 from set import Set
 
 /// An upper bound for a larger function is an upper bound for any pointwise smaller function.
@@ -78,4 +79,269 @@ theorem bounded_below_on_of_function_lte_on[Domain, Value: PartialOrder](
         is_lower_bound_on(domain, upper, witness)
     }
     is_bounded_below_on(domain, upper)
+}
+
+/// An upper bound descends along a strict pointwise comparison.
+theorem upper_bound_on_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value, bound: Value
+) {
+    function_lt_on(domain, lower, upper) and is_upper_bound_on(domain, upper, bound)
+    implies is_upper_bound_on(domain, lower, bound)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    function_lte_on(domain, lower, upper)
+    upper_bound_on_of_function_lte_on(domain, lower, upper, bound)
+    is_upper_bound_on(domain, lower, bound)
+}
+
+/// A lower bound ascends along a strict pointwise comparison.
+theorem lower_bound_on_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value, bound: Value
+) {
+    function_lt_on(domain, lower, upper) and is_lower_bound_on(domain, lower, bound)
+    implies is_lower_bound_on(domain, upper, bound)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    function_lte_on(domain, lower, upper)
+    lower_bound_on_of_function_lte_on(domain, lower, upper, bound)
+    is_lower_bound_on(domain, upper, bound)
+}
+
+/// Boundedness above descends along a strict pointwise comparison.
+theorem bounded_above_on_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, lower)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    function_lte_on(domain, lower, upper)
+    bounded_above_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_above_on(domain, lower)
+}
+
+/// Boundedness below ascends along a strict pointwise comparison.
+theorem bounded_below_on_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, upper)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    function_lte_on(domain, lower, upper)
+    bounded_below_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_below_on(domain, upper)
+}
+
+/// Both sides of a pointwise comparison are bounded above when the larger side is bounded above.
+theorem bounded_above_on_pair_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, lower) and is_bounded_above_on(domain, upper)
+} by {
+    bounded_above_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_above_on(domain, lower)
+    is_bounded_above_on(domain, upper)
+}
+
+/// Both sides of a pointwise comparison are bounded below when the smaller side is bounded below.
+theorem bounded_below_on_pair_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, lower) and is_bounded_below_on(domain, upper)
+} by {
+    bounded_below_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_below_on(domain, lower)
+    is_bounded_below_on(domain, upper)
+}
+
+/// The middle of a pointwise sandwich is bounded above when the upper function is bounded above.
+theorem bounded_above_on_middle_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, middle) and function_lte_on(domain, middle, upper) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, middle)
+} by {
+    bounded_above_on_of_function_lte_on(domain, middle, upper)
+    is_bounded_above_on(domain, middle)
+}
+
+/// The middle of a pointwise sandwich is bounded below when the lower function is bounded below.
+theorem bounded_below_on_middle_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, middle) and function_lte_on(domain, middle, upper) and
+    is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, middle)
+} by {
+    bounded_below_on_of_function_lte_on(domain, lower, middle)
+    is_bounded_below_on(domain, middle)
+}
+
+/// Both sides of a strict pointwise comparison are bounded above when the larger side is bounded above.
+theorem bounded_above_on_pair_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, lower) and is_bounded_above_on(domain, upper)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    bounded_above_on_pair_of_function_lte_on(domain, lower, upper)
+    is_bounded_above_on(domain, lower)
+    is_bounded_above_on(domain, upper)
+}
+
+/// Both sides of a strict pointwise comparison are bounded below when the smaller side is bounded below.
+theorem bounded_below_on_pair_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, lower) and is_bounded_below_on(domain, upper)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    bounded_below_on_pair_of_function_lte_on(domain, lower, upper)
+    is_bounded_below_on(domain, lower)
+    is_bounded_below_on(domain, upper)
+}
+
+/// The middle of a strict pointwise sandwich is bounded above when the upper function is bounded above.
+theorem bounded_above_on_middle_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, middle) and function_lt_on(domain, middle, upper) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_above_on(domain, middle)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, middle)
+    function_lt_on_imp_lte_on(domain, middle, upper)
+    bounded_above_on_middle_of_function_lte_on(domain, lower, middle, upper)
+    is_bounded_above_on(domain, middle)
+}
+
+/// The middle of a strict pointwise sandwich is bounded below when the lower function is bounded below.
+theorem bounded_below_on_middle_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, middle) and function_lt_on(domain, middle, upper) and
+    is_bounded_below_on(domain, lower)
+    implies is_bounded_below_on(domain, middle)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, middle)
+    function_lt_on_imp_lte_on(domain, middle, upper)
+    bounded_below_on_middle_of_function_lte_on(domain, lower, middle, upper)
+    is_bounded_below_on(domain, middle)
+}
+
+/// A pointwise smaller function is bounded when it has a lower bound and the larger function has an upper bound.
+theorem bounded_on_lower_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower)
+} by {
+    bounded_above_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_above_on(domain, lower)
+    is_bounded_below_on(domain, lower)
+    is_bounded_on(domain, lower)
+}
+
+/// A pointwise larger function is bounded when the smaller function has a lower bound and it has an upper bound.
+theorem bounded_on_upper_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, upper)
+} by {
+    bounded_below_on_of_function_lte_on(domain, lower, upper)
+    is_bounded_below_on(domain, upper)
+    is_bounded_above_on(domain, upper)
+    is_bounded_on(domain, upper)
+}
+
+/// Both sides of a pointwise comparison are bounded when the lower side has a lower bound and the upper side has an upper bound.
+theorem bounded_on_pair_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower) and is_bounded_on(domain, upper)
+} by {
+    bounded_on_lower_of_function_lte_on(domain, lower, upper)
+    bounded_on_upper_of_function_lte_on(domain, lower, upper)
+    is_bounded_on(domain, lower)
+    is_bounded_on(domain, upper)
+}
+
+/// A function between lower and upper pointwise bounds is bounded on the same set.
+theorem bounded_on_middle_of_function_lte_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lte_on(domain, lower, middle) and function_lte_on(domain, middle, upper) and
+    is_bounded_below_on(domain, lower) and is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, middle)
+} by {
+    bounded_below_on_of_function_lte_on(domain, lower, middle)
+    bounded_above_on_of_function_lte_on(domain, middle, upper)
+    is_bounded_below_on(domain, middle)
+    is_bounded_above_on(domain, middle)
+    is_bounded_on(domain, middle)
+}
+
+/// A strictly smaller function is bounded under the corresponding endpoint bounds.
+theorem bounded_on_lower_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    bounded_on_lower_of_function_lte_on(domain, lower, upper)
+    is_bounded_on(domain, lower)
+}
+
+/// A strictly larger function is bounded under the corresponding endpoint bounds.
+theorem bounded_on_upper_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, upper)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    bounded_on_upper_of_function_lte_on(domain, lower, upper)
+    is_bounded_on(domain, upper)
+}
+
+/// Both sides of a strict pointwise comparison are bounded under the corresponding endpoint bounds.
+theorem bounded_on_pair_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, upper) and is_bounded_below_on(domain, lower) and
+    is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, lower) and is_bounded_on(domain, upper)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, upper)
+    bounded_on_pair_of_function_lte_on(domain, lower, upper)
+    is_bounded_on(domain, lower)
+    is_bounded_on(domain, upper)
+}
+
+/// A function between strict pointwise lower and upper bounds is bounded on the same set.
+theorem bounded_on_middle_of_function_lt_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_lt_on(domain, lower, middle) and function_lt_on(domain, middle, upper) and
+    is_bounded_below_on(domain, lower) and is_bounded_above_on(domain, upper)
+    implies is_bounded_on(domain, middle)
+} by {
+    function_lt_on_imp_lte_on(domain, lower, middle)
+    function_lt_on_imp_lte_on(domain, middle, upper)
+    bounded_on_middle_of_function_lte_on(domain, lower, middle, upper)
+    is_bounded_on(domain, middle)
 }
