@@ -1582,3 +1582,30 @@ theorem submonoid_sup_idempotent[M: Monoid](a: Submonoid[M]) {
     submonoid_subset_sup_left(a, a)
     submonoid_subset_antisymm(submonoid_sup(a, a), a)
 }
+
+/// Submonoid join is associative.
+theorem submonoid_sup_assoc[M: Monoid](
+    a: Submonoid[M],
+    b: Submonoid[M],
+    c: Submonoid[M]
+) {
+    submonoid_sup(submonoid_sup(a, b), c) = submonoid_sup(a, submonoid_sup(b, c))
+} by {
+    submonoid_subset_sup_left(a, submonoid_sup(b, c))
+    submonoid_subset_sup_right(a, submonoid_sup(b, c))
+    submonoid_subset_sup_left(b, c)
+    submonoid_subset_sup_right(b, c)
+    submonoid_subset_trans(b, submonoid_sup(b, c), submonoid_sup(a, submonoid_sup(b, c)))
+    submonoid_subset_trans(c, submonoid_sup(b, c), submonoid_sup(a, submonoid_sup(b, c)))
+    submonoid_sup_subset_of_subset_left_right(a, b, submonoid_sup(a, submonoid_sup(b, c)))
+    submonoid_sup_subset_of_subset_left_right(submonoid_sup(a, b), c, submonoid_sup(a, submonoid_sup(b, c)))
+    submonoid_subset_sup_left(submonoid_sup(a, b), c)
+    submonoid_subset_sup_right(submonoid_sup(a, b), c)
+    submonoid_subset_sup_left(a, b)
+    submonoid_subset_sup_right(a, b)
+    submonoid_subset_trans(a, submonoid_sup(a, b), submonoid_sup(submonoid_sup(a, b), c))
+    submonoid_subset_trans(b, submonoid_sup(a, b), submonoid_sup(submonoid_sup(a, b), c))
+    submonoid_sup_subset_of_subset_left_right(b, c, submonoid_sup(submonoid_sup(a, b), c))
+    submonoid_sup_subset_of_subset_left_right(a, submonoid_sup(b, c), submonoid_sup(submonoid_sup(a, b), c))
+    submonoid_subset_antisymm(submonoid_sup(submonoid_sup(a, b), c), submonoid_sup(a, submonoid_sup(b, c)))
+}
