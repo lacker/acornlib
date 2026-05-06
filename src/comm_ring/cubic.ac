@@ -1,0 +1,90 @@
+from comm_ring.base import CommRing
+from nat import Nat
+
+/// The square of a commutative-ring element as a second power.
+theorem pow_two_mul_comm_ring[R: CommRing](x: R) {
+    x.pow(Nat.2) = x * x
+} by {
+    x.pow(Nat.2) = x * x.pow(Nat.1)
+    x.pow(Nat.1) = x * x.pow(Nat.0)
+    x.pow(Nat.0) = R.1
+    x.pow(Nat.1) = x
+    x.pow(Nat.2) = x * x
+}
+
+/// The cube of a commutative-ring element as a third power.
+theorem pow_three_mul_comm_ring[R: CommRing](x: R) {
+    x.pow(Nat.3) = x * x * x
+} by {
+    x.pow(Nat.2) = x * x
+    x.pow(Nat.3) = x.pow(Nat.2) * x
+    x.pow(Nat.3) = x * x * x
+}
+
+/// Expansion of `(u + v)^2` in a commutative ring.
+theorem square_add_expand_comm_ring[R: CommRing](u: R, v: R) {
+    (u + v) * (u + v) = u * u + (R.1 + R.1) * u * v + v * v
+} by {
+    (u + v) * (u + v) = (u + v) * u + (u + v) * v
+    (u + v) * u = u * u + v * u
+    (u + v) * v = u * v + v * v
+    v * u = u * v
+    (u + v) * (u + v) = (u * u + u * v) + (u * v + v * v)
+    (u * u + u * v) + (u * v + v * v) = u * u + (u * v + u * v) + v * v
+    (R.1 + R.1) * u = R.1 * u + R.1 * u
+    R.1 * u = u
+    (R.1 + R.1) * u = u + u
+    (R.1 + R.1) * u * v = (u + u) * v
+    (u + u) * v = u * v + u * v
+    (R.1 + R.1) * u * v = u * v + u * v
+    u * u + (R.1 + R.1) * u * v + v * v = u * u + (u * v + u * v) + v * v
+}
+
+/// Four-term expansion of `(u + v)^2`, without collecting like terms.
+theorem square_four_terms_comm_ring[R: CommRing](u: R, v: R) {
+    (u + v) * (u + v) = u * u + u * v + v * u + v * v
+} by {
+    (u + v) * (u + v) = u * (u + v) + v * (u + v)
+    u * (u + v) = u * u + u * v
+    v * (u + v) = v * u + v * v
+    (u + v) * (u + v) = (u * u + u * v) + (v * u + v * v)
+    (u * u + u * v) + (v * u + v * v) = u * u + u * v + v * u + v * v
+}
+
+/// Multiplication distributes across a four-term sum in a commutative ring.
+theorem four_terms_mul_comm_ring[R: CommRing](a: R, b: R, c: R, d: R, x: R) {
+    (a + b + c + d) * x = a * x + b * x + c * x + d * x
+} by {
+    (a + b + c + d) * x = (a + b + c) * x + d * x
+    (a + b + c) * x = (a + b) * x + c * x
+    (a + b) * x = a * x + b * x
+    (a + b + c) * x + d * x = ((a + b) * x + c * x) + d * x
+    ((a + b) * x + c * x) + d * x = ((a * x + b * x) + c * x) + d * x
+    ((a * x + b * x) + c * x) + d * x = a * x + b * x + c * x + d * x
+}
+
+/// Factor the six mixed terms that occur in `(u + v)^3`.
+theorem triple_uv_factor_comm_ring[R: CommRing](u: R, v: R) {
+    ((R.1 + R.1 + R.1) * u * v) * (u + v) =
+    u * u * v + u * v * u + v * u * u + u * v * v + v * u * v + v * v * u
+} by {
+    (R.1 + R.1 + R.1) * u = R.1 * u + R.1 * u + R.1 * u
+    R.1 * u = u
+    (R.1 + R.1 + R.1) * u = u + u + u
+    (R.1 + R.1 + R.1) * u * v = (u + u + u) * v
+    (u + u + u) * v = u * v + u * v + u * v
+    (R.1 + R.1 + R.1) * u * v = u * v + u * v + u * v
+    ((R.1 + R.1 + R.1) * u * v) * (u + v) = (u * v + u * v + u * v) * (u + v)
+    (u * v + u * v + u * v) * (u + v) =
+        (u * v + u * v + u * v) * u + (u * v + u * v + u * v) * v
+    (u * v + u * v + u * v) * u = (u * v) * u + (u * v) * u + (u * v) * u
+    (u * v + u * v + u * v) * v = (u * v) * v + (u * v) * v + (u * v) * v
+    (u * v) * u = u * v * u
+    (u * v) * u = u * u * v
+    (u * v) * u = v * u * u
+    (u * v) * v = u * v * v
+    (u * v) * v = v * u * v
+    (u * v) * v = v * v * u
+    (u * v + u * v + u * v) * (u + v) =
+        u * u * v + u * v * u + v * u * u + u * v * v + v * u * v + v * v * u
+}
