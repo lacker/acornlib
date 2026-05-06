@@ -486,6 +486,11 @@ define set_reindex_family[K, I, J](family: I -> Set[K], h: J -> I, j: J) -> Set[
     family(h(j))
 }
 
+/// The family formed by taking complements.
+define set_complement_family[K, I](family: I -> Set[K], i: I) -> Set[K] {
+    family(i).c
+}
+
 /// Membership in a binary set family at a point.
 define set_binary_family_contains[K, I, J](family: (I, J) -> Set[K], x: K, i: I, j: J) -> Bool {
     family(i, j).contains(x)
@@ -5322,6 +5327,22 @@ theorem set_seq_intersection_complement_eq_seq_union_complement[K](family: Nat -
     seq_intersection_complement_eq_union_complement(family)
 }
 
+/// The named complement family agrees with sequence complement.
+theorem set_complement_family_eq_seq_complement[K](family: Nat -> Set[K]) {
+    set_complement_family(family) = seq_complement(family)
+} by {
+    let u = set_complement_family(family)
+    let v = seq_complement(family)
+    forall(i: Nat) {
+        u(i) = set_complement_family(family, i)
+        set_complement_family(family, i) = family(i).c
+        v(i) = seq_complement(family, i)
+        seq_complement(family, i) = family(i).c
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
 /// Binary infimum distributes over a sequence union on the right.
 theorem set_inf_seq_union_distrib_left[K](s: Set[K], family: Nat -> Set[K]) {
     set_inf(s, seq_union(family)) = seq_union(set_inf_family(s, family))
@@ -5532,6 +5553,224 @@ define set_seq_intersection_right_family[K](family: (Nat, Nat) -> Set[K],
 define set_seq_intersection_left_family[K](family: (Nat, Nat) -> Set[K],
     j: Nat) -> Set[K] {
     seq_intersection(set_left_slice_family(family, j))
+}
+
+/// Right slices of a complement binary family are complement families of right slices.
+theorem set_right_slice_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K], i: Nat
+) {
+    set_right_slice_family(set_complement_binary_family(family), i) =
+        set_complement_family(set_right_slice_family(family, i))
+} by {
+    let u = set_right_slice_family(set_complement_binary_family(family), i)
+    let v = set_complement_family(set_right_slice_family(family, i))
+    forall(j: Nat) {
+        u(j) = set_right_slice_family(set_complement_binary_family(family), i, j)
+        set_right_slice_family(set_complement_binary_family(family), i, j) =
+            set_complement_binary_family(family, i, j)
+        set_complement_binary_family(family, i, j) = family(i, j).c
+        v(j) = set_complement_family(set_right_slice_family(family, i), j)
+        set_complement_family(set_right_slice_family(family, i), j) =
+            set_right_slice_family(family, i, j).c
+        set_right_slice_family(family, i, j) = family(i, j)
+        v(j) = family(i, j).c
+        u(j) = v(j)
+    }
+    function_extensionality(u, v)
+}
+
+/// Left slices of a complement binary family are complement families of left slices.
+theorem set_left_slice_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K], j: Nat
+) {
+    set_left_slice_family(set_complement_binary_family(family), j) =
+        set_complement_family(set_left_slice_family(family, j))
+} by {
+    let u = set_left_slice_family(set_complement_binary_family(family), j)
+    let v = set_complement_family(set_left_slice_family(family, j))
+    forall(i: Nat) {
+        u(i) = set_left_slice_family(set_complement_binary_family(family), j, i)
+        set_left_slice_family(set_complement_binary_family(family), j, i) =
+            set_complement_binary_family(family, i, j)
+        set_complement_binary_family(family, i, j) = family(i, j).c
+        v(i) = set_complement_family(set_left_slice_family(family, j), i)
+        set_complement_family(set_left_slice_family(family, j), i) =
+            set_left_slice_family(family, j, i).c
+        set_left_slice_family(family, j, i) = family(i, j)
+        v(i) = family(i, j).c
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
+/// Right-index sequence unions of complement members are complements of right-index sequence intersections.
+theorem set_seq_union_right_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_union_right_family(set_complement_binary_family(family)) =
+        seq_complement(set_seq_intersection_right_family(family))
+} by {
+    let u = set_seq_union_right_family(set_complement_binary_family(family))
+    let v = seq_complement(set_seq_intersection_right_family(family))
+    forall(i: Nat) {
+        u(i) = seq_union(set_right_slice_family(set_complement_binary_family(family), i))
+        set_right_slice_complement_binary_family_eq(family, i)
+        set_complement_family_eq_seq_complement(set_right_slice_family(family, i))
+        set_right_slice_family(set_complement_binary_family(family), i) =
+            seq_complement(set_right_slice_family(family, i))
+        seq_union_complement_eq_intersection_complement(set_right_slice_family(family, i))
+        u(i) = seq_intersection(set_right_slice_family(family, i)).c
+        set_seq_intersection_right_family(family, i) =
+            seq_intersection(set_right_slice_family(family, i))
+        v(i) = seq_complement(set_seq_intersection_right_family(family), i)
+        seq_complement(set_seq_intersection_right_family(family), i) =
+            set_seq_intersection_right_family(family, i).c
+        v(i) = seq_intersection(set_right_slice_family(family, i)).c
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
+/// Left-index sequence unions of complement members are complements of left-index sequence intersections.
+theorem set_seq_union_left_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_union_left_family(set_complement_binary_family(family)) =
+        seq_complement(set_seq_intersection_left_family(family))
+} by {
+    let u = set_seq_union_left_family(set_complement_binary_family(family))
+    let v = seq_complement(set_seq_intersection_left_family(family))
+    forall(j: Nat) {
+        u(j) = seq_union(set_left_slice_family(set_complement_binary_family(family), j))
+        set_left_slice_complement_binary_family_eq(family, j)
+        set_complement_family_eq_seq_complement(set_left_slice_family(family, j))
+        set_left_slice_family(set_complement_binary_family(family), j) =
+            seq_complement(set_left_slice_family(family, j))
+        seq_union_complement_eq_intersection_complement(set_left_slice_family(family, j))
+        u(j) = seq_intersection(set_left_slice_family(family, j)).c
+        set_seq_intersection_left_family(family, j) =
+            seq_intersection(set_left_slice_family(family, j))
+        v(j) = seq_complement(set_seq_intersection_left_family(family), j)
+        seq_complement(set_seq_intersection_left_family(family), j) =
+            set_seq_intersection_left_family(family, j).c
+        v(j) = seq_intersection(set_left_slice_family(family, j)).c
+        u(j) = v(j)
+    }
+    function_extensionality(u, v)
+}
+
+/// Right-index sequence intersections of complement members are complements of right-index sequence unions.
+theorem set_seq_intersection_right_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_intersection_right_family(set_complement_binary_family(family)) =
+        seq_complement(set_seq_union_right_family(family))
+} by {
+    let u = set_seq_intersection_right_family(set_complement_binary_family(family))
+    let v = seq_complement(set_seq_union_right_family(family))
+    forall(i: Nat) {
+        u(i) = seq_intersection(set_right_slice_family(set_complement_binary_family(family), i))
+        set_right_slice_complement_binary_family_eq(family, i)
+        set_complement_family_eq_seq_complement(set_right_slice_family(family, i))
+        set_right_slice_family(set_complement_binary_family(family), i) =
+            seq_complement(set_right_slice_family(family, i))
+        seq_intersection_complement_eq_union_complement(set_right_slice_family(family, i))
+        u(i) = seq_union(set_right_slice_family(family, i)).c
+        set_seq_union_right_family(family, i) = seq_union(set_right_slice_family(family, i))
+        v(i) = seq_complement(set_seq_union_right_family(family), i)
+        seq_complement(set_seq_union_right_family(family), i) =
+            set_seq_union_right_family(family, i).c
+        v(i) = seq_union(set_right_slice_family(family, i)).c
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
+/// Left-index sequence intersections of complement members are complements of left-index sequence unions.
+theorem set_seq_intersection_left_complement_binary_family_eq[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_intersection_left_family(set_complement_binary_family(family)) =
+        seq_complement(set_seq_union_left_family(family))
+} by {
+    let u = set_seq_intersection_left_family(set_complement_binary_family(family))
+    let v = seq_complement(set_seq_union_left_family(family))
+    forall(j: Nat) {
+        u(j) = seq_intersection(set_left_slice_family(set_complement_binary_family(family), j))
+        set_left_slice_complement_binary_family_eq(family, j)
+        set_complement_family_eq_seq_complement(set_left_slice_family(family, j))
+        set_left_slice_family(set_complement_binary_family(family), j) =
+            seq_complement(set_left_slice_family(family, j))
+        seq_intersection_complement_eq_union_complement(set_left_slice_family(family, j))
+        u(j) = seq_union(set_left_slice_family(family, j)).c
+        set_seq_union_left_family(family, j) = seq_union(set_left_slice_family(family, j))
+        v(j) = seq_complement(set_seq_union_left_family(family), j)
+        seq_complement(set_seq_union_left_family(family), j) =
+            set_seq_union_left_family(family, j).c
+        v(j) = seq_union(set_left_slice_family(family, j)).c
+        u(j) = v(j)
+    }
+    function_extensionality(u, v)
+}
+
+/// The right-associated iterated union of complement members is the complement of the right-associated iterated intersection.
+theorem set_seq_union_right_complement_binary_family_eq_intersection_complement[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    seq_union(set_seq_union_right_family(set_complement_binary_family(family))) =
+        seq_intersection(set_seq_intersection_right_family(family)).c
+} by {
+    set_seq_union_right_complement_binary_family_eq(family)
+    seq_union_complement_eq_intersection_complement(set_seq_intersection_right_family(family))
+    seq_union(set_seq_union_right_family(set_complement_binary_family(family))) =
+        seq_union(seq_complement(set_seq_intersection_right_family(family)))
+    seq_union(set_seq_union_right_family(set_complement_binary_family(family))) =
+        seq_intersection(set_seq_intersection_right_family(family)).c
+}
+
+/// The left-associated iterated union of complement members is the complement of the left-associated iterated intersection.
+theorem set_seq_union_left_complement_binary_family_eq_intersection_complement[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    seq_union(set_seq_union_left_family(set_complement_binary_family(family))) =
+        seq_intersection(set_seq_intersection_left_family(family)).c
+} by {
+    set_seq_union_left_complement_binary_family_eq(family)
+    seq_union_complement_eq_intersection_complement(set_seq_intersection_left_family(family))
+    seq_union(set_seq_union_left_family(set_complement_binary_family(family))) =
+        seq_union(seq_complement(set_seq_intersection_left_family(family)))
+    seq_union(set_seq_union_left_family(set_complement_binary_family(family))) =
+        seq_intersection(set_seq_intersection_left_family(family)).c
+}
+
+/// The right-associated iterated intersection of complement members is the complement of the right-associated iterated union.
+theorem set_seq_intersection_right_complement_binary_family_eq_union_complement[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    seq_intersection(set_seq_intersection_right_family(set_complement_binary_family(family))) =
+        seq_union(set_seq_union_right_family(family)).c
+} by {
+    set_seq_intersection_right_complement_binary_family_eq(family)
+    seq_intersection_complement_eq_union_complement(set_seq_union_right_family(family))
+    seq_intersection(set_seq_intersection_right_family(set_complement_binary_family(family))) =
+        seq_intersection(seq_complement(set_seq_union_right_family(family)))
+    seq_intersection(set_seq_intersection_right_family(set_complement_binary_family(family))) =
+        seq_union(set_seq_union_right_family(family)).c
+}
+
+/// The left-associated iterated intersection of complement members is the complement of the left-associated iterated union.
+theorem set_seq_intersection_left_complement_binary_family_eq_union_complement[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    seq_intersection(set_seq_intersection_left_family(set_complement_binary_family(family))) =
+        seq_union(set_seq_union_left_family(family)).c
+} by {
+    set_seq_intersection_left_complement_binary_family_eq(family)
+    seq_intersection_complement_eq_union_complement(set_seq_union_left_family(family))
+    seq_intersection(set_seq_intersection_left_family(set_complement_binary_family(family))) =
+        seq_intersection(seq_complement(set_seq_union_left_family(family)))
+    seq_intersection(set_seq_intersection_left_family(set_complement_binary_family(family))) =
+        seq_union(set_seq_union_left_family(family)).c
 }
 
 /// Right-index sequence unions agree with generic right-index suprema.
