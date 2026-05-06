@@ -1,7 +1,7 @@
 /// Bounds and extrema for functions with partially ordered values.
 
 from order import PartialOrder
-from set import Set
+from set import Set, sets_subset_intersection, difference_subset
 
 /// The value `bound` is an upper bound for `f` on `domain`.
 define is_upper_bound_on[Domain, Value: PartialOrder](
@@ -366,4 +366,255 @@ theorem bounded_on_subset[Domain, Value: PartialOrder](
         is_bounded_above_on(subset, f) and is_bounded_below_on(subset, f)
         is_bounded_on(subset, f)
     }
+}
+
+/// An upper bound on the left set bounds the function on the intersection.
+theorem upper_bound_on_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_upper_bound_on(left, f, bound) implies is_upper_bound_on(left.intersection(right), f, bound)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    upper_bound_on_subset(left.intersection(right), left, f, bound)
+    is_upper_bound_on(left.intersection(right), f, bound)
+}
+
+/// An upper bound on the right set bounds the function on the intersection.
+theorem upper_bound_on_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_upper_bound_on(right, f, bound) implies is_upper_bound_on(left.intersection(right), f, bound)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    upper_bound_on_subset(left.intersection(right), right, f, bound)
+    is_upper_bound_on(left.intersection(right), f, bound)
+}
+
+/// A lower bound on the left set bounds the function on the intersection.
+theorem lower_bound_on_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_lower_bound_on(left, f, bound) implies is_lower_bound_on(left.intersection(right), f, bound)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    lower_bound_on_subset(left.intersection(right), left, f, bound)
+    is_lower_bound_on(left.intersection(right), f, bound)
+}
+
+/// A lower bound on the right set bounds the function on the intersection.
+theorem lower_bound_on_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_lower_bound_on(right, f, bound) implies is_lower_bound_on(left.intersection(right), f, bound)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    lower_bound_on_subset(left.intersection(right), right, f, bound)
+    is_lower_bound_on(left.intersection(right), f, bound)
+}
+
+/// Boundedness above on the left set restricts to the intersection.
+theorem bounded_above_on_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_above_on(left, f) implies is_bounded_above_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    bounded_above_on_subset(left.intersection(right), left, f)
+    is_bounded_above_on(left.intersection(right), f)
+}
+
+/// Boundedness above on the right set restricts to the intersection.
+theorem bounded_above_on_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_above_on(right, f) implies is_bounded_above_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    bounded_above_on_subset(left.intersection(right), right, f)
+    is_bounded_above_on(left.intersection(right), f)
+}
+
+/// Boundedness below on the left set restricts to the intersection.
+theorem bounded_below_on_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_below_on(left, f) implies is_bounded_below_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    bounded_below_on_subset(left.intersection(right), left, f)
+    is_bounded_below_on(left.intersection(right), f)
+}
+
+/// Boundedness below on the right set restricts to the intersection.
+theorem bounded_below_on_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_below_on(right, f) implies is_bounded_below_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    bounded_below_on_subset(left.intersection(right), right, f)
+    is_bounded_below_on(left.intersection(right), f)
+}
+
+/// Boundedness on the left set restricts to the intersection.
+theorem bounded_on_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_on(left, f) implies is_bounded_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    bounded_on_subset(left.intersection(right), left, f)
+    is_bounded_on(left.intersection(right), f)
+}
+
+/// Boundedness on the right set restricts to the intersection.
+theorem bounded_on_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_on(right, f) implies is_bounded_on(left.intersection(right), f)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    bounded_on_subset(left.intersection(right), right, f)
+    is_bounded_on(left.intersection(right), f)
+}
+
+/// A maximum on the left set remains a maximum on the intersection when its point belongs to the intersection.
+theorem attains_maximum_at_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    left.intersection(right).contains(point) and attains_maximum_at(left, f, point)
+    implies attains_maximum_at(left.intersection(right), f, point)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    attains_maximum_at_subset(left.intersection(right), left, f, point)
+    attains_maximum_at(left.intersection(right), f, point)
+}
+
+/// A minimum on the left set remains a minimum on the intersection when its point belongs to the intersection.
+theorem attains_minimum_at_intersection_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    left.intersection(right).contains(point) and attains_minimum_at(left, f, point)
+    implies attains_minimum_at(left.intersection(right), f, point)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(left)
+    attains_minimum_at_subset(left.intersection(right), left, f, point)
+    attains_minimum_at(left.intersection(right), f, point)
+}
+
+/// A maximum on the right set remains a maximum on the intersection when its point belongs to the intersection.
+theorem attains_maximum_at_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    left.intersection(right).contains(point) and attains_maximum_at(right, f, point)
+    implies attains_maximum_at(left.intersection(right), f, point)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    attains_maximum_at_subset(left.intersection(right), right, f, point)
+    attains_maximum_at(left.intersection(right), f, point)
+}
+
+/// A minimum on the right set remains a minimum on the intersection when its point belongs to the intersection.
+theorem attains_minimum_at_intersection_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    left.intersection(right).contains(point) and attains_minimum_at(right, f, point)
+    implies attains_minimum_at(left.intersection(right), f, point)
+} by {
+    sets_subset_intersection(left, right)
+    left.intersection(right).subset(right)
+    attains_minimum_at_subset(left.intersection(right), right, f, point)
+    attains_minimum_at(left.intersection(right), f, point)
+}
+
+/// An upper bound on a set bounds the function on any difference from that set.
+theorem upper_bound_on_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_upper_bound_on(domain, f, bound) implies is_upper_bound_on(domain.difference(excluded), f, bound)
+} by {
+    difference_subset(domain, excluded)
+    upper_bound_on_subset(domain.difference(excluded), domain, f, bound)
+    is_upper_bound_on(domain.difference(excluded), f, bound)
+}
+
+/// A lower bound on a set bounds the function on any difference from that set.
+theorem lower_bound_on_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_lower_bound_on(domain, f, bound) implies is_lower_bound_on(domain.difference(excluded), f, bound)
+} by {
+    difference_subset(domain, excluded)
+    lower_bound_on_subset(domain.difference(excluded), domain, f, bound)
+    is_lower_bound_on(domain.difference(excluded), f, bound)
+}
+
+/// Boundedness above restricts to any difference from the domain.
+theorem bounded_above_on_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_above_on(domain, f) implies is_bounded_above_on(domain.difference(excluded), f)
+} by {
+    difference_subset(domain, excluded)
+    bounded_above_on_subset(domain.difference(excluded), domain, f)
+    is_bounded_above_on(domain.difference(excluded), f)
+}
+
+/// Boundedness below restricts to any difference from the domain.
+theorem bounded_below_on_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_below_on(domain, f) implies is_bounded_below_on(domain.difference(excluded), f)
+} by {
+    difference_subset(domain, excluded)
+    bounded_below_on_subset(domain.difference(excluded), domain, f)
+    is_bounded_below_on(domain.difference(excluded), f)
+}
+
+/// Boundedness restricts to any difference from the domain.
+theorem bounded_on_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_on(domain, f) implies is_bounded_on(domain.difference(excluded), f)
+} by {
+    difference_subset(domain, excluded)
+    bounded_on_subset(domain.difference(excluded), domain, f)
+    is_bounded_on(domain.difference(excluded), f)
+}
+
+/// A maximum on a set remains a maximum on a difference when its point belongs to the difference.
+theorem attains_maximum_at_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    domain.difference(excluded).contains(point) and attains_maximum_at(domain, f, point)
+    implies attains_maximum_at(domain.difference(excluded), f, point)
+} by {
+    difference_subset(domain, excluded)
+    attains_maximum_at_subset(domain.difference(excluded), domain, f, point)
+    attains_maximum_at(domain.difference(excluded), f, point)
+}
+
+/// A minimum on a set remains a minimum on a difference when its point belongs to the difference.
+theorem attains_minimum_at_difference[Domain, Value: PartialOrder](
+    domain: Set[Domain], excluded: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    domain.difference(excluded).contains(point) and attains_minimum_at(domain, f, point)
+    implies attains_minimum_at(domain.difference(excluded), f, point)
+} by {
+    difference_subset(domain, excluded)
+    attains_minimum_at_subset(domain.difference(excluded), domain, f, point)
+    attains_minimum_at(domain.difference(excluded), f, point)
 }
