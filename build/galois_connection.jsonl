@@ -207,6 +207,184 @@
 {"goal":"lhs = rhs","proof":[]}
 {"goal":"galois_insertion_join[A, B](lower, upper, galois_insertion_join[A, B](lower, upper, x, y), z) = galois_insertion_join[A, B](lower, upper, x, galois_insertion_join[A, B](lower, upper, y, z))","proof":[]}
 {"goal":"galois_insertion_join_assoc","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"is_monotone[A, B](lower)","proof":[]}
+{"goal":"is_monotone[B, A](upper)","proof":[]}
+{"goal":"upper(lower(a)) <= upper(lower(b))","proof":[]}
+{"goal":"upper(lower(a)) = a","proof":[]}
+{"goal":"upper(lower(b)) = b","proof":[]}
+{"goal":"a <= b","proof":[]}
+{"goal":"lower(a) <= lower(b)","proof":[]}
+{"goal":"lower(a) <= lower(b) = a <= b","proof":[]}
+{"goal":"is_order_embedding[A, B](lower)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, B](lower)","let w0: A satisfy { exists(k0: A) { w0 <= k0 != lower(w0) <= lower(k0) } }","let w1: A satisfy { w0 <= w1 != lower(w0) <= lower(w1) }","let w2: A satisfy { w0 <= w2 != lower(w0) <= lower(w2) }","function(x0: A, x1: A) { lower(x0) <= lower(x1) = x0 <= x1 }(w0, w2)"]}
+{"goal":"lower(upper(m)) <= m","proof":[]}
+{"goal":"m <= lower(x)","proof":[]}
+{"goal":"lower(upper(m)) <= lower(x)","proof":[]}
+{"goal":"upper(m) <= x","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) = upper(m)","proof":["function[T0: MeetSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).meet(x1(x3))) = galois_coinsertion_meet[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= x","proof":[]}
+{"goal":"galois_coinsertion_meet_lte_left","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"is_monotone[A, B](lower)","proof":[]}
+{"goal":"is_monotone[B, A](upper)","proof":[]}
+{"goal":"upper(lower(a)) <= upper(lower(b))","proof":[]}
+{"goal":"upper(lower(a)) = a","proof":[]}
+{"goal":"upper(lower(b)) = b","proof":[]}
+{"goal":"a <= b","proof":[]}
+{"goal":"lower(a) <= lower(b)","proof":[]}
+{"goal":"lower(a) <= lower(b) = a <= b","proof":[]}
+{"goal":"is_order_embedding[A, B](lower)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, B](lower)","let w0: A satisfy { exists(k0: A) { w0 <= k0 != lower(w0) <= lower(k0) } }","let w1: A satisfy { w0 <= w1 != lower(w0) <= lower(w1) }","let w2: A satisfy { w0 <= w2 != lower(w0) <= lower(w2) }","function(x0: A, x1: A) { lower(x0) <= lower(x1) = x0 <= x1 }(w0, w2)"]}
+{"goal":"lower(upper(m)) <= m","proof":[]}
+{"goal":"m <= lower(y)","proof":[]}
+{"goal":"lower(upper(m)) <= lower(y)","proof":[]}
+{"goal":"upper(m) <= y","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) = upper(m)","proof":["function[T0: MeetSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).meet(x1(x3))) = galois_coinsertion_meet[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= y","proof":[]}
+{"goal":"galois_coinsertion_meet_lte_right","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"is_monotone[A, B](lower)","proof":[]}
+{"goal":"lower(z) <= lower(x)","proof":[]}
+{"goal":"lower(z) <= lower(y)","proof":[]}
+{"goal":"lower(z) <= lower(x).meet(lower(y))","proof":[]}
+{"goal":"z <= upper(lower(x).meet(lower(y)))","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) = upper(lower(x).meet(lower(y)))","proof":["function[T0: MeetSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).meet(x1(x3))) = galois_coinsertion_meet[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"z <= galois_coinsertion_meet[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"lte_galois_coinsertion_meet_of_bounds","proof":[]}
+{"goal":"z <= x","proof":[]}
+{"goal":"z <= y","proof":[]}
+{"goal":"z <= x and z <= y","proof":[]}
+{"goal":"z <= galois_coinsertion_meet[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"z <= galois_coinsertion_meet[A, B](lower, upper, x, y) = (z <= x and z <= y)","proof":[]}
+{"goal":"lte_galois_coinsertion_meet_iff","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"lower(x) <= lower(x).join(lower(y))","proof":[]}
+{"goal":"x <= upper(lower(x).join(lower(y)))","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) = upper(lower(x).join(lower(y)))","proof":["function[T0: JoinSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).join(x1(x3))) = galois_coinsertion_join[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"x <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"galois_coinsertion_lte_join_left","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"lower(y) <= lower(x).join(lower(y))","proof":[]}
+{"goal":"y <= upper(lower(x).join(lower(y)))","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) = upper(lower(x).join(lower(y)))","proof":["function[T0: JoinSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).join(x1(x3))) = galois_coinsertion_join[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"y <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"galois_coinsertion_lte_join_right","proof":[]}
+{"goal":"is_galois_connection[A, B](lower, upper)","proof":[]}
+{"goal":"is_monotone[A, B](lower)","proof":[]}
+{"goal":"is_monotone[B, A](upper)","proof":[]}
+{"goal":"upper(lower(a)) <= upper(lower(b))","proof":[]}
+{"goal":"upper(lower(a)) = a","proof":[]}
+{"goal":"upper(lower(b)) = b","proof":[]}
+{"goal":"a <= b","proof":[]}
+{"goal":"lower(a) <= lower(b)","proof":[]}
+{"goal":"lower(a) <= lower(b) = a <= b","proof":[]}
+{"goal":"is_order_embedding[A, B](lower)","proof":["function[T0: PartialOrder, T1: PartialOrder](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x1 <= x2 = x0(x1) <= x0(x2) } = is_order_embedding[T0, T1](x0) }[A, B](lower)","let w0: A satisfy { exists(k0: A) { w0 <= k0 != lower(w0) <= lower(k0) } }","let w1: A satisfy { w0 <= w1 != lower(w0) <= lower(w1) }","let w2: A satisfy { w0 <= w2 != lower(w0) <= lower(w2) }","function(x0: A, x1: A) { lower(x0) <= lower(x1) = x0 <= x1 }(w0, w2)"]}
+{"goal":"lower(x) <= lower(z)","proof":[]}
+{"goal":"lower(y) <= lower(z)","proof":[]}
+{"goal":"lower(x).join(lower(y)) <= lower(z)","proof":[]}
+{"goal":"lower(upper(j)) <= j","proof":[]}
+{"goal":"lower(upper(j)) <= lower(z)","proof":[]}
+{"goal":"upper(j) <= z","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) = upper(j)","proof":["function[T0: JoinSemilattice, T1: PartialOrder](x0: T0 -> T1, x1: T1 -> T0, x2: T1, x3: T1) { x0(x1(x2).join(x1(x3))) = galois_coinsertion_join[T1, T0](x1, x0, x2, x3) }[B, A](upper, lower, x, y)"]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) <= z","proof":[]}
+{"goal":"galois_coinsertion_join_lte_of_bounds","proof":[]}
+{"goal":"x <= z","proof":[]}
+{"goal":"y <= z","proof":[]}
+{"goal":"x <= z and y <= z","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) <= z","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) <= z = (x <= z and y <= z)","proof":[]}
+{"goal":"galois_coinsertion_join_lte_iff","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= x","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= y","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= galois_coinsertion_meet[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, y, x) <= y","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, y, x) <= x","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, y, x) <= galois_coinsertion_meet[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) = galois_coinsertion_meet[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"galois_coinsertion_meet_comm","proof":[]}
+{"goal":"x <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"y <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, y, x) <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":[]}
+{"goal":"y <= galois_coinsertion_join[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"x <= galois_coinsertion_join[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) <= galois_coinsertion_join[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, y) = galois_coinsertion_join[A, B](lower, upper, y, x)","proof":[]}
+{"goal":"galois_coinsertion_join_comm","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, x) <= x","proof":[]}
+{"goal":"x <= galois_coinsertion_meet[A, B](lower, upper, x, x)","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, x) = x","proof":[]}
+{"goal":"galois_coinsertion_meet_idem","proof":[]}
+{"goal":"x <= galois_coinsertion_join[A, B](lower, upper, x, x)","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, x) <= x","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, x, x) = x","proof":[]}
+{"goal":"galois_coinsertion_join_idem","proof":[]}
+{"goal":"lhs <= xy","proof":[]}
+{"goal":"xy <= x","proof":[]}
+{"goal":"lhs <= x","proof":[]}
+{"goal":"lhs <= z","proof":[]}
+{"goal":"lhs <= xy","proof":[]}
+{"goal":"xy <= y","proof":[]}
+{"goal":"lhs <= y","proof":[]}
+{"goal":"lhs <= yz","proof":[]}
+{"goal":"lhs <= rhs","proof":[]}
+{"goal":"rhs <= x","proof":[]}
+{"goal":"rhs <= yz","proof":[]}
+{"goal":"yz <= y","proof":[]}
+{"goal":"rhs <= y","proof":[]}
+{"goal":"yz <= z","proof":[]}
+{"goal":"rhs <= z","proof":[]}
+{"goal":"rhs <= xy","proof":[]}
+{"goal":"rhs <= lhs","proof":[]}
+{"goal":"lhs = rhs","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, galois_coinsertion_meet[A, B](lower, upper, x, y), z) = galois_coinsertion_meet[A, B](lower, upper, x, galois_coinsertion_meet[A, B](lower, upper, y, z))","proof":[]}
+{"goal":"galois_coinsertion_meet_assoc","proof":[]}
+{"goal":"xy <= lhs","proof":[]}
+{"goal":"x <= xy","proof":[]}
+{"goal":"x <= lhs","proof":[]}
+{"goal":"z <= lhs","proof":[]}
+{"goal":"xy <= lhs","proof":[]}
+{"goal":"y <= xy","proof":[]}
+{"goal":"y <= lhs","proof":[]}
+{"goal":"yz <= lhs","proof":[]}
+{"goal":"rhs <= lhs","proof":[]}
+{"goal":"x <= rhs","proof":[]}
+{"goal":"yz <= rhs","proof":[]}
+{"goal":"y <= yz","proof":[]}
+{"goal":"y <= rhs","proof":[]}
+{"goal":"z <= yz","proof":[]}
+{"goal":"z <= rhs","proof":[]}
+{"goal":"xy <= rhs","proof":[]}
+{"goal":"lhs <= rhs","proof":[]}
+{"goal":"lhs = rhs","proof":[]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, galois_coinsertion_join[A, B](lower, upper, x, y), z) = galois_coinsertion_join[A, B](lower, upper, x, galois_coinsertion_join[A, B](lower, upper, y, z))","proof":[]}
+{"goal":"galois_coinsertion_join_assoc","proof":[]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= a","proof":["not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= b","proof":["not galois_coinsertion_meet[A, B](lower, upper, a, c) <= a or not a <= b","not a <= b","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= c","proof":["not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= d","proof":["not galois_coinsertion_meet[A, B](lower, upper, a, c) <= c or not c <= d","not c <= d"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= galois_coinsertion_meet[A, B](lower, upper, b, d)","proof":["not galois_coinsertion_meet[A, B](lower, upper, a, c) <= d or not galois_coinsertion_meet[A, B](lower, upper, a, c) <= b or not is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"galois_coinsertion_meet_lte_meet","proof":["not is_galois_coinsertion[A, B](lower, upper) or not c <= d or not a <= b","c <= d","not is_galois_coinsertion[A, B](lower, upper) or not a <= b","is_galois_coinsertion[A, B](lower, upper) and a <= b","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"b <= galois_coinsertion_join[A, B](lower, upper, b, d)","proof":["not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"a <= galois_coinsertion_join[A, B](lower, upper, b, d)","proof":["not b <= galois_coinsertion_join[A, B](lower, upper, b, d) or not a <= b","not a <= b","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"d <= galois_coinsertion_join[A, B](lower, upper, b, d)","proof":["not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"c <= galois_coinsertion_join[A, B](lower, upper, b, d)","proof":["not d <= galois_coinsertion_join[A, B](lower, upper, b, d) or not c <= d","not c <= d"]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, a, c) <= galois_coinsertion_join[A, B](lower, upper, b, d)","proof":["not c <= galois_coinsertion_join[A, B](lower, upper, b, d) or not a <= galois_coinsertion_join[A, B](lower, upper, b, d) or not is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)","is_galois_coinsertion[A, B](lower, upper) and a <= b"]}
+{"goal":"galois_coinsertion_join_lte_join","proof":["not is_galois_coinsertion[A, B](lower, upper) or not c <= d or not a <= b","c <= d","not is_galois_coinsertion[A, B](lower, upper) or not a <= b","is_galois_coinsertion[A, B](lower, upper) and a <= b","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, c) <= galois_coinsertion_meet[A, B](lower, upper, b, c)","proof":["not is_galois_coinsertion[A, B](lower, upper) or not c <= c or not a <= b","not is_galois_coinsertion[A, B](lower, upper) or not a <= b","a <= b","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet_lte_meet_left","proof":["not is_galois_coinsertion[A, B](lower, upper) or not a <= b","a <= b","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, a, b) <= galois_coinsertion_meet[A, B](lower, upper, a, c)","proof":["not is_galois_coinsertion[A, B](lower, upper) or not a <= a or not b <= c","not is_galois_coinsertion[A, B](lower, upper) or not b <= c","b <= c","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet_lte_meet_right","proof":["not is_galois_coinsertion[A, B](lower, upper) or not b <= c","b <= c","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, a, c) <= galois_coinsertion_join[A, B](lower, upper, b, c)","proof":["not is_galois_coinsertion[A, B](lower, upper) or not c <= c or not a <= b","not is_galois_coinsertion[A, B](lower, upper) or not a <= b","a <= b","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_join_lte_join_left","proof":["not is_galois_coinsertion[A, B](lower, upper) or not a <= b","a <= b","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_join[A, B](lower, upper, a, b) <= galois_coinsertion_join[A, B](lower, upper, a, c)","proof":["not is_galois_coinsertion[A, B](lower, upper) or not a <= a or not b <= c","not is_galois_coinsertion[A, B](lower, upper) or not b <= c","b <= c","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_join_lte_join_right","proof":["not is_galois_coinsertion[A, B](lower, upper) or not b <= c","b <= c","is_galois_coinsertion[A, B](lower, upper)","not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= x","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet_le_left","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet[A, B](lower, upper, x, y) <= y","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_meet_le_right","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"x <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_le_join_left","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"y <= galois_coinsertion_join[A, B](lower, upper, x, y)","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
+{"goal":"galois_coinsertion_le_join_right","proof":["not is_galois_coinsertion[A, B](lower, upper)"]}
 {"goal":"is_closure_operator[A](close) = (is_monotone[A, A](close) and is_extensive[A](close) and is_idempotent_map[A](close))","proof":["function[T0: PartialOrder](x0: T0 -> T0) { (is_monotone[T0, T0](x0) and is_extensive[T0](x0) and is_idempotent_map[T0](x0)) = is_closure_operator[T0](x0) }[A](close)"]}
 {"goal":"is_monotone[A, A](close)","proof":[]}
 {"goal":"closure_operator_is_monotone","proof":[]}
