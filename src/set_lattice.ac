@@ -506,6 +506,18 @@ define set_constant_binary_family[K, I, J](s: Set[K], i: I, j: J) -> Set[K] {
     s
 }
 
+/// The binary family formed by taking preimages of a binary family.
+define set_preimage_binary_family[T, U, I, J](f: T -> U, family: (I, J) -> Set[U],
+    i: I, j: J) -> Set[T] {
+    set_preimage(f, family(i, j))
+}
+
+/// The binary family formed by taking images of a binary family.
+define set_image_binary_family[T, U, I, J](family: (I, J) -> Set[T], f: T -> U,
+    i: I, j: J) -> Set[U] {
+    set_image(family(i, j), f)
+}
+
 /// A binary set family viewed as a family over pairs.
 define set_pair_family[K, I, J](family: (I, J) -> Set[K], p: Pair[I, J]) -> Set[K] {
     family(p.first, p.second)
@@ -1444,6 +1456,209 @@ theorem set_sInf_empty_binary_family[K, I, J](i0: I, j0: J) {
     set_sInf(set_pair_family(set_empty_binary_family[K, I, J])) = Set[K].empty_set
 }
 
+/// Preimage commutes with flattened binary-family set suprema.
+theorem set_preimage_sSup_pair_family[T, U, I, J](f: T -> U, family: (I, J) -> Set[U]) {
+    set_preimage(f, set_sSup(set_pair_family(family))) =
+        set_sSup(set_pair_family(set_preimage_binary_family(f, family)))
+} by {
+    let u = set_preimage(f, set_sSup(set_pair_family(family)))
+    let v = set_sSup(set_pair_family(set_preimage_binary_family(f, family)))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_sSup(set_pair_family(family)), x)
+            set_sSup(set_pair_family(family)).contains(f(x))
+            set_sSup_pair_family_exists_of_contains(family, f(x))
+            let i: I satisfy {
+                exists(j: J) {
+                    family(i, j).contains(f(x))
+                }
+            }
+            let j: J satisfy {
+                family(i, j).contains(f(x))
+            }
+            set_preimage_contains_eq(f, family(i, j), x)
+            set_preimage(f, family(i, j)).contains(x)
+            set_preimage_binary_family(f, family, i, j) = set_preimage(f, family(i, j))
+            set_preimage_binary_family(f, family, i, j).contains(x)
+            set_sSup_pair_family_contains_of_contains(set_preimage_binary_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sSup_pair_family_exists_of_contains(set_preimage_binary_family(f, family), x)
+            let i: I satisfy {
+                exists(j: J) {
+                    set_preimage_binary_family(f, family, i, j).contains(x)
+                }
+            }
+            let j: J satisfy {
+                set_preimage_binary_family(f, family, i, j).contains(x)
+            }
+            set_preimage_binary_family(f, family, i, j) = set_preimage(f, family(i, j))
+            set_preimage_contains_eq(f, family(i, j), x)
+            family(i, j).contains(f(x))
+            set_sSup_pair_family_contains_of_contains(family, f(x))
+            set_sSup(set_pair_family(family)).contains(f(x))
+            set_preimage_contains_eq(f, set_sSup(set_pair_family(family)), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// Preimage commutes with flattened binary-family set infima.
+theorem set_preimage_sInf_pair_family[T, U, I, J](f: T -> U, family: (I, J) -> Set[U]) {
+    set_preimage(f, set_sInf(set_pair_family(family))) =
+        set_sInf(set_pair_family(set_preimage_binary_family(f, family)))
+} by {
+    let u = set_preimage(f, set_sInf(set_pair_family(family)))
+    let v = set_sInf(set_pair_family(set_preimage_binary_family(f, family)))
+    forall(x: T) {
+        if u.contains(x) {
+            set_preimage_contains_eq(f, set_sInf(set_pair_family(family)), x)
+            set_sInf(set_pair_family(family)).contains(f(x))
+            set_sInf_pair_family_contains_eq(family, f(x))
+            forall(i: I) {
+                forall(j: J) {
+                    family(i, j).contains(f(x))
+                    set_preimage_contains_eq(f, family(i, j), x)
+                    set_preimage(f, family(i, j)).contains(x)
+                    set_preimage_binary_family(f, family, i, j).contains(x)
+                }
+            }
+            set_sInf_pair_family_contains_eq(set_preimage_binary_family(f, family), x)
+            v.contains(x)
+        }
+        if v.contains(x) {
+            set_sInf_pair_family_contains_eq(set_preimage_binary_family(f, family), x)
+            forall(i: I) {
+                forall(j: J) {
+                    set_preimage_binary_family(f, family, i, j).contains(x)
+                    set_preimage_binary_family(f, family, i, j) = set_preimage(f, family(i, j))
+                    set_preimage_contains_eq(f, family(i, j), x)
+                    family(i, j).contains(f(x))
+                }
+            }
+            set_sInf_pair_family_contains_eq(family, f(x))
+            set_sInf(set_pair_family(family)).contains(f(x))
+            set_preimage_contains_eq(f, set_sInf(set_pair_family(family)), x)
+            u.contains(x)
+        }
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// A preimage of a flattened binary-family supremum is contained in a set exactly when every member preimage is contained in it.
+theorem set_preimage_sSup_pair_family_subset_iff[T, U, I, J](f: T -> U,
+    family: (I, J) -> Set[U], s: Set[T]) {
+    set_preimage(f, set_sSup(set_pair_family(family))).subset(s) = forall(i: I) {
+        forall(j: J) {
+            set_preimage_binary_family(f, family, i, j).subset(s)
+        }
+    }
+} by {
+    set_preimage_sSup_pair_family(f, family)
+    set_sSup_pair_family_subset_iff(set_preimage_binary_family(f, family), s)
+    set_preimage(f, set_sSup(set_pair_family(family))).subset(s) = forall(i: I) {
+        forall(j: J) {
+            set_preimage_binary_family(f, family, i, j).subset(s)
+        }
+    }
+}
+
+/// A set is contained in a preimage of a flattened binary-family infimum exactly when it is contained in every member preimage.
+theorem set_subset_preimage_sInf_pair_family_iff[T, U, I, J](s: Set[T], f: T -> U,
+    family: (I, J) -> Set[U]) {
+    s.subset(set_preimage(f, set_sInf(set_pair_family(family)))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_preimage_binary_family(f, family, i, j))
+        }
+    }
+} by {
+    set_preimage_sInf_pair_family(f, family)
+    set_subset_sInf_pair_family_iff(s, set_preimage_binary_family(f, family))
+    s.subset(set_preimage(f, set_sInf(set_pair_family(family)))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_preimage_binary_family(f, family, i, j))
+        }
+    }
+}
+
+/// Image commutes with flattened binary-family set suprema.
+theorem set_image_sSup_pair_family[T, U, I, J](family: (I, J) -> Set[T], f: T -> U) {
+    set_image(set_sSup(set_pair_family(family)), f) =
+        set_sSup(set_pair_family(set_image_binary_family(family, f)))
+} by {
+    let u = set_image(set_sSup(set_pair_family(family)), f)
+    let v = set_sSup(set_pair_family(set_image_binary_family(family, f)))
+    forall(y: U) {
+        if u.contains(y) {
+            set_image_contains_witness(set_sSup(set_pair_family(family)), f, y)
+            let x: T satisfy {
+                set_sSup(set_pair_family(family)).contains(x) and y = f(x)
+            }
+            set_sSup_pair_family_exists_of_contains(family, x)
+            let i: I satisfy {
+                exists(j: J) {
+                    family(i, j).contains(x)
+                }
+            }
+            let j: J satisfy {
+                family(i, j).contains(x)
+            }
+            maps_into_set_image(family(i, j), f, x)
+            set_image(family(i, j), f).contains(f(x))
+            set_image_binary_family(family, f, i, j) = set_image(family(i, j), f)
+            set_image_binary_family(family, f, i, j).contains(y)
+            set_sSup_pair_family_contains_of_contains(set_image_binary_family(family, f), y)
+            v.contains(y)
+        }
+        if v.contains(y) {
+            set_sSup_pair_family_exists_of_contains(set_image_binary_family(family, f), y)
+            let i: I satisfy {
+                exists(j: J) {
+                    set_image_binary_family(family, f, i, j).contains(y)
+                }
+            }
+            let j: J satisfy {
+                set_image_binary_family(family, f, i, j).contains(y)
+            }
+            set_image_binary_family(family, f, i, j) = set_image(family(i, j), f)
+            set_image_contains_witness(family(i, j), f, y)
+            let x: T satisfy {
+                family(i, j).contains(x) and y = f(x)
+            }
+            set_sSup_pair_family_contains_of_contains(family, x)
+            set_sSup(set_pair_family(family)).contains(x)
+            maps_into_set_image(set_sSup(set_pair_family(family)), f, x)
+            u.contains(f(x))
+            u.contains(y)
+        }
+        u.contains(y) = v.contains(y)
+    }
+    set_ext(u, v)
+}
+
+/// Image of a flattened binary-family supremum is contained in a target exactly when every member maps into it.
+theorem set_image_sSup_pair_family_subset_iff[T, U, I, J](family: (I, J) -> Set[T],
+    s: Set[U], f: T -> U) {
+    set_image(set_sSup(set_pair_family(family)), f).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(set_preimage(f, s))
+        }
+    }
+} by {
+    set_image_subset_iff_subset_preimage(set_sSup(set_pair_family(family)), s, f)
+    set_sSup_pair_family_subset_iff(family, set_preimage(f, s))
+    set_image(set_sSup(set_pair_family(family)), f).subset(s) = forall(i: I) {
+        forall(j: J) {
+            family(i, j).subset(set_preimage(f, s))
+        }
+    }
+}
+
+
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
     (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) implies
@@ -1966,6 +2181,31 @@ theorem set_image_sInf_subset[T, U, I](family: I -> Set[T], f: T -> U) {
     }
     set_subset_sInf_of_subset_family(set_image(set_sInf(family), f), set_image_family(family, f))
     set_image(set_sInf(family), f).subset(set_sInf(set_image_family(family, f)))
+}
+
+/// Image of a flattened binary-family infimum is contained in the infimum of the member images.
+theorem set_image_sInf_pair_family_subset[T, U, I, J](family: (I, J) -> Set[T],
+    f: T -> U) {
+    set_image(set_sInf(set_pair_family(family)), f).subset(
+        set_sInf(set_pair_family(set_image_binary_family(family, f))))
+} by {
+    let a = set_image_family(set_pair_family(family), f)
+    let b = set_pair_family(set_image_binary_family(family, f))
+    set_image_sInf_subset(set_pair_family(family), f)
+    set_image(set_sInf(set_pair_family(family)), f).subset(set_sInf(a))
+    forall(p: Pair[I, J]) {
+        a(p) = set_image(set_pair_family(family, p), f)
+        set_pair_family(family, p) = family(p.first, p.second)
+        set_image(family(p.first, p.second), f) =
+            set_image_binary_family(family, f, p.first, p.second)
+        b(p) = set_image_binary_family(family, f, p.first, p.second)
+        a(p) = b(p)
+    }
+    set_sInf_eq_of_family_subset(a, b)
+    set_sInf(a) = set_sInf(b)
+    subset_trans(set_image(set_sInf(set_pair_family(family)), f), set_sInf(a), set_sInf(b))
+    set_image(set_sInf(set_pair_family(family)), f).subset(
+        set_sInf(set_pair_family(set_image_binary_family(family, f))))
 }
 
 /// Under an injective map, the infimum of an inhabited family of images is contained in the image of the infimum.

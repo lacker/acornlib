@@ -277,6 +277,55 @@
 {"goal":"set_empty_binary_family[K, I, J](i, j) = set_constant_binary_family[K, I, J](Set.empty_set[K], i, j)","proof":["function[T0, T1, T2](x0: Set[T0], x1: T1, x2: T2) { set_constant_binary_family[T0, T1, T2](x0, x1, x2) = x0 }[K, I, J](Set.empty_set[K], i, j)","function[T0, T1, T2](x0: T1, x1: T2) { set_empty_binary_family[T0, T1, T2](x0, x1) = Set.empty_set[T0] }[K, I, J](i, j)"]}
 {"goal":"set_sInf[K, Pair[I, J]](set_pair_family[K, I, J](set_empty_binary_family[K, I, J])) = Set.empty_set[K]","proof":[]}
 {"goal":"set_sInf_empty_binary_family","proof":[]}
+{"goal":"set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family)).contains(f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family)), x)"]}
+{"goal":"exists(k0: I) { exists(k1: J) { family(k0, k1).contains(f(x)) } }","proof":[]}
+{"goal":"exists(k0: J) { family(i, k0).contains(f(x)) }","proof":[]}
+{"goal":"set_preimage[T, U](f, family(i, j)).contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, family(i, j), x)"]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j) = set_preimage[T, U](f, family(i, j))","proof":["function[T0, T1, T2, T3](x0: T0 -> T1, x1: (T2, T3) -> Set[T1], x2: T2, x3: T3) { set_preimage_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_preimage[T0, T1](x0, x1(x2, x3)) }[T, U, I, J](f, family, i, j)"]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j).contains(x)","proof":[]}
+{"goal":"v.contains(x)","proof":["function(x0: I) { not exists(k0: J) { x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, k0) } or x ∈ set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))) }(i)","not x ∈ set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family)))","function(x0: I, x1: J) { not x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) }(i, j)"]}
+{"goal":"exists(k0: I) { exists(k1: J) { set_preimage_binary_family[T, U, I, J](f, family, k0, k1).contains(x) } }","proof":[]}
+{"goal":"exists(k0: J) { set_preimage_binary_family[T, U, I, J](f, family, i, k0).contains(x) }","proof":[]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j) = set_preimage[T, U](f, family(i, j))","proof":["function[T0, T1, T2, T3](x0: T0 -> T1, x1: (T2, T3) -> Set[T1], x2: T2, x3: T3) { set_preimage_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_preimage[T0, T1](x0, x1(x2, x3)) }[T, U, I, J](f, family, i, j)"]}
+{"goal":"family(i, j).contains(f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, family(i, j), x)"]}
+{"goal":"set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family)).contains(f(x))","proof":["not exists(k0: I, k1: J) { f(x) ∈ family(k0, k1) }","function(x0: I) { not exists(k0: J) { f(x) ∈ family(x0, k0) } }(i)","function(x0: I, x1: J) { not f(x) ∈ family(x0, x1) }(i, j)"]}
+{"goal":"u.contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family)), x)"]}
+{"goal":"u.contains(x) = v.contains(x)","proof":[]}
+{"goal":"set_preimage_sSup_pair_family","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family))))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))))"]}
+{"goal":"set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family)).contains(f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family)), x)"]}
+{"goal":"family(i, j).contains(f(x))","proof":["(forall(x0: I, x1: J) { f(x) ∈ family(x0, x1) } = true)","function(x0: I) { forall(x1: J) { f(x) ∈ family(x0, x1) } = true }(i)","function(x0: I, x1: J) { f(x) ∈ family(x0, x1) }(i, j)"]}
+{"goal":"set_preimage[T, U](f, family(i, j)).contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, family(i, j), x)"]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j).contains(x)","proof":["function[T0, T1, T2, T3](x0: T0 -> T1, x1: (T2, T3) -> Set[T1], x2: T2, x3: T3) { set_preimage_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_preimage[T0, T1](x0, x1(x2, x3)) }[T, U, I, J](f, family, i, j)"]}
+{"goal":"v.contains(x)","proof":["not forall(x0: I, x1: J) { x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) } or x ∈ set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family)))","not x ∈ set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family)))","let w0: I satisfy { exists(k0: J) { not x ∈ set_preimage_binary_family[T, U, I, J](f, family, w0, k0) } }","let w1: J satisfy { not x ∈ set_preimage_binary_family[T, U, I, J](f, family, w0, w1) }","let w2: J satisfy { not x ∈ set_preimage_binary_family[T, U, I, J](f, family, w0, w2) }","function(x0: I, x1: J) { x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) }(w0, w2)"]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j).contains(x)","proof":["function[T0](x0: T0) { lib(functions).identity_fn[T0](x0) = x0 }[I](i)","not x ∈ set_preimage_binary_family[T, U, I, J](f, family, lib(functions).identity_fn(i), j)","not x ∈ set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))) or forall(x0: I, x1: J) { x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) } = true","function(x0: I) { not x ∈ set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))) or forall(x1: J) { x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) } = true }(lib(functions).identity_fn(i))","function(x0: I, x1: J) { not x ∈ set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))) or x ∈ set_preimage_binary_family[T, U, I, J](f, family, x0, x1) }(lib(functions).identity_fn(i), j)"]}
+{"goal":"set_preimage_binary_family[T, U, I, J](f, family, i, j) = set_preimage[T, U](f, family(i, j))","proof":["function[T0, T1, T2, T3](x0: T0 -> T1, x1: (T2, T3) -> Set[T1], x2: T2, x3: T3) { set_preimage_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_preimage[T0, T1](x0, x1(x2, x3)) }[T, U, I, J](f, family, i, j)"]}
+{"goal":"family(i, j).contains(f(x))","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, family(i, j), x)"]}
+{"goal":"set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family)).contains(f(x))","proof":["let w0: I satisfy { exists(k0: J) { not f(x) ∈ family(w0, k0) } }","let w1: J satisfy { not f(x) ∈ family(w0, w1) }","let w2: J satisfy { not f(x) ∈ family(w0, w2) }","function(x0: I, x1: J) { f(x) ∈ family(x0, x1) }(w0, w2)"]}
+{"goal":"u.contains(x)","proof":["function[T0, T1](x0: T0 -> T1, x1: Set[T1], x2: T0) { lib(set).preimage_contains[T0, T1](x0, x1, x2) = x0(x2) ∈ x1 }[T, U](f, set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family)), x)"]}
+{"goal":"u.contains(x) = v.contains(x)","proof":[]}
+{"goal":"set_preimage_sInf_pair_family","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_preimage[T, U](f, set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family))))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[T](set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](set_preimage_binary_family[T, U, I, J](f, family))))"]}
+{"goal":"set_preimage[T, U](f, set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](family))).subset(s) = forall(x0: I) { forall(x1: J) { set_preimage_binary_family[T, U, I, J](f, family, x0, x1).subset(s) } }","proof":[]}
+{"goal":"set_preimage_sSup_pair_family_subset_iff","proof":[]}
+{"goal":"s.subset(set_preimage[T, U](f, set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](family)))) = forall(x0: I) { forall(x1: J) { s.subset(set_preimage_binary_family[T, U, I, J](f, family, x0, x1)) } }","proof":[]}
+{"goal":"set_subset_preimage_sInf_pair_family_iff","proof":[]}
+{"goal":"exists(k0: T) { set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](family)).contains(k0) and y = f(k0) }","proof":[]}
+{"goal":"exists(k0: I) { exists(k1: J) { family(k0, k1).contains(x) } }","proof":[]}
+{"goal":"exists(k0: J) { family(i, k0).contains(x) }","proof":[]}
+{"goal":"set_image[T, U](family(i, j), f).contains(f(x))","proof":[]}
+{"goal":"set_image_binary_family[T, U, I, J](family, f, i, j) = set_image[T, U](family(i, j), f)","proof":["function[T0, T1, T2, T3](x0: (T2, T3) -> Set[T0], x1: T0 -> T1, x2: T2, x3: T3) { set_image_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_image[T0, T1](x0(x2, x3), x1) }[T, U, I, J](family, f, i, j)"]}
+{"goal":"set_image_binary_family[T, U, I, J](family, f, i, j).contains(y)","proof":[]}
+{"goal":"v.contains(y)","proof":["function(x0: I) { not exists(k0: J) { y ∈ set_image_binary_family[T, U, I, J](family, f, x0, k0) } or y ∈ set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f))) }(i)","not y ∈ set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f)))","function(x0: I, x1: J) { not y ∈ set_image_binary_family[T, U, I, J](family, f, x0, x1) }(i, j)"]}
+{"goal":"exists(k0: I) { exists(k1: J) { set_image_binary_family[T, U, I, J](family, f, k0, k1).contains(y) } }","proof":[]}
+{"goal":"exists(k0: J) { set_image_binary_family[T, U, I, J](family, f, i, k0).contains(y) }","proof":[]}
+{"goal":"set_image_binary_family[T, U, I, J](family, f, i, j) = set_image[T, U](family(i, j), f)","proof":["function[T0, T1, T2, T3](x0: (T2, T3) -> Set[T0], x1: T0 -> T1, x2: T2, x3: T3) { set_image_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_image[T0, T1](x0(x2, x3), x1) }[T, U, I, J](family, f, i, j)"]}
+{"goal":"exists(k0: T) { family(i, j).contains(k0) and y = f(k0) }","proof":[]}
+{"goal":"set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](family)).contains(x)","proof":["not exists(k0: I, k1: J) { x ∈ family(k0, k1) }","function(x0: I) { not exists(k0: J) { x ∈ family(x0, k0) } }(i)","function(x0: I, x1: J) { not x ∈ family(x0, x1) }(i, j)"]}
+{"goal":"u.contains(f(x))","proof":[]}
+{"goal":"u.contains(y)","proof":[]}
+{"goal":"u.contains(y) = v.contains(y)","proof":[]}
+{"goal":"set_image_sSup_pair_family","proof":["function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[U](set_image[T, U](set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](family)), f))","function[T0](x0: Set[T0]) { Set.new[T0](x0.contains) = x0 }[U](set_sSup[U, Pair[I, J]](set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f))))"]}
+{"goal":"set_image[T, U](set_sSup[T, Pair[I, J]](set_pair_family[T, I, J](family)), f).subset(s) = forall(x0: I) { forall(x1: J) { family(x0, x1).subset(set_preimage[T, U](f, s)) } }","proof":[]}
+{"goal":"set_image_sSup_pair_family_subset_iff","proof":[]}
 {"goal":"exists(k0: I) { a(k0).contains(x) }","proof":[]}
 {"goal":"exists(k0: J) { a(i).subset(b(k0)) }","proof":["function(x0: I) { exists(k0: J) { a(x0) ⊂ b(k0) } }(i)"]}
 {"goal":"b(j).contains(x)","proof":["function[T0](x0: Set[T0], x1: Set[T0], x2: T0) { not x0 ⊂ x1 or not x2 ∈ x0 or x2 ∈ x1 }[K](a(i), b(j), x)"]}
@@ -426,6 +475,15 @@
 {"goal":"set_image[T, U](set_sInf[T, I](family), f).subset(set_image_family[T, U, I](family, f, i))","proof":[]}
 {"goal":"set_image[T, U](set_sInf[T, I](family), f).subset(set_sInf[U, I](set_image_family[T, U, I](family, f)))","proof":["let w0: I satisfy { not set_image[T, U](set_sInf[T, I](family), f) ⊂ set_image_family[T, U, I](family, f, w0) }","function(x0: I) { set_image[T, U](set_sInf[T, I](family), f) ⊂ set_image_family[T, U, I](family, f, x0) }(w0)"]}
 {"goal":"set_image_sInf_subset","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](family)), f).subset(set_sInf[U, Pair[I, J]](a))","proof":["set_image_family[T, U, Pair[I, J]](set_pair_family[T, I, J](family), f) = a"]}
+{"goal":"a(p) = set_image[T, U](set_pair_family[T, I, J](family, p), f)","proof":["function(x0: Pair[I, J]) { set_image_family[T, U, Pair[I, J]](set_pair_family[T, I, J](family), f, x0) = a(x0) }(p)","function[T0, T1, T2](x0: T2 -> Set[T0], x1: T0 -> T1, x2: T2) { set_image_family[T0, T1, T2](x0, x1, x2) = set_image[T0, T1](x0(x2), x1) }[T, U, Pair[I, J]](set_pair_family[T, I, J](family), f, p)"]}
+{"goal":"set_pair_family[T, I, J](family, p) = family(p.first, p.second)","proof":["function[T0, T1, T2](x0: (T0, T1) -> Set[T2], x1: Pair[T0, T1]) { x0(x1.first, x1.second) = set_pair_family[T2, T0, T1](x0, x1) }[I, J, T](family, p)"]}
+{"goal":"set_image[T, U](family(p.first, p.second), f) = set_image_binary_family[T, U, I, J](family, f, p.first, p.second)","proof":["function[T0, T1, T2, T3](x0: (T2, T3) -> Set[T0], x1: T0 -> T1, x2: T2, x3: T3) { set_image_binary_family[T0, T1, T2, T3](x0, x1, x2, x3) = set_image[T0, T1](x0(x2, x3), x1) }[T, U, I, J](family, f, p.first, p.second)"]}
+{"goal":"b(p) = set_image_binary_family[T, U, I, J](family, f, p.first, p.second)","proof":["function(x0: Pair[I, J]) { set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f), x0) = b(x0) }(p)","function[T0, T1, T2](x0: (T0, T1) -> Set[T2], x1: Pair[T0, T1]) { x0(x1.first, x1.second) = set_pair_family[T2, T0, T1](x0, x1) }[I, J, U](set_image_binary_family[T, U, I, J](family, f), p)"]}
+{"goal":"a(p) = b(p)","proof":[]}
+{"goal":"set_sInf[U, Pair[I, J]](a) = set_sInf[U, Pair[I, J]](b)","proof":["b != a"]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](family)), f).subset(set_sInf[U, Pair[I, J]](set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f))))","proof":["set_pair_family[U, I, J](set_image_binary_family[T, U, I, J](family, f)) = b","set_image[T, U](set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](family)), f) ⊂ set_sInf[U, Pair[I, J]](b)","not set_image[T, U](set_sInf[T, Pair[I, J]](set_pair_family[T, I, J](family)), f) ⊂ set_sInf[U, Pair[I, J]](b)"]}
+{"goal":"set_image_sInf_pair_family_subset","proof":[]}
 {"goal":"exists(k0: I) { true }","proof":[]}
 {"goal":"set_image_family[T, U, I](family, f, i0).contains(y)","proof":["function[T0, T1](x0: T1 -> Set[T0], x1: T0, x2: T1) { not x1 ∈ indexed_intersection[T0, T1](x0) or x1 ∈ x0(x2) }[U, I](set_image_family[T, U, I](family, f), y, i0)"]}
 {"goal":"set_image_family[T, U, I](family, f, i0) = set_image[T, U](family(i0), f)","proof":["function[T0, T1, T2](x0: T2 -> Set[T0], x1: T0 -> T1, x2: T2) { set_image_family[T0, T1, T2](x0, x1, x2) = set_image[T0, T1](x0(x2), x1) }[T, U, I](family, f, i0)"]}
@@ -1022,9 +1080,9 @@
 {"goal":"s.subset(set_sInf[K, Nat](family)) = forall(x0: Nat) { s.subset(family(x0)) }","proof":[]}
 {"goal":"s.subset(seq_intersection[K](family)) = forall(x0: Nat) { s.subset(family(x0)) }","proof":[]}
 {"goal":"set_seq_intersection_is_glb","proof":["let w0: Nat satisfy { not seq_intersection[K](family) ⊂ family(w0) }","function(x0: Nat) { seq_intersection[K](family) ⊂ family(x0) }(w0)"]}
-{"goal":"seq_union[K](family).subset(s) = forall(x0: Nat) { family(x0).subset(s) }","proof":["set_sSup[K, Nat](family) ⊂ s != forall(x0: Nat) { family(x0) ⊂ s }"]}
+{"goal":"seq_union[K](family).subset(s) = forall(x0: Nat) { family(x0).subset(s) }","proof":[]}
 {"goal":"set_seq_union_subset_iff","proof":[]}
-{"goal":"s.subset(seq_intersection[K](family)) = forall(x0: Nat) { s.subset(family(x0)) }","proof":["s ⊂ set_sInf[K, Nat](family) != forall(x0: Nat) { s ⊂ family(x0) }"]}
+{"goal":"s.subset(seq_intersection[K](family)) = forall(x0: Nat) { s.subset(family(x0)) }","proof":[]}
 {"goal":"set_subset_seq_intersection_iff","proof":[]}
 {"goal":"set_sSup[K, Nat](a).subset(set_sSup[K, Nat](b))","proof":["let w0: Nat satisfy { not a(w0) ⊂ b(w0) }","function(x0: Nat) { a(x0) ⊂ b(x0) }(w0)"]}
 {"goal":"seq_union[K](a).subset(seq_union[K](b))","proof":[]}
@@ -1038,9 +1096,9 @@
 {"goal":"set_preimage[T, U](f, set_sInf[U, Nat](family)) = set_sInf[T, Nat](set_preimage_family[T, U, Nat](f, family))","proof":[]}
 {"goal":"set_preimage[T, U](f, seq_intersection[U](family)) = seq_intersection[T](set_preimage_family[T, U, Nat](f, family))","proof":[]}
 {"goal":"set_preimage_seq_intersection","proof":[]}
-{"goal":"set_preimage[T, U](f, seq_union[U](family)).subset(s) = forall(x0: Nat) { set_preimage_family[T, U, Nat](f, family, x0).subset(s) }","proof":["(forall(x0: Nat) { set_preimage_family[T, U, Nat](f, family, x0) ⊂ s } != seq_union[T](set_preimage_family[T, U, Nat](f, family)) ⊂ s)"]}
+{"goal":"set_preimage[T, U](f, seq_union[U](family)).subset(s) = forall(x0: Nat) { set_preimage_family[T, U, Nat](f, family, x0).subset(s) }","proof":[]}
 {"goal":"set_preimage_seq_union_subset_iff","proof":[]}
-{"goal":"s.subset(set_preimage[T, U](f, seq_intersection[U](family))) = forall(x0: Nat) { s.subset(set_preimage_family[T, U, Nat](f, family, x0)) }","proof":["(forall(x0: Nat) { s ⊂ set_preimage_family[T, U, Nat](f, family, x0) } != s ⊂ seq_intersection[T](set_preimage_family[T, U, Nat](f, family)))"]}
+{"goal":"s.subset(set_preimage[T, U](f, seq_intersection[U](family))) = forall(x0: Nat) { s.subset(set_preimage_family[T, U, Nat](f, family, x0)) }","proof":[]}
 {"goal":"set_subset_preimage_seq_intersection_iff","proof":[]}
 {"goal":"seq_union[U](set_image_seq[T, U](family, f)) = set_image[T, U](seq_union[T](family), f)","proof":[]}
 {"goal":"set_image_seq[T, U](family, f, i) = set_image_family[T, U, Nat](family, f, i)","proof":["function[T0, T1, T2](x0: T2 -> Set[T0], x1: T0 -> T1, x2: T2) { set_image_family[T0, T1, T2](x0, x1, x2) = set_image[T0, T1](x0(x2), x1) }[T, U, Nat](family, f, i)","function[T0, T1](x0: Nat -> Set[T0], x1: T0 -> T1, x2: Nat) { set_image_seq[T0, T1](x0, x1, x2) = set_image[T0, T1](x0(x2), x1) }[T, U](family, f, i)"]}
@@ -1053,29 +1111,29 @@
 {"goal":"set_image_seq_intersection_subset","proof":[]}
 {"goal":"set_image[T, U](set_sInf[T, Nat](family), f) = set_sInf[U, Nat](set_image_family[T, U, Nat](family, f))","proof":[]}
 {"goal":"set_image[T, U](seq_intersection[T](family), f) = seq_intersection[U](set_image_family[T, U, Nat](family, f))","proof":[]}
-{"goal":"set_image_seq_intersection_of_injective","proof":["not is_injective_fn[T, U](f)"]}
-{"goal":"set_image[T, U](set_sInf[T, Nat](family), f) = set_sInf[U, Nat](set_image_family[T, U, Nat](family, f))","proof":["not is_bijection_fn[T, U](f)"]}
-{"goal":"set_image[T, U](seq_intersection[T](family), f) = seq_intersection[U](set_image_family[T, U, Nat](family, f))","proof":["set_sInf[U, Nat](set_image_family[T, U, Nat](family, f)) = set_image[T, U](set_sInf[T, Nat](family), f)","set_sInf[U, Nat](set_image_family[T, U, Nat](family, f)) = set_image[T, U](seq_intersection[T](family), f)","set_sInf[U, Nat](set_image_family[T, U, Nat](family, f)) != set_image[T, U](seq_intersection[T](family), f)"]}
+{"goal":"set_image_seq_intersection_of_injective","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Nat](family), f) = set_sInf[U, Nat](set_image_family[T, U, Nat](family, f))","proof":[]}
+{"goal":"set_image[T, U](seq_intersection[T](family), f) = seq_intersection[U](set_image_family[T, U, Nat](family, f))","proof":[]}
 {"goal":"set_image_seq_intersection_of_bijection","proof":[]}
-{"goal":"set_image[T, U](seq_union[T](family), f).subset(s) = forall(x0: Nat) { family(x0).subset(set_preimage[T, U](f, s)) }","proof":["seq_union[T](family) ⊂ set_preimage[T, U](f, s) != set_image[T, U](seq_union[T](family), f) ⊂ s"]}
+{"goal":"set_image[T, U](seq_union[T](family), f).subset(s) = forall(x0: Nat) { family(x0).subset(set_preimage[T, U](f, s)) }","proof":[]}
 {"goal":"set_image_seq_union_subset_iff","proof":[]}
-{"goal":"s.subset(set_image[T, U](seq_intersection[T](family), f)) = forall(x0: Nat) { s.subset(set_image_family[T, U, Nat](family, f, x0)) }","proof":["seq_intersection[U](set_image_family[T, U, Nat](family, f)) = set_image[T, U](seq_intersection[T](family), f)","(forall(x0: Nat) { s ⊂ set_image_family[T, U, Nat](family, f, x0) } != s ⊂ seq_intersection[U](set_image_family[T, U, Nat](family, f)))"]}
-{"goal":"set_subset_image_seq_intersection_iff_of_injective","proof":["not is_injective_fn[T, U](f)"]}
-{"goal":"s.subset(set_image[T, U](seq_intersection[T](family), f)) = forall(x0: Nat) { s.subset(set_image_family[T, U, Nat](family, f, x0)) }","proof":["seq_intersection[U](set_image_family[T, U, Nat](family, f)) = set_image[T, U](seq_intersection[T](family), f)","(forall(x0: Nat) { s ⊂ set_image_family[T, U, Nat](family, f, x0) } != s ⊂ seq_intersection[U](set_image_family[T, U, Nat](family, f)))"]}
-{"goal":"set_subset_image_seq_intersection_iff_of_bijection","proof":["not is_bijection_fn[T, U](f)"]}
-{"goal":"seq_union[K](set_empty_family[K, Nat]) = Set.empty_set[K]","proof":["set_sSup[K, Nat](set_empty_family[K, Nat]) != seq_union[K](set_empty_family[K, Nat])"]}
+{"goal":"s.subset(set_image[T, U](seq_intersection[T](family), f)) = forall(x0: Nat) { s.subset(set_image_family[T, U, Nat](family, f, x0)) }","proof":[]}
+{"goal":"set_subset_image_seq_intersection_iff_of_injective","proof":[]}
+{"goal":"s.subset(set_image[T, U](seq_intersection[T](family), f)) = forall(x0: Nat) { s.subset(set_image_family[T, U, Nat](family, f, x0)) }","proof":[]}
+{"goal":"set_subset_image_seq_intersection_iff_of_bijection","proof":[]}
+{"goal":"seq_union[K](set_empty_family[K, Nat]) = Set.empty_set[K]","proof":[]}
 {"goal":"set_seq_union_empty_family","proof":[]}
-{"goal":"seq_intersection[K](set_universal_family[K, Nat]) = Set.universal_set[K]","proof":["set_sInf[K, Nat](set_universal_family[K, Nat]) != seq_intersection[K](set_universal_family[K, Nat])"]}
+{"goal":"seq_intersection[K](set_universal_family[K, Nat]) = Set.universal_set[K]","proof":[]}
 {"goal":"set_seq_intersection_universal_family","proof":[]}
-{"goal":"seq_union[K](set_constant_family[K, Nat](s)) = s","proof":["set_sSup[K, Nat](set_constant_family[K, Nat](s)) != seq_union[K](set_constant_family[K, Nat](s))"]}
+{"goal":"seq_union[K](set_constant_family[K, Nat](s)) = s","proof":[]}
 {"goal":"set_seq_union_constant_family","proof":[]}
-{"goal":"seq_intersection[K](set_constant_family[K, Nat](s)) = s","proof":["set_sInf[K, Nat](set_constant_family[K, Nat](s)) != seq_intersection[K](set_constant_family[K, Nat](s))"]}
+{"goal":"seq_intersection[K](set_constant_family[K, Nat](s)) = s","proof":[]}
 {"goal":"set_seq_intersection_constant_family","proof":[]}
 {"goal":"set_universal_family[K, Nat](i) = set_constant_family[K, Nat](Set.universal_set[K], i)","proof":["function[T0, T1](x0: Set[T0], x1: T1) { set_constant_family[T0, T1](x0, x1) = x0 }[K, Nat](Set.universal_set[K], i)","function[T0, T1](x0: T1) { set_universal_family[T0, T1](x0) = Set.universal_set[T0] }[K, Nat](i)"]}
-{"goal":"seq_union[K](set_universal_family[K, Nat]) = Set.universal_set[K]","proof":["set_constant_family[K, Nat](Set.universal_set[K]) = set_universal_family[K, Nat]"]}
+{"goal":"seq_union[K](set_universal_family[K, Nat]) = Set.universal_set[K]","proof":[]}
 {"goal":"set_seq_union_universal_family","proof":[]}
 {"goal":"set_empty_family[K, Nat](i) = set_constant_family[K, Nat](Set.empty_set[K], i)","proof":["function[T0, T1](x0: Set[T0], x1: T1) { set_constant_family[T0, T1](x0, x1) = x0 }[K, Nat](Set.empty_set[K], i)","function[T0, T1](x0: T1) { set_empty_family[T0, T1](x0) = Set.empty_set[T0] }[K, Nat](i)"]}
-{"goal":"seq_intersection[K](set_empty_family[K, Nat]) = Set.empty_set[K]","proof":["set_constant_family[K, Nat](Set.empty_set[K]) = set_empty_family[K, Nat]"]}
+{"goal":"seq_intersection[K](set_empty_family[K, Nat]) = Set.empty_set[K]","proof":[]}
 {"goal":"set_seq_intersection_empty_family","proof":[]}
 {"goal":"set_seq_union_complement_eq_seq_intersection_complement","proof":[]}
 {"goal":"set_seq_intersection_complement_eq_seq_union_complement","proof":[]}

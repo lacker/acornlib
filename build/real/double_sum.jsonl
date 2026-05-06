@@ -21,7 +21,7 @@
 {"goal":"square_sum(f, n.suc) = rectangular_sum(f, n.suc, n.suc)","proof":["function(x0: (Nat, Nat) -> Real, x1: Nat) { rectangular_sum(x0, x1, x1) = square_sum(x0, x1) }(f, n.suc)"]}
 {"goal":"rectangular_sum(f, n, n) <= rectangular_sum(f, n.suc, n)","proof":["function(x0: (Nat, Nat) -> Real, x1: Nat, x2: Nat) { not nonneg_fn_2(x0) or rectangular_sum(x0, x1, x2) <= rectangular_sum(x0, x1.suc, x2) }(f, n, n)"]}
 {"goal":"rectangular_sum(f, n.suc, n) <= rectangular_sum(f, n.suc, n.suc)","proof":["function(x0: (Nat, Nat) -> Real, x1: Nat, x2: Nat) { not nonneg_fn_2(x0) or rectangular_sum(x0, x1, x2) <= rectangular_sum(x0, x1, x2.suc) }(f, n.suc, n)"]}
-{"goal":"rectangular_sum(f, n, n) <= rectangular_sum(f, n.suc, n.suc)","proof":["not rectangular_sum(f, n.suc, n) <= rectangular_sum(f, n.suc, n.suc) or not rectangular_sum(f, n, n) <= rectangular_sum(f, n.suc, n)","not rectangular_sum(f, n.suc, n) <= rectangular_sum(f, n.suc, n.suc)"]}
+{"goal":"rectangular_sum(f, n, n) <= rectangular_sum(f, n.suc, n.suc)","proof":[]}
 {"goal":"square_sum(f, n) <= square_sum(f, n.suc)","proof":[]}
 {"goal":"square_sum_seq(f, n) <= square_sum_seq(f, n.suc)","proof":[]}
 {"goal":"square_sum_is_increasing","proof":["function(x0: Nat -> Real) { forall(x1: Nat) { x0(x1) <= x0(x1.suc) } = is_increasing(x0) }(square_sum_seq(f))"]}

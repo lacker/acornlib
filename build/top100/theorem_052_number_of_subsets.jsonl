@@ -386,9 +386,9 @@
 {"goal":"finite_set_from_list_contains_eq","proof":[]}
 {"goal":"fs_from_list[B](items).underlying_set = list_set[B](items)","proof":["function[T0](x0: List[T0]) { Option.some[FiniteSet[T0]](fs_from_list[T0](x0)) = FiniteSet.new[T0](list_set[T0](x0)) }[B](items)","function[T0](x0: FiniteSet[T0], x1: Set[T0]) { Option.some[FiniteSet[T0]](x0) != FiniteSet.new[T0](x1) or x0.underlying_set = x1 }[B](fs_from_list[B](items), list_set[B](items))"]}
 {"goal":"fs_from_list[B](items).contains(x) = fs_from_list[B](items).underlying_set.contains(x)","proof":["function[T0](x0: FiniteSet[T0], x1: T0) { x1 ∈ x0.underlying_set = x1 ∈ x0 }[B](fs_from_list[B](items), x)"]}
-{"goal":"fs_from_list[B](items).underlying_set.contains(x) = list_set[B](items).contains(x)","proof":["fs_from_list[B](items).underlying_set != list_set[B](items)"]}
+{"goal":"fs_from_list[B](items).underlying_set.contains(x) = list_set[B](items).contains(x)","proof":[]}
 {"goal":"list_set[B](items).contains(x) = items.contains(x)","proof":["function[T0](x0: List[T0], x1: T0) { x1 ∈ list_set[T0](x0) = x1 ∈ x0 }[B](items, x)"]}
-{"goal":"fs_from_list_contains_eq","proof":["x ∈ fs_from_list[B](items).underlying_set = x ∈ items","x ∈ fs_from_list[B](items).underlying_set != x ∈ items"]}
+{"goal":"fs_from_list_contains_eq","proof":[]}
 {"goal":"finite_powerset[A](items) = fs_from_list[FiniteSet[A]](subset_list[A](items))","proof":["function[T0](x0: List[T0]) { fs_from_list[FiniteSet[T0]](subset_list[T0](x0)) = finite_powerset[T0](x0) }[A](items)"]}
 {"goal":"fs_from_list[FiniteSet[A]](subset_list[A](items)).contains(s) = subset_list[A](items).contains(s)","proof":["function[T0](x0: List[T0], x1: T0) { x1 ∈ fs_from_list[T0](x0) = x1 ∈ x0 }[FiniteSet[A]](subset_list[A](items), s)"]}
 {"goal":"finite_powerset_contains_eq","proof":[]}
@@ -398,7 +398,7 @@
 {"goal":"finite_powerset_exact","proof":["let w0: FiniteSet[A] satisfy { w0 ⊆ FiniteSet.from_list[A](items) != w0 ∈ finite_powerset[A](items) }","function(x0: FiniteSet[A]) { x0 ∈ finite_powerset[A](items) = x0 ⊆ FiniteSet.from_list[A](items) }(w0)"]}
 {"goal":"subset_list[A](items).is_unique","proof":["function[T0](x0: List[T0]) { not x0.is_unique or subset_list[T0](x0).is_unique }[A](items)"]}
 {"goal":"finite_powerset[A](items) = fs_from_list[FiniteSet[A]](subset_list[A](items))","proof":["function[T0](x0: List[T0]) { fs_from_list[FiniteSet[T0]](subset_list[T0](x0)) = finite_powerset[T0](x0) }[A](items)"]}
-{"goal":"fs_from_list[FiniteSet[A]](subset_list[A](items)).cardinality_is(subset_list[A](items).length)","proof":["not subset_list[A](items).is_unique"]}
+{"goal":"fs_from_list[FiniteSet[A]](subset_list[A](items)).cardinality_is(subset_list[A](items).length)","proof":[]}
 {"goal":"finite_powerset[A](items).cardinality_is(subset_list[A](items).length)","proof":[]}
 {"goal":"subset_list[A](items).length = Nat.2.pow(items.length)","proof":["function[T0](x0: List[T0]) { Nat.2.pow(x0.length) = subset_list[T0](x0).length }[A](items)"]}
 {"goal":"finite_powerset[A](items).cardinality_is(Nat.2.pow(items.length))","proof":[]}
