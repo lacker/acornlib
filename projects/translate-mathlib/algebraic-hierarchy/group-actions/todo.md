@@ -2,9 +2,7 @@
 
 Goal: provide a standard language for symmetry actions before representation theory arrives.
 
-- [ ] Define actions of groups on types
-- [ ] Add orbit and stabilizer definitions
-- [ ] Add fixed-point sets and invariant subsets
+- [ ] Prove orbit transitivity and package orbits as equivalence classes when proof search can handle the composition witness
 - [ ] Support faithful and transitive actions
 - [ ] Add action homomorphisms and equivariant maps
 - [ ] Connect permutation actions with finite groups
