@@ -5401,3 +5401,771 @@ theorem set_inf_seq_intersection_distrib_right[K](family: Nat -> Set[K], s: Set[
     set_sInf_eq_seq_intersection(set_inf_family_right(family, s))
     set_inf(seq_intersection(family), s) = seq_intersection(set_inf_family_right(family, s))
 }
+
+/// The sequence formed by taking sequence unions over the right index.
+define set_seq_union_right_family[K](family: (Nat, Nat) -> Set[K], i: Nat) -> Set[K] {
+    seq_union(set_right_slice_family(family, i))
+}
+
+/// The sequence formed by taking sequence unions over the left index.
+define set_seq_union_left_family[K](family: (Nat, Nat) -> Set[K], j: Nat) -> Set[K] {
+    seq_union(set_left_slice_family(family, j))
+}
+
+/// The sequence formed by taking sequence intersections over the right index.
+define set_seq_intersection_right_family[K](family: (Nat, Nat) -> Set[K],
+    i: Nat) -> Set[K] {
+    seq_intersection(set_right_slice_family(family, i))
+}
+
+/// The sequence formed by taking sequence intersections over the left index.
+define set_seq_intersection_left_family[K](family: (Nat, Nat) -> Set[K],
+    j: Nat) -> Set[K] {
+    seq_intersection(set_left_slice_family(family, j))
+}
+
+/// Right-index sequence unions agree with generic right-index suprema.
+theorem set_seq_union_right_family_eq_sSup_right[K](family: (Nat, Nat) -> Set[K]) {
+    set_seq_union_right_family(family) = set_sSup_right_family(family)
+} by {
+    let u = set_seq_union_right_family(family)
+    let v = set_sSup_right_family(family)
+    forall(i: Nat) {
+        u(i) = seq_union(set_right_slice_family(family, i))
+        set_sSup_eq_seq_union(set_right_slice_family(family, i))
+        v(i) = set_sSup(set_right_slice_family(family, i))
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
+/// Left-index sequence unions agree with generic left-index suprema.
+theorem set_seq_union_left_family_eq_sSup_left[K](family: (Nat, Nat) -> Set[K]) {
+    set_seq_union_left_family(family) = set_sSup_left_family(family)
+} by {
+    let u = set_seq_union_left_family(family)
+    let v = set_sSup_left_family(family)
+    forall(j: Nat) {
+        u(j) = seq_union(set_left_slice_family(family, j))
+        set_sSup_eq_seq_union(set_left_slice_family(family, j))
+        v(j) = set_sSup(set_left_slice_family(family, j))
+        u(j) = v(j)
+    }
+    function_extensionality(u, v)
+}
+
+/// Right-index sequence intersections agree with generic right-index infima.
+theorem set_seq_intersection_right_family_eq_sInf_right[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_intersection_right_family(family) = set_sInf_right_family(family)
+} by {
+    let u = set_seq_intersection_right_family(family)
+    let v = set_sInf_right_family(family)
+    forall(i: Nat) {
+        u(i) = seq_intersection(set_right_slice_family(family, i))
+        set_sInf_eq_seq_intersection(set_right_slice_family(family, i))
+        v(i) = set_sInf(set_right_slice_family(family, i))
+        u(i) = v(i)
+    }
+    function_extensionality(u, v)
+}
+
+/// Left-index sequence intersections agree with generic left-index infima.
+theorem set_seq_intersection_left_family_eq_sInf_left[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_seq_intersection_left_family(family) = set_sInf_left_family(family)
+} by {
+    let u = set_seq_intersection_left_family(family)
+    let v = set_sInf_left_family(family)
+    forall(j: Nat) {
+        u(j) = seq_intersection(set_left_slice_family(family, j))
+        set_sInf_eq_seq_intersection(set_left_slice_family(family, j))
+        v(j) = set_sInf(set_left_slice_family(family, j))
+        u(j) = v(j)
+    }
+    function_extensionality(u, v)
+}
+
+/// Flattening a natural binary family agrees with first taking right-index sequence unions.
+theorem set_sSup_pair_family_eq_seq_union_right[K](family: (Nat, Nat) -> Set[K]) {
+    set_sSup(set_pair_family(family)) = seq_union(set_seq_union_right_family(family))
+} by {
+    set_sSup_pair_family_eq_sSup_right(family)
+    set_seq_union_right_family_eq_sSup_right(family)
+    set_sSup(set_pair_family(family)) = set_sSup(set_seq_union_right_family(family))
+    set_sSup_eq_seq_union(set_seq_union_right_family(family))
+    set_sSup(set_pair_family(family)) = seq_union(set_seq_union_right_family(family))
+}
+
+/// Flattening a natural binary family agrees with first taking left-index sequence unions.
+theorem set_sSup_pair_family_eq_seq_union_left[K](family: (Nat, Nat) -> Set[K]) {
+    set_sSup(set_pair_family(family)) = seq_union(set_seq_union_left_family(family))
+} by {
+    set_sSup_pair_family_eq_sSup_left(family)
+    set_seq_union_left_family_eq_sSup_left(family)
+    set_sSup(set_pair_family(family)) = set_sSup(set_seq_union_left_family(family))
+    set_sSup_eq_seq_union(set_seq_union_left_family(family))
+    set_sSup(set_pair_family(family)) = seq_union(set_seq_union_left_family(family))
+}
+
+/// Flattening a natural binary family agrees with first taking right-index sequence intersections.
+theorem set_sInf_pair_family_eq_seq_intersection_right[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_sInf(set_pair_family(family)) =
+        seq_intersection(set_seq_intersection_right_family(family))
+} by {
+    set_sInf_pair_family_eq_sInf_right(family)
+    set_seq_intersection_right_family_eq_sInf_right(family)
+    set_sInf(set_pair_family(family)) =
+        set_sInf(set_seq_intersection_right_family(family))
+    set_sInf_eq_seq_intersection(set_seq_intersection_right_family(family))
+    set_sInf(set_pair_family(family)) =
+        seq_intersection(set_seq_intersection_right_family(family))
+}
+
+/// Flattening a natural binary family agrees with first taking left-index sequence intersections.
+theorem set_sInf_pair_family_eq_seq_intersection_left[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    set_sInf(set_pair_family(family)) =
+        seq_intersection(set_seq_intersection_left_family(family))
+} by {
+    set_sInf_pair_family_eq_sInf_left(family)
+    set_seq_intersection_left_family_eq_sInf_left(family)
+    set_sInf(set_pair_family(family)) =
+        set_sInf(set_seq_intersection_left_family(family))
+    set_sInf_eq_seq_intersection(set_seq_intersection_left_family(family))
+    set_sInf(set_pair_family(family)) =
+        seq_intersection(set_seq_intersection_left_family(family))
+}
+
+/// The two orders of iterated sequence union over a natural binary family agree.
+theorem set_seq_union_right_family_eq_seq_union_left[K](family: (Nat, Nat) -> Set[K]) {
+    seq_union(set_seq_union_right_family(family)) =
+        seq_union(set_seq_union_left_family(family))
+} by {
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup_pair_family_eq_seq_union_left(family)
+}
+
+/// The two orders of iterated sequence intersection over a natural binary family agree.
+theorem set_seq_intersection_right_family_eq_seq_intersection_left[K](
+    family: (Nat, Nat) -> Set[K]
+) {
+    seq_intersection(set_seq_intersection_right_family(family)) =
+        seq_intersection(set_seq_intersection_left_family(family))
+} by {
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+}
+
+/// Membership in an iterated sequence union is membership in some indexed member.
+theorem set_seq_union_right_family_contains_eq[K](family: (Nat, Nat) -> Set[K],
+    x: K) {
+    seq_union(set_seq_union_right_family(family)).contains(x) = exists(i: Nat) {
+        exists(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup_pair_family_contains_eq(family, x)
+    seq_union(set_seq_union_right_family(family)).contains(x) = exists(i: Nat) {
+        exists(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+}
+
+/// Membership in the other iterated sequence union is membership in some indexed member.
+theorem set_seq_union_left_family_contains_eq[K](family: (Nat, Nat) -> Set[K],
+    x: K) {
+    seq_union(set_seq_union_left_family(family)).contains(x) = exists(i: Nat) {
+        exists(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    set_sSup_pair_family_eq_seq_union_left(family)
+    set_sSup_pair_family_contains_eq(family, x)
+    seq_union(set_seq_union_left_family(family)).contains(x) = exists(i: Nat) {
+        exists(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+}
+
+/// Membership in an iterated sequence intersection is membership in every indexed member.
+theorem set_seq_intersection_right_family_contains_eq[K](family: (Nat, Nat) -> Set[K],
+    x: K) {
+    seq_intersection(set_seq_intersection_right_family(family)).contains(x) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_sInf_pair_family_contains_eq(family, x)
+    seq_intersection(set_seq_intersection_right_family(family)).contains(x) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+}
+
+/// Membership in the other iterated sequence intersection is membership in every indexed member.
+theorem set_seq_intersection_left_family_contains_eq[K](family: (Nat, Nat) -> Set[K],
+    x: K) {
+    seq_intersection(set_seq_intersection_left_family(family)).contains(x) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+} by {
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+    set_sInf_pair_family_contains_eq(family, x)
+    seq_intersection(set_seq_intersection_left_family(family)).contains(x) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).contains(x)
+        }
+    }
+}
+
+/// An iterated sequence union is contained in a set exactly when every indexed member is.
+theorem set_seq_union_right_family_subset_iff[K](family: (Nat, Nat) -> Set[K],
+    s: Set[K]) {
+    seq_union(set_seq_union_right_family(family)).subset(s) = forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).subset(s)
+        }
+    }
+} by {
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup_pair_family_subset_iff(family, s)
+    seq_union(set_seq_union_right_family(family)).subset(s) = forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).subset(s)
+        }
+    }
+}
+
+/// The other iterated sequence union is contained in a set exactly when every indexed member is.
+theorem set_seq_union_left_family_subset_iff[K](family: (Nat, Nat) -> Set[K],
+    s: Set[K]) {
+    seq_union(set_seq_union_left_family(family)).subset(s) = forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).subset(s)
+        }
+    }
+} by {
+    set_sSup_pair_family_eq_seq_union_left(family)
+    set_sSup_pair_family_subset_iff(family, s)
+    seq_union(set_seq_union_left_family(family)).subset(s) = forall(i: Nat) {
+        forall(j: Nat) {
+            family(i, j).subset(s)
+        }
+    }
+}
+
+/// A set is contained in an iterated sequence intersection exactly when it is contained in every indexed member.
+theorem set_subset_seq_intersection_right_family_iff[K](s: Set[K],
+    family: (Nat, Nat) -> Set[K]) {
+    s.subset(seq_intersection(set_seq_intersection_right_family(family))) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            s.subset(family(i, j))
+        }
+    }
+} by {
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_subset_sInf_pair_family_iff(s, family)
+    s.subset(seq_intersection(set_seq_intersection_right_family(family))) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            s.subset(family(i, j))
+        }
+    }
+}
+
+/// A set is contained in the other iterated sequence intersection exactly when it is contained in every indexed member.
+theorem set_subset_seq_intersection_left_family_iff[K](s: Set[K],
+    family: (Nat, Nat) -> Set[K]) {
+    s.subset(seq_intersection(set_seq_intersection_left_family(family))) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            s.subset(family(i, j))
+        }
+    }
+} by {
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+    set_subset_sInf_pair_family_iff(s, family)
+    s.subset(seq_intersection(set_seq_intersection_left_family(family))) =
+    forall(i: Nat) {
+        forall(j: Nat) {
+            s.subset(family(i, j))
+        }
+    }
+}
+
+/// Preimage commutes with an iterated sequence union over a natural binary family.
+theorem set_preimage_seq_union_right_family[T, U](f: T -> U,
+    family: (Nat, Nat) -> Set[U]) {
+    set_preimage(f, seq_union(set_seq_union_right_family(family))) =
+        seq_union(set_seq_union_right_family(set_preimage_binary_family(f, family)))
+} by {
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup_pair_family_eq_seq_union_right(set_preimage_binary_family(f, family))
+    set_preimage_sSup_pair_family(f, family)
+    set_preimage(f, set_sSup(set_pair_family(family))) =
+        set_sSup(set_pair_family(set_preimage_binary_family(f, family)))
+    set_preimage(f, seq_union(set_seq_union_right_family(family))) =
+        seq_union(set_seq_union_right_family(set_preimage_binary_family(f, family)))
+}
+
+/// Preimage commutes with the other iterated sequence union over a natural binary family.
+theorem set_preimage_seq_union_left_family[T, U](f: T -> U,
+    family: (Nat, Nat) -> Set[U]) {
+    set_preimage(f, seq_union(set_seq_union_left_family(family))) =
+        seq_union(set_seq_union_left_family(set_preimage_binary_family(f, family)))
+} by {
+    set_sSup_pair_family_eq_seq_union_left(family)
+    set_sSup_pair_family_eq_seq_union_left(set_preimage_binary_family(f, family))
+    set_preimage_sSup_pair_family(f, family)
+    set_preimage(f, set_sSup(set_pair_family(family))) =
+        set_sSup(set_pair_family(set_preimage_binary_family(f, family)))
+    set_preimage(f, seq_union(set_seq_union_left_family(family))) =
+        seq_union(set_seq_union_left_family(set_preimage_binary_family(f, family)))
+}
+
+/// Preimage commutes with an iterated sequence intersection over a natural binary family.
+theorem set_preimage_seq_intersection_right_family[T, U](f: T -> U,
+    family: (Nat, Nat) -> Set[U]) {
+    set_preimage(f, seq_intersection(set_seq_intersection_right_family(family))) =
+        seq_intersection(
+            set_seq_intersection_right_family(set_preimage_binary_family(f, family)))
+} by {
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_sInf_pair_family_eq_seq_intersection_right(set_preimage_binary_family(f, family))
+    set_preimage_sInf_pair_family(f, family)
+    set_preimage(f, set_sInf(set_pair_family(family))) =
+        set_sInf(set_pair_family(set_preimage_binary_family(f, family)))
+    set_preimage(f, seq_intersection(set_seq_intersection_right_family(family))) =
+        seq_intersection(
+            set_seq_intersection_right_family(set_preimage_binary_family(f, family)))
+}
+
+/// Preimage commutes with the other iterated sequence intersection over a natural binary family.
+theorem set_preimage_seq_intersection_left_family[T, U](f: T -> U,
+    family: (Nat, Nat) -> Set[U]) {
+    set_preimage(f, seq_intersection(set_seq_intersection_left_family(family))) =
+        seq_intersection(
+            set_seq_intersection_left_family(set_preimage_binary_family(f, family)))
+} by {
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+    set_sInf_pair_family_eq_seq_intersection_left(set_preimage_binary_family(f, family))
+    set_preimage_sInf_pair_family(f, family)
+    set_preimage(f, set_sInf(set_pair_family(family))) =
+        set_sInf(set_pair_family(set_preimage_binary_family(f, family)))
+    set_preimage(f, seq_intersection(set_seq_intersection_left_family(family))) =
+        seq_intersection(
+            set_seq_intersection_left_family(set_preimage_binary_family(f, family)))
+}
+
+/// Image commutes with an iterated sequence union over a natural binary family.
+theorem set_image_seq_union_right_family[T, U](family: (Nat, Nat) -> Set[T],
+    f: T -> U) {
+    set_image(seq_union(set_seq_union_right_family(family)), f) =
+        seq_union(set_seq_union_right_family(set_image_binary_family(family, f)))
+} by {
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup_pair_family_eq_seq_union_right(set_image_binary_family(family, f))
+    set_image_sSup_pair_family(family, f)
+    set_image(set_sSup(set_pair_family(family)), f) =
+        set_sSup(set_pair_family(set_image_binary_family(family, f)))
+    set_image(seq_union(set_seq_union_right_family(family)), f) =
+        seq_union(set_seq_union_right_family(set_image_binary_family(family, f)))
+}
+
+/// Image commutes with the other iterated sequence union over a natural binary family.
+theorem set_image_seq_union_left_family[T, U](family: (Nat, Nat) -> Set[T],
+    f: T -> U) {
+    set_image(seq_union(set_seq_union_left_family(family)), f) =
+        seq_union(set_seq_union_left_family(set_image_binary_family(family, f)))
+} by {
+    set_sSup_pair_family_eq_seq_union_left(family)
+    set_sSup_pair_family_eq_seq_union_left(set_image_binary_family(family, f))
+    set_image_sSup_pair_family(family, f)
+    set_image(set_sSup(set_pair_family(family)), f) =
+        set_sSup(set_pair_family(set_image_binary_family(family, f)))
+    set_image(seq_union(set_seq_union_left_family(family)), f) =
+        seq_union(set_seq_union_left_family(set_image_binary_family(family, f)))
+}
+
+/// The image of an iterated sequence intersection is contained in the iterated sequence intersection of the images.
+theorem set_image_seq_intersection_right_family_subset[T, U](
+    family: (Nat, Nat) -> Set[T], f: T -> U
+) {
+    set_image(seq_intersection(set_seq_intersection_right_family(family)), f).subset(
+        seq_intersection(set_seq_intersection_right_family(set_image_binary_family(family, f))))
+} by {
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_sInf_pair_family_eq_seq_intersection_right(set_image_binary_family(family, f))
+    set_image_sInf_pair_family_subset(family, f)
+    set_image(set_sInf(set_pair_family(family)), f).subset(
+        set_sInf(set_pair_family(set_image_binary_family(family, f))))
+    set_image(seq_intersection(set_seq_intersection_right_family(family)), f).subset(
+        seq_intersection(set_seq_intersection_right_family(set_image_binary_family(family, f))))
+}
+
+/// The image of the other iterated sequence intersection is contained in the iterated sequence intersection of the images.
+theorem set_image_seq_intersection_left_family_subset[T, U](
+    family: (Nat, Nat) -> Set[T], f: T -> U
+) {
+    set_image(seq_intersection(set_seq_intersection_left_family(family)), f).subset(
+        seq_intersection(set_seq_intersection_left_family(set_image_binary_family(family, f))))
+} by {
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+    set_sInf_pair_family_eq_seq_intersection_left(set_image_binary_family(family, f))
+    set_image_sInf_pair_family_subset(family, f)
+    set_image(set_sInf(set_pair_family(family)), f).subset(
+        set_sInf(set_pair_family(set_image_binary_family(family, f))))
+    set_image(seq_intersection(set_seq_intersection_left_family(family)), f).subset(
+        seq_intersection(set_seq_intersection_left_family(set_image_binary_family(family, f))))
+}
+
+/// Under an injective map, images preserve an iterated sequence intersection.
+theorem set_image_seq_intersection_right_family_of_injective[T, U](
+    family: (Nat, Nat) -> Set[T], f: T -> U
+) {
+    is_injective_fn(f) implies
+    set_image(seq_intersection(set_seq_intersection_right_family(family)), f) =
+        seq_intersection(set_seq_intersection_right_family(set_image_binary_family(family, f)))
+} by {
+    if is_injective_fn(f) {
+        set_sInf_pair_family_eq_seq_intersection_right(family)
+        set_sInf_pair_family_eq_seq_intersection_right(set_image_binary_family(family, f))
+        set_image_sInf_pair_family_of_injective(family, f, Nat.0, Nat.0)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+        set_image(seq_intersection(set_seq_intersection_right_family(family)), f) =
+            seq_intersection(
+                set_seq_intersection_right_family(set_image_binary_family(family, f)))
+    }
+}
+
+/// Under an injective map, images preserve the other iterated sequence intersection.
+theorem set_image_seq_intersection_left_family_of_injective[T, U](
+    family: (Nat, Nat) -> Set[T], f: T -> U
+) {
+    is_injective_fn(f) implies
+    set_image(seq_intersection(set_seq_intersection_left_family(family)), f) =
+        seq_intersection(set_seq_intersection_left_family(set_image_binary_family(family, f)))
+} by {
+    if is_injective_fn(f) {
+        set_sInf_pair_family_eq_seq_intersection_left(family)
+        set_sInf_pair_family_eq_seq_intersection_left(set_image_binary_family(family, f))
+        set_image_sInf_pair_family_of_injective(family, f, Nat.0, Nat.0)
+        set_image(set_sInf(set_pair_family(family)), f) =
+            set_sInf(set_pair_family(set_image_binary_family(family, f)))
+        set_image(seq_intersection(set_seq_intersection_left_family(family)), f) =
+            seq_intersection(
+                set_seq_intersection_left_family(set_image_binary_family(family, f)))
+    }
+}
+
+/// The iterated sequence union of constantly empty binary-family members is empty.
+theorem set_seq_union_right_empty_binary_family[K] {
+    seq_union(set_seq_union_right_family(set_empty_binary_family[K, Nat, Nat])) =
+        Set[K].empty_set
+} by {
+    set_sSup_empty_binary_family[K, Nat, Nat]
+    set_sSup_pair_family_eq_seq_union_right(set_empty_binary_family[K, Nat, Nat])
+    seq_union(set_seq_union_right_family(set_empty_binary_family[K, Nat, Nat])) =
+        Set[K].empty_set
+}
+
+/// The other iterated sequence union of constantly empty binary-family members is empty.
+theorem set_seq_union_left_empty_binary_family[K] {
+    seq_union(set_seq_union_left_family(set_empty_binary_family[K, Nat, Nat])) =
+        Set[K].empty_set
+} by {
+    set_sSup_empty_binary_family[K, Nat, Nat]
+    set_sSup_pair_family_eq_seq_union_left(set_empty_binary_family[K, Nat, Nat])
+    seq_union(set_seq_union_left_family(set_empty_binary_family[K, Nat, Nat])) =
+        Set[K].empty_set
+}
+
+/// The iterated sequence intersection of constantly universal binary-family members is universal.
+theorem set_seq_intersection_right_universal_binary_family[K] {
+    seq_intersection(set_seq_intersection_right_family(set_universal_binary_family[K, Nat, Nat])) =
+        Set[K].universal_set
+} by {
+    set_sInf_universal_binary_family[K, Nat, Nat]
+    set_sInf_pair_family_eq_seq_intersection_right(set_universal_binary_family[K, Nat, Nat])
+    seq_intersection(set_seq_intersection_right_family(set_universal_binary_family[K, Nat, Nat])) =
+        Set[K].universal_set
+}
+
+/// The other iterated sequence intersection of constantly universal binary-family members is universal.
+theorem set_seq_intersection_left_universal_binary_family[K] {
+    seq_intersection(set_seq_intersection_left_family(set_universal_binary_family[K, Nat, Nat])) =
+        Set[K].universal_set
+} by {
+    set_sInf_universal_binary_family[K, Nat, Nat]
+    set_sInf_pair_family_eq_seq_intersection_left(set_universal_binary_family[K, Nat, Nat])
+    seq_intersection(set_seq_intersection_left_family(set_universal_binary_family[K, Nat, Nat])) =
+        Set[K].universal_set
+}
+
+/// The iterated sequence union of a constant binary family is the constant member.
+theorem set_seq_union_right_constant_binary_family[K](s: Set[K]) {
+    seq_union(set_seq_union_right_family(set_constant_binary_family[K, Nat, Nat](s))) = s
+} by {
+    set_sSup_constant_binary_family(s, Nat.0, Nat.0)
+    set_sSup_pair_family_eq_seq_union_right(set_constant_binary_family[K, Nat, Nat](s))
+    seq_union(set_seq_union_right_family(set_constant_binary_family[K, Nat, Nat](s))) = s
+}
+
+/// The other iterated sequence union of a constant binary family is the constant member.
+theorem set_seq_union_left_constant_binary_family[K](s: Set[K]) {
+    seq_union(set_seq_union_left_family(set_constant_binary_family[K, Nat, Nat](s))) = s
+} by {
+    set_sSup_constant_binary_family(s, Nat.0, Nat.0)
+    set_sSup_pair_family_eq_seq_union_left(set_constant_binary_family[K, Nat, Nat](s))
+    seq_union(set_seq_union_left_family(set_constant_binary_family[K, Nat, Nat](s))) = s
+}
+
+/// The iterated sequence intersection of a constant binary family is the constant member.
+theorem set_seq_intersection_right_constant_binary_family[K](s: Set[K]) {
+    seq_intersection(set_seq_intersection_right_family(set_constant_binary_family[K, Nat, Nat](s))) =
+        s
+} by {
+    set_sInf_constant_binary_family(s, Nat.0, Nat.0)
+    set_sInf_pair_family_eq_seq_intersection_right(set_constant_binary_family[K, Nat, Nat](s))
+    seq_intersection(set_seq_intersection_right_family(set_constant_binary_family[K, Nat, Nat](s))) =
+        s
+}
+
+/// The other iterated sequence intersection of a constant binary family is the constant member.
+theorem set_seq_intersection_left_constant_binary_family[K](s: Set[K]) {
+    seq_intersection(set_seq_intersection_left_family(set_constant_binary_family[K, Nat, Nat](s))) =
+        s
+} by {
+    set_sInf_constant_binary_family(s, Nat.0, Nat.0)
+    set_sInf_pair_family_eq_seq_intersection_left(set_constant_binary_family[K, Nat, Nat](s))
+    seq_intersection(set_seq_intersection_left_family(set_constant_binary_family[K, Nat, Nat](s))) =
+        s
+}
+
+/// Pointwise inclusion of natural binary families preserves iterated sequence unions.
+theorem set_seq_union_right_family_monotone[K](a: (Nat, Nat) -> Set[K],
+    b: (Nat, Nat) -> Set[K]) {
+    (forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } }) implies
+    seq_union(set_seq_union_right_family(a)).subset(seq_union(set_seq_union_right_family(b)))
+} by {
+    if forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } } {
+        set_sSup_pair_family_monotone(a, b)
+        set_sSup_pair_family_eq_seq_union_right(a)
+        set_sSup_pair_family_eq_seq_union_right(b)
+        set_sSup(set_pair_family(a)).subset(set_sSup(set_pair_family(b)))
+        seq_union(set_seq_union_right_family(a)).subset(seq_union(set_seq_union_right_family(b)))
+    }
+}
+
+/// Pointwise inclusion of natural binary families preserves the other iterated sequence unions.
+theorem set_seq_union_left_family_monotone[K](a: (Nat, Nat) -> Set[K],
+    b: (Nat, Nat) -> Set[K]) {
+    (forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } }) implies
+    seq_union(set_seq_union_left_family(a)).subset(seq_union(set_seq_union_left_family(b)))
+} by {
+    if forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } } {
+        set_sSup_pair_family_monotone(a, b)
+        set_sSup_pair_family_eq_seq_union_left(a)
+        set_sSup_pair_family_eq_seq_union_left(b)
+        set_sSup(set_pair_family(a)).subset(set_sSup(set_pair_family(b)))
+        seq_union(set_seq_union_left_family(a)).subset(seq_union(set_seq_union_left_family(b)))
+    }
+}
+
+/// Pointwise inclusion of natural binary families preserves iterated sequence intersections.
+theorem set_seq_intersection_right_family_monotone[K](a: (Nat, Nat) -> Set[K],
+    b: (Nat, Nat) -> Set[K]) {
+    (forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } }) implies
+    seq_intersection(set_seq_intersection_right_family(a)).subset(
+        seq_intersection(set_seq_intersection_right_family(b)))
+} by {
+    if forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } } {
+        set_sInf_pair_family_monotone(a, b)
+        set_sInf_pair_family_eq_seq_intersection_right(a)
+        set_sInf_pair_family_eq_seq_intersection_right(b)
+        set_sInf(set_pair_family(a)).subset(set_sInf(set_pair_family(b)))
+        seq_intersection(set_seq_intersection_right_family(a)).subset(
+            seq_intersection(set_seq_intersection_right_family(b)))
+    }
+}
+
+/// Pointwise inclusion of natural binary families preserves the other iterated sequence intersections.
+theorem set_seq_intersection_left_family_monotone[K](a: (Nat, Nat) -> Set[K],
+    b: (Nat, Nat) -> Set[K]) {
+    (forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } }) implies
+    seq_intersection(set_seq_intersection_left_family(a)).subset(
+        seq_intersection(set_seq_intersection_left_family(b)))
+} by {
+    if forall(i: Nat) { forall(j: Nat) { a(i, j).subset(b(i, j)) } } {
+        set_sInf_pair_family_monotone(a, b)
+        set_sInf_pair_family_eq_seq_intersection_left(a)
+        set_sInf_pair_family_eq_seq_intersection_left(b)
+        set_sInf(set_pair_family(a)).subset(set_sInf(set_pair_family(b)))
+        seq_intersection(set_seq_intersection_left_family(a)).subset(
+            seq_intersection(set_seq_intersection_left_family(b)))
+    }
+}
+
+/// Componentwise reindexing of natural binary families gives an iterated sequence union contained in the original one.
+theorem set_seq_union_right_reindex_binary_family_subset[K](family: (Nat, Nat) -> Set[K],
+    h: Nat -> Nat, k: Nat -> Nat) {
+    seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))).subset(
+        seq_union(set_seq_union_right_family(family)))
+} by {
+    set_sSup_reindex_binary_family_subset(family, h, k)
+    set_sSup_pair_family_eq_seq_union_right(set_reindex_binary_family(family, h, k))
+    set_sSup_pair_family_eq_seq_union_right(family)
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+        set_sSup(set_pair_family(family)))
+    seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))).subset(
+        seq_union(set_seq_union_right_family(family)))
+}
+
+/// Componentwise reindexing of natural binary families gives the other iterated sequence union contained in the original one.
+theorem set_seq_union_left_reindex_binary_family_subset[K](family: (Nat, Nat) -> Set[K],
+    h: Nat -> Nat, k: Nat -> Nat) {
+    seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))).subset(
+        seq_union(set_seq_union_left_family(family)))
+} by {
+    set_sSup_reindex_binary_family_subset(family, h, k)
+    set_sSup_pair_family_eq_seq_union_left(set_reindex_binary_family(family, h, k))
+    set_sSup_pair_family_eq_seq_union_left(family)
+    set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))).subset(
+        set_sSup(set_pair_family(family)))
+    seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))).subset(
+        seq_union(set_seq_union_left_family(family)))
+}
+
+/// The original iterated sequence intersection is contained in a componentwise reindexed one.
+theorem set_seq_intersection_right_subset_reindex_binary_family[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    seq_intersection(set_seq_intersection_right_family(family)).subset(
+        seq_intersection(
+            set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))))
+} by {
+    set_sInf_subset_reindex_binary_family(family, h, k)
+    set_sInf_pair_family_eq_seq_intersection_right(family)
+    set_sInf_pair_family_eq_seq_intersection_right(set_reindex_binary_family(family, h, k))
+    set_sInf(set_pair_family(family)).subset(
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))))
+    seq_intersection(set_seq_intersection_right_family(family)).subset(
+        seq_intersection(
+            set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))))
+}
+
+/// The original other iterated sequence intersection is contained in a componentwise reindexed one.
+theorem set_seq_intersection_left_subset_reindex_binary_family[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    seq_intersection(set_seq_intersection_left_family(family)).subset(
+        seq_intersection(
+            set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))))
+} by {
+    set_sInf_subset_reindex_binary_family(family, h, k)
+    set_sInf_pair_family_eq_seq_intersection_left(family)
+    set_sInf_pair_family_eq_seq_intersection_left(set_reindex_binary_family(family, h, k))
+    set_sInf(set_pair_family(family)).subset(
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))))
+    seq_intersection(set_seq_intersection_left_family(family)).subset(
+        seq_intersection(
+            set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))))
+}
+
+/// Componentwise surjective reindexing preserves iterated sequence unions.
+theorem set_seq_union_right_reindex_binary_family_eq_of_surjective[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_right_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        set_sSup_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sSup_pair_family_eq_seq_union_right(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_right(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_right_family(family))
+    }
+}
+
+/// Componentwise surjective reindexing preserves the other iterated sequence unions.
+theorem set_seq_union_left_reindex_binary_family_eq_of_surjective[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_union(set_seq_union_left_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        set_sSup_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sSup_pair_family_eq_seq_union_left(set_reindex_binary_family(family, h, k))
+        set_sSup_pair_family_eq_seq_union_left(family)
+        set_sSup(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sSup(set_pair_family(family))
+        seq_union(set_seq_union_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_union(set_seq_union_left_family(family))
+    }
+}
+
+/// Componentwise surjective reindexing preserves iterated sequence intersections.
+theorem set_seq_intersection_right_reindex_binary_family_eq_of_surjective[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_right_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        set_sInf_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sInf_pair_family_eq_seq_intersection_right(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_right(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_right_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_right_family(family))
+    }
+}
+
+/// Componentwise surjective reindexing preserves the other iterated sequence intersections.
+theorem set_seq_intersection_left_reindex_binary_family_eq_of_surjective[K](
+    family: (Nat, Nat) -> Set[K], h: Nat -> Nat, k: Nat -> Nat
+) {
+    is_surjective_fn(h) and is_surjective_fn(k) implies
+    seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+        seq_intersection(set_seq_intersection_left_family(family))
+} by {
+    if is_surjective_fn(h) and is_surjective_fn(k) {
+        set_sInf_reindex_binary_family_eq_of_surjective(family, h, k)
+        set_sInf_pair_family_eq_seq_intersection_left(set_reindex_binary_family(family, h, k))
+        set_sInf_pair_family_eq_seq_intersection_left(family)
+        set_sInf(set_pair_family(set_reindex_binary_family(family, h, k))) =
+            set_sInf(set_pair_family(family))
+        seq_intersection(set_seq_intersection_left_family(set_reindex_binary_family(family, h, k))) =
+            seq_intersection(set_seq_intersection_left_family(family))
+    }
+}

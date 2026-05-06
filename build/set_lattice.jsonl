@@ -1256,3 +1256,131 @@
 {"goal":"set_inf_seq_intersection_distrib_left","proof":[]}
 {"goal":"set_inf[K](seq_intersection[K](family), s) = seq_intersection[K](set_inf_family_right[K, Nat](family, s))","proof":[]}
 {"goal":"set_inf_seq_intersection_distrib_right","proof":[]}
+{"goal":"u(i) = seq_union[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_seq_union_right_family[K](family, x0) = u(x0) }(i)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_right_family[T0](x0, x1) }[K](family, i)"]}
+{"goal":"v(i) = set_sSup[K, Nat](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_sSup_right_family[K, Nat, Nat](family, x0) = v(x0) }(i)","function[T0, T1, T2](x0: (T2, T1) -> Set[T0], x1: T2) { set_sSup[T0, T1](set_right_slice_family[T0, T2, T1](x0, x1)) = set_sSup_right_family[T0, T2, T1](x0, x1) }[K, Nat, Nat](family, i)"]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_seq_union_right_family_eq_sSup_right","proof":[]}
+{"goal":"u(j) = seq_union[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function(x0: Nat) { set_seq_union_left_family[K](family, x0) = u(x0) }(j)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_left_family[T0](x0, x1) }[K](family, j)"]}
+{"goal":"v(j) = set_sSup[K, Nat](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function(x0: Nat) { set_sSup_left_family[K, Nat, Nat](family, x0) = v(x0) }(j)","function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T2) { set_sSup[T0, T1](set_left_slice_family[T0, T1, T2](x0, x1)) = set_sSup_left_family[T0, T1, T2](x0, x1) }[K, Nat, Nat](family, j)"]}
+{"goal":"u(j) = v(j)","proof":[]}
+{"goal":"set_seq_union_left_family_eq_sSup_left","proof":[]}
+{"goal":"u(i) = seq_intersection[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_seq_intersection_right_family[K](family, x0) = u(x0) }(i)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_right_family[T0](x0, x1) }[K](family, i)"]}
+{"goal":"v(i) = set_sInf[K, Nat](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_sInf_right_family[K, Nat, Nat](family, x0) = v(x0) }(i)","function[T0, T1, T2](x0: (T2, T1) -> Set[T0], x1: T2) { set_sInf[T0, T1](set_right_slice_family[T0, T2, T1](x0, x1)) = set_sInf_right_family[T0, T2, T1](x0, x1) }[K, Nat, Nat](family, i)"]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_seq_intersection_right_family_eq_sInf_right","proof":[]}
+{"goal":"u(j) = seq_intersection[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function(x0: Nat) { set_seq_intersection_left_family[K](family, x0) = u(x0) }(j)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_left_family[T0](x0, x1) }[K](family, j)"]}
+{"goal":"v(j) = set_sInf[K, Nat](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function(x0: Nat) { set_sInf_left_family[K, Nat, Nat](family, x0) = v(x0) }(j)","function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T2) { set_sInf[T0, T1](set_left_slice_family[T0, T1, T2](x0, x1)) = set_sInf_left_family[T0, T1, T2](x0, x1) }[K, Nat, Nat](family, j)"]}
+{"goal":"u(j) = v(j)","proof":[]}
+{"goal":"set_seq_intersection_left_family_eq_sInf_left","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = set_sSup[K, Nat](set_seq_union_right_family[K](family))","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = seq_union[K](set_seq_union_right_family[K](family))","proof":[]}
+{"goal":"set_sSup_pair_family_eq_seq_union_right","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = set_sSup[K, Nat](set_seq_union_left_family[K](family))","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = seq_union[K](set_seq_union_left_family[K](family))","proof":[]}
+{"goal":"set_sSup_pair_family_eq_seq_union_left","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = set_sInf[K, Nat](set_seq_intersection_right_family[K](family))","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = seq_intersection[K](set_seq_intersection_right_family[K](family))","proof":[]}
+{"goal":"set_sInf_pair_family_eq_seq_intersection_right","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = set_sInf[K, Nat](set_seq_intersection_left_family[K](family))","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)) = seq_intersection[K](set_seq_intersection_left_family[K](family))","proof":[]}
+{"goal":"set_sInf_pair_family_eq_seq_intersection_left","proof":[]}
+{"goal":"set_seq_union_right_family_eq_seq_union_left","proof":[]}
+{"goal":"set_seq_intersection_right_family_eq_seq_intersection_left","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](family)).contains(x) = exists(k0: Nat) { exists(k1: Nat) { family(k0, k1).contains(x) } }","proof":[]}
+{"goal":"set_seq_union_right_family_contains_eq","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](family)).contains(x) = exists(k0: Nat) { exists(k1: Nat) { family(k0, k1).contains(x) } }","proof":[]}
+{"goal":"set_seq_union_left_family_contains_eq","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](family)).contains(x) = forall(x0: Nat) { forall(x1: Nat) { family(x0, x1).contains(x) } }","proof":[]}
+{"goal":"set_seq_intersection_right_family_contains_eq","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](family)).contains(x) = forall(x0: Nat) { forall(x1: Nat) { family(x0, x1).contains(x) } }","proof":[]}
+{"goal":"set_seq_intersection_left_family_contains_eq","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](family)).subset(s) = forall(x0: Nat) { forall(x1: Nat) { family(x0, x1).subset(s) } }","proof":[]}
+{"goal":"set_seq_union_right_family_subset_iff","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](family)).subset(s) = forall(x0: Nat) { forall(x1: Nat) { family(x0, x1).subset(s) } }","proof":[]}
+{"goal":"set_seq_union_left_family_subset_iff","proof":[]}
+{"goal":"s.subset(seq_intersection[K](set_seq_intersection_right_family[K](family))) = forall(x0: Nat) { forall(x1: Nat) { s.subset(family(x0, x1)) } }","proof":[]}
+{"goal":"set_subset_seq_intersection_right_family_iff","proof":[]}
+{"goal":"s.subset(seq_intersection[K](set_seq_intersection_left_family[K](family))) = forall(x0: Nat) { forall(x1: Nat) { s.subset(family(x0, x1)) } }","proof":[]}
+{"goal":"set_subset_seq_intersection_left_family_iff","proof":[]}
+{"goal":"set_preimage[T, U](f, set_sSup[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](family))) = set_sSup[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage[T, U](f, seq_union[U](set_seq_union_right_family[U](family))) = seq_union[T](set_seq_union_right_family[T](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage_seq_union_right_family","proof":[]}
+{"goal":"set_preimage[T, U](f, set_sSup[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](family))) = set_sSup[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage[T, U](f, seq_union[U](set_seq_union_left_family[U](family))) = seq_union[T](set_seq_union_left_family[T](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage_seq_union_left_family","proof":[]}
+{"goal":"set_preimage[T, U](f, set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](family))) = set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage[T, U](f, seq_intersection[U](set_seq_intersection_right_family[U](family))) = seq_intersection[T](set_seq_intersection_right_family[T](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage_seq_intersection_right_family","proof":[]}
+{"goal":"set_preimage[T, U](f, set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](family))) = set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage[T, U](f, seq_intersection[U](set_seq_intersection_left_family[U](family))) = seq_intersection[T](set_seq_intersection_left_family[T](set_preimage_binary_family[T, U, Nat, Nat](f, family)))","proof":[]}
+{"goal":"set_preimage_seq_intersection_left_family","proof":[]}
+{"goal":"set_image[T, U](set_sSup[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f) = set_sSup[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image[T, U](seq_union[T](set_seq_union_right_family[T](family)), f) = seq_union[U](set_seq_union_right_family[U](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image_seq_union_right_family","proof":[]}
+{"goal":"set_image[T, U](set_sSup[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f) = set_sSup[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image[T, U](seq_union[T](set_seq_union_left_family[T](family)), f) = seq_union[U](set_seq_union_left_family[U](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image_seq_union_left_family","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f).subset(set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f))))","proof":[]}
+{"goal":"set_image[T, U](seq_intersection[T](set_seq_intersection_right_family[T](family)), f).subset(seq_intersection[U](set_seq_intersection_right_family[U](set_image_binary_family[T, U, Nat, Nat](family, f))))","proof":[]}
+{"goal":"set_image_seq_intersection_right_family_subset","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f).subset(set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f))))","proof":[]}
+{"goal":"set_image[T, U](seq_intersection[T](set_seq_intersection_left_family[T](family)), f).subset(seq_intersection[U](set_seq_intersection_left_family[U](set_image_binary_family[T, U, Nat, Nat](family, f))))","proof":[]}
+{"goal":"set_image_seq_intersection_left_family_subset","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f) = set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image[T, U](seq_intersection[T](set_seq_intersection_right_family[T](family)), f) = seq_intersection[U](set_seq_intersection_right_family[U](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image_seq_intersection_right_family_of_injective","proof":[]}
+{"goal":"set_image[T, U](set_sInf[T, Pair[Nat, Nat]](set_pair_family[T, Nat, Nat](family)), f) = set_sInf[U, Pair[Nat, Nat]](set_pair_family[U, Nat, Nat](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image[T, U](seq_intersection[T](set_seq_intersection_left_family[T](family)), f) = seq_intersection[U](set_seq_intersection_left_family[U](set_image_binary_family[T, U, Nat, Nat](family, f)))","proof":[]}
+{"goal":"set_image_seq_intersection_left_family_of_injective","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_empty_binary_family[K, Nat, Nat])) = Set.empty_set[K]","proof":[]}
+{"goal":"set_seq_union_right_empty_binary_family","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_empty_binary_family[K, Nat, Nat])) = Set.empty_set[K]","proof":[]}
+{"goal":"set_seq_union_left_empty_binary_family","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](set_universal_binary_family[K, Nat, Nat])) = Set.universal_set[K]","proof":[]}
+{"goal":"set_seq_intersection_right_universal_binary_family","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](set_universal_binary_family[K, Nat, Nat])) = Set.universal_set[K]","proof":[]}
+{"goal":"set_seq_intersection_left_universal_binary_family","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_constant_binary_family[K, Nat, Nat](s))) = s","proof":[]}
+{"goal":"set_seq_union_right_constant_binary_family","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_constant_binary_family[K, Nat, Nat](s))) = s","proof":[]}
+{"goal":"set_seq_union_left_constant_binary_family","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](set_constant_binary_family[K, Nat, Nat](s))) = s","proof":[]}
+{"goal":"set_seq_intersection_right_constant_binary_family","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](set_constant_binary_family[K, Nat, Nat](s))) = s","proof":[]}
+{"goal":"set_seq_intersection_left_constant_binary_family","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](a)).subset(set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](b)))","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](a)).subset(seq_union[K](set_seq_union_right_family[K](b)))","proof":[]}
+{"goal":"set_seq_union_right_family_monotone","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](a)).subset(set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](b)))","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](a)).subset(seq_union[K](set_seq_union_left_family[K](b)))","proof":[]}
+{"goal":"set_seq_union_left_family_monotone","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](a)).subset(set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](b)))","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](a)).subset(seq_intersection[K](set_seq_intersection_right_family[K](b)))","proof":[]}
+{"goal":"set_seq_intersection_right_family_monotone","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](a)).subset(set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](b)))","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](a)).subset(seq_intersection[K](set_seq_intersection_left_family[K](b)))","proof":[]}
+{"goal":"set_seq_intersection_left_family_monotone","proof":["let w0: Nat satisfy { exists(k0: Nat) { not a(w0, k0) ⊂ b(w0, k0) } }","let w1: Nat satisfy { not a(w0, w1) ⊂ b(w0, w1) }","let w2: Nat satisfy { not a(w0, w2) ⊂ b(w0, w2) }","function(x0: Nat, x1: Nat) { a(x0, x1) ⊂ b(x0, x1) }(w0, w2)"]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))).subset(set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)))","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))).subset(seq_union[K](set_seq_union_right_family[K](family)))","proof":["set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) ⊂ seq_union[K](set_seq_union_right_family[K](family))","not set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) ⊂ seq_union[K](set_seq_union_right_family[K](family))"]}
+{"goal":"set_seq_union_right_reindex_binary_family_subset","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))).subset(set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)))","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))).subset(seq_union[K](set_seq_union_left_family[K](family)))","proof":["set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) ⊂ seq_union[K](set_seq_union_left_family[K](family))","not set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) ⊂ seq_union[K](set_seq_union_left_family[K](family))"]}
+{"goal":"set_seq_union_left_reindex_binary_family_subset","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)).subset(set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))))","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](family)).subset(seq_intersection[K](set_seq_intersection_right_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))))","proof":["seq_intersection[K](set_seq_intersection_right_family[K](family)) ⊂ set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k)))","not seq_intersection[K](set_seq_intersection_right_family[K](family)) ⊂ set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k)))"]}
+{"goal":"set_seq_intersection_right_subset_reindex_binary_family","proof":[]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family)).subset(set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))))","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](family)).subset(seq_intersection[K](set_seq_intersection_left_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))))","proof":["seq_intersection[K](set_seq_intersection_left_family[K](family)) ⊂ set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k)))","not seq_intersection[K](set_seq_intersection_left_family[K](family)) ⊂ set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k)))"]}
+{"goal":"set_seq_intersection_left_subset_reindex_binary_family","proof":[]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family))","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_union[K](set_seq_union_right_family[K](family))","proof":["set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_union[K](set_seq_union_right_family[K](family))","set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) != seq_union[K](set_seq_union_right_family[K](family))"]}
+{"goal":"set_seq_union_right_reindex_binary_family_eq_of_surjective","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family))","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_union[K](set_seq_union_left_family[K](family))","proof":["set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_union[K](set_seq_union_left_family[K](family))","set_sSup[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) != seq_union[K](set_seq_union_left_family[K](family))"]}
+{"goal":"set_seq_union_left_reindex_binary_family_eq_of_surjective","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family))","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_intersection[K](set_seq_intersection_right_family[K](family))","proof":["set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_intersection[K](set_seq_intersection_right_family[K](family))","set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) != seq_intersection[K](set_seq_intersection_right_family[K](family))"]}
+{"goal":"set_seq_intersection_right_reindex_binary_family_eq_of_surjective","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](family))","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_intersection[K](set_seq_intersection_left_family[K](family))","proof":["set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) = seq_intersection[K](set_seq_intersection_left_family[K](family))","set_sInf[K, Pair[Nat, Nat]](set_pair_family[K, Nat, Nat](set_reindex_binary_family[K, Nat, Nat, Nat, Nat](family, h, k))) != seq_intersection[K](set_seq_intersection_left_family[K](family))"]}
+{"goal":"set_seq_intersection_left_reindex_binary_family_eq_of_surjective","proof":["not is_surjective_fn[Nat, Nat](k) or not is_surjective_fn[Nat, Nat](h)","is_surjective_fn[Nat, Nat](k)","is_surjective_fn[Nat, Nat](h)","not is_surjective_fn[Nat, Nat](h)"]}
