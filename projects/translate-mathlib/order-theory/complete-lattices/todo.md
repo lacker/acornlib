@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family reindexing/distributivity, family distributivity, preimage, image-over-supremum, binary-family, binary-family transport, independent-product infimum/supremum family API, ternary-product API, iterated binary-sequence reindexing, iterated binary-sequence transport/universal-property API, and iterated binary-sequence complement-duality API
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family reindexing/distributivity, family distributivity, preimage, image-over-supremum, binary-family, binary-family transport, independent-product infimum/supremum family API, ternary-product API, quaternary-product API, iterated binary-sequence reindexing, iterated binary-sequence transport/universal-property API, and iterated binary-sequence complement-duality API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -46,4 +46,5 @@ Status:
 - `src/set_lattice.ac` now has independent-product family wrappers for pairwise set infima, including membership characterizations, `sSup_{i,j} (a_i inf b_j) = sSup_i a_i inf sSup_j b_j`, least-upper-bound wrappers, and monotonicity in both factors.
 - `src/set_lattice.ac` now has dual independent-product family wrappers for pairwise set suprema, including membership characterizations, `sInf_{i,j} (a_i sup b_j) = sInf_i a_i sup sInf_j b_j`, greatest-lower-bound wrappers, and monotonicity in both factors. `src/logic.ac` also has a reusable rectangular universal-disjunction equivalence used by this API.
 - `src/set_lattice.ac` now has ternary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, LUB/GLB packages, and pointwise monotonicity in all three factors.
+- `src/set_lattice.ac` now has quaternary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, member bounds, subset characterizations, and LUB/GLB packages.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.
