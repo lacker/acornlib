@@ -1,6 +1,5 @@
 from nat.nat_base import Nat
 
-/// AixBot-generated helper for Freek Top 100 #19.
 /// A natural number is a sum of four squares if it has four natural witnesses.
 define is_sum_four_squares(n: Nat) -> Bool {
     exists(a: Nat, b: Nat, c: Nat, d: Nat) {
@@ -8,34 +7,37 @@ define is_sum_four_squares(n: Nat) -> Bool {
     }
 }
 
+/// Zero is a sum of four squares.
 theorem is_sum_four_squares_zero {
     is_sum_four_squares(Nat.0)
 } by {
+    Nat.0 = Nat.0 * Nat.0 + Nat.0 * Nat.0 + Nat.0 * Nat.0 + Nat.0 * Nat.0
     exists(a: Nat, b: Nat, c: Nat, d: Nat) {
-        a = Nat.0 and b = Nat.0 and c = Nat.0 and d = Nat.0 and
         Nat.0 = a * a + b * b + c * c + d * d
     }
 }
 
+/// One is a sum of four squares.
 theorem is_sum_four_squares_one {
     is_sum_four_squares(Nat.1)
 } by {
     Nat.1 = Nat.1 * Nat.1 + Nat.0 * Nat.0 + Nat.0 * Nat.0 + Nat.0 * Nat.0
     exists(a: Nat, b: Nat, c: Nat, d: Nat) {
-        a = Nat.1 and b = Nat.0 and c = Nat.0 and d = Nat.0 and
         Nat.1 = a * a + b * b + c * c + d * d
     }
 }
 
+/// Every square is a sum of four squares.
 theorem is_sum_four_squares_square(x: Nat) {
     is_sum_four_squares(x * x)
 } by {
+    x * x = x * x + Nat.0 * Nat.0 + Nat.0 * Nat.0 + Nat.0 * Nat.0
     exists(a: Nat, b: Nat, c: Nat, d: Nat) {
-        a = x and b = Nat.0 and c = Nat.0 and d = Nat.0 and
         x * x = a * a + b * b + c * c + d * d
     }
 }
 
+/// Multiplication preserves the square of a natural product.
 theorem square_mul_square(k: Nat, a: Nat) {
     (k * a) * (k * a) = k * k * (a * a)
 } by {
@@ -50,6 +52,7 @@ theorem square_mul_square(k: Nat, a: Nat) {
     k * k * (a * a) = (k * k) * (a * a)
 }
 
+/// Multiplication by a square distributes over a sum of four squares.
 theorem mul_square_distrib_four(k: Nat, a: Nat, b: Nat, c: Nat, d: Nat) {
     k * k * (a * a + b * b + c * c + d * d) =
     (k * a) * (k * a) + (k * b) * (k * b) +
@@ -88,7 +91,6 @@ theorem is_sum_four_squares_mul_square(n: Nat, k: Nat) {
         (k * a) * (k * a) + (k * b) * (k * b) +
         (k * c) * (k * c) + (k * d) * (k * d)
     exists(x: Nat, y: Nat, z: Nat, w: Nat) {
-        x = k * a and y = k * b and z = k * c and w = k * d and
         k * k * n = x * x + y * y + z * z + w * w
     }
 }
