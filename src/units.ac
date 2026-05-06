@@ -1,0 +1,295 @@
+from monoid import Monoid
+
+/// True if an element of a monoid has a two-sided multiplicative inverse.
+define is_monoid_unit[M: Monoid](a: M) -> Bool {
+    exists(b: M) {
+        a * b = M.1 and b * a = M.1
+    }
+}
+
+/// A unit of a monoid is an element with a two-sided multiplicative inverse.
+structure Unit[M: Monoid] {
+    /// The element of the monoid.
+    val: M
+    /// A two-sided inverse of the element.
+    inv: M
+} constraint {
+    val * inv = M.1 and inv * val = M.1
+}
+
+/// The value and inverse determine a unit.
+theorem unit_ext[M: Monoid](u: Unit[M], v: Unit[M]) {
+    u.val = v.val and u.inv = v.inv implies u = v
+} by {
+    if u.val = v.val and u.inv = v.inv {
+        u.val = v.val
+        u.inv = v.inv
+    }
+}
+
+attributes Unit[M: Monoid] {
+    /// Unit extensionality from equality of the value and inverse.
+    let ext = unit_ext[M]
+}
+
+/// The value of a unit multiplied by its inverse is the identity.
+theorem unit_val_mul_inv[M: Monoid](u: Unit[M]) {
+    u.val * u.inv = M.1
+}
+
+/// The inverse of a unit multiplied by its value is the identity.
+theorem unit_inv_mul_val[M: Monoid](u: Unit[M]) {
+    u.inv * u.val = M.1
+}
+
+/// The value of a unit is a unit of the monoid.
+theorem unit_val_is_monoid_unit[M: Monoid](u: Unit[M]) {
+    is_monoid_unit(u.val)
+} by {
+    exists(b: M) {
+        b = u.inv and u.val * b = M.1 and b * u.val = M.1
+    }
+}
+
+/// The monoid identity is a unit.
+theorem one_is_monoid_unit[M: Monoid] {
+    is_monoid_unit(M.1)
+} by {
+    M.1 * M.1 = M.1
+    exists(b: M) {
+        b = M.1 and M.1 * b = M.1 and b * M.1 = M.1
+    }
+}
+
+/// An inverse for a unit is unique.
+theorem unit_inverse_unique[M: Monoid](u: Unit[M], b: M) {
+    u.val * b = M.1 and b * u.val = M.1 implies b = u.inv
+} by {
+    if u.val * b = M.1 and b * u.val = M.1 {
+        b = b * M.1
+        b * M.1 = b * (u.val * u.inv)
+        b * (u.val * u.inv) = (b * u.val) * u.inv
+        b * u.val = M.1
+        (b * u.val) * u.inv = M.1 * u.inv
+        M.1 * u.inv = u.inv
+        b = u.inv
+    }
+}
+
+/// Equal units have equal values.
+theorem unit_eq_val[M: Monoid](u: Unit[M], v: Unit[M]) {
+    u = v implies u.val = v.val
+}
+
+/// Equal units have equal inverses.
+theorem unit_eq_inv[M: Monoid](u: Unit[M], v: Unit[M]) {
+    u = v implies u.inv = v.inv
+}
+
+/// The identity element as a unit.
+let unit_one[M: Monoid]: Unit[M] satisfy {
+    Unit.new(M.1, M.1) = Option.some(unit_one)
+}
+
+/// The product of two units.
+let unit_mul[M: Monoid](u: Unit[M], v: Unit[M]) -> result: Unit[M] satisfy {
+    Unit.new(u.val * v.val, v.inv * u.inv) = Option.some(result)
+} by {
+    (u.val * v.val) * (v.inv * u.inv) = u.val * (v.val * v.inv) * u.inv
+    v.val * v.inv = M.1
+    u.val * (v.val * v.inv) * u.inv = u.val * M.1 * u.inv
+    u.val * M.1 = u.val
+    u.val * M.1 * u.inv = u.val * u.inv
+    u.val * u.inv = M.1
+    (u.val * v.val) * (v.inv * u.inv) = M.1
+
+    (v.inv * u.inv) * (u.val * v.val) = v.inv * (u.inv * u.val) * v.val
+    u.inv * u.val = M.1
+    v.inv * (u.inv * u.val) * v.val = v.inv * M.1 * v.val
+    v.inv * M.1 = v.inv
+    v.inv * M.1 * v.val = v.inv * v.val
+    v.inv * v.val = M.1
+    (v.inv * u.inv) * (u.val * v.val) = M.1
+}
+
+/// The inverse unit.
+let unit_inverse[M: Monoid](u: Unit[M]) -> result: Unit[M] satisfy {
+    Unit.new(u.inv, u.val) = Option.some(result)
+} by {
+    u.inv * u.val = M.1
+    u.val * u.inv = M.1
+}
+
+/// The value of the identity unit is the monoid identity.
+theorem unit_one_val[M: Monoid] {
+    unit_one[M].val = M.1
+}
+
+/// The inverse of the identity unit is the monoid identity.
+theorem unit_one_inv[M: Monoid] {
+    unit_one[M].inv = M.1
+}
+
+/// The value of a product of units is the product of their values.
+theorem unit_mul_val[M: Monoid](u: Unit[M], v: Unit[M]) {
+    unit_mul(u, v).val = u.val * v.val
+}
+
+/// The inverse of a product of units is the reverse product of their inverses.
+theorem unit_mul_inv[M: Monoid](u: Unit[M], v: Unit[M]) {
+    unit_mul(u, v).inv = v.inv * u.inv
+}
+
+/// The product of the values of two units is a unit.
+theorem unit_mul_val_is_monoid_unit[M: Monoid](u: Unit[M], v: Unit[M]) {
+    is_monoid_unit(u.val * v.val)
+} by {
+    unit_val_is_monoid_unit(unit_mul(u, v))
+    unit_mul(u, v).val = u.val * v.val
+    is_monoid_unit(u.val * v.val)
+}
+
+/// The value of the inverse unit is the inverse of the original unit.
+theorem unit_inverse_val[M: Monoid](u: Unit[M]) {
+    unit_inverse(u).val = u.inv
+}
+
+/// The inverse of the inverse unit is the value of the original unit.
+theorem unit_inverse_inv[M: Monoid](u: Unit[M]) {
+    unit_inverse(u).inv = u.val
+}
+
+/// The inverse of a unit is a unit.
+theorem unit_inv_is_monoid_unit[M: Monoid](u: Unit[M]) {
+    is_monoid_unit(u.inv)
+} by {
+    unit_val_is_monoid_unit(unit_inverse(u))
+    unit_inverse(u).val = u.inv
+    is_monoid_unit(u.inv)
+}
+
+/// Multiplying a unit by the identity unit on the right changes nothing.
+theorem unit_mul_one_right[M: Monoid](u: Unit[M]) {
+    unit_mul(u, unit_one[M]) = u
+} by {
+    let lhs = unit_mul(u, unit_one[M])
+    lhs.val = u.val * unit_one[M].val
+    unit_one[M].val = M.1
+    lhs.val = u.val * M.1
+    lhs.val = u.val
+    lhs.inv = unit_one[M].inv * u.inv
+    unit_one[M].inv = M.1
+    lhs.inv = M.1 * u.inv
+    lhs.inv = u.inv
+    unit_ext(lhs, u)
+}
+
+/// Multiplying a unit by the identity unit on the left changes nothing.
+theorem unit_mul_one_left[M: Monoid](u: Unit[M]) {
+    unit_mul(unit_one[M], u) = u
+} by {
+    let lhs = unit_mul(unit_one[M], u)
+    lhs.val = unit_one[M].val * u.val
+    unit_one[M].val = M.1
+    lhs.val = M.1 * u.val
+    lhs.val = u.val
+    lhs.inv = u.inv * unit_one[M].inv
+    unit_one[M].inv = M.1
+    lhs.inv = u.inv * M.1
+    lhs.inv = u.inv
+    unit_ext(lhs, u)
+}
+
+/// Multiplying a unit by its inverse on the right gives the identity unit.
+theorem unit_mul_inverse_right[M: Monoid](u: Unit[M]) {
+    unit_mul(u, unit_inverse(u)) = unit_one[M]
+} by {
+    let lhs = unit_mul(u, unit_inverse(u))
+    lhs.val = u.val * unit_inverse(u).val
+    unit_inverse(u).val = u.inv
+    lhs.val = u.val * u.inv
+    lhs.val = M.1
+    lhs.inv = unit_inverse(u).inv * u.inv
+    unit_inverse(u).inv = u.val
+    lhs.inv = u.val * u.inv
+    lhs.inv = M.1
+    unit_ext(lhs, unit_one[M])
+}
+
+/// Multiplying a unit by its inverse on the left gives the identity unit.
+theorem unit_mul_inverse_left[M: Monoid](u: Unit[M]) {
+    unit_mul(unit_inverse(u), u) = unit_one[M]
+} by {
+    let lhs = unit_mul(unit_inverse(u), u)
+    lhs.val = unit_inverse(u).val * u.val
+    unit_inverse(u).val = u.inv
+    lhs.val = u.inv * u.val
+    lhs.val = M.1
+    lhs.inv = u.inv * unit_inverse(u).inv
+    unit_inverse(u).inv = u.val
+    lhs.inv = u.inv * u.val
+    lhs.inv = M.1
+    unit_ext(lhs, unit_one[M])
+}
+
+/// Unit multiplication is associative.
+theorem unit_mul_assoc[M: Monoid](u: Unit[M], v: Unit[M], w: Unit[M]) {
+    unit_mul(u, unit_mul(v, w)) = unit_mul(unit_mul(u, v), w)
+} by {
+    let lhs = unit_mul(u, unit_mul(v, w))
+    let rhs = unit_mul(unit_mul(u, v), w)
+    lhs.val = u.val * unit_mul(v, w).val
+    unit_mul(v, w).val = v.val * w.val
+    lhs.val = u.val * (v.val * w.val)
+    rhs.val = unit_mul(u, v).val * w.val
+    unit_mul(u, v).val = u.val * v.val
+    rhs.val = (u.val * v.val) * w.val
+    lhs.val = rhs.val
+    lhs.inv = unit_mul(v, w).inv * u.inv
+    unit_mul(v, w).inv = w.inv * v.inv
+    lhs.inv = (w.inv * v.inv) * u.inv
+    rhs.inv = w.inv * unit_mul(u, v).inv
+    unit_mul(u, v).inv = v.inv * u.inv
+    rhs.inv = w.inv * (v.inv * u.inv)
+    lhs.inv = rhs.inv
+    unit_ext(lhs, rhs)
+}
+
+/// Inverting a unit twice gives the original unit.
+theorem unit_inverse_inverse[M: Monoid](u: Unit[M]) {
+    unit_inverse(unit_inverse(u)) = u
+} by {
+    let lhs = unit_inverse(unit_inverse(u))
+    lhs.val = unit_inverse(u).inv
+    unit_inverse(u).inv = u.val
+    lhs.val = u.val
+    lhs.inv = unit_inverse(u).val
+    unit_inverse(u).val = u.inv
+    lhs.inv = u.inv
+    unit_ext(lhs, u)
+}
+
+/// Inversion reverses multiplication of units.
+theorem unit_inverse_mul[M: Monoid](u: Unit[M], v: Unit[M]) {
+    unit_inverse(unit_mul(u, v)) = unit_mul(unit_inverse(v), unit_inverse(u))
+} by {
+    let lhs = unit_inverse(unit_mul(u, v))
+    let rhs = unit_mul(unit_inverse(v), unit_inverse(u))
+    lhs.val = unit_mul(u, v).inv
+    unit_mul(u, v).inv = v.inv * u.inv
+    lhs.val = v.inv * u.inv
+    rhs.val = unit_inverse(v).val * unit_inverse(u).val
+    unit_inverse(v).val = v.inv
+    unit_inverse(u).val = u.inv
+    rhs.val = v.inv * u.inv
+    lhs.val = rhs.val
+    lhs.inv = unit_mul(u, v).val
+    unit_mul(u, v).val = u.val * v.val
+    lhs.inv = u.val * v.val
+    rhs.inv = unit_inverse(u).inv * unit_inverse(v).inv
+    unit_inverse(u).inv = u.val
+    unit_inverse(v).inv = v.val
+    rhs.inv = u.val * v.val
+    lhs.inv = rhs.inv
+    unit_ext(lhs, rhs)
+}
