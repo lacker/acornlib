@@ -2,6 +2,7 @@
 
 from functions import compose, identity_fn
 from order import PartialOrder, lte_refl, lt_imp_lte
+from order.function_order_on import function_eq_on, function_eq_on_apply, function_eq_on_symm
 from order_maps import is_monotone, is_antitone, is_strict_monotone, is_strict_antitone,
     monotone_apply, antitone_apply, strict_monotone_apply, strict_antitone_apply
 from set import Set
@@ -106,6 +107,138 @@ theorem strict_antitone_on_apply[Domain: PartialOrder, Value: PartialOrder](
     }
 }
 
+/// Monotonicity on a set is preserved by pointwise equality on that set.
+theorem monotone_on_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_monotone_on(domain, original)
+    implies is_monotone_on(domain, replacement)
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left <= right {
+            function_eq_on_apply(domain, original, replacement, left)
+            function_eq_on_apply(domain, original, replacement, right)
+            monotone_on_apply(domain, original, left, right)
+            original(left) = replacement(left)
+            original(right) = replacement(right)
+            original(left) <= original(right)
+            replacement(left) <= replacement(right)
+        }
+    }
+}
+
+/// Antitonicity on a set is preserved by pointwise equality on that set.
+theorem antitone_on_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_antitone_on(domain, original)
+    implies is_antitone_on(domain, replacement)
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left <= right {
+            function_eq_on_apply(domain, original, replacement, left)
+            function_eq_on_apply(domain, original, replacement, right)
+            antitone_on_apply(domain, original, left, right)
+            original(left) = replacement(left)
+            original(right) = replacement(right)
+            original(right) <= original(left)
+            replacement(right) <= replacement(left)
+        }
+    }
+}
+
+/// Strict monotonicity on a set is preserved by pointwise equality on that set.
+theorem strict_monotone_on_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_strict_monotone_on(domain, original)
+    implies is_strict_monotone_on(domain, replacement)
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left < right {
+            function_eq_on_apply(domain, original, replacement, left)
+            function_eq_on_apply(domain, original, replacement, right)
+            strict_monotone_on_apply(domain, original, left, right)
+            original(left) = replacement(left)
+            original(right) = replacement(right)
+            original(left) < original(right)
+            replacement(left) < replacement(right)
+        }
+    }
+}
+
+/// Strict antitonicity on a set is preserved by pointwise equality on that set.
+theorem strict_antitone_on_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_strict_antitone_on(domain, original)
+    implies is_strict_antitone_on(domain, replacement)
+} by {
+    forall(left: Domain, right: Domain) {
+        if domain.contains(left) and domain.contains(right) and left < right {
+            function_eq_on_apply(domain, original, replacement, left)
+            function_eq_on_apply(domain, original, replacement, right)
+            strict_antitone_on_apply(domain, original, left, right)
+            original(left) = replacement(left)
+            original(right) = replacement(right)
+            original(right) < original(left)
+            replacement(right) < replacement(left)
+        }
+    }
+}
+
+/// Monotonicity on a set is reflected by pointwise equality on that set.
+theorem monotone_on_reflect_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_monotone_on(domain, replacement)
+    implies is_monotone_on(domain, original)
+} by {
+    function_eq_on_symm(domain, original, replacement)
+    function_eq_on(domain, replacement, original)
+    monotone_on_of_function_eq_on(domain, replacement, original)
+    is_monotone_on(domain, original)
+}
+
+/// Antitonicity on a set is reflected by pointwise equality on that set.
+theorem antitone_on_reflect_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_antitone_on(domain, replacement)
+    implies is_antitone_on(domain, original)
+} by {
+    function_eq_on_symm(domain, original, replacement)
+    function_eq_on(domain, replacement, original)
+    antitone_on_of_function_eq_on(domain, replacement, original)
+    is_antitone_on(domain, original)
+}
+
+/// Strict monotonicity on a set is reflected by pointwise equality on that set.
+theorem strict_monotone_on_reflect_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_strict_monotone_on(domain, replacement)
+    implies is_strict_monotone_on(domain, original)
+} by {
+    function_eq_on_symm(domain, original, replacement)
+    function_eq_on(domain, replacement, original)
+    strict_monotone_on_of_function_eq_on(domain, replacement, original)
+    is_strict_monotone_on(domain, original)
+}
+
+/// Strict antitonicity on a set is reflected by pointwise equality on that set.
+theorem strict_antitone_on_reflect_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    function_eq_on(domain, original, replacement) and is_strict_antitone_on(domain, replacement)
+    implies is_strict_antitone_on(domain, original)
+} by {
+    function_eq_on_symm(domain, original, replacement)
+    function_eq_on(domain, replacement, original)
+    strict_antitone_on_of_function_eq_on(domain, replacement, original)
+    is_strict_antitone_on(domain, original)
+}
+
 /// A globally monotone map is monotone on every subset.
 theorem monotone_on_of_monotone[Domain: PartialOrder, Value: PartialOrder](
     domain: Set[Domain], f: Domain -> Value
@@ -172,6 +305,102 @@ theorem strict_antitone_on_of_strict_antitone[Domain: PartialOrder, Value: Parti
         }
         is_strict_antitone_on(domain, f)
     }
+}
+
+/// A globally monotone map remains monotone on a set after replacement by an equal function there.
+theorem monotone_on_of_monotone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_monotone(original) and function_eq_on(domain, original, replacement)
+    implies is_monotone_on(domain, replacement)
+} by {
+    monotone_on_of_monotone(domain, original)
+    monotone_on_of_function_eq_on(domain, original, replacement)
+    is_monotone_on(domain, replacement)
+}
+
+/// A globally antitone map remains antitone on a set after replacement by an equal function there.
+theorem antitone_on_of_antitone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_antitone(original) and function_eq_on(domain, original, replacement)
+    implies is_antitone_on(domain, replacement)
+} by {
+    antitone_on_of_antitone(domain, original)
+    antitone_on_of_function_eq_on(domain, original, replacement)
+    is_antitone_on(domain, replacement)
+}
+
+/// A globally strictly monotone map remains strictly monotone on a set after replacement by an equal function there.
+theorem strict_monotone_on_of_strict_monotone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_monotone(original) and function_eq_on(domain, original, replacement)
+    implies is_strict_monotone_on(domain, replacement)
+} by {
+    strict_monotone_on_of_strict_monotone(domain, original)
+    strict_monotone_on_of_function_eq_on(domain, original, replacement)
+    is_strict_monotone_on(domain, replacement)
+}
+
+/// A globally strictly antitone map remains strictly antitone on a set after replacement by an equal function there.
+theorem strict_antitone_on_of_strict_antitone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_antitone(original) and function_eq_on(domain, original, replacement)
+    implies is_strict_antitone_on(domain, replacement)
+} by {
+    strict_antitone_on_of_strict_antitone(domain, original)
+    strict_antitone_on_of_function_eq_on(domain, original, replacement)
+    is_strict_antitone_on(domain, replacement)
+}
+
+/// Both pointwise-equal functions are monotone when one is monotone on the set.
+theorem monotone_on_pair_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    function_eq_on(domain, left, right) and is_monotone_on(domain, left)
+    implies is_monotone_on(domain, left) and is_monotone_on(domain, right)
+} by {
+    monotone_on_of_function_eq_on(domain, left, right)
+    is_monotone_on(domain, left)
+    is_monotone_on(domain, right)
+}
+
+/// Both pointwise-equal functions are antitone when one is antitone on the set.
+theorem antitone_on_pair_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    function_eq_on(domain, left, right) and is_antitone_on(domain, left)
+    implies is_antitone_on(domain, left) and is_antitone_on(domain, right)
+} by {
+    antitone_on_of_function_eq_on(domain, left, right)
+    is_antitone_on(domain, left)
+    is_antitone_on(domain, right)
+}
+
+/// Both pointwise-equal functions are strictly monotone when one is strictly monotone on the set.
+theorem strict_monotone_on_pair_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    function_eq_on(domain, left, right) and is_strict_monotone_on(domain, left)
+    implies is_strict_monotone_on(domain, left) and is_strict_monotone_on(domain, right)
+} by {
+    strict_monotone_on_of_function_eq_on(domain, left, right)
+    is_strict_monotone_on(domain, left)
+    is_strict_monotone_on(domain, right)
+}
+
+/// Both pointwise-equal functions are strictly antitone when one is strictly antitone on the set.
+theorem strict_antitone_on_pair_of_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    function_eq_on(domain, left, right) and is_strict_antitone_on(domain, left)
+    implies is_strict_antitone_on(domain, left) and is_strict_antitone_on(domain, right)
+} by {
+    strict_antitone_on_of_function_eq_on(domain, left, right)
+    is_strict_antitone_on(domain, left)
+    is_strict_antitone_on(domain, right)
 }
 
 /// The identity map is monotone on every subset of a partial order.
@@ -464,6 +693,58 @@ theorem strict_antitone_on_imp_antitone_on[Domain: PartialOrder, Value: PartialO
         }
         is_antitone_on(domain, f)
     }
+}
+
+/// A function equal on the set to a strictly monotone function is monotone there.
+theorem monotone_on_of_strict_monotone_on_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_monotone_on(domain, original) and function_eq_on(domain, original, replacement)
+    implies is_monotone_on(domain, replacement)
+} by {
+    strict_monotone_on_of_function_eq_on(domain, original, replacement)
+    is_strict_monotone_on(domain, replacement)
+    strict_monotone_on_imp_monotone_on(domain, replacement)
+    is_monotone_on(domain, replacement)
+}
+
+/// A function equal on the set to a strictly antitone function is antitone there.
+theorem antitone_on_of_strict_antitone_on_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_antitone_on(domain, original) and function_eq_on(domain, original, replacement)
+    implies is_antitone_on(domain, replacement)
+} by {
+    strict_antitone_on_of_function_eq_on(domain, original, replacement)
+    is_strict_antitone_on(domain, replacement)
+    strict_antitone_on_imp_antitone_on(domain, replacement)
+    is_antitone_on(domain, replacement)
+}
+
+/// A function equal on the set to a globally strictly monotone function is monotone there.
+theorem monotone_on_of_strict_monotone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_monotone(original) and function_eq_on(domain, original, replacement)
+    implies is_monotone_on(domain, replacement)
+} by {
+    strict_monotone_on_of_strict_monotone_and_function_eq_on(domain, original, replacement)
+    is_strict_monotone_on(domain, replacement)
+    strict_monotone_on_imp_monotone_on(domain, replacement)
+    is_monotone_on(domain, replacement)
+}
+
+/// A function equal on the set to a globally strictly antitone function is antitone there.
+theorem antitone_on_of_strict_antitone_and_function_eq_on[Domain: PartialOrder, Value: PartialOrder](
+    domain: Set[Domain], original: Domain -> Value, replacement: Domain -> Value
+) {
+    is_strict_antitone(original) and function_eq_on(domain, original, replacement)
+    implies is_antitone_on(domain, replacement)
+} by {
+    strict_antitone_on_of_strict_antitone_and_function_eq_on(domain, original, replacement)
+    is_strict_antitone_on(domain, replacement)
+    strict_antitone_on_imp_antitone_on(domain, replacement)
+    is_antitone_on(domain, replacement)
 }
 
 /// Monotonicity on a set is preserved by restricting the domain.
