@@ -2477,6 +2477,330 @@ theorem set_sInf_sup_product_family_monotone[K, I, J](a: I -> Set[K], b: J -> Se
     }
 }
 
+/// The ternary family formed by first taking pairwise infima of two families, then infima with a third family.
+define set_inf3_product_family[K, I, J, L](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], p: Pair[I, J], l: L) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf_product_family(a, b)), c, p, l)
+}
+
+/// The ternary family formed by first taking pairwise suprema of two families, then suprema with a third family.
+define set_sup3_product_family[K, I, J, L](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], p: Pair[I, J], l: L) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup_product_family(a, b)), c, p, l)
+}
+
+/// Membership in a ternary infimum product family is membership in all three members.
+theorem set_inf3_product_family_contains_eq[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], p: Pair[I, J], l: L, x: K) {
+    set_inf3_product_family(a, b, c, p, l).contains(x) =
+        (a(p.first).contains(x) and b(p.second).contains(x) and c(l).contains(x))
+} by {
+    set_inf3_product_family(a, b, c, p, l) =
+        set_inf_product_family(set_pair_family(set_inf_product_family(a, b)), c, p, l)
+    set_inf_product_family_contains_eq(set_pair_family(set_inf_product_family(a, b)),
+        c, p, l, x)
+    set_pair_family(set_inf_product_family(a, b), p) =
+        set_inf_product_family(a, b, p.first, p.second)
+    set_inf_product_family_contains_eq(a, b, p.first, p.second, x)
+}
+
+/// Membership in a ternary supremum product family is membership in at least one member.
+theorem set_sup3_product_family_contains_eq[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], p: Pair[I, J], l: L, x: K) {
+    set_sup3_product_family(a, b, c, p, l).contains(x) =
+        (a(p.first).contains(x) or b(p.second).contains(x) or c(l).contains(x))
+} by {
+    set_sup3_product_family(a, b, c, p, l) =
+        set_sup_product_family(set_pair_family(set_sup_product_family(a, b)), c, p, l)
+    set_sup_product_family_contains_eq(set_pair_family(set_sup_product_family(a, b)),
+        c, p, l, x)
+    set_pair_family(set_sup_product_family(a, b), p) =
+        set_sup_product_family(a, b, p.first, p.second)
+    set_sup_product_family_contains_eq(a, b, p.first, p.second, x)
+}
+
+/// The supremum of ternary pairwise infima is the infimum of the three suprema.
+theorem set_sSup_inf3_product_family[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K]) {
+    set_sSup(set_pair_family(set_inf3_product_family(a, b, c))) =
+        set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c))
+} by {
+    let ab = set_pair_family(set_inf_product_family(a, b))
+    let left = set_sSup(set_pair_family(set_inf3_product_family(a, b, c)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(ab, c)))
+    let right = set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c))
+    forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_inf3_product_family(a, b, c, p, l) =
+                set_inf_product_family(ab, c, p, l)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf3_product_family(a, b, c),
+        set_inf_product_family(ab, c))
+    left = middle
+    set_sSup_inf_product_family(ab, c)
+    middle = set_inf(set_sSup(ab), set_sSup(c))
+    set_sSup_inf_product_family(a, b)
+    set_sSup(ab) = set_inf(set_sSup(a), set_sSup(b))
+    middle = right
+    left = right
+}
+
+/// The infimum of ternary pairwise suprema is the supremum of the three infima.
+theorem set_sInf_sup3_product_family[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K]) {
+    set_sInf(set_pair_family(set_sup3_product_family(a, b, c))) =
+        set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c))
+} by {
+    let ab = set_pair_family(set_sup_product_family(a, b))
+    let left = set_sInf(set_pair_family(set_sup3_product_family(a, b, c)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(ab, c)))
+    let right = set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c))
+    forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_sup3_product_family(a, b, c, p, l) =
+                set_sup_product_family(ab, c, p, l)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup3_product_family(a, b, c),
+        set_sup_product_family(ab, c))
+    left = middle
+    set_sInf_sup_product_family(ab, c)
+    middle = set_sup(set_sInf(ab), set_sInf(c))
+    set_sInf_sup_product_family(a, b)
+    set_sInf(ab) = set_sup(set_sInf(a), set_sInf(b))
+    middle = right
+    left = right
+}
+
+/// Every ternary pairwise infimum is contained in the infimum of the three family suprema.
+theorem set_inf3_product_family_subset_sSup_inf[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], p: Pair[I, J], l: L) {
+    set_inf3_product_family(a, b, c, p, l).subset(
+        set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)))
+} by {
+    set_pair_family_subset_sSup(set_inf3_product_family(a, b, c), p, l)
+    set_sSup_inf3_product_family(a, b, c)
+    set_inf3_product_family(a, b, c, p, l).subset(
+        set_sSup(set_pair_family(set_inf3_product_family(a, b, c))))
+    set_inf3_product_family(a, b, c, p, l).subset(
+        set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)))
+}
+
+/// The supremum of the three family infima is contained in every ternary pairwise supremum.
+theorem set_sInf_sup_subset_sup3_product_family[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], p: Pair[I, J], l: L) {
+    set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)).subset(
+        set_sup3_product_family(a, b, c, p, l))
+} by {
+    set_sInf_pair_family_subset_family(set_sup3_product_family(a, b, c), p, l)
+    set_sInf_sup3_product_family(a, b, c)
+    set_sInf(set_pair_family(set_sup3_product_family(a, b, c))).subset(
+        set_sup3_product_family(a, b, c, p, l))
+    set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)).subset(
+        set_sup3_product_family(a, b, c, p, l))
+}
+
+/// The infimum of the three family suprema is contained in a set exactly when every ternary pairwise infimum is.
+theorem set_sSup_inf3_product_subset_iff[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], s: Set[K]) {
+    set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)).subset(s) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                set_inf3_product_family(a, b, c, p, l).subset(s)
+            }
+        }
+} by {
+    set_sSup_inf3_product_family(a, b, c)
+    set_sSup_pair_family_subset_iff(set_inf3_product_family(a, b, c), s)
+    set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)).subset(s) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                set_inf3_product_family(a, b, c, p, l).subset(s)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the three family infima exactly when it is below every ternary pairwise supremum.
+theorem set_subset_sInf_sup3_product_iff[K, I, J, L](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K]) {
+    s.subset(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c))) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                s.subset(set_sup3_product_family(a, b, c, p, l))
+            }
+        }
+} by {
+    set_sInf_sup3_product_family(a, b, c)
+    set_subset_sInf_pair_family_iff(s, set_sup3_product_family(a, b, c))
+    s.subset(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c))) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                s.subset(set_sup3_product_family(a, b, c, p, l))
+            }
+        }
+}
+
+/// The infimum of the three family suprema is the least upper bound of ternary pairwise infima.
+theorem set_sSup_inf3_product_family_is_lub[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], s: Set[K]) {
+    (forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_inf3_product_family(a, b, c, p, l).subset(
+                set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)))
+        }
+    }) and
+    (set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)).subset(s) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                set_inf3_product_family(a, b, c, p, l).subset(s)
+            }
+        })
+} by {
+    forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_inf3_product_family_subset_sSup_inf(a, b, c, p, l)
+        }
+    }
+    set_sSup_inf3_product_subset_iff(a, b, c, s)
+}
+
+/// The supremum of the three family infima is the greatest lower bound of ternary pairwise suprema.
+theorem set_sInf_sup3_product_family_is_glb[K, I, J, L](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K]) {
+    (forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)).subset(
+                set_sup3_product_family(a, b, c, p, l))
+        }
+    }) and
+    (s.subset(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c))) =
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                s.subset(set_sup3_product_family(a, b, c, p, l))
+            }
+        })
+} by {
+    forall(p: Pair[I, J]) {
+        forall(l: L) {
+            set_sInf_sup_subset_sup3_product_family(a, b, c, p, l)
+        }
+    }
+    set_subset_sInf_sup3_product_iff(s, a, b, c)
+}
+
+/// Pointwise inclusion in all three factors preserves suprema of ternary pairwise infima.
+theorem set_sSup_inf3_product_family_monotone[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: I -> Set[K], e: J -> Set[K],
+    f: L -> Set[K]) {
+    (forall(i: I) { a(i).subset(d(i)) }) and
+    (forall(j: J) { b(j).subset(e(j)) }) and
+    (forall(l: L) { c(l).subset(f(l)) }) implies
+    set_sSup(set_pair_family(set_inf3_product_family(a, b, c))).subset(
+        set_sSup(set_pair_family(set_inf3_product_family(d, e, f))))
+} by {
+    if (forall(i: I) { a(i).subset(d(i)) }) and
+        (forall(j: J) { b(j).subset(e(j)) }) and
+        (forall(l: L) { c(l).subset(f(l)) }) {
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                forall(x: K) {
+                    if set_inf3_product_family(a, b, c, p, l).contains(x) {
+                        set_inf3_product_family_contains_eq(a, b, c, p, l, x)
+                        a(p.first).contains(x)
+                        b(p.second).contains(x)
+                        c(l).contains(x)
+                        d(p.first).contains(x)
+                        e(p.second).contains(x)
+                        f(l).contains(x)
+                        set_inf3_product_family_contains_eq(d, e, f, p, l, x)
+                        set_inf3_product_family(d, e, f, p, l).contains(x)
+                        set_sSup_pair_family_contains_of_contains(set_inf3_product_family(d, e, f), x)
+                        set_sSup(set_pair_family(set_inf3_product_family(d, e, f))).contains(x)
+                    }
+                }
+                set_inf3_product_family(a, b, c, p, l).subset(
+                    set_sSup(set_pair_family(set_inf3_product_family(d, e, f))))
+            }
+        }
+        set_sSup_pair_family_subset_of_family_subset(set_inf3_product_family(a, b, c),
+            set_sSup(set_pair_family(set_inf3_product_family(d, e, f))))
+        set_sSup(set_pair_family(set_inf3_product_family(a, b, c))).subset(
+            set_sSup(set_pair_family(set_inf3_product_family(d, e, f))))
+    }
+}
+
+/// Pointwise inclusion in all three factors preserves infima of ternary pairwise suprema.
+theorem set_sInf_sup3_product_family_monotone[K, I, J, L](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: I -> Set[K], e: J -> Set[K],
+    f: L -> Set[K]) {
+    (forall(i: I) { a(i).subset(d(i)) }) and
+    (forall(j: J) { b(j).subset(e(j)) }) and
+    (forall(l: L) { c(l).subset(f(l)) }) implies
+    set_sInf(set_pair_family(set_sup3_product_family(a, b, c))).subset(
+        set_sInf(set_pair_family(set_sup3_product_family(d, e, f))))
+} by {
+    if (forall(i: I) { a(i).subset(d(i)) }) and
+        (forall(j: J) { b(j).subset(e(j)) }) and
+        (forall(l: L) { c(l).subset(f(l)) }) {
+        forall(p: Pair[I, J]) {
+            forall(l: L) {
+                forall(x: K) {
+                    if set_sup3_product_family(a, b, c, p, l).contains(x) {
+                        set_sup3_product_family_contains_eq(a, b, c, p, l, x)
+                        if a(p.first).contains(x) {
+                            d(p.first).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        if b(p.second).contains(x) {
+                            e(p.second).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        if c(l).contains(x) {
+                            f(l).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        set_sup3_product_family(d, e, f, p, l).contains(x)
+                    }
+                }
+                set_sInf_pair_family_subset_family(set_sup3_product_family(a, b, c), p, l)
+                forall(x: K) {
+                    if set_sInf(set_pair_family(set_sup3_product_family(a, b, c))).contains(x) {
+                        set_sup3_product_family(a, b, c, p, l).contains(x)
+                        set_sup3_product_family_contains_eq(a, b, c, p, l, x)
+                        if a(p.first).contains(x) {
+                            d(p.first).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        if b(p.second).contains(x) {
+                            e(p.second).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        if c(l).contains(x) {
+                            f(l).contains(x)
+                            set_sup3_product_family_contains_eq(d, e, f, p, l, x)
+                            set_sup3_product_family(d, e, f, p, l).contains(x)
+                        }
+                        set_sup3_product_family(d, e, f, p, l).contains(x)
+                    }
+                }
+                set_sInf(set_pair_family(set_sup3_product_family(a, b, c))).subset(
+                    set_sup3_product_family(d, e, f, p, l))
+            }
+        }
+        set_subset_sInf_pair_family_of_subset_family(
+            set_sInf(set_pair_family(set_sup3_product_family(a, b, c))),
+            set_sup3_product_family(d, e, f))
+        set_sInf(set_pair_family(set_sup3_product_family(a, b, c))).subset(
+            set_sInf(set_pair_family(set_sup3_product_family(d, e, f))))
+    }
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
