@@ -1,6 +1,6 @@
 /// Intervals of a linear order as sets.
 
-from order import LinearOrder, lte_refl, lte_trans, lt_imp_lte
+from order import LinearOrder, lte_refl, lte_trans, lt_imp_lte, lt_of_lte_of_lt, lt_of_lt_of_lte
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
 from set import Set
 
@@ -193,6 +193,72 @@ theorem closed_interval_set_subset_of_bounds[L: LinearOrder](
                 closed_interval(outer_lower, outer_upper, point)
                 closed_interval_set(outer_lower, outer_upper).contains(point)
             }
+        }
+    }
+}
+
+/// An open interval is contained in any open interval with weaker endpoint bounds.
+theorem open_interval_set_subset_of_bounds[L: LinearOrder](
+    outer_lower: L, lower: L, upper: L, outer_upper: L
+) {
+    outer_lower <= lower and upper <= outer_upper
+    implies open_interval_set(lower, upper).subset(open_interval_set(outer_lower, outer_upper))
+} by {
+    forall(point: L) {
+        if open_interval_set(lower, upper).contains(point) {
+            open_interval(lower, upper, point)
+            lower < point
+            point < upper
+            lt_of_lte_of_lt(outer_lower, lower, point)
+            outer_lower < point
+            lt_of_lt_of_lte(point, upper, outer_upper)
+            point < outer_upper
+            open_interval(outer_lower, outer_upper, point)
+            open_interval_set(outer_lower, outer_upper).contains(point)
+        }
+    }
+}
+
+/// A left-open interval is contained in any left-open interval with weaker endpoint bounds.
+theorem left_open_interval_set_subset_of_bounds[L: LinearOrder](
+    outer_lower: L, lower: L, upper: L, outer_upper: L
+) {
+    outer_lower <= lower and upper <= outer_upper
+    implies left_open_interval_set(lower, upper).subset(left_open_interval_set(outer_lower, outer_upper))
+} by {
+    forall(point: L) {
+        if left_open_interval_set(lower, upper).contains(point) {
+            left_open_interval(lower, upper, point)
+            lower < point
+            point <= upper
+            lt_of_lte_of_lt(outer_lower, lower, point)
+            outer_lower < point
+            lte_trans(point, upper, outer_upper)
+            point <= outer_upper
+            left_open_interval(outer_lower, outer_upper, point)
+            left_open_interval_set(outer_lower, outer_upper).contains(point)
+        }
+    }
+}
+
+/// A right-open interval is contained in any right-open interval with weaker endpoint bounds.
+theorem right_open_interval_set_subset_of_bounds[L: LinearOrder](
+    outer_lower: L, lower: L, upper: L, outer_upper: L
+) {
+    outer_lower <= lower and upper <= outer_upper
+    implies right_open_interval_set(lower, upper).subset(right_open_interval_set(outer_lower, outer_upper))
+} by {
+    forall(point: L) {
+        if right_open_interval_set(lower, upper).contains(point) {
+            right_open_interval(lower, upper, point)
+            lower <= point
+            point < upper
+            lte_trans(outer_lower, lower, point)
+            outer_lower <= point
+            lt_of_lt_of_lte(point, upper, outer_upper)
+            point < outer_upper
+            right_open_interval(outer_lower, outer_upper, point)
+            right_open_interval_set(outer_lower, outer_upper).contains(point)
         }
     }
 }
