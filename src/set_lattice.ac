@@ -4293,6 +4293,292 @@ theorem set_sInf_sup9_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R](t: Set
     set_subset_sInf_sup9_product_iff(t, a, b, c, d, e, f, g, h, i)
 }
 
+/// The decary family formed by first taking nonary infima, then infima with a tenth family.
+define set_inf10_product_family[K, I, J, L, M, N, O, P, Q, R, S](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R],
+    s: S) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i)),
+        j, v, s)
+}
+
+/// The decary family formed by first taking nonary suprema, then suprema with a tenth family.
+define set_sup10_product_family[K, I, J, L, M, N, O, P, Q, R, S](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R],
+    s: S) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i)),
+        j, v, s)
+}
+
+/// Membership in a decary infimum product family splits into nonary membership and the tenth member.
+theorem set_inf10_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R],
+    s: S, x: K) {
+    set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).contains(x) =
+        (set_inf9_product_family(a, b, c, d, e, f, g, h, i, v.first, v.second).contains(x) and
+            j(s).contains(x))
+} by {
+    set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s) =
+        set_inf_product_family(set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i)),
+            j, v, s)
+    set_inf_product_family_contains_eq(
+        set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i)), j, v, s, x)
+    set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i), v) =
+        set_inf9_product_family(a, b, c, d, e, f, g, h, i, v.first, v.second)
+}
+
+/// Membership in a decary supremum product family splits into nonary membership or the tenth member.
+theorem set_sup10_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R],
+    s: S, x: K) {
+    set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).contains(x) =
+        (set_sup9_product_family(a, b, c, d, e, f, g, h, i, v.first, v.second).contains(x) or
+            j(s).contains(x))
+} by {
+    set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s) =
+        set_sup_product_family(set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i)),
+            j, v, s)
+    set_sup_product_family_contains_eq(
+        set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i)), j, v, s, x)
+    set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i), v) =
+        set_sup9_product_family(a, b, c, d, e, f, g, h, i, v.first, v.second)
+}
+
+/// The supremum of decary pairwise infima is the infimum of the ten suprema.
+theorem set_sSup_inf10_product_family[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K]) {
+    set_sSup(set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j))) =
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j))
+} by {
+    let abcdefghi = set_pair_family(set_inf9_product_family(a, b, c, d, e, f, g, h, i))
+    let left = set_sSup(set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcdefghi, j)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s) =
+                set_inf_product_family(abcdefghi, j, v, s)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j),
+        set_inf_product_family(abcdefghi, j))
+    left = middle
+    set_sSup_inf_product_family(abcdefghi, j)
+    middle = set_inf(set_sSup(abcdefghi), set_sSup(j))
+    set_sSup_inf9_product_family(a, b, c, d, e, f, g, h, i)
+    set_sSup(abcdefghi) = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i))
+    middle = right
+    left = right
+}
+
+/// The infimum of decary pairwise suprema is the supremum of the ten infima.
+theorem set_sInf_sup10_product_family[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K]) {
+    set_sInf(set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j))) =
+        set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+            set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+            set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j))
+} by {
+    let abcdefghi = set_pair_family(set_sup9_product_family(a, b, c, d, e, f, g, h, i))
+    let left = set_sInf(set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcdefghi, j)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s) =
+                set_sup_product_family(abcdefghi, j, v, s)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j),
+        set_sup_product_family(abcdefghi, j))
+    left = middle
+    set_sInf_sup_product_family(abcdefghi, j)
+    middle = set_sup(set_sInf(abcdefghi), set_sInf(j))
+    set_sInf_sup9_product_family(a, b, c, d, e, f, g, h, i)
+    set_sInf(abcdefghi) = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i))
+    middle = right
+    left = right
+}
+
+/// Every decary pairwise infimum is contained in the infimum of the ten family suprema.
+theorem set_inf10_product_family_subset_sSup_inf[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], s: S) {
+    set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)))
+} by {
+    let member = set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s)
+    let family_sup = set_sSup(set_pair_family(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j)))
+    let bound = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j))
+    set_pair_family_subset_sSup(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j), v, s)
+    set_sSup_inf10_product_family(a, b, c, d, e, f, g, h, i, j)
+    member.subset(family_sup)
+    family_sup = bound
+    family_sup.subset(bound)
+    subset_trans(member, family_sup, bound)
+    member.subset(bound)
+}
+
+/// The supremum of the ten family infima is contained in every decary pairwise supremum.
+theorem set_sInf_sup_subset_sup10_product_family[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], s: S) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)).subset(
+        set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+} by {
+    set_sInf_pair_family_subset_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j), v, s)
+    set_sInf_sup10_product_family(a, b, c, d, e, f, g, h, i, j)
+    set_sInf(set_pair_family(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j))).subset(
+        set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)).subset(
+        set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+}
+
+/// The infimum of the ten family suprema is contained in a set exactly when every decary pairwise infimum is.
+theorem set_sSup_inf10_product_subset_iff[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], t: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)).subset(t) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).subset(t)
+            }
+        }
+} by {
+    set_sSup_inf10_product_family(a, b, c, d, e, f, g, h, i, j)
+    set_sSup_pair_family_subset_iff(set_inf10_product_family(a, b, c, d, e, f, g, h, i, j), t)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)).subset(t) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).subset(t)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the ten family infima exactly when it is below every decary pairwise supremum.
+theorem set_subset_sInf_sup10_product_iff[K, I, J, L, M, N, O, P, Q, R, S](t: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K]) {
+    t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                t.subset(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+            }
+        }
+} by {
+    set_sInf_sup10_product_family(a, b, c, d, e, f, g, h, i, j)
+    set_subset_sInf_pair_family_iff(t, set_sup10_product_family(a, b, c, d, e, f, g, h, i, j))
+    t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                t.subset(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+            }
+        }
+}
+
+/// The infimum of the ten family suprema is the least upper bound of decary pairwise infima.
+theorem set_sSup_inf10_product_family_is_lub[K, I, J, L, M, N, O, P, Q, R, S](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], t: Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+                    set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+                    set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)).subset(t) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                set_inf10_product_family(a, b, c, d, e, f, g, h, i, j, v, s).subset(t)
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_inf10_product_family_subset_sSup_inf(a, b, c, d, e, f, g, h, i, j, v, s)
+        }
+    }
+    set_sSup_inf10_product_subset_iff(a, b, c, d, e, f, g, h, i, j, t)
+}
+
+/// The supremum of the ten family infima is the greatest lower bound of decary pairwise suprema.
+theorem set_sInf_sup10_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S](t: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+                set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+                set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)).subset(
+                set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+        }
+    }) and
+    (t.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+            forall(s: S) {
+                t.subset(set_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s))
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R]) {
+        forall(s: S) {
+            set_sInf_sup_subset_sup10_product_family(a, b, c, d, e, f, g, h, i, j, v, s)
+        }
+    }
+    set_subset_sInf_sup10_product_iff(t, a, b, c, d, e, f, g, h, i, j)
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
