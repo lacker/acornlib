@@ -5304,6 +5304,238 @@ theorem set_sup12_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R,
         set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v.first, v.second)
 }
 
+/// The supremum of duodecary pairwise infima is the infimum of the twelve suprema.
+theorem set_sSup_inf12_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K]) {
+    set_sSup(set_pair_family(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l))) =
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l))
+} by {
+    let abcdefghijk = set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k))
+    let left = set_sSup(set_pair_family(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcdefghijk, l)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u) =
+                set_inf_product_family(abcdefghijk, l, v, u)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l),
+        set_inf_product_family(abcdefghijk, l))
+    left = middle
+    set_sSup_inf_product_family(abcdefghijk, l)
+    middle = set_inf(set_sSup(abcdefghijk), set_sSup(l))
+    set_sSup_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    set_sSup(abcdefghijk) = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k))
+    middle = right
+    left = right
+}
+
+/// The infimum of duodecary pairwise suprema is the supremum of the twelve infima.
+theorem set_sInf_sup12_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K]) {
+    set_sInf(set_pair_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l))) =
+        set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+            set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+            set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))
+} by {
+    let abcdefghijk = set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k))
+    let left = set_sInf(set_pair_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcdefghijk, l)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u) =
+                set_sup_product_family(abcdefghijk, l, v, u)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l),
+        set_sup_product_family(abcdefghijk, l))
+    left = middle
+    set_sInf_sup_product_family(abcdefghijk, l)
+    middle = set_sup(set_sInf(abcdefghijk), set_sInf(l))
+    set_sInf_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)
+    set_sInf(abcdefghijk) = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k))
+    middle = right
+    left = right
+}
+
+
+/// Every duodecary pairwise infimum is contained in the infimum of the twelve family suprema.
+theorem set_inf12_product_family_subset_sSup_inf[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], u: U) {
+    set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)))
+} by {
+    let member = set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u)
+    let family_sup = set_sSup(set_pair_family(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)))
+    let bound = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l))
+    set_pair_family_subset_sSup(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l), v, u)
+    set_sSup_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    member.subset(family_sup)
+    family_sup = bound
+    family_sup.subset(bound)
+    subset_trans(member, family_sup, bound)
+    member.subset(bound)
+}
+
+/// The supremum of the twelve family infima is contained in every duodecary pairwise supremum.
+theorem set_sInf_sup_subset_sup12_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], u: U) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)).subset(
+        set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u))
+} by {
+    let lower = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))
+    let family_inf = set_sInf(set_pair_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)))
+    let target = set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u)
+    set_sInf_pair_family_subset_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l), v, u)
+    set_sInf_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    family_inf.subset(target)
+    lower = family_inf
+    lower.subset(family_inf)
+    subset_trans(lower, family_inf, target)
+    lower.subset(target)
+}
+
+/// The infimum of the twelve family suprema is contained in a set exactly when every duodecary pairwise infimum is.
+theorem set_sSup_inf12_product_subset_iff[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], w: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)).subset(w) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).subset(w)
+            }
+        }
+} by {
+    set_sSup_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    set_sSup_pair_family_subset_iff(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l), w)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)).subset(w) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).subset(w)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the twelve family infima exactly when it is below every duodecary pairwise supremum.
+theorem set_subset_sInf_sup12_product_iff[K, I, J, L, M, N, O, P, Q, R, S, T, U](w: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K]) {
+    w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                w.subset(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u))
+            }
+        }
+} by {
+    set_sInf_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    set_subset_sInf_pair_family_iff(w, set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l))
+    w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                w.subset(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u))
+            }
+        }
+}
+
+/// The infimum of the twelve family suprema is the least upper bound of duodecary pairwise infima.
+theorem set_sSup_inf12_product_family_is_lub[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], w: Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+                    set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+                    set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)).subset(w) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).subset(w)
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_inf12_product_family_subset_sSup_inf(a, b, c, d, e, f, g, h, i, j, k, l, v, u)
+        }
+    }
+    set_sSup_inf12_product_subset_iff(a, b, c, d, e, f, g, h, i, j, k, l, w)
+}
+
+/// The supremum of the twelve family infima is the greatest lower bound of duodecary pairwise suprema.
+theorem set_sInf_sup12_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S, T, U](w: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K]) {
+    (forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+                set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+                set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)).subset(
+                set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u))
+        }
+    }) and
+    (w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))) =
+        forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+            forall(u: U) {
+                w.subset(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u))
+            }
+        })
+} by {
+    forall(v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T]) {
+        forall(u: U) {
+            set_sInf_sup_subset_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u)
+        }
+    }
+    set_subset_sInf_sup12_product_iff(w, a, b, c, d, e, f, g, h, i, j, k, l)
+}
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
