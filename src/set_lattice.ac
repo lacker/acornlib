@@ -3017,6 +3017,490 @@ theorem set_sInf_sup4_product_family_is_glb[K, I, J, L, M](s: Set[K],
     set_subset_sInf_sup4_product_iff(s, a, b, c, d)
 }
 
+/// The quinary family formed by first taking quaternary infima, then infima with a fifth family.
+define set_inf5_product_family[K, I, J, L, M, N](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf4_product_family(a, b, c, d)), e, p, n)
+}
+
+/// The quinary family formed by first taking quaternary suprema, then suprema with a fifth family.
+define set_sup5_product_family[K, I, J, L, M, N](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup4_product_family(a, b, c, d)), e, p, n)
+}
+
+/// Membership in a quinary infimum product family is membership in all five members.
+theorem set_inf5_product_family_contains_eq[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N, x: K) {
+    set_inf5_product_family(a, b, c, d, e, p, n).contains(x) =
+        (a(p.first.first.first).contains(x) and b(p.first.first.second).contains(x) and
+            c(p.first.second).contains(x) and d(p.second).contains(x) and
+            e(n).contains(x))
+} by {
+    set_inf5_product_family(a, b, c, d, e, p, n) =
+        set_inf_product_family(set_pair_family(set_inf4_product_family(a, b, c, d)), e, p, n)
+    set_inf_product_family_contains_eq(set_pair_family(set_inf4_product_family(a, b, c, d)),
+        e, p, n, x)
+    set_pair_family(set_inf4_product_family(a, b, c, d), p) =
+        set_inf4_product_family(a, b, c, d, p.first, p.second)
+    set_inf4_product_family_contains_eq(a, b, c, d, p.first, p.second, x)
+}
+
+/// Membership in a quinary supremum product family is membership in at least one member.
+theorem set_sup5_product_family_contains_eq[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N, x: K) {
+    set_sup5_product_family(a, b, c, d, e, p, n).contains(x) =
+        (a(p.first.first.first).contains(x) or b(p.first.first.second).contains(x) or
+            c(p.first.second).contains(x) or d(p.second).contains(x) or e(n).contains(x))
+} by {
+    set_sup5_product_family(a, b, c, d, e, p, n) =
+        set_sup_product_family(set_pair_family(set_sup4_product_family(a, b, c, d)), e, p, n)
+    set_sup_product_family_contains_eq(set_pair_family(set_sup4_product_family(a, b, c, d)),
+        e, p, n, x)
+    set_pair_family(set_sup4_product_family(a, b, c, d), p) =
+        set_sup4_product_family(a, b, c, d, p.first, p.second)
+    set_sup4_product_family_contains_eq(a, b, c, d, p.first, p.second, x)
+}
+
+/// The supremum of quinary pairwise infima is the infimum of the five suprema.
+theorem set_sSup_inf5_product_family[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K]) {
+    set_sSup(set_pair_family(set_inf5_product_family(a, b, c, d, e))) =
+        set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e))
+} by {
+    let abcd = set_pair_family(set_inf4_product_family(a, b, c, d))
+    let left = set_sSup(set_pair_family(set_inf5_product_family(a, b, c, d, e)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcd, e)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e))
+    forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_inf5_product_family(a, b, c, d, e, p, n) =
+                set_inf_product_family(abcd, e, p, n)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf5_product_family(a, b, c, d, e),
+        set_inf_product_family(abcd, e))
+    left = middle
+    set_sSup_inf_product_family(abcd, e)
+    middle = set_inf(set_sSup(abcd), set_sSup(e))
+    set_sSup_inf4_product_family(a, b, c, d)
+    set_sSup(abcd) = set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d))
+    middle = right
+    left = right
+}
+
+/// The infimum of quinary pairwise suprema is the supremum of the five infima.
+theorem set_sInf_sup5_product_family[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K]) {
+    set_sInf(set_pair_family(set_sup5_product_family(a, b, c, d, e))) =
+        set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+            set_sInf(d)), set_sInf(e))
+} by {
+    let abcd = set_pair_family(set_sup4_product_family(a, b, c, d))
+    let left = set_sInf(set_pair_family(set_sup5_product_family(a, b, c, d, e)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcd, e)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e))
+    forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_sup5_product_family(a, b, c, d, e, p, n) =
+                set_sup_product_family(abcd, e, p, n)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup5_product_family(a, b, c, d, e),
+        set_sup_product_family(abcd, e))
+    left = middle
+    set_sInf_sup_product_family(abcd, e)
+    middle = set_sup(set_sInf(abcd), set_sInf(e))
+    set_sInf_sup4_product_family(a, b, c, d)
+    set_sInf(abcd) = set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d))
+    middle = right
+    left = right
+}
+
+/// Every quinary pairwise infimum is contained in the infimum of the five family suprema.
+theorem set_inf5_product_family_subset_sSup_inf[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N) {
+    set_inf5_product_family(a, b, c, d, e, p, n).subset(
+        set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e)))
+} by {
+    set_pair_family_subset_sSup(set_inf5_product_family(a, b, c, d, e), p, n)
+    set_sSup_inf5_product_family(a, b, c, d, e)
+    set_inf5_product_family(a, b, c, d, e, p, n).subset(
+        set_sSup(set_pair_family(set_inf5_product_family(a, b, c, d, e))))
+    set_inf5_product_family(a, b, c, d, e, p, n).subset(
+        set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e)))
+}
+
+/// The supremum of the five family infima is contained in every quinary pairwise supremum.
+theorem set_sInf_sup_subset_sup5_product_family[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    p: Pair[Pair[Pair[I, J], L], M], n: N) {
+    set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e)).subset(set_sup5_product_family(a, b, c, d, e, p, n))
+} by {
+    set_sInf_pair_family_subset_family(set_sup5_product_family(a, b, c, d, e), p, n)
+    set_sInf_sup5_product_family(a, b, c, d, e)
+    set_sInf(set_pair_family(set_sup5_product_family(a, b, c, d, e))).subset(
+        set_sup5_product_family(a, b, c, d, e, p, n))
+    set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e)).subset(set_sup5_product_family(a, b, c, d, e, p, n))
+}
+
+/// The infimum of the five family suprema is contained in a set exactly when every quinary pairwise infimum is.
+theorem set_sSup_inf5_product_subset_iff[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K], s: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)).subset(s) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                set_inf5_product_family(a, b, c, d, e, p, n).subset(s)
+            }
+        }
+} by {
+    set_sSup_inf5_product_family(a, b, c, d, e)
+    set_sSup_pair_family_subset_iff(set_inf5_product_family(a, b, c, d, e), s)
+    set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)).subset(s) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                set_inf5_product_family(a, b, c, d, e, p, n).subset(s)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the five family infima exactly when it is below every quinary pairwise supremum.
+theorem set_subset_sInf_sup5_product_iff[K, I, J, L, M, N](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K]) {
+    s.subset(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e))) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                s.subset(set_sup5_product_family(a, b, c, d, e, p, n))
+            }
+        }
+} by {
+    set_sInf_sup5_product_family(a, b, c, d, e)
+    set_subset_sInf_pair_family_iff(s, set_sup5_product_family(a, b, c, d, e))
+    s.subset(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e))) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                s.subset(set_sup5_product_family(a, b, c, d, e, p, n))
+            }
+        }
+}
+
+/// The infimum of the five family suprema is the least upper bound of quinary pairwise infima.
+theorem set_sSup_inf5_product_family_is_lub[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K], s: Set[K]) {
+    (forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_inf5_product_family(a, b, c, d, e, p, n).subset(
+                set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+                    set_sSup(d)), set_sSup(e)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)).subset(s) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                set_inf5_product_family(a, b, c, d, e, p, n).subset(s)
+            }
+        })
+} by {
+    forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_inf5_product_family_subset_sSup_inf(a, b, c, d, e, p, n)
+        }
+    }
+    set_sSup_inf5_product_subset_iff(a, b, c, d, e, s)
+}
+
+/// The supremum of the five family infima is the greatest lower bound of quinary pairwise suprema.
+theorem set_sInf_sup5_product_family_is_glb[K, I, J, L, M, N](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K]) {
+    (forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+                set_sInf(d)), set_sInf(e)).subset(set_sup5_product_family(a, b, c, d, e, p, n))
+        }
+    }) and
+    (s.subset(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e))) =
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                s.subset(set_sup5_product_family(a, b, c, d, e, p, n))
+            }
+        })
+} by {
+    forall(p: Pair[Pair[Pair[I, J], L], M]) {
+        forall(n: N) {
+            set_sInf_sup_subset_sup5_product_family(a, b, c, d, e, p, n)
+        }
+    }
+    set_subset_sInf_sup5_product_iff(s, a, b, c, d, e)
+}
+
+/// The senary family formed by first taking quinary infima, then infima with a sixth family.
+define set_inf6_product_family[K, I, J, L, M, N, O](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], d: M -> Set[K], e: N -> Set[K], f: O -> Set[K],
+    q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf5_product_family(a, b, c, d, e)), f, q, o)
+}
+
+/// The senary family formed by first taking quinary suprema, then suprema with a sixth family.
+define set_sup6_product_family[K, I, J, L, M, N, O](a: I -> Set[K], b: J -> Set[K],
+    c: L -> Set[K], d: M -> Set[K], e: N -> Set[K], f: O -> Set[K],
+    q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup5_product_family(a, b, c, d, e)), f, q, o)
+}
+
+/// Membership in a senary infimum product family is membership in all six members.
+theorem set_inf6_product_family_contains_eq[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O, x: K) {
+    set_inf6_product_family(a, b, c, d, e, f, q, o).contains(x) =
+        (a(q.first.first.first.first).contains(x) and
+            b(q.first.first.first.second).contains(x) and c(q.first.first.second).contains(x) and
+            d(q.first.second).contains(x) and e(q.second).contains(x) and f(o).contains(x))
+} by {
+    set_inf6_product_family(a, b, c, d, e, f, q, o) =
+        set_inf_product_family(set_pair_family(set_inf5_product_family(a, b, c, d, e)),
+            f, q, o)
+    set_inf_product_family_contains_eq(
+        set_pair_family(set_inf5_product_family(a, b, c, d, e)), f, q, o, x)
+    set_pair_family(set_inf5_product_family(a, b, c, d, e), q) =
+        set_inf5_product_family(a, b, c, d, e, q.first, q.second)
+    set_inf5_product_family_contains_eq(a, b, c, d, e, q.first, q.second, x)
+}
+
+/// Membership in a senary supremum product family is membership in at least one member.
+theorem set_sup6_product_family_contains_eq[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O, x: K) {
+    set_sup6_product_family(a, b, c, d, e, f, q, o).contains(x) =
+        (a(q.first.first.first.first).contains(x) or
+            b(q.first.first.first.second).contains(x) or c(q.first.first.second).contains(x) or
+            d(q.first.second).contains(x) or e(q.second).contains(x) or f(o).contains(x))
+} by {
+    set_sup6_product_family(a, b, c, d, e, f, q, o) =
+        set_sup_product_family(set_pair_family(set_sup5_product_family(a, b, c, d, e)),
+            f, q, o)
+    set_sup_product_family_contains_eq(
+        set_pair_family(set_sup5_product_family(a, b, c, d, e)), f, q, o, x)
+    set_pair_family(set_sup5_product_family(a, b, c, d, e), q) =
+        set_sup5_product_family(a, b, c, d, e, q.first, q.second)
+    set_sup5_product_family_contains_eq(a, b, c, d, e, q.first, q.second, x)
+}
+
+/// The supremum of senary pairwise infima is the infimum of the six suprema.
+theorem set_sSup_inf6_product_family[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K]) {
+    set_sSup(set_pair_family(set_inf6_product_family(a, b, c, d, e, f))) =
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e)), set_sSup(f))
+} by {
+    let abcde = set_pair_family(set_inf5_product_family(a, b, c, d, e))
+    let left = set_sSup(set_pair_family(set_inf6_product_family(a, b, c, d, e, f)))
+    let middle = set_sSup(set_pair_family(set_inf_product_family(abcde, f)))
+    let right = set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)),
+        set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f))
+    forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_inf6_product_family(a, b, c, d, e, f, q, o) =
+                set_inf_product_family(abcde, f, q, o)
+        }
+    }
+    set_sSup_pair_family_eq_of_family_subset(set_inf6_product_family(a, b, c, d, e, f),
+        set_inf_product_family(abcde, f))
+    left = middle
+    set_sSup_inf_product_family(abcde, f)
+    middle = set_inf(set_sSup(abcde), set_sSup(f))
+    set_sSup_inf5_product_family(a, b, c, d, e)
+    set_sSup(abcde) = set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)),
+        set_sSup(c)), set_sSup(d)), set_sSup(e))
+    middle = right
+    left = right
+}
+
+/// The infimum of senary pairwise suprema is the supremum of the six infima.
+theorem set_sInf_sup6_product_family[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K]) {
+    set_sInf(set_pair_family(set_sup6_product_family(a, b, c, d, e, f))) =
+        set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+            set_sInf(d)), set_sInf(e)), set_sInf(f))
+} by {
+    let abcde = set_pair_family(set_sup5_product_family(a, b, c, d, e))
+    let left = set_sInf(set_pair_family(set_sup6_product_family(a, b, c, d, e, f)))
+    let middle = set_sInf(set_pair_family(set_sup_product_family(abcde, f)))
+    let right = set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+        set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f))
+    forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_sup6_product_family(a, b, c, d, e, f, q, o) =
+                set_sup_product_family(abcde, f, q, o)
+        }
+    }
+    set_sInf_pair_family_eq_of_family_subset(set_sup6_product_family(a, b, c, d, e, f),
+        set_sup_product_family(abcde, f))
+    left = middle
+    set_sInf_sup_product_family(abcde, f)
+    middle = set_sup(set_sInf(abcde), set_sInf(f))
+    set_sInf_sup5_product_family(a, b, c, d, e)
+    set_sInf(abcde) = set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+        set_sInf(c)), set_sInf(d)), set_sInf(e))
+    middle = right
+    left = right
+}
+
+/// Every senary pairwise infimum is contained in the infimum of the six family suprema.
+theorem set_inf6_product_family_subset_sSup_inf[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O) {
+    set_inf6_product_family(a, b, c, d, e, f, q, o).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e)), set_sSup(f)))
+} by {
+    set_pair_family_subset_sSup(set_inf6_product_family(a, b, c, d, e, f), q, o)
+    set_sSup_inf6_product_family(a, b, c, d, e, f)
+    set_inf6_product_family(a, b, c, d, e, f, q, o).subset(
+        set_sSup(set_pair_family(set_inf6_product_family(a, b, c, d, e, f))))
+    set_inf6_product_family(a, b, c, d, e, f, q, o).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+            set_sSup(d)), set_sSup(e)), set_sSup(f)))
+}
+
+/// The supremum of the six family infima is contained in every senary pairwise supremum.
+theorem set_sInf_sup_subset_sup6_product_family[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], q: Pair[Pair[Pair[Pair[I, J], L], M], N], o: O) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e)), set_sInf(f)).subset(
+        set_sup6_product_family(a, b, c, d, e, f, q, o))
+} by {
+    set_sInf_pair_family_subset_family(set_sup6_product_family(a, b, c, d, e, f), q, o)
+    set_sInf_sup6_product_family(a, b, c, d, e, f)
+    set_sInf(set_pair_family(set_sup6_product_family(a, b, c, d, e, f))).subset(
+        set_sup6_product_family(a, b, c, d, e, f, q, o))
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)), set_sInf(c)),
+        set_sInf(d)), set_sInf(e)), set_sInf(f)).subset(
+        set_sup6_product_family(a, b, c, d, e, f, q, o))
+}
+
+/// The infimum of the six family suprema is contained in a set exactly when every senary pairwise infimum is.
+theorem set_sSup_inf6_product_subset_iff[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], s: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)), set_sSup(f)).subset(s) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                set_inf6_product_family(a, b, c, d, e, f, q, o).subset(s)
+            }
+        }
+} by {
+    set_sSup_inf6_product_family(a, b, c, d, e, f)
+    set_sSup_pair_family_subset_iff(set_inf6_product_family(a, b, c, d, e, f), s)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)), set_sSup(f)).subset(s) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                set_inf6_product_family(a, b, c, d, e, f, q, o).subset(s)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the six family infima exactly when it is below every senary pairwise supremum.
+theorem set_subset_sInf_sup6_product_iff[K, I, J, L, M, N, O](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K]) {
+    s.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+        set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f))) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                s.subset(set_sup6_product_family(a, b, c, d, e, f, q, o))
+            }
+        }
+} by {
+    set_sInf_sup6_product_family(a, b, c, d, e, f)
+    set_subset_sInf_pair_family_iff(s, set_sup6_product_family(a, b, c, d, e, f))
+    s.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+        set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f))) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                s.subset(set_sup6_product_family(a, b, c, d, e, f, q, o))
+            }
+        }
+}
+
+/// The infimum of the six family suprema is the least upper bound of senary pairwise infima.
+theorem set_sSup_inf6_product_family_is_lub[K, I, J, L, M, N, O](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], s: Set[K]) {
+    (forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_inf6_product_family(a, b, c, d, e, f, q, o).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)),
+                    set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a), set_sSup(b)), set_sSup(c)),
+        set_sSup(d)), set_sSup(e)), set_sSup(f)).subset(s) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                set_inf6_product_family(a, b, c, d, e, f, q, o).subset(s)
+            }
+        })
+} by {
+    forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_inf6_product_family_subset_sSup_inf(a, b, c, d, e, f, q, o)
+        }
+    }
+    set_sSup_inf6_product_subset_iff(a, b, c, d, e, f, s)
+}
+
+/// The supremum of the six family infima is the greatest lower bound of senary pairwise suprema.
+theorem set_sInf_sup6_product_family_is_glb[K, I, J, L, M, N, O](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K]) {
+    (forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+                set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)).subset(
+                set_sup6_product_family(a, b, c, d, e, f, q, o))
+        }
+    }) and
+    (s.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a), set_sInf(b)),
+        set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f))) =
+        forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+            forall(o: O) {
+                s.subset(set_sup6_product_family(a, b, c, d, e, f, q, o))
+            }
+        })
+} by {
+    forall(q: Pair[Pair[Pair[Pair[I, J], L], M], N]) {
+        forall(o: O) {
+            set_sInf_sup_subset_sup6_product_family(a, b, c, d, e, f, q, o)
+        }
+    }
+    set_subset_sInf_sup6_product_iff(s, a, b, c, d, e, f)
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
