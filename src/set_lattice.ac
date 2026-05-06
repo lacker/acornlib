@@ -3449,6 +3449,183 @@ theorem set_sInf_sup5_product_family_is_glb[K, I, J, L, M, N](s: Set[K],
     set_subset_sInf_sup5_product_iff(s, a, b, c, d, e)
 }
 
+/// Pointwise inclusion in all five factors preserves each quinary pairwise infimum.
+theorem set_inf5_product_family_monotone[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: I -> Set[K], g: J -> Set[K], h: L -> Set[K], q: M -> Set[K],
+    r: N -> Set[K], p: Pair[Pair[Pair[I, J], L], M], n: N) {
+    a(p.first.first.first).subset(f(p.first.first.first)) and
+    b(p.first.first.second).subset(g(p.first.first.second)) and
+    c(p.first.second).subset(h(p.first.second)) and
+    d(p.second).subset(q(p.second)) and
+    e(n).subset(r(n)) implies
+    set_inf5_product_family(a, b, c, d, e, p, n).subset(
+        set_inf5_product_family(f, g, h, q, r, p, n))
+} by {
+    if a(p.first.first.first).subset(f(p.first.first.first)) and
+        b(p.first.first.second).subset(g(p.first.first.second)) and
+        c(p.first.second).subset(h(p.first.second)) and
+        d(p.second).subset(q(p.second)) and e(n).subset(r(n)) {
+        forall(x: K) {
+            if set_inf5_product_family(a, b, c, d, e, p, n).contains(x) {
+                set_inf5_product_family_contains_eq(a, b, c, d, e, p, n, x)
+                a(p.first.first.first).subset(f(p.first.first.first)) and
+                    a(p.first.first.first).contains(x)
+                subset_contains(a(p.first.first.first), f(p.first.first.first), x)
+                f(p.first.first.first).contains(x)
+                b(p.first.first.second).subset(g(p.first.first.second)) and
+                    b(p.first.first.second).contains(x)
+                subset_contains(b(p.first.first.second), g(p.first.first.second), x)
+                g(p.first.first.second).contains(x)
+                c(p.first.second).subset(h(p.first.second)) and c(p.first.second).contains(x)
+                subset_contains(c(p.first.second), h(p.first.second), x)
+                h(p.first.second).contains(x)
+                d(p.second).subset(q(p.second)) and d(p.second).contains(x)
+                subset_contains(d(p.second), q(p.second), x)
+                q(p.second).contains(x)
+                e(n).subset(r(n)) and e(n).contains(x)
+                subset_contains(e(n), r(n), x)
+                r(n).contains(x)
+                set_inf5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                set_inf5_product_family(f, g, h, q, r, p, n).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion in all five factors preserves each quinary pairwise supremum.
+theorem set_sup5_product_family_monotone[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: I -> Set[K], g: J -> Set[K], h: L -> Set[K], q: M -> Set[K],
+    r: N -> Set[K], p: Pair[Pair[Pair[I, J], L], M], n: N) {
+    a(p.first.first.first).subset(f(p.first.first.first)) and
+    b(p.first.first.second).subset(g(p.first.first.second)) and
+    c(p.first.second).subset(h(p.first.second)) and
+    d(p.second).subset(q(p.second)) and
+    e(n).subset(r(n)) implies
+    set_sup5_product_family(a, b, c, d, e, p, n).subset(
+        set_sup5_product_family(f, g, h, q, r, p, n))
+} by {
+    if a(p.first.first.first).subset(f(p.first.first.first)) and
+        b(p.first.first.second).subset(g(p.first.first.second)) and
+        c(p.first.second).subset(h(p.first.second)) and
+        d(p.second).subset(q(p.second)) and e(n).subset(r(n)) {
+        forall(x: K) {
+            if set_sup5_product_family(a, b, c, d, e, p, n).contains(x) {
+                set_sup5_product_family_contains_eq(a, b, c, d, e, p, n, x)
+                if a(p.first.first.first).contains(x) {
+                    a(p.first.first.first).subset(f(p.first.first.first)) and
+                        a(p.first.first.first).contains(x)
+                    subset_contains(a(p.first.first.first), f(p.first.first.first), x)
+                    f(p.first.first.first).contains(x)
+                    set_sup5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                    set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+                }
+                if b(p.first.first.second).contains(x) {
+                    b(p.first.first.second).subset(g(p.first.first.second)) and
+                        b(p.first.first.second).contains(x)
+                    subset_contains(b(p.first.first.second), g(p.first.first.second), x)
+                    g(p.first.first.second).contains(x)
+                    set_sup5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                    set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+                }
+                if c(p.first.second).contains(x) {
+                    c(p.first.second).subset(h(p.first.second)) and c(p.first.second).contains(x)
+                    subset_contains(c(p.first.second), h(p.first.second), x)
+                    h(p.first.second).contains(x)
+                    set_sup5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                    set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+                }
+                if d(p.second).contains(x) {
+                    d(p.second).subset(q(p.second)) and d(p.second).contains(x)
+                    subset_contains(d(p.second), q(p.second), x)
+                    q(p.second).contains(x)
+                    set_sup5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                    set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+                }
+                if e(n).contains(x) {
+                    e(n).subset(r(n)) and e(n).contains(x)
+                    subset_contains(e(n), r(n), x)
+                    r(n).contains(x)
+                    set_sup5_product_family_contains_eq(f, g, h, q, r, p, n, x)
+                    set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+                }
+                set_sup5_product_family(f, g, h, q, r, p, n).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion in all five factors preserves suprema of quinary pairwise infima.
+theorem set_sSup_inf5_product_family_monotone[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: I -> Set[K], g: J -> Set[K], h: L -> Set[K], q: M -> Set[K],
+    r: N -> Set[K]) {
+    (forall(i: I) { a(i).subset(f(i)) }) and
+    (forall(j: J) { b(j).subset(g(j)) }) and
+    (forall(l: L) { c(l).subset(h(l)) }) and
+    (forall(m: M) { d(m).subset(q(m)) }) and
+    (forall(n: N) { e(n).subset(r(n)) }) implies
+    set_sSup(set_pair_family(set_inf5_product_family(a, b, c, d, e))).subset(
+        set_sSup(set_pair_family(set_inf5_product_family(f, g, h, q, r))))
+} by {
+    if (forall(i: I) { a(i).subset(f(i)) }) and
+        (forall(j: J) { b(j).subset(g(j)) }) and
+        (forall(l: L) { c(l).subset(h(l)) }) and
+        (forall(m: M) { d(m).subset(q(m)) }) and
+        (forall(n: N) { e(n).subset(r(n)) }) {
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                a(p.first.first.first).subset(f(p.first.first.first))
+                b(p.first.first.second).subset(g(p.first.first.second))
+                c(p.first.second).subset(h(p.first.second))
+                d(p.second).subset(q(p.second))
+                e(n).subset(r(n))
+                set_inf5_product_family_monotone(a, b, c, d, e, f, g, h, q, r, p, n)
+            }
+        }
+        set_sSup_pair_family_monotone(set_inf5_product_family(a, b, c, d, e),
+            set_inf5_product_family(f, g, h, q, r))
+        set_sSup(set_pair_family(set_inf5_product_family(a, b, c, d, e))).subset(
+            set_sSup(set_pair_family(set_inf5_product_family(f, g, h, q, r))))
+    }
+}
+
+/// Pointwise inclusion in all five factors preserves infima of quinary pairwise suprema.
+theorem set_sInf_sup5_product_family_monotone[K, I, J, L, M, N](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: I -> Set[K], g: J -> Set[K], h: L -> Set[K], q: M -> Set[K],
+    r: N -> Set[K]) {
+    (forall(i: I) { a(i).subset(f(i)) }) and
+    (forall(j: J) { b(j).subset(g(j)) }) and
+    (forall(l: L) { c(l).subset(h(l)) }) and
+    (forall(m: M) { d(m).subset(q(m)) }) and
+    (forall(n: N) { e(n).subset(r(n)) }) implies
+    set_sInf(set_pair_family(set_sup5_product_family(a, b, c, d, e))).subset(
+        set_sInf(set_pair_family(set_sup5_product_family(f, g, h, q, r))))
+} by {
+    if (forall(i: I) { a(i).subset(f(i)) }) and
+        (forall(j: J) { b(j).subset(g(j)) }) and
+        (forall(l: L) { c(l).subset(h(l)) }) and
+        (forall(m: M) { d(m).subset(q(m)) }) and
+        (forall(n: N) { e(n).subset(r(n)) }) {
+        forall(p: Pair[Pair[Pair[I, J], L], M]) {
+            forall(n: N) {
+                a(p.first.first.first).subset(f(p.first.first.first))
+                b(p.first.first.second).subset(g(p.first.first.second))
+                c(p.first.second).subset(h(p.first.second))
+                d(p.second).subset(q(p.second))
+                e(n).subset(r(n))
+                set_sup5_product_family_monotone(a, b, c, d, e, f, g, h, q, r, p, n)
+            }
+        }
+        set_sInf_pair_family_monotone(set_sup5_product_family(a, b, c, d, e),
+            set_sup5_product_family(f, g, h, q, r))
+        set_sInf(set_pair_family(set_sup5_product_family(a, b, c, d, e))).subset(
+            set_sInf(set_pair_family(set_sup5_product_family(f, g, h, q, r))))
+    }
+}
+
 /// The senary family formed by first taking quinary infima, then infima with a sixth family.
 define set_inf6_product_family[K, I, J, L, M, N, O](a: I -> Set[K], b: J -> Set[K],
     c: L -> Set[K], d: M -> Set[K], e: N -> Set[K], f: O -> Set[K],
