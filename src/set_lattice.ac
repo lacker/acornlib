@@ -5242,6 +5242,68 @@ theorem set_sInf_sup11_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S, T]
     set_subset_sInf_sup11_product_iff(u, a, b, c, d, e, f, g, h, i, j, k)
 }
 
+/// The duodecary family formed by first taking undecary infima, then infima with a twelfth family.
+define set_inf12_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T],
+    u: U) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)),
+        l, v, u)
+}
+
+/// The duodecary family formed by first taking undecary suprema, then suprema with a twelfth family.
+define set_sup12_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U](a: I -> Set[K],
+    b: J -> Set[K], c: L -> Set[K], d: M -> Set[K], e: N -> Set[K],
+    f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T],
+    u: U) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)),
+        l, v, u)
+}
+
+/// Membership in a duodecary infimum product family splits into undecary membership and the twelfth member.
+theorem set_inf12_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T],
+    u: U, x: K) {
+    set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).contains(x) =
+        (set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v.first, v.second).contains(x) and
+            l(u).contains(x))
+} by {
+    set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u) =
+        set_inf_product_family(set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)),
+            l, v, u)
+    set_inf_product_family_contains_eq(
+        set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k)), l, v, u, x)
+    set_pair_family(set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k), v) =
+        set_inf11_product_family(a, b, c, d, e, f, g, h, i, j, k, v.first, v.second)
+}
+
+/// Membership in a duodecary supremum product family splits into undecary membership or the twelfth member.
+theorem set_sup12_product_family_contains_split_eq[K, I, J, L, M, N, O, P, Q, R, S, T, U](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    v: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T],
+    u: U, x: K) {
+    set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u).contains(x) =
+        (set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v.first, v.second).contains(x) or
+            l(u).contains(x))
+} by {
+    set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l, v, u) =
+        set_sup_product_family(set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)),
+            l, v, u)
+    set_sup_product_family_contains_eq(
+        set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k)), l, v, u, x)
+    set_pair_family(set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k), v) =
+        set_sup11_product_family(a, b, c, d, e, f, g, h, i, j, k, v.first, v.second)
+}
+
 
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
