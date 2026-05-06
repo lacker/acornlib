@@ -5948,6 +5948,222 @@ define set_sup16_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, 
     set_sup_product_family(set_pair_family(set_sup15_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)), q, p, y)
 }
 
+/// The heptadecary family formed by first taking hexadecary infima, then infima with a seventeenth family.
+define set_inf17_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y],
+    z: Z
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf16_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q)), r, p, z)
+}
+
+/// The heptadecary family formed by first taking hexadecary suprema, then suprema with a seventeenth family.
+define set_sup17_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y],
+    z: Z
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup16_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q)), r, p, z)
+}
+
+/// The octodecary family formed by first taking heptadecary infima, then infima with an eighteenth family.
+define set_inf18_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z],
+    aa: AA
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf17_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r)), s, p, aa)
+}
+
+/// The octodecary family formed by first taking heptadecary suprema, then suprema with an eighteenth family.
+define set_sup18_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z],
+    aa: AA
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup17_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r)), s, p, aa)
+}
+
+/// The nonadecary family formed by first taking octodecary infima, then infima with a nineteenth family.
+define set_inf19_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA],
+    ab: AB
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf18_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s)), t, p, ab)
+}
+
+/// The nonadecary family formed by first taking octodecary suprema, then suprema with a nineteenth family.
+define set_sup19_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA],
+    ab: AB
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup18_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s)), t, p, ab)
+}
+
+/// The vigintary family formed by first taking nonadecary infima, then infima with a twentieth family.
+define set_inf20_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB],
+    ac: AC
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf19_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t)), u, p, ac)
+}
+
+/// The vigintary family formed by first taking nonadecary suprema, then suprema with a twentieth family.
+define set_sup20_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB],
+    ac: AC
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup19_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t)), u, p, ac)
+}
+
+/// The 21-ary family formed by first taking vigintary infima, then infima with a 21st family.
+define set_inf21_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC],
+    ad: AD
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf20_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u)), v, p, ad)
+}
+
+/// The 21-ary family formed by first taking vigintary suprema, then suprema with a 21st family.
+define set_sup21_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC],
+    ad: AD
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup20_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u)), v, p, ad)
+}
+
+/// The 22-ary family formed by first taking 21-ary infima, then infima with a 22nd family.
+define set_inf22_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD],
+    ae: AE
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf21_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v)), w, p, ae)
+}
+
+/// The 22-ary family formed by first taking 21-ary suprema, then suprema with a 22nd family.
+define set_sup22_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD],
+    ae: AE
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup21_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v)), w, p, ae)
+}
+
+/// The 23-ary family formed by first taking 22-ary infima, then infima with a 23rd family.
+define set_inf23_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K], x: AF -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD], AE],
+    af: AF
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf22_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v, w)), x, p, af)
+}
+
+/// The 23-ary family formed by first taking 22-ary suprema, then suprema with a 23rd family.
+define set_sup23_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K], x: AF -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD], AE],
+    af: AF
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup22_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v, w)), x, p, af)
+}
+
+/// The 24-ary family formed by first taking 23-ary infima, then infima with a 24th family.
+define set_inf24_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K], x: AF -> Set[K], y: AG -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD], AE], AF],
+    ag: AG
+) -> Set[K] {
+    set_inf_product_family(set_pair_family(set_inf23_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v, w, x)), y, p, ag)
+}
+
+/// The 24-ary family formed by first taking 23-ary suprema, then suprema with a 24th family.
+define set_sup24_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD, AE, AF, AG](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K],
+    m: V -> Set[K], n: W -> Set[K], o: X -> Set[K], q: Y -> Set[K],
+    r: Z -> Set[K], s: AA -> Set[K], t: AB -> Set[K], u: AC -> Set[K],
+    v: AD -> Set[K], w: AE -> Set[K], x: AF -> Set[K], y: AG -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U], V], W], X], Y], Z], AA], AB], AC], AD], AE], AF],
+    ag: AG
+) -> Set[K] {
+    set_sup_product_family(set_pair_family(set_sup23_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, q, r, s, t, u, v, w, x)), y, p, ag)
+}
+
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
     (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) implies
