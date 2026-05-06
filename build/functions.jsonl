@@ -79,14 +79,40 @@
 {"goal":"injective_fn_eq","proof":[]}
 {"goal":"x1 = x2","proof":[]}
 {"goal":"false","proof":[]}
-{"goal":"injective_fn_ne","proof":["not is_injective_fn[T, U](f) or x2 = x1 or false = true","x2 != x1","is_injective_fn[T, U](f)","not is_injective_fn[T, U](f)"]}
+{"goal":"injective_fn_ne","proof":[]}
 {"goal":"f(x1) != f(x2)","proof":["function(x0: T, x3: T) { f(x0) != f(x3) or x0 = x3 }(x1, x2)"]}
 {"goal":"false","proof":[]}
-{"goal":"is_injective_fn[T, U](f)","proof":["function[T0, T1](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x0(x2) != x0(x1) or x2 = x1 } = is_injective_fn[T0, T1](x0) }[T, U](f)","let w0: T satisfy { exists(k0: T) { f(k0) = f(w0) and k0 != w0 } }","let w1: T satisfy { f(w1) = f(w0) and w1 != w0 }","let w2: T satisfy { f(w2) = f(w0) and w2 != w0 }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 or false = true }(w0, w2)","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)","w2 != w0","f(w2) = f(w0)","f(w2) != f(w0)"]}
-{"goal":"injective_fn_of_ne","proof":["let w0: T satisfy { exists(k0: T) { k0 != w0 and f(k0) = f(w0) } }","let w1: T satisfy { w1 != w0 and f(w1) = f(w0) }","let w2: T satisfy { w2 != w0 and f(w2) = f(w0) }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)","w2 != w0","f(w2) = f(w0)","f(w2) != f(w0)"]}
-{"goal":"f(x1) != f(x2)","proof":["not is_injective_fn[T, U](f) or x2 = x1","not is_injective_fn[T, U](f)"]}
-{"goal":"is_injective_fn[T, U](f)","proof":["let w0: T satisfy { exists(k0: T) { k0 != w0 and f(k0) = f(w0) } }","let w1: T satisfy { w1 != w0 and f(w1) = f(w0) }","let w2: T satisfy { w2 != w0 and f(w2) = f(w0) }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)","w2 != w0","f(w2) = f(w0)","f(w2) != f(w0)"]}
-{"goal":"injective_fn_iff_ne","proof":["(forall(x0: T, x1: T) { x1 = x0 or f(x1) != f(x0) } = true or is_injective_fn[T, U](f))","is_injective_fn[T, U](f)","(forall(x2: T, x3: T) { x3 = x2 or f(x3) != f(x2) } = true)","not forall(x4: T, x5: T) { x5 = x4 or f(x5) != f(x4) }"]}
+{"goal":"is_injective_fn[T, U](f)","proof":["function[T0, T1](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x0(x2) != x0(x1) or x2 = x1 } = is_injective_fn[T0, T1](x0) }[T, U](f)","let w0: T satisfy { exists(k0: T) { f(k0) = f(w0) and k0 != w0 } }","let w1: T satisfy { f(w1) = f(w0) and w1 != w0 }","let w2: T satisfy { f(w2) = f(w0) and w2 != w0 }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 or false = true }(w0, w2)"]}
+{"goal":"injective_fn_of_ne","proof":["let w0: T satisfy { exists(k0: T) { k0 != w0 and f(k0) = f(w0) } }","let w1: T satisfy { w1 != w0 and f(w1) = f(w0) }","let w2: T satisfy { w2 != w0 and f(w2) = f(w0) }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)"]}
+{"goal":"f(x1) != f(x2)","proof":[]}
+{"goal":"is_injective_fn[T, U](f)","proof":["let w0: T satisfy { exists(k0: T) { k0 != w0 and f(k0) = f(w0) } }","let w1: T satisfy { w1 != w0 and f(w1) = f(w0) }","let w2: T satisfy { w2 != w0 and f(w2) = f(w0) }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)"]}
+{"goal":"injective_fn_iff_ne","proof":[]}
+{"goal":"g(f(x1)) = g(f(x2))","proof":["f(x2) != f(x1)"]}
+{"goal":"g(f(x1)) = x1","proof":["function[T0, T1](x0: T1 -> T0, x3: T0 -> T1) { forall(x4: T0) { x0(x3(x4)) = x4 } = is_left_inverse_fn[T0, T1](x3, x0) }[T, U](g, f)","function[T0, T1](x0: T0 -> T1, x3: T1 -> T0) { not is_left_inverse_fn[T0, T1](x0, x3) or forall(x4: T0) { x3(x0(x4)) = x4 } = true }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x3: T1 -> T0, x4: T0) { not is_left_inverse_fn[T0, T1](x0, x3) or x4 = x3(x0(x4)) }[T, U](f, g, x1)"]}
+{"goal":"g(f(x2)) = x2","proof":["function[T0, T1](x0: T1 -> T0, x3: T0 -> T1) { forall(x4: T0) { x0(x3(x4)) = x4 } = is_left_inverse_fn[T0, T1](x3, x0) }[T, U](g, f)","function[T0, T1](x0: T0 -> T1, x3: T1 -> T0) { not is_left_inverse_fn[T0, T1](x0, x3) or forall(x4: T0) { x3(x0(x4)) = x4 } = true }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x3: T1 -> T0, x4: T0) { not is_left_inverse_fn[T0, T1](x0, x3) or x4 = x3(x0(x4)) }[T, U](f, g, x2)"]}
+{"goal":"x1 = x2","proof":[]}
+{"goal":"is_injective_fn[T, U](f)","proof":["function[T0, T1](x0: T0 -> T1) { forall(x1: T0, x2: T0) { x0(x2) != x0(x1) or x2 = x1 } = is_injective_fn[T0, T1](x0) }[T, U](f)","let w0: T satisfy { exists(k0: T) { f(k0) = f(w0) and k0 != w0 } }","let w1: T satisfy { f(w1) = f(w0) and w1 != w0 }","let w2: T satisfy { f(w2) = f(w0) and w2 != w0 }","function(x0: T, x1: T) { f(x0) != f(x1) or x0 = x1 }(w0, w2)","w2 != w0","f(w2) = f(w0)","f(w2) != f(w0)"]}
+{"goal":"left_inverse_fn_imp_injective_fn","proof":["not is_left_inverse_fn[T, U](f, g)"]}
+{"goal":"exists(k0: U -> T) { is_left_inverse_fn[T, U](f, k0) }","proof":["function[T0, T1](x0: T1 -> T0) { exists(k0: T0 -> T1) { is_left_inverse_fn[T1, T0](x0, k0) } = has_left_inverse_fn[T1, T0](x0) }[U, T](f)"]}
+{"goal":"is_injective_fn[T, U](f)","proof":[]}
+{"goal":"has_left_inverse_fn_imp_injective_fn","proof":["not has_left_inverse_fn[T, U](f)"]}
+{"goal":"f(g(y)) = y","proof":["function[T0, T1](x0: T1 -> T0, x1: T0 -> T1) { forall(x2: T0) { x0(x1(x2)) = x2 } = is_right_inverse_fn[T1, T0](x0, x1) }[U, T](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_right_inverse_fn[T0, T1](x0, x1) or forall(x2: T1) { x0(x1(x2)) = x2 } = true }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_right_inverse_fn[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[T, U](f, g, y)"]}
+{"goal":"exists(k0: T) { f(k0) = y }","proof":["function[T0, T1](x0: T1 -> T0, x1: T0 -> T1) { forall(x2: T0) { x0(x1(x2)) = x2 } = is_right_inverse_fn[T1, T0](x0, x1) }[U, T](f, g)","function(x0: T) { y != f(x0) }(g(y))","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_right_inverse_fn[T0, T1](x0, x1) or forall(x2: T1) { x0(x1(x2)) = x2 } = true }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_right_inverse_fn[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[T, U](f, g, y)","function(x0: U -> T) { not is_right_inverse_fn[T, U](f, x0) }(g)"]}
+{"goal":"is_surjective_fn[T, U](f)","proof":["function[T0, T1](x0: T1 -> T0) { forall(x1: T0) { exists(k0: T1) { x0(k0) = x1 } } = is_surjective_fn[T1, T0](x0) }[U, T](f)","let w0: U satisfy { forall(x0: T) { f(x0) != w0 } }","function(x0: U) { exists(k0: T) { f(k0) = x0 } }(w0)","let w1: T satisfy { f(w1) = w0 }","let w2(arg0: U) -> w2_result: T satisfy { f(w2_result) = arg0 }","function(x0: U) { f(w2(x0)) = x0 }(w0)","(forall(x1: T) { f(x1) != w0 } = true)","function(x0: T) { w0 != f(x0) }(w2(w0))"]}
+{"goal":"right_inverse_fn_imp_surjective_fn","proof":["not is_right_inverse_fn[T, U](f, g)"]}
+{"goal":"exists(k0: U -> T) { is_right_inverse_fn[T, U](f, k0) }","proof":["function[T0, T1](x0: T1 -> T0) { exists(k0: T0 -> T1) { is_right_inverse_fn[T1, T0](x0, k0) } = has_right_inverse_fn[T1, T0](x0) }[U, T](f)"]}
+{"goal":"is_surjective_fn[T, U](f)","proof":[]}
+{"goal":"has_right_inverse_fn_imp_surjective_fn","proof":["not has_right_inverse_fn[T, U](f)"]}
+{"goal":"f(g(f(x))) = f(x)","proof":["function[T0, T1](x0: T1 -> T0, x1: T0 -> T1) { forall(x2: T0) { x0(x1(x2)) = x2 } = is_right_inverse_fn[T1, T0](x0, x1) }[U, T](f, g)","is_right_inverse_fn[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_right_inverse_fn[T0, T1](x0, x1) or forall(x2: T1) { x0(x1(x2)) = x2 } = true }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0, x2: T1) { not is_right_inverse_fn[T0, T1](x0, x1) or x2 = x0(x1(x2)) }[T, U](f, g, f(x))"]}
+{"goal":"g(f(x)) = x","proof":["not is_injective_fn[T, U](f) or f(g(f(x))) != f(x)","not is_injective_fn[T, U](f)"]}
+{"goal":"is_left_inverse_fn[T, U](f, g)","proof":["function[T0, T1](x0: T1 -> T0, x1: T0 -> T1) { forall(x2: T0) { x0(x1(x2)) = x2 } = is_left_inverse_fn[T0, T1](x1, x0) }[T, U](g, f)","let w0: T satisfy { g(f(w0)) != w0 }","function(x0: T) { g(f(x0)) = x0 }(w0)"]}
+{"goal":"injective_fn_right_inverse_fn_imp_left_inverse_fn","proof":["not is_right_inverse_fn[T, U](f, g) or not is_injective_fn[T, U](f)","is_injective_fn[T, U](f)","is_right_inverse_fn[T, U](f, g)","not is_right_inverse_fn[T, U](f, g)"]}
+{"goal":"is_left_inverse_fn[T, U](f, g)","proof":["function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { (is_left_inverse_fn[T0, T1](x0, x1) and is_right_inverse_fn[T0, T1](x0, x1)) = is_two_sided_inverse_fn[T0, T1](x0, x1) }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_two_sided_inverse_fn[T0, T1](x0, x1) or (is_left_inverse_fn[T0, T1](x0, x1) and is_right_inverse_fn[T0, T1](x0, x1)) }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_two_sided_inverse_fn[T0, T1](x0, x1) or is_left_inverse_fn[T0, T1](x0, x1) }[T, U](f, g)"]}
+{"goal":"is_injective_fn[T, U](f)","proof":["not is_left_inverse_fn[T, U](f, g)"]}
+{"goal":"is_right_inverse_fn[T, U](f, g)","proof":["function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { (is_left_inverse_fn[T0, T1](x0, x1) and is_right_inverse_fn[T0, T1](x0, x1)) = is_two_sided_inverse_fn[T0, T1](x0, x1) }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_two_sided_inverse_fn[T0, T1](x0, x1) or (is_left_inverse_fn[T0, T1](x0, x1) and is_right_inverse_fn[T0, T1](x0, x1)) }[T, U](f, g)","function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { not is_two_sided_inverse_fn[T0, T1](x0, x1) or is_right_inverse_fn[T0, T1](x0, x1) }[T, U](f, g)"]}
+{"goal":"is_surjective_fn[T, U](f)","proof":[]}
+{"goal":"is_bijection_fn[T, U](f)","proof":["function[T0, T1](x0: T0 -> T1, x1: T1 -> T0) { (is_left_inverse_fn[T0, T1](x0, x1) and is_right_inverse_fn[T0, T1](x0, x1)) = is_two_sided_inverse_fn[T0, T1](x0, x1) }[T, U](f, g)","function[T0, T1](x0: T0 -> T1) { (is_injective_fn[T0, T1](x0) and is_surjective_fn[T0, T1](x0)) = is_bijection_fn[T0, T1](x0) }[T, U](f)"]}
+{"goal":"two_sided_inverse_fn_imp_bijection_fn","proof":["not is_two_sided_inverse_fn[T, U](f, g)"]}
 {"goal":"compose[T, U, V](f, g, x1) = f(g(x1))","proof":["function[T0, T1, T2](x0: T1 -> T2, x3: T0 -> T1, x4: T0) { compose[T0, T1, T2](x0, x3, x4) = x0(x3(x4)) }[T, U, V](f, g, x1)"]}
 {"goal":"compose[T, U, V](f, g, x2) = f(g(x2))","proof":["function[T0, T1, T2](x0: T1 -> T2, x3: T0 -> T1, x4: T0) { compose[T0, T1, T2](x0, x3, x4) = x0(x3(x4)) }[T, U, V](f, g, x2)"]}
 {"goal":"f(g(x1)) = f(g(x2))","proof":[]}
@@ -101,12 +127,12 @@
 {"goal":"inverse_fn[T, U](f, y) = inverse_fn_at[T, U](f, y)","proof":[]}
 {"goal":"f(inverse_fn[T, U](f, y)) = y","proof":["function[T0: Inhabited, T1](x0: T0 -> T1, x1: T1) { not is_surjective_fn[T0, T1](x0) or x0(inverse_fn_at[T0, T1](x0, x1)) = x1 }[T, U](f, y)"]}
 {"goal":"inverse_fn_apply_of_surjective","proof":[]}
-{"goal":"is_surjective_fn[T, U](f)","proof":[]}
+{"goal":"is_surjective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
 {"goal":"f(inverse_fn[T, U](f, f(x))) = f(x)","proof":[]}
-{"goal":"is_injective_fn[T, U](f)","proof":[]}
+{"goal":"is_injective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
 {"goal":"inverse_fn[T, U](f, f(x)) = x","proof":[]}
 {"goal":"inverse_fn_apply_image_of_bijection","proof":[]}
-{"goal":"is_surjective_fn[T, U](f)","proof":[]}
+{"goal":"is_surjective_fn[T, U](f)","proof":["not is_bijection_fn[T, U](f)"]}
 {"goal":"f(inverse_fn[T, U](f, y1)) = y1","proof":[]}
 {"goal":"f(inverse_fn[T, U](f, y2)) = y2","proof":[]}
 {"goal":"y1 = y2","proof":[]}

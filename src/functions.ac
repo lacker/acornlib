@@ -423,6 +423,126 @@ theorem injective_fn_iff_ne[T, U](f: T -> U) {
     }
 }
 
+/// True if `g` is a left inverse of `f`.
+define is_left_inverse_fn[T, U](f: T -> U, g: U -> T) -> Bool {
+    forall(x: T) {
+        g(f(x)) = x
+    }
+}
+
+/// True if `g` is a right inverse of `f`.
+define is_right_inverse_fn[T, U](f: T -> U, g: U -> T) -> Bool {
+    forall(y: U) {
+        f(g(y)) = y
+    }
+}
+
+/// True if `g` is both a left and a right inverse of `f`.
+define is_two_sided_inverse_fn[T, U](f: T -> U, g: U -> T) -> Bool {
+    is_left_inverse_fn(f, g) and is_right_inverse_fn(f, g)
+}
+
+/// The map `f` has a left inverse.
+define has_left_inverse_fn[T, U](f: T -> U) -> Bool {
+    exists(g: U -> T) {
+        is_left_inverse_fn(f, g)
+    }
+}
+
+/// The map `f` has a right inverse.
+define has_right_inverse_fn[T, U](f: T -> U) -> Bool {
+    exists(g: U -> T) {
+        is_right_inverse_fn(f, g)
+    }
+}
+
+/// A left inverse makes a function injective.
+theorem left_inverse_fn_imp_injective_fn[T, U](f: T -> U, g: U -> T) {
+    is_left_inverse_fn(f, g) implies is_injective_fn(f)
+} by {
+    if is_left_inverse_fn(f, g) {
+        forall(x1: T, x2: T) {
+            if f(x1) = f(x2) {
+                g(f(x1)) = g(f(x2))
+                g(f(x1)) = x1
+                g(f(x2)) = x2
+                x1 = x2
+            }
+        }
+        is_injective_fn(f)
+    }
+}
+
+/// A function with a left inverse is injective.
+theorem has_left_inverse_fn_imp_injective_fn[T, U](f: T -> U) {
+    has_left_inverse_fn(f) implies is_injective_fn(f)
+} by {
+    if has_left_inverse_fn(f) {
+        let g: U -> T satisfy {
+            is_left_inverse_fn(f, g)
+        }
+        left_inverse_fn_imp_injective_fn(f, g)
+        is_injective_fn(f)
+    }
+}
+
+/// A right inverse makes a function surjective.
+theorem right_inverse_fn_imp_surjective_fn[T, U](f: T -> U, g: U -> T) {
+    is_right_inverse_fn(f, g) implies is_surjective_fn(f)
+} by {
+    if is_right_inverse_fn(f, g) {
+        forall(y: U) {
+            f(g(y)) = y
+            exists(x: T) {
+                f(x) = y
+            }
+        }
+        is_surjective_fn(f)
+    }
+}
+
+/// A function with a right inverse is surjective.
+theorem has_right_inverse_fn_imp_surjective_fn[T, U](f: T -> U) {
+    has_right_inverse_fn(f) implies is_surjective_fn(f)
+} by {
+    if has_right_inverse_fn(f) {
+        let g: U -> T satisfy {
+            is_right_inverse_fn(f, g)
+        }
+        right_inverse_fn_imp_surjective_fn(f, g)
+        is_surjective_fn(f)
+    }
+}
+
+/// A right inverse of an injective map is also a left inverse.
+theorem injective_fn_right_inverse_fn_imp_left_inverse_fn[T, U](f: T -> U, g: U -> T) {
+    is_injective_fn(f) and is_right_inverse_fn(f, g) implies is_left_inverse_fn(f, g)
+} by {
+    if is_injective_fn(f) and is_right_inverse_fn(f, g) {
+        forall(x: T) {
+            f(g(f(x))) = f(x)
+            injective_fn_eq(f, g(f(x)), x)
+            g(f(x)) = x
+        }
+        is_left_inverse_fn(f, g)
+    }
+}
+
+/// A two-sided inverse makes a function bijective.
+theorem two_sided_inverse_fn_imp_bijection_fn[T, U](f: T -> U, g: U -> T) {
+    is_two_sided_inverse_fn(f, g) implies is_bijection_fn(f)
+} by {
+    if is_two_sided_inverse_fn(f, g) {
+        is_left_inverse_fn(f, g)
+        left_inverse_fn_imp_injective_fn(f, g)
+        is_injective_fn(f)
+        is_right_inverse_fn(f, g)
+        right_inverse_fn_imp_surjective_fn(f, g)
+        is_surjective_fn(f)
+        is_bijection_fn(f)
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
