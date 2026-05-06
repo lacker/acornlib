@@ -665,6 +665,44 @@ theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     }
 }
 
+/// If a composite is injective, then its right factor is injective.
+theorem compose_injective_fn_imp_right_factor_injective[T, U, V](f: U -> V, g: T -> U) {
+    is_injective_fn(compose(f, g)) implies is_injective_fn(g)
+} by {
+    if is_injective_fn(compose(f, g)) {
+        forall(x1: T, x2: T) {
+            if g(x1) = g(x2) {
+                compose(f, g, x1) = f(g(x1))
+                compose(f, g, x2) = f(g(x2))
+                f(g(x1)) = f(g(x2))
+                compose(f, g, x1) = compose(f, g, x2)
+                injective_fn_eq(compose(f, g), x1, x2)
+                x1 = x2
+            }
+        }
+        is_injective_fn(g)
+    }
+}
+
+/// An injective left factor can be cancelled from an equality of composites.
+theorem compose_cancel_left_of_injective_fn[T, U, V](left: U -> V, f: T -> U, g: T -> U) {
+    is_injective_fn(left) and compose(left, f) = compose(left, g) implies f = g
+} by {
+    if is_injective_fn(left) and compose(left, f) = compose(left, g) {
+        forall(x: T) {
+            function_eq_apply(compose(left, f), compose(left, g), x)
+            compose(left, f, x) = compose(left, g, x)
+            compose(left, f, x) = left(f(x))
+            compose(left, g, x) = left(g(x))
+            left(f(x)) = left(g(x))
+            injective_fn_eq(left, f(x), g(x))
+            f(x) = g(x)
+        }
+        function_extensionality(f, g)
+        f = g
+    }
+}
+
 /// Surjectivity provides a preimage for every codomain point.
 theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
     is_surjective_fn(f) implies exists(x: T) {
@@ -675,6 +713,48 @@ theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
         exists(x: T) {
             f(x) = y
         }
+    }
+}
+
+/// If a composite is surjective, then its left factor is surjective.
+theorem compose_surjective_fn_imp_left_factor_surjective[T, U, V](f: U -> V, g: T -> U) {
+    is_surjective_fn(compose(f, g)) implies is_surjective_fn(f)
+} by {
+    if is_surjective_fn(compose(f, g)) {
+        forall(z: V) {
+            surjective_fn_has_preimage(compose(f, g), z)
+            let x: T satisfy {
+                compose(f, g)(x) = z
+            }
+            let y = g(x)
+            compose(f, g, x) = f(g(x))
+            f(y) = z
+            exists(preimage: U) {
+                f(preimage) = z
+            }
+        }
+        is_surjective_fn(f)
+    }
+}
+
+/// A surjective right factor can be cancelled from an equality of composites.
+theorem compose_cancel_right_of_surjective_fn[T, U, V](right: T -> U, f: U -> V, g: U -> V) {
+    is_surjective_fn(right) and compose(f, right) = compose(g, right) implies f = g
+} by {
+    if is_surjective_fn(right) and compose(f, right) = compose(g, right) {
+        forall(y: U) {
+            surjective_fn_has_preimage(right, y)
+            let x: T satisfy {
+                right(x) = y
+            }
+            function_eq_apply(compose(f, right), compose(g, right), x)
+            compose(f, right, x) = compose(g, right, x)
+            compose(f, right, x) = f(right(x))
+            compose(g, right, x) = g(right(x))
+            f(y) = g(y)
+        }
+        function_extensionality(f, g)
+        f = g
     }
 }
 
