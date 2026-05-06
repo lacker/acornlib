@@ -5,6 +5,7 @@ from real.exp import suc_pos
 from real.real_base import Real
 from real.real_ring import from_nat_is_from_rat
 from semiring.from_nat import from_nat
+from int.int_base import Int
 
 /// The denominator of a harmonic-series term is positive.
 theorem from_nat_suc_pos_real(n: Nat) {
@@ -77,3 +78,41 @@ theorem real_recip_antitone_pos(a: Real, b: Real) {
         Real.1 / b <= Real.1 / a
     }
 }
+
+/// Conversion from natural numbers to rationals preserves non-strict order.
+theorem rat_from_nat_lte_of_nat_lte(m: Nat, n: Nat) {
+    m <= n implies Rat.from_nat(m) <= Rat.from_nat(n)
+} by {
+    Int.from_nat(m) <= Int.from_nat(n)
+    Rat.from_int(Int.from_nat(m)) <= Rat.from_int(Int.from_nat(n))
+    Rat.from_nat(m) = Rat.from_int(Int.from_nat(m))
+    Rat.from_nat(n) = Rat.from_int(Int.from_nat(n))
+}
+
+/// A small explicit bridge for the generic `from_nat` instance on `Real`.
+theorem touch_real_from_nat_instance(k: Nat) {
+    from_nat[Real](k) = Real.from_rat(Rat.from_nat(k))
+} by {
+    from_nat_is_from_rat(k)
+}
+
+/// Conversion from natural numbers to reals preserves successor inequalities.
+theorem from_nat_real_suc_lte_of_nat_lte(m: Nat, n: Nat) {
+    m <= n implies from_nat[Real](m.suc) <= from_nat[Real](n.suc)
+} by {
+    m.suc <= n.suc
+    Rat.from_nat(m.suc) <= Rat.from_nat(n.suc)
+    Real.from_rat(Rat.from_nat(m.suc)) <= Real.from_rat(Rat.from_nat(n.suc))
+    from_nat[Real](m.suc) = Real.from_rat(Rat.from_nat(m.suc))
+    from_nat[Real](n.suc) = Real.from_rat(Rat.from_nat(n.suc))
+}
+
+/// Harmonic denominators turn natural-number inequalities into reciprocal bounds.
+theorem nat_recip_antitone_suc(m: Nat, n: Nat) {
+    m <= n implies Real.1 / from_nat[Real](n.suc) <= Real.1 / from_nat[Real](m.suc)
+} by {
+    from_nat[Real](m.suc) > Real.0
+    from_nat[Real](m.suc) <= from_nat[Real](n.suc)
+    Real.1 / from_nat[Real](n.suc) <= Real.1 / from_nat[Real](m.suc)
+}
+
