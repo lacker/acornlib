@@ -1,10 +1,12 @@
 /// Bounds for monotone maps on closed intervals.
 
 from order import LinearOrder, PartialOrder
-from order.interval_set import closed_interval_set, open_interval_set,
+from order.interval_set import closed_interval_set, open_interval_set, left_open_interval_set,
+    right_open_interval_set,
     closed_interval_set_contains_lower, closed_interval_set_contains_upper,
     closed_interval_set_lower_le, closed_interval_set_le_upper,
-    open_interval_set_subset_closed_interval_set
+    open_interval_set_subset_closed_interval_set, left_open_interval_set_subset_closed_interval_set,
+    right_open_interval_set_subset_closed_interval_set
 from order.maps_on import is_monotone_on, is_antitone_on, monotone_on_apply, antitone_on_apply
 from order_function_bounds import is_upper_bound_on, is_lower_bound_on, is_bounded_above_on,
     is_bounded_below_on, is_bounded_on, upper_bound_on_subset, lower_bound_on_subset
@@ -175,6 +177,150 @@ theorem monotone_on_open_interval_bounded_from_closed_interval[Domain: LinearOrd
     is_bounded_on(open_interval_set(lower, upper), f)
 }
 
+/// A monotone map on `[lower, upper]` is bounded above on `(lower, upper]` by its value at `upper`.
+theorem monotone_on_left_open_interval_upper_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_upper_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+} by {
+    monotone_on_closed_interval_upper_bound(lower, upper, f)
+    is_upper_bound_on(closed_interval_set(lower, upper), f, f(upper))
+    left_open_interval_set_subset_closed_interval_set(lower, upper)
+    upper_bound_on_subset(left_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(upper))
+    is_upper_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+}
+
+/// A monotone map on `[lower, upper]` is bounded below on `(lower, upper]` by its value at `lower`.
+theorem monotone_on_left_open_interval_lower_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_lower_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+} by {
+    monotone_on_closed_interval_lower_bound(lower, upper, f)
+    is_lower_bound_on(closed_interval_set(lower, upper), f, f(lower))
+    left_open_interval_set_subset_closed_interval_set(lower, upper)
+    lower_bound_on_subset(left_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(lower))
+    is_lower_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+}
+
+/// A monotone map on `[lower, upper]` is bounded above on `(lower, upper]`.
+theorem monotone_on_left_open_interval_bounded_above_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_above_on(left_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_left_open_interval_upper_bound_from_closed_interval(lower, upper, f)
+    is_upper_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+    exists(bound: Value) {
+        is_upper_bound_on(left_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_above_on(left_open_interval_set(lower, upper), f)
+}
+
+/// A monotone map on `[lower, upper]` is bounded below on `(lower, upper]`.
+theorem monotone_on_left_open_interval_bounded_below_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_below_on(left_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_left_open_interval_lower_bound_from_closed_interval(lower, upper, f)
+    is_lower_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+    exists(bound: Value) {
+        is_lower_bound_on(left_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_below_on(left_open_interval_set(lower, upper), f)
+}
+
+/// A monotone map on `[lower, upper]` is bounded on `(lower, upper]`.
+theorem monotone_on_left_open_interval_bounded_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_on(left_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_left_open_interval_bounded_above_from_closed_interval(lower, upper, f)
+    monotone_on_left_open_interval_bounded_below_from_closed_interval(lower, upper, f)
+    is_bounded_above_on(left_open_interval_set(lower, upper), f)
+    is_bounded_below_on(left_open_interval_set(lower, upper), f)
+    is_bounded_on(left_open_interval_set(lower, upper), f)
+}
+
+/// A monotone map on `[lower, upper]` is bounded above on `[lower, upper)` by its value at `upper`.
+theorem monotone_on_right_open_interval_upper_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_upper_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+} by {
+    monotone_on_closed_interval_upper_bound(lower, upper, f)
+    is_upper_bound_on(closed_interval_set(lower, upper), f, f(upper))
+    right_open_interval_set_subset_closed_interval_set(lower, upper)
+    upper_bound_on_subset(right_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(upper))
+    is_upper_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+}
+
+/// A monotone map on `[lower, upper]` is bounded below on `[lower, upper)` by its value at `lower`.
+theorem monotone_on_right_open_interval_lower_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_lower_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+} by {
+    monotone_on_closed_interval_lower_bound(lower, upper, f)
+    is_lower_bound_on(closed_interval_set(lower, upper), f, f(lower))
+    right_open_interval_set_subset_closed_interval_set(lower, upper)
+    lower_bound_on_subset(right_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(lower))
+    is_lower_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+}
+
+/// A monotone map on `[lower, upper]` is bounded above on `[lower, upper)`.
+theorem monotone_on_right_open_interval_bounded_above_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_above_on(right_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_right_open_interval_upper_bound_from_closed_interval(lower, upper, f)
+    is_upper_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+    exists(bound: Value) {
+        is_upper_bound_on(right_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_above_on(right_open_interval_set(lower, upper), f)
+}
+
+/// A monotone map on `[lower, upper]` is bounded below on `[lower, upper)`.
+theorem monotone_on_right_open_interval_bounded_below_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_below_on(right_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_right_open_interval_lower_bound_from_closed_interval(lower, upper, f)
+    is_lower_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+    exists(bound: Value) {
+        is_lower_bound_on(right_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_below_on(right_open_interval_set(lower, upper), f)
+}
+
+/// A monotone map on `[lower, upper]` is bounded on `[lower, upper)`.
+theorem monotone_on_right_open_interval_bounded_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_monotone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_on(right_open_interval_set(lower, upper), f)
+} by {
+    monotone_on_right_open_interval_bounded_above_from_closed_interval(lower, upper, f)
+    monotone_on_right_open_interval_bounded_below_from_closed_interval(lower, upper, f)
+    is_bounded_above_on(right_open_interval_set(lower, upper), f)
+    is_bounded_below_on(right_open_interval_set(lower, upper), f)
+    is_bounded_on(right_open_interval_set(lower, upper), f)
+}
+
 /// An antitone map on `[lower, upper]` is bounded above by its value at `lower`.
 theorem antitone_on_closed_interval_upper_bound[Domain: LinearOrder, Value: PartialOrder](
     lower: Domain, upper: Domain, f: Domain -> Value
@@ -339,4 +485,148 @@ theorem antitone_on_open_interval_bounded_from_closed_interval[Domain: LinearOrd
     is_bounded_above_on(open_interval_set(lower, upper), f)
     is_bounded_below_on(open_interval_set(lower, upper), f)
     is_bounded_on(open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded above on `(lower, upper]` by its value at `lower`.
+theorem antitone_on_left_open_interval_upper_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_upper_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+} by {
+    antitone_on_closed_interval_upper_bound(lower, upper, f)
+    is_upper_bound_on(closed_interval_set(lower, upper), f, f(lower))
+    left_open_interval_set_subset_closed_interval_set(lower, upper)
+    upper_bound_on_subset(left_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(lower))
+    is_upper_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+}
+
+/// An antitone map on `[lower, upper]` is bounded below on `(lower, upper]` by its value at `upper`.
+theorem antitone_on_left_open_interval_lower_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_lower_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+} by {
+    antitone_on_closed_interval_lower_bound(lower, upper, f)
+    is_lower_bound_on(closed_interval_set(lower, upper), f, f(upper))
+    left_open_interval_set_subset_closed_interval_set(lower, upper)
+    lower_bound_on_subset(left_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(upper))
+    is_lower_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+}
+
+/// An antitone map on `[lower, upper]` is bounded above on `(lower, upper]`.
+theorem antitone_on_left_open_interval_bounded_above_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_above_on(left_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_left_open_interval_upper_bound_from_closed_interval(lower, upper, f)
+    is_upper_bound_on(left_open_interval_set(lower, upper), f, f(lower))
+    exists(bound: Value) {
+        is_upper_bound_on(left_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_above_on(left_open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded below on `(lower, upper]`.
+theorem antitone_on_left_open_interval_bounded_below_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_below_on(left_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_left_open_interval_lower_bound_from_closed_interval(lower, upper, f)
+    is_lower_bound_on(left_open_interval_set(lower, upper), f, f(upper))
+    exists(bound: Value) {
+        is_lower_bound_on(left_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_below_on(left_open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded on `(lower, upper]`.
+theorem antitone_on_left_open_interval_bounded_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_on(left_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_left_open_interval_bounded_above_from_closed_interval(lower, upper, f)
+    antitone_on_left_open_interval_bounded_below_from_closed_interval(lower, upper, f)
+    is_bounded_above_on(left_open_interval_set(lower, upper), f)
+    is_bounded_below_on(left_open_interval_set(lower, upper), f)
+    is_bounded_on(left_open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded above on `[lower, upper)` by its value at `lower`.
+theorem antitone_on_right_open_interval_upper_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_upper_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+} by {
+    antitone_on_closed_interval_upper_bound(lower, upper, f)
+    is_upper_bound_on(closed_interval_set(lower, upper), f, f(lower))
+    right_open_interval_set_subset_closed_interval_set(lower, upper)
+    upper_bound_on_subset(right_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(lower))
+    is_upper_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+}
+
+/// An antitone map on `[lower, upper]` is bounded below on `[lower, upper)` by its value at `upper`.
+theorem antitone_on_right_open_interval_lower_bound_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_lower_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+} by {
+    antitone_on_closed_interval_lower_bound(lower, upper, f)
+    is_lower_bound_on(closed_interval_set(lower, upper), f, f(upper))
+    right_open_interval_set_subset_closed_interval_set(lower, upper)
+    lower_bound_on_subset(right_open_interval_set(lower, upper), closed_interval_set(lower, upper), f, f(upper))
+    is_lower_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+}
+
+/// An antitone map on `[lower, upper]` is bounded above on `[lower, upper)`.
+theorem antitone_on_right_open_interval_bounded_above_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_above_on(right_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_right_open_interval_upper_bound_from_closed_interval(lower, upper, f)
+    is_upper_bound_on(right_open_interval_set(lower, upper), f, f(lower))
+    exists(bound: Value) {
+        is_upper_bound_on(right_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_above_on(right_open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded below on `[lower, upper)`.
+theorem antitone_on_right_open_interval_bounded_below_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_below_on(right_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_right_open_interval_lower_bound_from_closed_interval(lower, upper, f)
+    is_lower_bound_on(right_open_interval_set(lower, upper), f, f(upper))
+    exists(bound: Value) {
+        is_lower_bound_on(right_open_interval_set(lower, upper), f, bound)
+    }
+    is_bounded_below_on(right_open_interval_set(lower, upper), f)
+}
+
+/// An antitone map on `[lower, upper]` is bounded on `[lower, upper)`.
+theorem antitone_on_right_open_interval_bounded_from_closed_interval[Domain: LinearOrder, Value: PartialOrder](
+    lower: Domain, upper: Domain, f: Domain -> Value
+) {
+    lower <= upper and is_antitone_on(closed_interval_set(lower, upper), f)
+    implies is_bounded_on(right_open_interval_set(lower, upper), f)
+} by {
+    antitone_on_right_open_interval_bounded_above_from_closed_interval(lower, upper, f)
+    antitone_on_right_open_interval_bounded_below_from_closed_interval(lower, upper, f)
+    is_bounded_above_on(right_open_interval_set(lower, upper), f)
+    is_bounded_below_on(right_open_interval_set(lower, upper), f)
+    is_bounded_on(right_open_interval_set(lower, upper), f)
 }
