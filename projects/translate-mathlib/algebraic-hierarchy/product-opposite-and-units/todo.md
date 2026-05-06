@@ -3,11 +3,12 @@
 Goal: support standard derived algebraic constructions that recur throughout Mathlib.
 
 - [ ] Add bundled direct products of algebraic structures with standard instances after the generic `Pair[A, B]` typeclass receiver blocker is resolved
-- [ ] Add pointwise algebraic structure on finite products of types, building on the shared function-level pointwise API
+- [ ] Extend pointwise algebraic structure from binary products to higher-arity finite products, building on the shared function-level pointwise API
 - [ ] Define opposite order conventions where needed
 - [ ] Package the group of units as a `Group` instance once generic bundled instances are reliable
 - [ ] Add bundled homomorphism transport lemmas for product structures once bundled products are available
 - [ ] Support finite-support product constructions where useful
+- [ ] Add compact boolean `iff` wrappers for product and pointwise unit predicates once the directional lemmas are enough for reliable proof search
 - [ ] Refactor representative proofs to use product and unit APIs directly
 
 Progress: `src/product_algebra.ac` now provides unbundled componentwise operations on binary products (`pair_add`, `pair_mul`, `pair_zero`, `pair_one`, `pair_neg`, `pair_inverse`) with coordinate projection lemmas and associativity, commutativity, identity, inverse, semiring distributivity, zero-absorption, map-zero/map-one, swap-transport, and inverse-transport laws for the corresponding algebraic hypotheses.
@@ -19,3 +20,7 @@ Progress: `src/opposite_algebra.ac` now provides unbundled opposite multiplicati
 Progress: `src/function_algebra.ac` now provides shared pointwise operations on functions (`pointwise_add`, `pointwise_mul`, `pointwise_zero`, `pointwise_one`, `pointwise_neg`, `pointwise_inverse`) with application, associativity, commutativity, identity, inverse, semiring distributivity, and zero-absorption laws.
 
 Progress: `src/function_product_algebra.ac` now specializes the shared function-level pointwise API to binary products of function spaces, with evaluation, coordinate, associativity, commutativity, identity, inverse, semiring distributivity, and zero-absorption laws. Higher-arity finite products and bundled product instances remain deferred until generic bundled instances are reliable.
+
+Progress: `src/product_units.ac` now connects bundled monoid units with unbundled componentwise product units, including value/inverse pairs, coordinate unit reflection, construction from component units, identity, inverse-witness, and multiplication-closure lemmas. A compact boolean `iff` wrapper was deferred after verifier timeout/inconsistency reports; the verified directional lemmas remain available.
+
+Progress: `src/function_units.ac` now provides unbundled pointwise-unit support for functions, including value/inverse functions from unit-valued functions, two-sided pointwise inverse laws, pointwise-unit construction, inverse-witness transport, and pointwise reflection to ordinary monoid units.
