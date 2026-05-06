@@ -215,6 +215,84 @@ theorem subgroup_inv_mul_mem[G: Group](s: Subgroup[G], a: G, b: G) {
     }
 }
 
+/// Raw left-coset equivalence is reflexive.
+theorem same_left_coset_raw_reflexive[G: Group](s: Subgroup[G], a: G) {
+    s.contains(a.inverse * a)
+} by {
+    a.inverse * a = G.1
+    subgroup_contains_identity(s)
+}
+
+/// Raw left-coset equivalence is symmetric.
+theorem same_left_coset_raw_symmetric[G: Group](s: Subgroup[G], a: G, b: G) {
+    s.contains(a.inverse * b) implies s.contains(b.inverse * a)
+} by {
+    s.contains((a.inverse * b).inverse)
+    (a.inverse * b).inverse = b.inverse * a
+    s.contains(b.inverse * a)
+}
+
+/// Raw left-coset equivalence is transitive.
+theorem same_left_coset_raw_transitive[G: Group](s: Subgroup[G], a: G, b: G, c: G) {
+    s.contains(a.inverse * b) and s.contains(b.inverse * c) implies s.contains(a.inverse * c)
+} by {
+    s.contains((a.inverse * b) * (b.inverse * c))
+    (a.inverse * b) * (b.inverse * c) = a.inverse * c
+    s.contains(a.inverse * c)
+}
+
+/// An intersection witness shows that two raw left-coset representatives are equivalent.
+theorem left_coset_intersection_witness_implies_same_representative_raw[G: Group](
+    s: Subgroup[G],
+    a: G,
+    b: G,
+    x: G
+) {
+    s.contains(a.inverse * x) and s.contains(b.inverse * x) implies s.contains(a.inverse * b)
+} by {
+    same_left_coset_raw_symmetric(s, b, x)
+    s.contains(x.inverse * b)
+    same_left_coset_raw_transitive(s, a, x, b)
+}
+
+/// Equivalent raw left-coset representatives have the same membership predicate.
+theorem same_representative_implies_left_coset_membership_eq_raw[G: Group](
+    s: Subgroup[G],
+    a: G,
+    b: G,
+    y: G
+) {
+    s.contains(a.inverse * b) implies s.contains(a.inverse * y) = s.contains(b.inverse * y)
+} by {
+    if s.contains(a.inverse * y) {
+        same_left_coset_raw_symmetric(s, a, b)
+        s.contains(b.inverse * a)
+        same_left_coset_raw_transitive(s, b, a, y)
+        s.contains(b.inverse * y)
+    }
+    if s.contains(b.inverse * y) {
+        same_left_coset_raw_transitive(s, a, b, y)
+        s.contains(a.inverse * y)
+    }
+}
+
+/// Intersecting raw left cosets are equal as membership predicates.
+theorem intersecting_left_cosets_equal_raw[G: Group](s: Subgroup[G], a: G, b: G) {
+    exists(x: G) {
+        s.contains(a.inverse * x) and s.contains(b.inverse * x)
+    } implies forall(y: G) {
+        s.contains(a.inverse * y) = s.contains(b.inverse * y)
+    }
+} by {
+    let x: G satisfy { s.contains(a.inverse * x) and s.contains(b.inverse * x) }
+    left_coset_intersection_witness_implies_same_representative_raw(s, a, b, x)
+    s.contains(a.inverse * b)
+    forall(y: G) {
+        same_representative_implies_left_coset_membership_eq_raw(s, a, b, y)
+        s.contains(a.inverse * y) = s.contains(b.inverse * y)
+    }
+}
+
 /// A subgroup is closed under products of three of its elements.
 theorem subgroup_mul_mul_mem[G: Group](s: Subgroup[G], a: G, b: G, c: G) {
     s.contains(a) and s.contains(b) and s.contains(c) implies s.contains(a * b * c)
