@@ -5669,6 +5669,206 @@ theorem set_sInf_sup13_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
     left = right
 }
 
+/// The tridecary infimum family is a binary product over the duodecary infimum family.
+theorem set_inf13_product_family_eq_product[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U],
+    v: V) {
+    set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v) =
+        set_inf_product_family(set_pair_family(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)), m, p, v)
+}
+
+/// The tridecary supremum family is a binary product over the duodecary supremum family.
+theorem set_sup13_product_family_eq_product[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U],
+    v: V) {
+    set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v) =
+        set_sup_product_family(set_pair_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)), m, p, v)
+}
+
+/// Every tridecary pairwise infimum is contained in the infimum of the thirteen family suprema.
+theorem set_inf13_product_family_subset_sSup_inf[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U],
+    v: V) {
+    set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v).subset(
+        set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+            set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+            set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m)))
+} by {
+    let member = set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+    let abcdefghijkl = set_pair_family(set_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l))
+    let middle = set_inf(set_sSup(abcdefghijkl), set_sSup(m))
+    let bound = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m))
+    set_inf13_product_family_eq_product(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+    member = set_inf_product_family(abcdefghijkl, m, p, v)
+    set_inf_product_family_subset_sSup_inf(abcdefghijkl, m, p, v)
+    member.subset(middle)
+    set_sSup_inf12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    set_sSup(abcdefghijkl) = set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)), set_sSup(g)),
+        set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l))
+    middle = bound
+    middle.subset(bound)
+    subset_trans(member, middle, bound)
+    member.subset(bound)
+}
+
+/// The supremum of the thirteen family infima is contained in every tridecary pairwise supremum.
+theorem set_sInf_sup_subset_sup13_product_family[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U],
+    v: V) {
+    set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+        set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m)).subset(
+        set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v))
+} by {
+    let lower = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m))
+    let abcdefghijkl = set_pair_family(set_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l))
+    let middle = set_sup(set_sInf(abcdefghijkl), set_sInf(m))
+    let target = set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+    set_sup13_product_family_eq_product(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+    target = set_sup_product_family(abcdefghijkl, m, p, v)
+    set_sInf_sup_subset_product_family(abcdefghijkl, m, p, v)
+    middle.subset(target)
+    set_sInf_sup12_product_family(a, b, c, d, e, f, g, h, i, j, k, l)
+    set_sInf(abcdefghijkl) = set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)), set_sInf(g)),
+        set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l))
+    lower = middle
+    lower.subset(middle)
+    subset_trans(lower, middle, target)
+    lower.subset(target)
+}
+
+/// The infimum of the thirteen family suprema is contained in a set exactly when every tridecary pairwise infimum is.
+theorem set_sSup_inf13_product_subset_iff[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    w: Set[K]) {
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+        set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m)).subset(w) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v).subset(w)
+            }
+        }
+} by {
+    set_sSup_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m)
+    set_sSup_pair_family_subset_iff(set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m), w)
+    set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+        set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m)).subset(w) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v).subset(w)
+            }
+        }
+}
+
+/// A set is contained in the supremum of the thirteen family infima exactly when it is below every tridecary pairwise supremum.
+theorem set_subset_sInf_sup13_product_iff[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    w: Set[K], a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K]) {
+    w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+        set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m))) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                w.subset(set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v))
+            }
+        }
+} by {
+    set_sInf_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m)
+    set_subset_sInf_pair_family_iff(w, set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m))
+    w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+        set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m))) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                w.subset(set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v))
+            }
+        }
+}
+
+/// The infimum of the thirteen family suprema is the least upper bound of tridecary pairwise infima.
+theorem set_sSup_inf13_product_family_is_lub[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K],
+    i: R -> Set[K], j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K],
+    w: Set[K]) {
+    (forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+        forall(v: V) {
+            set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v).subset(
+                set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+                    set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+                    set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m)))
+        }
+    }) and
+    (set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_inf(set_sSup(a),
+        set_sSup(b)), set_sSup(c)), set_sSup(d)), set_sSup(e)), set_sSup(f)),
+        set_sSup(g)), set_sSup(h)), set_sSup(i)), set_sSup(j)), set_sSup(k)), set_sSup(l)), set_sSup(m)).subset(w) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                set_inf13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v).subset(w)
+            }
+        })
+} by {
+    forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+        forall(v: V) {
+            set_inf13_product_family_subset_sSup_inf(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+        }
+    }
+    set_sSup_inf13_product_subset_iff(a, b, c, d, e, f, g, h, i, j, k, l, m, w)
+}
+
+/// The supremum of the thirteen family infima is the greatest lower bound of tridecary pairwise suprema.
+theorem set_sInf_sup13_product_family_is_glb[K, I, J, L, M, N, O, P, Q, R, S, T, U, V](
+    w: Set[K], a: I -> Set[K], b: J -> Set[K], c: L -> Set[K], d: M -> Set[K],
+    e: N -> Set[K], f: O -> Set[K], g: P -> Set[K], h: Q -> Set[K], i: R -> Set[K],
+    j: S -> Set[K], k: T -> Set[K], l: U -> Set[K], m: V -> Set[K]) {
+    (forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+        forall(v: V) {
+            set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+                set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+                set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m)).subset(
+                set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v))
+        }
+    }) and
+    (w.subset(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sup(set_sInf(a),
+        set_sInf(b)), set_sInf(c)), set_sInf(d)), set_sInf(e)), set_sInf(f)),
+        set_sInf(g)), set_sInf(h)), set_sInf(i)), set_sInf(j)), set_sInf(k)), set_sInf(l)), set_sInf(m))) =
+        forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+            forall(v: V) {
+                w.subset(set_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v))
+            }
+        })
+} by {
+    forall(p: Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[Pair[I, J], L], M], N], O], P], Q], R], S], T], U]) {
+        forall(v: V) {
+            set_sInf_sup_subset_sup13_product_family(a, b, c, d, e, f, g, h, i, j, k, l, m, p, v)
+        }
+    }
+    set_subset_sInf_sup13_product_iff(w, a, b, c, d, e, f, g, h, i, j, k, l, m)
+}
+
 /// A refinement of each member by a member of another family gives a supremum inclusion.
 theorem set_sSup_subset_of_family_refines[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
     (forall(i: I) { exists(j: J) { a(i).subset(b(j)) } }) implies
