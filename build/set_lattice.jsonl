@@ -1240,3 +1240,19 @@
 {"goal":"set_seq_intersection_empty_family","proof":[]}
 {"goal":"set_seq_union_complement_eq_seq_intersection_complement","proof":[]}
 {"goal":"set_seq_intersection_complement_eq_seq_union_complement","proof":[]}
+{"goal":"set_inf[K](s, seq_union[K](family)) = seq_union[K](set_inf_family[K, Nat](s, family))","proof":["set_inf[K](s, set_sSup[K, Nat](family)) != seq_union[K](set_inf_family[K, Nat](s, family))","set_inf[K](s, set_sSup[K, Nat](family)) = seq_union[K](set_inf_family[K, Nat](s, family))"]}
+{"goal":"set_inf_seq_union_distrib_left","proof":[]}
+{"goal":"set_inf[K](seq_union[K](family), s) = seq_union[K](set_inf_family_right[K, Nat](family, s))","proof":["set_inf[K](set_sSup[K, Nat](family), s) != seq_union[K](set_inf_family_right[K, Nat](family, s))","set_inf[K](set_sSup[K, Nat](family), s) = seq_union[K](set_inf_family_right[K, Nat](family, s))"]}
+{"goal":"set_inf_seq_union_distrib_right","proof":[]}
+{"goal":"set_sup[K](s, seq_intersection[K](family)) = seq_intersection[K](set_sup_family[K, Nat](s, family))","proof":["set_sup[K](s, set_sInf[K, Nat](family)) != seq_intersection[K](set_sup_family[K, Nat](s, family))","set_sup[K](s, set_sInf[K, Nat](family)) = seq_intersection[K](set_sup_family[K, Nat](s, family))"]}
+{"goal":"set_sup_seq_intersection_distrib_left","proof":[]}
+{"goal":"set_sup[K](seq_intersection[K](family), s) = seq_intersection[K](set_sup_family_right[K, Nat](family, s))","proof":["set_sup[K](set_sInf[K, Nat](family), s) != seq_intersection[K](set_sup_family_right[K, Nat](family, s))","set_sup[K](set_sInf[K, Nat](family), s) = seq_intersection[K](set_sup_family_right[K, Nat](family, s))"]}
+{"goal":"set_sup_seq_intersection_distrib_right","proof":[]}
+{"goal":"set_sup[K](s, seq_union[K](family)) = seq_union[K](set_sup_family[K, Nat](s, family))","proof":["set_sup[K](s, set_sSup[K, Nat](family)) != seq_union[K](set_sup_family[K, Nat](s, family))","set_sup[K](s, set_sSup[K, Nat](family)) = seq_union[K](set_sup_family[K, Nat](s, family))"]}
+{"goal":"set_sup_seq_union_distrib_left","proof":[]}
+{"goal":"set_sup[K](seq_union[K](family), s) = seq_union[K](set_sup_family_right[K, Nat](family, s))","proof":["set_sup[K](set_sSup[K, Nat](family), s) != seq_union[K](set_sup_family_right[K, Nat](family, s))","set_sup[K](set_sSup[K, Nat](family), s) = seq_union[K](set_sup_family_right[K, Nat](family, s))"]}
+{"goal":"set_sup_seq_union_distrib_right","proof":[]}
+{"goal":"set_inf[K](s, seq_intersection[K](family)) = seq_intersection[K](set_inf_family[K, Nat](s, family))","proof":["set_inf[K](s, set_sInf[K, Nat](family)) != seq_intersection[K](set_inf_family[K, Nat](s, family))","set_inf[K](s, set_sInf[K, Nat](family)) = seq_intersection[K](set_inf_family[K, Nat](s, family))"]}
+{"goal":"set_inf_seq_intersection_distrib_left","proof":[]}
+{"goal":"set_inf[K](seq_intersection[K](family), s) = seq_intersection[K](set_inf_family_right[K, Nat](family, s))","proof":["set_inf[K](set_sInf[K, Nat](family), s) != seq_intersection[K](set_inf_family_right[K, Nat](family, s))","set_inf[K](set_sInf[K, Nat](family), s) = seq_intersection[K](set_inf_family_right[K, Nat](family, s))"]}
+{"goal":"set_inf_seq_intersection_distrib_right","proof":[]}

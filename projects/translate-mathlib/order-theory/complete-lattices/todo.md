@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, family distributivity, preimage, image-over-supremum, binary-family, and binary-family transport API
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family distributivity, family distributivity, preimage, image-over-supremum, binary-family, and binary-family transport API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -38,4 +38,5 @@ Status:
 - `src/set_lattice.ac` now has exact image transport for flattened binary-family infima under injective maps with explicit index witnesses and under bijective maps, plus lower-bound characterizations for both cases. A verified complement-binary-family flattening bridge is also available; the stronger flattened complement-duality wrappers were deferred after direct proof search timed out.
 - `src/set_lattice.ac` now has componentwise reindexing wrappers for flattened binary-family suprema and infima, including one-way inclusions and equality under section-backed, surjective, and bijective component maps.
 - `src/set_lattice.ac` now has sequence-family set complete-lattice wrappers, including generic `set_sSup` / `set_sInf` bridges, universal properties, monotonicity, preimage and image transport, constant/bottom/top families, and complement duality.
+- `src/set_lattice.ac` now has sequence-family distributivity wrappers: binary infimum and supremum distributing over `seq_union` and `seq_intersection` from either side, mirroring the indexed-family distributivity API.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.

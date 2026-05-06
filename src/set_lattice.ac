@@ -5321,3 +5321,83 @@ theorem set_seq_intersection_complement_eq_seq_union_complement[K](family: Nat -
 } by {
     seq_intersection_complement_eq_union_complement(family)
 }
+
+/// Binary infimum distributes over a sequence union on the right.
+theorem set_inf_seq_union_distrib_left[K](s: Set[K], family: Nat -> Set[K]) {
+    set_inf(s, seq_union(family)) = seq_union(set_inf_family(s, family))
+} by {
+    set_sSup_eq_seq_union(family)
+    set_inf_sSup_distrib_left(s, family)
+    set_sSup_eq_seq_union(set_inf_family(s, family))
+    set_inf(s, seq_union(family)) = seq_union(set_inf_family(s, family))
+}
+
+/// Binary infimum distributes over a sequence union on the left.
+theorem set_inf_seq_union_distrib_right[K](family: Nat -> Set[K], s: Set[K]) {
+    set_inf(seq_union(family), s) = seq_union(set_inf_family_right(family, s))
+} by {
+    set_sSup_eq_seq_union(family)
+    set_inf_sSup_distrib_right(family, s)
+    set_sSup_eq_seq_union(set_inf_family_right(family, s))
+    set_inf(seq_union(family), s) = seq_union(set_inf_family_right(family, s))
+}
+
+/// Binary supremum distributes over a sequence intersection on the right.
+theorem set_sup_seq_intersection_distrib_left[K](s: Set[K], family: Nat -> Set[K]) {
+    set_sup(s, seq_intersection(family)) = seq_intersection(set_sup_family(s, family))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_sup_sInf_distrib_left(s, family)
+    set_sInf_eq_seq_intersection(set_sup_family(s, family))
+    set_sup(s, seq_intersection(family)) = seq_intersection(set_sup_family(s, family))
+}
+
+/// Binary supremum distributes over a sequence intersection on the left.
+theorem set_sup_seq_intersection_distrib_right[K](family: Nat -> Set[K], s: Set[K]) {
+    set_sup(seq_intersection(family), s) = seq_intersection(set_sup_family_right(family, s))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_sup_sInf_distrib_right(family, s)
+    set_sInf_eq_seq_intersection(set_sup_family_right(family, s))
+    set_sup(seq_intersection(family), s) = seq_intersection(set_sup_family_right(family, s))
+}
+
+/// Binary supremum distributes over a sequence union on the right.
+theorem set_sup_seq_union_distrib_left[K](s: Set[K], family: Nat -> Set[K]) {
+    set_sup(s, seq_union(family)) = seq_union(set_sup_family(s, family))
+} by {
+    set_sSup_eq_seq_union(family)
+    set_sup_sSup_distrib_left(s, family)
+    set_sSup_eq_seq_union(set_sup_family(s, family))
+    set_sup(s, seq_union(family)) = seq_union(set_sup_family(s, family))
+}
+
+/// Binary supremum distributes over a sequence union on the left.
+theorem set_sup_seq_union_distrib_right[K](family: Nat -> Set[K], s: Set[K]) {
+    set_sup(seq_union(family), s) = seq_union(set_sup_family_right(family, s))
+} by {
+    set_sSup_eq_seq_union(family)
+    set_sup_sSup_distrib_right(family, s)
+    set_sSup_eq_seq_union(set_sup_family_right(family, s))
+    set_sup(seq_union(family), s) = seq_union(set_sup_family_right(family, s))
+}
+
+/// Binary infimum distributes over a sequence intersection on the right.
+theorem set_inf_seq_intersection_distrib_left[K](s: Set[K], family: Nat -> Set[K]) {
+    set_inf(s, seq_intersection(family)) = seq_intersection(set_inf_family(s, family))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_inf_sInf_distrib_left(s, family)
+    set_sInf_eq_seq_intersection(set_inf_family(s, family))
+    set_inf(s, seq_intersection(family)) = seq_intersection(set_inf_family(s, family))
+}
+
+/// Binary infimum distributes over a sequence intersection on the left.
+theorem set_inf_seq_intersection_distrib_right[K](family: Nat -> Set[K], s: Set[K]) {
+    set_inf(seq_intersection(family), s) = seq_intersection(set_inf_family_right(family, s))
+} by {
+    set_sInf_eq_seq_intersection(family)
+    set_inf_sInf_distrib_right(family, s)
+    set_sInf_eq_seq_intersection(set_inf_family_right(family, s))
+    set_inf(seq_intersection(family), s) = seq_intersection(set_inf_family_right(family, s))
+}
