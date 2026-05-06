@@ -599,6 +599,53 @@ theorem compose_two_sided_inverse_fn[T, U, V](f: T -> U, g: U -> V, invf: U -> T
     }
 }
 
+/// A two-sided inverse is symmetric.
+theorem two_sided_inverse_fn_symm[T, U](f: T -> U, g: U -> T) {
+    is_two_sided_inverse_fn(f, g) implies is_two_sided_inverse_fn(g, f)
+} by {
+    if is_two_sided_inverse_fn(f, g) {
+        forall(y: U) {
+            f(g(y)) = y
+        }
+        is_left_inverse_fn(g, f)
+
+        forall(x: T) {
+            g(f(x)) = x
+        }
+        is_right_inverse_fn(g, f)
+
+        is_two_sided_inverse_fn(g, f)
+    }
+}
+
+/// Two two-sided inverses of the same function are equal.
+theorem two_sided_inverse_fn_unique[T, U](f: T -> U, g1: U -> T, g2: U -> T) {
+    is_two_sided_inverse_fn(f, g1) and is_two_sided_inverse_fn(f, g2) implies g1 = g2
+} by {
+    if is_two_sided_inverse_fn(f, g1) and is_two_sided_inverse_fn(f, g2) {
+        forall(y: U) {
+            f(g2(y)) = y
+            g1(f(g2(y))) = g2(y)
+            g1(f(g2(y))) = g1(y)
+            g1(y) = g2(y)
+        }
+        function_extensionality(g1, g2)
+        g1 = g2
+    }
+}
+
+/// A two-sided inverse is itself a bijection.
+theorem inverse_of_two_sided_inverse_fn_is_bijection_fn[T, U](f: T -> U, g: U -> T) {
+    is_two_sided_inverse_fn(f, g) implies is_bijection_fn(g)
+} by {
+    if is_two_sided_inverse_fn(f, g) {
+        two_sided_inverse_fn_symm(f, g)
+        is_two_sided_inverse_fn(g, f)
+        two_sided_inverse_fn_imp_bijection_fn(g, f)
+        is_bijection_fn(g)
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
