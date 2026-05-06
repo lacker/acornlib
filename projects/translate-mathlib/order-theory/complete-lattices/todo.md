@@ -2,7 +2,7 @@
 
 Goal: support arbitrary suprema and infima, not just binary ones.
 
-- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family reindexing/distributivity, family distributivity, preimage, image-over-supremum, binary-family, binary-family transport, independent-product infimum/supremum family API, ternary-product API, quaternary-product API, quinary-product API, senary-product API, iterated binary-sequence reindexing, iterated binary-sequence transport/universal-property API, and iterated binary-sequence complement-duality API
+- [ ] Continue downstream-driven unbundled set complete-lattice wrappers beyond the current indexed reindexing, list, range, monotone-range, sequence-family, sequence-family reindexing/distributivity, family distributivity, preimage, image-over-supremum, binary-family, binary-family transport, independent-product infimum/supremum family API, ternary-product API, quaternary-product API, quinary-product API, senary-product API, septenary-product API, octonary-product API, iterated binary-sequence reindexing, iterated binary-sequence transport/universal-property API, and iterated binary-sequence complement-duality API
 - [ ] Revisit list/range complement and distributivity facts only after the invalid strict-check certificate issue is isolated
 - [ ] Decide the minimal general `CompleteLattice` typeclass shape after more unbundled users exist
 - [ ] Add general `sup`, `inf`, `sSup`, and `sInf` APIs once the receiver design is stable
@@ -49,4 +49,5 @@ Status:
 - `src/set_lattice.ac` now has quaternary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, member bounds, subset characterizations, and LUB/GLB packages.
 - `src/set_lattice.ac` now has quinary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, member bounds, subset characterizations, and LUB/GLB packages.
 - `src/set_lattice.ac` now has senary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, member bounds, subset characterizations, and LUB/GLB packages.
+- `src/set_lattice.ac` now has septenary- and octonary-product wrappers for independent set infimum/supremum families, including membership characterizations, supremum/infimum distribution identities, member bounds, subset characterizations, and LUB/GLB packages.
 - A direct `Set[K]: PartialOrder` / `Lattice` instance attempt was avoided: Acorn currently rejects same-shape generic `Set[K]` typeclass receiver use while rendering `LTE.lte[Set[K]](...)`. The verified unbundled API keeps set complete-lattice facts usable without committing to an unstable instance design.
