@@ -816,3 +816,384 @@ theorem function_triple_mul_first[T, A: Mul, B: Mul, C: Mul](
     function_triple_mul(p, q).first = pointwise_mul(p.first, q.first)
 }
 
+/// Ternary function products are determined by their three coordinates.
+theorem function_triple_ext[T, A, B, C](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    p.first = q.first and p.second.first = q.second.first and
+    p.second.second = q.second.second implies p = q
+} by {
+    if p.first = q.first and p.second.first = q.second.first and
+    p.second.second = q.second.second {
+        p.second = q.second
+        pair_ext(p.second, q.second)
+        pair_ext(p, q)
+    }
+}
+
+/// The second coordinate of a ternary pointwise sum is the pointwise sum of second coordinates.
+theorem function_triple_add_second_first[T, A: Add, B: Add, C: Add](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, q).second.first = pointwise_add(p.second.first, q.second.first)
+} by {
+    function_triple_add(p, q).second =
+    Pair.new(pointwise_add(p.second.first, q.second.first),
+        pointwise_add(p.second.second, q.second.second))
+}
+
+/// The third coordinate of a ternary pointwise sum is the pointwise sum of third coordinates.
+theorem function_triple_add_second_second[T, A: Add, B: Add, C: Add](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, q).second.second = pointwise_add(p.second.second, q.second.second)
+} by {
+    function_triple_add(p, q).second =
+    Pair.new(pointwise_add(p.second.first, q.second.first),
+        pointwise_add(p.second.second, q.second.second))
+}
+
+/// The second coordinate of a ternary pointwise product is the pointwise product of second coordinates.
+theorem function_triple_mul_second_first[T, A: Mul, B: Mul, C: Mul](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_mul(p, q).second.first = pointwise_mul(p.second.first, q.second.first)
+} by {
+    function_triple_mul(p, q).second =
+    Pair.new(pointwise_mul(p.second.first, q.second.first),
+        pointwise_mul(p.second.second, q.second.second))
+}
+
+/// The third coordinate of a ternary pointwise product is the pointwise product of third coordinates.
+theorem function_triple_mul_second_second[T, A: Mul, B: Mul, C: Mul](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_mul(p, q).second.second = pointwise_mul(p.second.second, q.second.second)
+} by {
+    function_triple_mul(p, q).second =
+    Pair.new(pointwise_mul(p.second.first, q.second.first),
+        pointwise_mul(p.second.second, q.second.second))
+}
+
+/// The first coordinate of the ternary pointwise zero is the pointwise zero.
+theorem function_triple_zero_first[T, A: Zero, B: Zero, C: Zero] {
+    function_triple_zero[T, A, B, C].first = pointwise_zero[T, A]
+}
+
+/// The second coordinate of the ternary pointwise zero is the pointwise zero.
+theorem function_triple_zero_second_first[T, A: Zero, B: Zero, C: Zero] {
+    function_triple_zero[T, A, B, C].second.first = pointwise_zero[T, B]
+}
+
+/// The third coordinate of the ternary pointwise zero is the pointwise zero.
+theorem function_triple_zero_second_second[T, A: Zero, B: Zero, C: Zero] {
+    function_triple_zero[T, A, B, C].second.second = pointwise_zero[T, C]
+}
+
+/// The first coordinate of the ternary pointwise one is the pointwise one.
+theorem function_triple_one_first[T, A: One, B: One, C: One] {
+    function_triple_one[T, A, B, C].first = pointwise_one[T, A]
+}
+
+/// The second coordinate of the ternary pointwise one is the pointwise one.
+theorem function_triple_one_second_first[T, A: One, B: One, C: One] {
+    function_triple_one[T, A, B, C].second.first = pointwise_one[T, B]
+}
+
+/// The third coordinate of the ternary pointwise one is the pointwise one.
+theorem function_triple_one_second_second[T, A: One, B: One, C: One] {
+    function_triple_one[T, A, B, C].second.second = pointwise_one[T, C]
+}
+
+/// The first coordinate of ternary pointwise negation is pointwise negation.
+theorem function_triple_neg_first[T, A: Neg, B: Neg, C: Neg](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_neg(p).first = pointwise_neg(p.first)
+}
+
+/// The second coordinate of ternary pointwise negation is pointwise negation.
+theorem function_triple_neg_second_first[T, A: Neg, B: Neg, C: Neg](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_neg(p).second.first = pointwise_neg(p.second.first)
+}
+
+/// The third coordinate of ternary pointwise negation is pointwise negation.
+theorem function_triple_neg_second_second[T, A: Neg, B: Neg, C: Neg](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_neg(p).second.second = pointwise_neg(p.second.second)
+}
+
+/// The first coordinate of ternary pointwise inversion is pointwise inversion.
+theorem function_triple_inverse_first[T, A: Group, B: Group, C: Group](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_inverse(p).first = pointwise_inverse(p.first)
+}
+
+/// The second coordinate of ternary pointwise inversion is pointwise inversion.
+theorem function_triple_inverse_second_first[T, A: Group, B: Group, C: Group](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_inverse(p).second.first = pointwise_inverse(p.second.first)
+}
+
+/// The third coordinate of ternary pointwise inversion is pointwise inversion.
+theorem function_triple_inverse_second_second[T, A: Group, B: Group, C: Group](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_inverse(p).second.second = pointwise_inverse(p.second.second)
+}
+
+/// Evaluation transports ternary pointwise sums to sums of values.
+theorem function_triple_add_apply[T, A: Add, B: Add, C: Add](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]],
+    t: T
+) {
+    function_triple_apply(function_triple_add(p, q), t) =
+    Pair.new(p.first(t) + q.first(t),
+        Pair.new(p.second.first(t) + q.second.first(t),
+            p.second.second(t) + q.second.second(t)))
+} by {
+    let lhs = function_triple_apply(function_triple_add(p, q), t)
+    let rhs = Pair.new(p.first(t) + q.first(t),
+        Pair.new(p.second.first(t) + q.second.first(t),
+            p.second.second(t) + q.second.second(t)))
+    lhs.first = function_triple_add(p, q).first(t)
+    function_triple_add(p, q).first = pointwise_add(p.first, q.first)
+    lhs.first = pointwise_add(p.first, q.first, t)
+    lhs.first = p.first(t) + q.first(t)
+    lhs.first = rhs.first
+    lhs.second.first = function_triple_add(p, q).second.first(t)
+    function_triple_add(p, q).second.first = pointwise_add(p.second.first, q.second.first)
+    lhs.second.first = pointwise_add(p.second.first, q.second.first, t)
+    lhs.second.first = p.second.first(t) + q.second.first(t)
+    rhs.second = Pair.new(p.second.first(t) + q.second.first(t),
+        p.second.second(t) + q.second.second(t))
+    rhs.second.first = p.second.first(t) + q.second.first(t)
+    lhs.second.first = rhs.second.first
+    lhs.second.second = function_triple_add(p, q).second.second(t)
+    function_triple_add(p, q).second.second = pointwise_add(p.second.second, q.second.second)
+    lhs.second.second = pointwise_add(p.second.second, q.second.second, t)
+    lhs.second.second = p.second.second(t) + q.second.second(t)
+    rhs.second.second = p.second.second(t) + q.second.second(t)
+    lhs.second.second = rhs.second.second
+    lhs.second = rhs.second
+    pair_ext(lhs.second, rhs.second)
+    pair_ext(lhs, rhs)
+}
+
+/// Evaluation transports ternary pointwise products to products of values.
+theorem function_triple_mul_apply[T, A: Mul, B: Mul, C: Mul](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]],
+    t: T
+) {
+    function_triple_apply(function_triple_mul(p, q), t) =
+    Pair.new(p.first(t) * q.first(t),
+        Pair.new(p.second.first(t) * q.second.first(t),
+            p.second.second(t) * q.second.second(t)))
+} by {
+    let lhs = function_triple_apply(function_triple_mul(p, q), t)
+    let rhs = Pair.new(p.first(t) * q.first(t),
+        Pair.new(p.second.first(t) * q.second.first(t),
+            p.second.second(t) * q.second.second(t)))
+    lhs.first = function_triple_mul(p, q).first(t)
+    function_triple_mul(p, q).first = pointwise_mul(p.first, q.first)
+    lhs.first = pointwise_mul(p.first, q.first, t)
+    lhs.first = p.first(t) * q.first(t)
+    lhs.first = rhs.first
+    lhs.second.first = function_triple_mul(p, q).second.first(t)
+    function_triple_mul(p, q).second.first = pointwise_mul(p.second.first, q.second.first)
+    lhs.second.first = pointwise_mul(p.second.first, q.second.first, t)
+    lhs.second.first = p.second.first(t) * q.second.first(t)
+    rhs.second = Pair.new(p.second.first(t) * q.second.first(t),
+        p.second.second(t) * q.second.second(t))
+    rhs.second.first = p.second.first(t) * q.second.first(t)
+    lhs.second.first = rhs.second.first
+    lhs.second.second = function_triple_mul(p, q).second.second(t)
+    function_triple_mul(p, q).second.second = pointwise_mul(p.second.second, q.second.second)
+    lhs.second.second = pointwise_mul(p.second.second, q.second.second, t)
+    lhs.second.second = p.second.second(t) * q.second.second(t)
+    rhs.second.second = p.second.second(t) * q.second.second(t)
+    lhs.second.second = rhs.second.second
+    lhs.second = rhs.second
+    pair_ext(lhs.second, rhs.second)
+    pair_ext(lhs, rhs)
+}
+
+/// Pointwise addition is associative on a ternary product of function spaces.
+theorem function_triple_add_assoc[T, A: AddSemigroup, B: AddSemigroup, C: AddSemigroup](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]],
+    r: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, function_triple_add(q, r)) =
+    function_triple_add(function_triple_add(p, q), r)
+} by {
+    let lhs = function_triple_add(p, function_triple_add(q, r))
+    let rhs = function_triple_add(function_triple_add(p, q), r)
+    lhs.first = pointwise_add(p.first, function_triple_add(q, r).first)
+    function_triple_add(q, r).first = pointwise_add(q.first, r.first)
+    lhs.first = pointwise_add(p.first, pointwise_add(q.first, r.first))
+    rhs.first = pointwise_add(function_triple_add(p, q).first, r.first)
+    function_triple_add(p, q).first = pointwise_add(p.first, q.first)
+    rhs.first = pointwise_add(pointwise_add(p.first, q.first), r.first)
+    pointwise_add_assoc(p.first, q.first, r.first)
+    lhs.first = rhs.first
+    lhs.second.first = pointwise_add(p.second.first, function_triple_add(q, r).second.first)
+    function_triple_add(q, r).second.first = pointwise_add(q.second.first, r.second.first)
+    lhs.second.first = pointwise_add(p.second.first, pointwise_add(q.second.first, r.second.first))
+    rhs.second.first = pointwise_add(function_triple_add(p, q).second.first, r.second.first)
+    function_triple_add(p, q).second.first = pointwise_add(p.second.first, q.second.first)
+    rhs.second.first = pointwise_add(pointwise_add(p.second.first, q.second.first), r.second.first)
+    pointwise_add_assoc(p.second.first, q.second.first, r.second.first)
+    lhs.second.first = rhs.second.first
+    lhs.second.second = pointwise_add(p.second.second, function_triple_add(q, r).second.second)
+    function_triple_add(q, r).second.second = pointwise_add(q.second.second, r.second.second)
+    lhs.second.second = pointwise_add(p.second.second, pointwise_add(q.second.second, r.second.second))
+    rhs.second.second = pointwise_add(function_triple_add(p, q).second.second, r.second.second)
+    function_triple_add(p, q).second.second = pointwise_add(p.second.second, q.second.second)
+    rhs.second.second = pointwise_add(pointwise_add(p.second.second, q.second.second), r.second.second)
+    pointwise_add_assoc(p.second.second, q.second.second, r.second.second)
+    lhs.second.second = rhs.second.second
+    function_triple_ext(lhs, rhs)
+}
+
+/// Pointwise addition is commutative on a ternary product of function spaces.
+theorem function_triple_add_comm[T, A: AddCommSemigroup, B: AddCommSemigroup, C: AddCommSemigroup](
+    p: Pair[T -> A, Pair[T -> B, T -> C]],
+    q: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, q) = function_triple_add(q, p)
+} by {
+    let lhs = function_triple_add(p, q)
+    let rhs = function_triple_add(q, p)
+    lhs.first = pointwise_add(p.first, q.first)
+    rhs.first = pointwise_add(q.first, p.first)
+    pointwise_add_comm(p.first, q.first)
+    lhs.first = rhs.first
+    lhs.second.first = pointwise_add(p.second.first, q.second.first)
+    rhs.second.first = pointwise_add(q.second.first, p.second.first)
+    pointwise_add_comm(p.second.first, q.second.first)
+    lhs.second.first = rhs.second.first
+    lhs.second.second = pointwise_add(p.second.second, q.second.second)
+    rhs.second.second = pointwise_add(q.second.second, p.second.second)
+    pointwise_add_comm(p.second.second, q.second.second)
+    lhs.second.second = rhs.second.second
+    function_triple_ext(lhs, rhs)
+}
+
+/// Adding the ternary pointwise zero on the right changes no coordinate.
+theorem function_triple_add_zero_right[T, A: AddMonoid, B: AddMonoid, C: AddMonoid](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, function_triple_zero[T, A, B, C]) = p
+} by {
+    let lhs = function_triple_add(p, function_triple_zero[T, A, B, C])
+    lhs.first = pointwise_add(p.first, function_triple_zero[T, A, B, C].first)
+    function_triple_zero[T, A, B, C].first = pointwise_zero[T, A]
+    lhs.first = pointwise_add(p.first, pointwise_zero[T, A])
+    pointwise_add_zero_right(p.first)
+    lhs.first = p.first
+    lhs.second.first = pointwise_add(p.second.first, function_triple_zero[T, A, B, C].second.first)
+    function_triple_zero[T, A, B, C].second.first = pointwise_zero[T, B]
+    lhs.second.first = pointwise_add(p.second.first, pointwise_zero[T, B])
+    pointwise_add_zero_right(p.second.first)
+    lhs.second.first = p.second.first
+    lhs.second.second = pointwise_add(p.second.second, function_triple_zero[T, A, B, C].second.second)
+    function_triple_zero[T, A, B, C].second.second = pointwise_zero[T, C]
+    lhs.second.second = pointwise_add(p.second.second, pointwise_zero[T, C])
+    pointwise_add_zero_right(p.second.second)
+    lhs.second.second = p.second.second
+    function_triple_ext(lhs, p)
+}
+
+/// Adding the ternary pointwise zero on the left changes no coordinate.
+theorem function_triple_add_zero_left[T, A: AddMonoid, B: AddMonoid, C: AddMonoid](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(function_triple_zero[T, A, B, C], p) = p
+} by {
+    let lhs = function_triple_add(function_triple_zero[T, A, B, C], p)
+    lhs.first = pointwise_add(function_triple_zero[T, A, B, C].first, p.first)
+    function_triple_zero[T, A, B, C].first = pointwise_zero[T, A]
+    lhs.first = pointwise_add(pointwise_zero[T, A], p.first)
+    pointwise_add_zero_left(p.first)
+    lhs.first = p.first
+    lhs.second.first = pointwise_add(function_triple_zero[T, A, B, C].second.first, p.second.first)
+    function_triple_zero[T, A, B, C].second.first = pointwise_zero[T, B]
+    lhs.second.first = pointwise_add(pointwise_zero[T, B], p.second.first)
+    pointwise_add_zero_left(p.second.first)
+    lhs.second.first = p.second.first
+    lhs.second.second = pointwise_add(function_triple_zero[T, A, B, C].second.second, p.second.second)
+    function_triple_zero[T, A, B, C].second.second = pointwise_zero[T, C]
+    lhs.second.second = pointwise_add(pointwise_zero[T, C], p.second.second)
+    pointwise_add_zero_left(p.second.second)
+    lhs.second.second = p.second.second
+    function_triple_ext(lhs, p)
+}
+
+/// Pointwise negation is a right additive inverse on a ternary product of function spaces.
+theorem function_triple_add_neg_right[T, A: AddGroup, B: AddGroup, C: AddGroup](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(p, function_triple_neg(p)) = function_triple_zero[T, A, B, C]
+} by {
+    let lhs = function_triple_add(p, function_triple_neg(p))
+    lhs.first = pointwise_add(p.first, function_triple_neg(p).first)
+    function_triple_neg(p).first = pointwise_neg(p.first)
+    lhs.first = pointwise_add(p.first, pointwise_neg(p.first))
+    pointwise_add_neg_right(p.first)
+    lhs.first = pointwise_zero[T, A]
+    function_triple_zero[T, A, B, C].first = pointwise_zero[T, A]
+    lhs.second.first = pointwise_add(p.second.first, function_triple_neg(p).second.first)
+    function_triple_neg(p).second.first = pointwise_neg(p.second.first)
+    lhs.second.first = pointwise_add(p.second.first, pointwise_neg(p.second.first))
+    pointwise_add_neg_right(p.second.first)
+    lhs.second.first = pointwise_zero[T, B]
+    function_triple_zero[T, A, B, C].second.first = pointwise_zero[T, B]
+    lhs.second.second = pointwise_add(p.second.second, function_triple_neg(p).second.second)
+    function_triple_neg(p).second.second = pointwise_neg(p.second.second)
+    lhs.second.second = pointwise_add(p.second.second, pointwise_neg(p.second.second))
+    pointwise_add_neg_right(p.second.second)
+    lhs.second.second = pointwise_zero[T, C]
+    function_triple_zero[T, A, B, C].second.second = pointwise_zero[T, C]
+    function_triple_ext(lhs, function_triple_zero[T, A, B, C])
+}
+
+/// Pointwise negation is a left additive inverse on a ternary product of function spaces.
+theorem function_triple_add_neg_left[T, A: AddGroup, B: AddGroup, C: AddGroup](
+    p: Pair[T -> A, Pair[T -> B, T -> C]]
+) {
+    function_triple_add(function_triple_neg(p), p) = function_triple_zero[T, A, B, C]
+} by {
+    let lhs = function_triple_add(function_triple_neg(p), p)
+    lhs.first = pointwise_add(function_triple_neg(p).first, p.first)
+    function_triple_neg(p).first = pointwise_neg(p.first)
+    lhs.first = pointwise_add(pointwise_neg(p.first), p.first)
+    pointwise_add_neg_left(p.first)
+    lhs.first = pointwise_zero[T, A]
+    function_triple_zero[T, A, B, C].first = pointwise_zero[T, A]
+    lhs.second.first = pointwise_add(function_triple_neg(p).second.first, p.second.first)
+    function_triple_neg(p).second.first = pointwise_neg(p.second.first)
+    lhs.second.first = pointwise_add(pointwise_neg(p.second.first), p.second.first)
+    pointwise_add_neg_left(p.second.first)
+    lhs.second.first = pointwise_zero[T, B]
+    function_triple_zero[T, A, B, C].second.first = pointwise_zero[T, B]
+    lhs.second.second = pointwise_add(function_triple_neg(p).second.second, p.second.second)
+    function_triple_neg(p).second.second = pointwise_neg(p.second.second)
+    lhs.second.second = pointwise_add(pointwise_neg(p.second.second), p.second.second)
+    pointwise_add_neg_left(p.second.second)
+    lhs.second.second = pointwise_zero[T, C]
+    function_triple_zero[T, A, B, C].second.second = pointwise_zero[T, C]
+    function_triple_ext(lhs, function_triple_zero[T, A, B, C])
+}
