@@ -1,0 +1,126 @@
+{"goal":"u.val = v.val","proof":[]}
+{"goal":"u.inv = v.inv","proof":[]}
+{"goal":"unit_ext","proof":["function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](u)","function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](v)","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Unit[M]](v, u)"]}
+{"goal":"unit_val_mul_inv","proof":["function[T0: Monoid](x0: Unit[T0]) { T0.1 = x0.val * x0.inv and T0.1 = x0.inv * x0.val }[M](u)"]}
+{"goal":"unit_inv_mul_val","proof":["function[T0: Monoid](x0: Unit[T0]) { T0.1 = x0.val * x0.inv and T0.1 = x0.inv * x0.val }[M](u)"]}
+{"goal":"exists(k0: M) { k0 = u.inv and u.val * k0 = M.1 and k0 * u.val = M.1 }","proof":["function[T0: Monoid](x0: Unit[T0]) { T0.1 = x0.val * x0.inv and T0.1 = x0.inv * x0.val }[M](u)"]}
+{"goal":"unit_val_is_monoid_unit","proof":["function[T0: Monoid](x0: T0) { exists(k0: T0) { T0.1 = x0 * k0 and T0.1 = k0 * x0 } = is_monoid_unit[T0](x0) }[M](u.val)","function[T0: Monoid](x0: Unit[T0]) { T0.1 = x0.val * x0.inv and T0.1 = x0.inv * x0.val }[M](u)","not exists(k0: M) { M.1 = u.val * k0 and M.1 = k0 * u.val }","function(x0: M) { not (M.1 = u.val * x0 and M.1 = x0 * u.val) }(u.inv)"]}
+{"goal":"M.1 * M.1 = M.1","proof":["function[T0: Monoid](x0: T0) { T0.1 * x0 = x0 }[M](M.1)"]}
+{"goal":"exists(k0: M) { k0 = M.1 and M.1 * k0 = M.1 and k0 * M.1 = M.1 }","proof":[]}
+{"goal":"one_is_monoid_unit","proof":["function[T0: Monoid](x0: T0) { exists(k0: T0) { T0.1 = x0 * k0 and T0.1 = k0 * x0 } = is_monoid_unit[T0](x0) }[M](M.1)","function[T0: Monoid](x0: T0) { T0.1 * x0 = x0 }[M](M.1)","not exists(k0: M) { M.1 = M.1 * k0 and M.1 = k0 * M.1 }","function(x0: M) { not (M.1 = M.1 * x0 and M.1 = x0 * M.1) }(M.1)","function(x0: M) { M.1 * x0 != M.1 or x0 * M.1 != M.1 }(M.1)"]}
+{"goal":"b = b * M.1","proof":["function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](b)"]}
+{"goal":"b * M.1 = b * (u.val * u.inv)","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.val * x0.inv = T0.1 }[M](u)"]}
+{"goal":"b * (u.val * u.inv) = b * u.val * u.inv","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](b, u.val, u.inv)"]}
+{"goal":"b * u.val = M.1","proof":[]}
+{"goal":"b * u.val * u.inv = M.1 * u.inv","proof":[]}
+{"goal":"M.1 * u.inv = u.inv","proof":["function[T0: Monoid](x0: T0) { T0.1 * x0 = x0 }[M](u.inv)"]}
+{"goal":"b = u.inv","proof":[]}
+{"goal":"unit_inverse_unique","proof":[]}
+{"goal":"unit_eq_val","proof":[]}
+{"goal":"unit_eq_inv","proof":[]}
+{"goal":"exists(k0: Unit[M]) { Unit.new(M.1, M.1) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0, x1: T0) { not Unit.constraint[T0](x0, x1) or exists(k0: Unit[T0]) { Option.some[Unit[T0]](k0) = Unit.new[T0](x0, x1) } }[M](M.1, M.1)","function[T0: Monoid](x0: T0, x1: T0) { (T0.1 = x0 * x1 and T0.1 = x1 * x0) = Unit.constraint[T0](x0, x1) }[M](M.1, M.1)","function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](M.1)"]}
+{"goal":"u.val * v.val * (v.inv * u.inv) = u.val * (v.val * v.inv) * u.inv","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](u.val * v.val, v.inv, u.inv)","function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](u.val, v.val, v.inv)"]}
+{"goal":"v.val * v.inv = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.val * x0.inv = T0.1 }[M](v)"]}
+{"goal":"u.val * (v.val * v.inv) * u.inv = u.val * M.1 * u.inv","proof":[]}
+{"goal":"u.val * M.1 = u.val","proof":["function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](u.val)"]}
+{"goal":"u.val * M.1 * u.inv = u.val * u.inv","proof":[]}
+{"goal":"u.val * u.inv = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.val * x0.inv = T0.1 }[M](u)"]}
+{"goal":"u.val * v.val * (v.inv * u.inv) = M.1","proof":[]}
+{"goal":"v.inv * u.inv * (u.val * v.val) = v.inv * (u.inv * u.val) * v.val","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](v.inv * u.inv, u.val, v.val)","function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](v.inv, u.inv, u.val)"]}
+{"goal":"u.inv * u.val = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.inv * x0.val = T0.1 }[M](u)"]}
+{"goal":"v.inv * (u.inv * u.val) * v.val = v.inv * M.1 * v.val","proof":[]}
+{"goal":"v.inv * M.1 = v.inv","proof":["function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](v.inv)"]}
+{"goal":"v.inv * M.1 * v.val = v.inv * v.val","proof":[]}
+{"goal":"v.inv * v.val = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.inv * x0.val = T0.1 }[M](v)"]}
+{"goal":"v.inv * u.inv * (u.val * v.val) = M.1","proof":[]}
+{"goal":"exists(k0: Unit[M]) { Unit.new(u.val * v.val, v.inv * u.inv) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0, x1: T0) { not Unit.constraint[T0](x0, x1) or exists(k0: Unit[T0]) { Option.some[Unit[T0]](k0) = Unit.new[T0](x0, x1) } }[M](u.val * v.val, v.inv * u.inv)","function[T0: Monoid](x0: T0, x1: T0) { (T0.1 = x0 * x1 and T0.1 = x1 * x0) = Unit.constraint[T0](x0, x1) }[M](u.val * v.val, v.inv * u.inv)"]}
+{"goal":"u.inv * u.val = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.inv * x0.val = T0.1 }[M](u)"]}
+{"goal":"u.val * u.inv = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.val * x0.inv = T0.1 }[M](u)"]}
+{"goal":"exists(k0: Unit[M]) { Unit.new(u.inv, u.val) = Option.some(k0) }","proof":["function[T0: Monoid](x0: T0, x1: T0) { not Unit.constraint[T0](x0, x1) or exists(k0: Unit[T0]) { Option.some[Unit[T0]](k0) = Unit.new[T0](x0, x1) } }[M](u.inv, u.val)","function[T0: Monoid](x0: T0, x1: T0) { (T0.1 = x0 * x1 and T0.1 = x1 * x0) = Unit.constraint[T0](x0, x1) }[M](u.inv, u.val)"]}
+{"goal":"unit_one_val","proof":["function[T0: Monoid](x0: Unit[T0], x1: T0, x2: T0) { Option.some[Unit[T0]](x0) != Unit.new[T0](x1, x2) or x0.val = x1 }[M](unit_one[M], M.1, M.1)","function[T0: Monoid] { Unit.new[T0](T0.1, T0.1) = Option.some[Unit[T0]](unit_one[T0]) }[M]"]}
+{"goal":"unit_one_inv","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.inv * x0.val = T0.1 }[M](unit_one[M])","function[T0: Monoid] { unit_one[T0].val = T0.1 }[M]","function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](unit_one[M].inv)"]}
+{"goal":"unit_mul_val","proof":["function[T0: Monoid](x0: Unit[T0], x1: T0, x2: T0) { Option.some[Unit[T0]](x0) != Unit.new[T0](x1, x2) or x0.val = x1 }[M](unit_mul[M](u, v), u.val * v.val, v.inv * u.inv)","function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { Unit.new[T0](x0.val * x1.val, x1.inv * x0.inv) = Option.some[Unit[T0]](unit_mul[T0](x0, x1)) }[M](u, v)"]}
+{"goal":"unit_mul_inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: T0, x2: T0) { Option.some[Unit[T0]](x0) != Unit.new[T0](x1, x2) or x0.inv = x2 }[M](unit_mul[M](u, v), u.val * v.val, v.inv * u.inv)","function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { Unit.new[T0](x0.val * x1.val, x1.inv * x0.inv) = Option.some[Unit[T0]](unit_mul[T0](x0, x1)) }[M](u, v)"]}
+{"goal":"unit_mul[M](u, v).val = u.val * v.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, v)"]}
+{"goal":"is_monoid_unit(u.val * v.val)","proof":[]}
+{"goal":"unit_mul_val_is_monoid_unit","proof":[]}
+{"goal":"unit_inverse_val","proof":["function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.inv, x0.val) = Option.some[Unit[T0]](unit_inverse[T0](x0)) }[M](u)","function[T0: Monoid](x0: Unit[T0], x1: T0, x2: T0) { Option.some[Unit[T0]](x0) != Unit.new[T0](x1, x2) or x0.val = x1 }[M](unit_inverse[M](u), u.inv, u.val)"]}
+{"goal":"unit_inverse_inv","proof":["function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.inv, x0.val) = Option.some[Unit[T0]](unit_inverse[T0](x0)) }[M](u)","function[T0: Monoid](x0: Unit[T0], x1: T0, x2: T0) { Option.some[Unit[T0]](x0) != Unit.new[T0](x1, x2) or x0.inv = x2 }[M](unit_inverse[M](u), u.inv, u.val)"]}
+{"goal":"unit_inverse[M](u).val = u.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](u)"]}
+{"goal":"is_monoid_unit(u.inv)","proof":[]}
+{"goal":"unit_inv_is_monoid_unit","proof":[]}
+{"goal":"lhs.val = u.val * unit_one[M].val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, unit_one[M])"]}
+{"goal":"unit_one[M].val = M.1","proof":["function[T0: Monoid] { unit_one[T0].val = T0.1 }[M]"]}
+{"goal":"lhs.val = u.val * M.1","proof":[]}
+{"goal":"lhs.val = u.val","proof":["function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](u.val)"]}
+{"goal":"lhs.inv = unit_one[M].inv * u.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](unit_one[M], u)"]}
+{"goal":"unit_one[M].inv = M.1","proof":["function[T0: Monoid] { unit_one[T0].inv = T0.1 }[M]"]}
+{"goal":"lhs.inv = M.1 * u.inv","proof":[]}
+{"goal":"lhs.inv = u.inv","proof":["function[T0: Monoid](x0: T0) { T0.1 * x0 = x0 }[M](u.inv)"]}
+{"goal":"unit_mul_one_right","proof":[]}
+{"goal":"lhs.val = unit_one[M].val * u.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](unit_one[M], u)"]}
+{"goal":"unit_one[M].val = M.1","proof":["function[T0: Monoid] { unit_one[T0].val = T0.1 }[M]"]}
+{"goal":"lhs.val = M.1 * u.val","proof":[]}
+{"goal":"lhs.val = u.val","proof":["function[T0: Monoid](x0: T0) { T0.1 * x0 = x0 }[M](u.val)"]}
+{"goal":"lhs.inv = u.inv * unit_one[M].inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](u, unit_one[M])"]}
+{"goal":"unit_one[M].inv = M.1","proof":["function[T0: Monoid] { unit_one[T0].inv = T0.1 }[M]"]}
+{"goal":"lhs.inv = u.inv * M.1","proof":[]}
+{"goal":"lhs.inv = u.inv","proof":["function[T0: Monoid](x0: T0) { x0 * T0.1 = x0 }[M](u.inv)"]}
+{"goal":"unit_mul_one_left","proof":[]}
+{"goal":"lhs.val = u.val * unit_inverse[M](u).val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, unit_inverse[M](u))"]}
+{"goal":"unit_inverse[M](u).val = u.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](u)"]}
+{"goal":"lhs.val = u.val * u.inv","proof":[]}
+{"goal":"lhs.val = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.val * x0.inv = T0.1 }[M](u)"]}
+{"goal":"lhs.inv = unit_inverse[M](u).inv * u.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](unit_inverse[M](u), u)"]}
+{"goal":"unit_inverse[M](u).inv = u.val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](u)"]}
+{"goal":"lhs.inv = u.val * u.inv","proof":[]}
+{"goal":"lhs.inv = M.1","proof":[]}
+{"goal":"unit_mul_inverse_right","proof":["function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](unit_one[M])","function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](unit_mul[M](u, unit_inverse[M](u)))","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Unit[M]](unit_mul[M](u, unit_inverse[M](u)), unit_one[M])","function[T0: Monoid] { unit_one[T0].inv = T0.1 }[M]","function[T0: Monoid] { unit_one[T0].val = T0.1 }[M]"]}
+{"goal":"lhs.val = unit_inverse[M](u).val * u.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](unit_inverse[M](u), u)"]}
+{"goal":"unit_inverse[M](u).val = u.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](u)"]}
+{"goal":"lhs.val = u.inv * u.val","proof":[]}
+{"goal":"lhs.val = M.1","proof":["function[T0: Monoid](x0: Unit[T0]) { x0.inv * x0.val = T0.1 }[M](u)"]}
+{"goal":"lhs.inv = u.inv * unit_inverse[M](u).inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](u, unit_inverse[M](u))"]}
+{"goal":"unit_inverse[M](u).inv = u.val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](u)"]}
+{"goal":"lhs.inv = u.inv * u.val","proof":[]}
+{"goal":"lhs.inv = M.1","proof":[]}
+{"goal":"unit_mul_inverse_left","proof":["function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](unit_one[M])","function[T0: Monoid](x0: Unit[T0]) { Unit.new[T0](x0.val, x0.inv) = Option.some[Unit[T0]](x0) }[M](unit_mul[M](unit_inverse[M](u), u))","function[T0](x0: T0, x1: T0) { Option.some[T0](x0) != Option.some[T0](x1) or x0 = x1 }[Unit[M]](unit_mul[M](unit_inverse[M](u), u), unit_one[M])","function[T0: Monoid] { unit_one[T0].inv = T0.1 }[M]","function[T0: Monoid] { unit_one[T0].val = T0.1 }[M]"]}
+{"goal":"lhs.val = u.val * unit_mul[M](v, w).val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, unit_mul[M](v, w))"]}
+{"goal":"unit_mul[M](v, w).val = v.val * w.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](v, w)"]}
+{"goal":"lhs.val = u.val * (v.val * w.val)","proof":[]}
+{"goal":"rhs.val = unit_mul[M](u, v).val * w.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](unit_mul[M](u, v), w)"]}
+{"goal":"unit_mul[M](u, v).val = u.val * v.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, v)"]}
+{"goal":"rhs.val = u.val * v.val * w.val","proof":[]}
+{"goal":"lhs.val = rhs.val","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](u.val, v.val, w.val)"]}
+{"goal":"lhs.inv = unit_mul[M](v, w).inv * u.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](unit_mul[M](v, w), u)"]}
+{"goal":"unit_mul[M](v, w).inv = w.inv * v.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](w, v)"]}
+{"goal":"lhs.inv = w.inv * v.inv * u.inv","proof":[]}
+{"goal":"rhs.inv = w.inv * unit_mul[M](u, v).inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](w, unit_mul[M](u, v))"]}
+{"goal":"unit_mul[M](u, v).inv = v.inv * u.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](v, u)"]}
+{"goal":"rhs.inv = w.inv * (v.inv * u.inv)","proof":[]}
+{"goal":"lhs.inv = rhs.inv","proof":["function[T0: lib(semigroup).Semigroup](x0: T0, x1: T0, x2: T0) { x0 * x1 * x2 = x0 * (x1 * x2) }[M](w.inv, v.inv, u.inv)"]}
+{"goal":"unit_mul_assoc","proof":[]}
+{"goal":"lhs.val = unit_inverse[M](u).inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](unit_inverse[M](u))"]}
+{"goal":"unit_inverse[M](u).inv = u.val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](u)"]}
+{"goal":"lhs.val = u.val","proof":[]}
+{"goal":"lhs.inv = unit_inverse[M](u).val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](unit_inverse[M](u))"]}
+{"goal":"unit_inverse[M](u).val = u.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](u)"]}
+{"goal":"lhs.inv = u.inv","proof":[]}
+{"goal":"unit_inverse_inverse","proof":[]}
+{"goal":"lhs.val = unit_mul[M](u, v).inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](unit_mul[M](u, v))"]}
+{"goal":"unit_mul[M](u, v).inv = v.inv * u.inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](v, u)"]}
+{"goal":"lhs.val = v.inv * u.inv","proof":[]}
+{"goal":"rhs.val = unit_inverse[M](v).val * unit_inverse[M](u).val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](unit_inverse[M](v), unit_inverse[M](u))"]}
+{"goal":"unit_inverse[M](v).val = v.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](v)"]}
+{"goal":"unit_inverse[M](u).val = u.inv","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).val = x0.inv }[M](u)"]}
+{"goal":"rhs.val = v.inv * u.inv","proof":[]}
+{"goal":"lhs.val = rhs.val","proof":[]}
+{"goal":"lhs.inv = unit_mul[M](u, v).val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](unit_mul[M](u, v))"]}
+{"goal":"unit_mul[M](u, v).val = u.val * v.val","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.val * x1.val = unit_mul[T0](x0, x1).val }[M](u, v)"]}
+{"goal":"lhs.inv = u.val * v.val","proof":[]}
+{"goal":"rhs.inv = unit_inverse[M](u).inv * unit_inverse[M](v).inv","proof":["function[T0: Monoid](x0: Unit[T0], x1: Unit[T0]) { x0.inv * x1.inv = unit_mul[T0](x1, x0).inv }[M](unit_inverse[M](u), unit_inverse[M](v))"]}
+{"goal":"unit_inverse[M](u).inv = u.val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](u)"]}
+{"goal":"unit_inverse[M](v).inv = v.val","proof":["function[T0: Monoid](x0: Unit[T0]) { unit_inverse[T0](x0).inv = x0.val }[M](v)"]}
+{"goal":"rhs.inv = u.val * v.val","proof":[]}
+{"goal":"lhs.inv = rhs.inv","proof":[]}
+{"goal":"unit_inverse_mul","proof":[]}
