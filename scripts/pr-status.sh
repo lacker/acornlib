@@ -66,10 +66,14 @@ pr = json.loads(os.environ["PR_JSON"])
 reviews = json.loads(os.environ["REVIEWS_JSON"])
 
 bot_display = "AcornLibrarian"
+human_reviewers = {"lacker"}
 
 def is_bot(login):
     normalized = login.lower().replace("-", "").replace("[bot]", "")
     return normalized == "acornlibrarian"
+
+def is_human_reviewer(login):
+    return login.lower() in human_reviewers
 
 def join_names(names):
     return ", ".join(names)
@@ -85,16 +89,21 @@ for review in reviews:
 
 changes_requested = [
     login for login, state in latest_reviews.items()
-    if state == "CHANGES_REQUESTED"
+    if state == "CHANGES_REQUESTED" and is_human_reviewer(login)
 ]
 approved_by = [
     login for login, state in latest_reviews.items()
-    if state == "APPROVED"
+    if state == "APPROVED" and is_human_reviewer(login)
 ]
 
 author = pr["user"]["login"]
 assignees = [assignee["login"] for assignee in pr.get("assignees", [])]
-human_assignees = [login for login in assignees if not is_bot(login)]
+human_assignees = [login for login in assignees if is_human_reviewer(login)]
+approved_reviewers = {login.lower() for login in approved_by}
+pending_human_assignees = [
+    login for login in human_assignees
+    if login.lower() not in approved_reviewers
+]
 default_branch = pr.get("base", {}).get("repo", {}).get("default_branch", "master")
 base_ref = pr.get("base", {}).get("ref", default_branch)
 
@@ -104,9 +113,9 @@ if pr.get("draft"):
 elif author in assignees:
     status = "assigned to author"
     next_step = f"{author} updates"
-elif human_assignees:
+elif pending_human_assignees:
     status = "human review"
-    next_step = f"{join_names(human_assignees)} reviews"
+    next_step = f"{join_names(pending_human_assignees)} reviews"
 elif changes_requested:
     status = "changes requested"
     next_step = f"{author} updates"
