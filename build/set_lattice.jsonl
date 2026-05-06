@@ -1240,6 +1240,12 @@
 {"goal":"set_seq_intersection_empty_family","proof":[]}
 {"goal":"set_seq_union_complement_eq_seq_intersection_complement","proof":[]}
 {"goal":"set_seq_intersection_complement_eq_seq_union_complement","proof":[]}
+{"goal":"u(i) = set_complement_family[K, Nat](family, i)","proof":[]}
+{"goal":"set_complement_family[K, Nat](family, i) = family(i).c","proof":["function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](family, i)"]}
+{"goal":"v(i) = seq_complement[K](family, i)","proof":[]}
+{"goal":"seq_complement[K](family, i) = family(i).c","proof":["function[T0](x0: Nat -> Set[T0], x1: Nat) { seq_complement[T0](x0, x1) = x0(x1).c }[K](family, i)"]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_complement_family_eq_seq_complement","proof":[]}
 {"goal":"set_inf[K](s, seq_union[K](family)) = seq_union[K](set_inf_family[K, Nat](s, family))","proof":[]}
 {"goal":"set_inf_seq_union_distrib_left","proof":[]}
 {"goal":"set_inf[K](seq_union[K](family), s) = seq_union[K](set_inf_family_right[K, Nat](family, s))","proof":[]}
@@ -1280,6 +1286,72 @@
 {"goal":"set_sInf[K, Nat](set_reindex_family[K, Nat, Nat](family, h)) = set_sInf[K, Nat](family)","proof":[]}
 {"goal":"seq_intersection[K](set_reindex_family[K, Nat, Nat](family, h)) = seq_intersection[K](family)","proof":[]}
 {"goal":"set_seq_intersection_reindex_eq_of_bijection","proof":[]}
+{"goal":"u(j) = set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i, j)","proof":[]}
+{"goal":"set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i, j) = set_complement_binary_family[K, Nat, Nat](family, i, j)","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T1, x2: T2) { set_right_slice_family[T0, T1, T2](x0, x1, x2) = x0(x1, x2) }[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i, j)"]}
+{"goal":"set_complement_binary_family[K, Nat, Nat](family, i, j) = family(i, j).c","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T1, x2: T2) { set_complement_binary_family[T0, T1, T2](x0, x1, x2) = x0(x1, x2).c }[K, Nat, Nat](family, i, j)"]}
+{"goal":"v(j) = set_complement_family[K, Nat](set_right_slice_family[K, Nat, Nat](family, i), j)","proof":[]}
+{"goal":"set_complement_family[K, Nat](set_right_slice_family[K, Nat, Nat](family, i), j) = set_right_slice_family[K, Nat, Nat](family, i, j).c","proof":["function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_right_slice_family[K, Nat, Nat](family, i), j)"]}
+{"goal":"set_right_slice_family[K, Nat, Nat](family, i, j) = family(i, j)","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T1, x2: T2) { set_right_slice_family[T0, T1, T2](x0, x1, x2) = x0(x1, x2) }[K, Nat, Nat](family, i, j)"]}
+{"goal":"v(j) = family(i, j).c","proof":[]}
+{"goal":"u(j) = v(j)","proof":[]}
+{"goal":"set_right_slice_complement_binary_family_eq","proof":[]}
+{"goal":"u(i) = set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j, i)","proof":[]}
+{"goal":"set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j, i) = set_complement_binary_family[K, Nat, Nat](family, i, j)","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T2, x2: T1) { set_left_slice_family[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j, i)"]}
+{"goal":"set_complement_binary_family[K, Nat, Nat](family, i, j) = family(i, j).c","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T1, x2: T2) { set_complement_binary_family[T0, T1, T2](x0, x1, x2) = x0(x1, x2).c }[K, Nat, Nat](family, i, j)"]}
+{"goal":"v(i) = set_complement_family[K, Nat](set_left_slice_family[K, Nat, Nat](family, j), i)","proof":[]}
+{"goal":"set_complement_family[K, Nat](set_left_slice_family[K, Nat, Nat](family, j), i) = set_left_slice_family[K, Nat, Nat](family, j, i).c","proof":["function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_left_slice_family[K, Nat, Nat](family, j), i)"]}
+{"goal":"set_left_slice_family[K, Nat, Nat](family, j, i) = family(i, j)","proof":["function[T0, T1, T2](x0: (T1, T2) -> Set[T0], x1: T2, x2: T1) { set_left_slice_family[T0, T1, T2](x0, x1, x2) = x0(x2, x1) }[K, Nat, Nat](family, j, i)"]}
+{"goal":"v(i) = family(i, j).c","proof":[]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_left_slice_complement_binary_family_eq","proof":[]}
+{"goal":"u(i) = seq_union[K](set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i))","proof":["function(x0: Nat) { set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family), x0) = u(x0) }(i)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_right_family[T0](x0, x1) }[K](set_complement_binary_family[K, Nat, Nat](family), i)"]}
+{"goal":"set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i) = seq_complement[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":[]}
+{"goal":"u(i) = seq_intersection[K](set_right_slice_family[K, Nat, Nat](family, i)).c","proof":[]}
+{"goal":"set_seq_intersection_right_family[K](family, i) = seq_intersection[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_right_family[T0](x0, x1) }[K](family, i)"]}
+{"goal":"v(i) = seq_complement[K](set_seq_intersection_right_family[K](family), i)","proof":[]}
+{"goal":"seq_complement[K](set_seq_intersection_right_family[K](family), i) = set_seq_intersection_right_family[K](family, i).c","proof":["function[T0](x0: Nat -> Set[T0], x1: Nat) { set_complement_family[T0, Nat](x0, x1) = seq_complement[T0](x0, x1) }[K](set_seq_intersection_right_family[K](family), i)","function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_seq_intersection_right_family[K](family), i)"]}
+{"goal":"v(i) = seq_intersection[K](set_right_slice_family[K, Nat, Nat](family, i)).c","proof":[]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_seq_union_right_complement_binary_family_eq","proof":[]}
+{"goal":"u(j) = seq_union[K](set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j))","proof":["function(x0: Nat) { set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family), x0) = u(x0) }(j)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_left_family[T0](x0, x1) }[K](set_complement_binary_family[K, Nat, Nat](family), j)"]}
+{"goal":"set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j) = seq_complement[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":[]}
+{"goal":"u(j) = seq_intersection[K](set_left_slice_family[K, Nat, Nat](family, j)).c","proof":[]}
+{"goal":"set_seq_intersection_left_family[K](family, j) = seq_intersection[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_left_family[T0](x0, x1) }[K](family, j)"]}
+{"goal":"v(j) = seq_complement[K](set_seq_intersection_left_family[K](family), j)","proof":[]}
+{"goal":"seq_complement[K](set_seq_intersection_left_family[K](family), j) = set_seq_intersection_left_family[K](family, j).c","proof":["function[T0](x0: Nat -> Set[T0], x1: Nat) { set_complement_family[T0, Nat](x0, x1) = seq_complement[T0](x0, x1) }[K](set_seq_intersection_left_family[K](family), j)","function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_seq_intersection_left_family[K](family), j)"]}
+{"goal":"v(j) = seq_intersection[K](set_left_slice_family[K, Nat, Nat](family, j)).c","proof":[]}
+{"goal":"u(j) = v(j)","proof":[]}
+{"goal":"set_seq_union_left_complement_binary_family_eq","proof":[]}
+{"goal":"u(i) = seq_intersection[K](set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i))","proof":["function(x0: Nat) { set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family), x0) = u(x0) }(i)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_right_family[T0](x0, x1) }[K](set_complement_binary_family[K, Nat, Nat](family), i)"]}
+{"goal":"set_right_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), i) = seq_complement[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":[]}
+{"goal":"u(i) = seq_union[K](set_right_slice_family[K, Nat, Nat](family, i)).c","proof":[]}
+{"goal":"set_seq_union_right_family[K](family, i) = seq_union[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_right_family[T0](x0, x1) }[K](family, i)"]}
+{"goal":"v(i) = seq_complement[K](set_seq_union_right_family[K](family), i)","proof":[]}
+{"goal":"seq_complement[K](set_seq_union_right_family[K](family), i) = set_seq_union_right_family[K](family, i).c","proof":["function[T0](x0: Nat -> Set[T0], x1: Nat) { set_complement_family[T0, Nat](x0, x1) = seq_complement[T0](x0, x1) }[K](set_seq_union_right_family[K](family), i)","function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_seq_union_right_family[K](family), i)"]}
+{"goal":"v(i) = seq_union[K](set_right_slice_family[K, Nat, Nat](family, i)).c","proof":[]}
+{"goal":"u(i) = v(i)","proof":[]}
+{"goal":"set_seq_intersection_right_complement_binary_family_eq","proof":[]}
+{"goal":"u(j) = seq_intersection[K](set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j))","proof":["function(x0: Nat) { set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family), x0) = u(x0) }(j)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_intersection[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_intersection_left_family[T0](x0, x1) }[K](set_complement_binary_family[K, Nat, Nat](family), j)"]}
+{"goal":"set_left_slice_family[K, Nat, Nat](set_complement_binary_family[K, Nat, Nat](family), j) = seq_complement[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":[]}
+{"goal":"u(j) = seq_union[K](set_left_slice_family[K, Nat, Nat](family, j)).c","proof":[]}
+{"goal":"set_seq_union_left_family[K](family, j) = seq_union[K](set_left_slice_family[K, Nat, Nat](family, j))","proof":["function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_left_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_left_family[T0](x0, x1) }[K](family, j)"]}
+{"goal":"v(j) = seq_complement[K](set_seq_union_left_family[K](family), j)","proof":[]}
+{"goal":"seq_complement[K](set_seq_union_left_family[K](family), j) = set_seq_union_left_family[K](family, j).c","proof":["function[T0](x0: Nat -> Set[T0], x1: Nat) { set_complement_family[T0, Nat](x0, x1) = seq_complement[T0](x0, x1) }[K](set_seq_union_left_family[K](family), j)","function[T0, T1](x0: T1 -> Set[T0], x1: T1) { set_complement_family[T0, T1](x0, x1) = x0(x1).c }[K, Nat](set_seq_union_left_family[K](family), j)"]}
+{"goal":"v(j) = seq_union[K](set_left_slice_family[K, Nat, Nat](family, j)).c","proof":[]}
+{"goal":"u(j) = v(j)","proof":[]}
+{"goal":"set_seq_intersection_left_complement_binary_family_eq","proof":[]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_union[K](seq_complement[K](set_seq_intersection_right_family[K](family)))","proof":["set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family)) != seq_complement[K](set_seq_intersection_right_family[K](family))","set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family)) = seq_complement[K](set_seq_intersection_right_family[K](family))"]}
+{"goal":"seq_union[K](set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_intersection[K](set_seq_intersection_right_family[K](family)).c","proof":["seq_union[K](set_seq_union_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) != seq_union[K](seq_complement[K](set_seq_intersection_right_family[K](family)))"]}
+{"goal":"set_seq_union_right_complement_binary_family_eq_intersection_complement","proof":[]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_union[K](seq_complement[K](set_seq_intersection_left_family[K](family)))","proof":["set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family)) != seq_complement[K](set_seq_intersection_left_family[K](family))","set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family)) = seq_complement[K](set_seq_intersection_left_family[K](family))"]}
+{"goal":"seq_union[K](set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_intersection[K](set_seq_intersection_left_family[K](family)).c","proof":["seq_union[K](set_seq_union_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) != seq_union[K](seq_complement[K](set_seq_intersection_left_family[K](family)))"]}
+{"goal":"set_seq_union_left_complement_binary_family_eq_intersection_complement","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_intersection[K](seq_complement[K](set_seq_union_right_family[K](family)))","proof":["set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family)) != seq_complement[K](set_seq_union_right_family[K](family))","set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family)) = seq_complement[K](set_seq_union_right_family[K](family))"]}
+{"goal":"seq_intersection[K](set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_union[K](set_seq_union_right_family[K](family)).c","proof":["seq_intersection[K](set_seq_intersection_right_family[K](set_complement_binary_family[K, Nat, Nat](family))) != seq_intersection[K](seq_complement[K](set_seq_union_right_family[K](family)))"]}
+{"goal":"set_seq_intersection_right_complement_binary_family_eq_union_complement","proof":[]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_intersection[K](seq_complement[K](set_seq_union_left_family[K](family)))","proof":["set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family)) != seq_complement[K](set_seq_union_left_family[K](family))","set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family)) = seq_complement[K](set_seq_union_left_family[K](family))"]}
+{"goal":"seq_intersection[K](set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) = seq_union[K](set_seq_union_left_family[K](family)).c","proof":["seq_intersection[K](set_seq_intersection_left_family[K](set_complement_binary_family[K, Nat, Nat](family))) != seq_intersection[K](seq_complement[K](set_seq_union_left_family[K](family)))"]}
+{"goal":"set_seq_intersection_left_complement_binary_family_eq_union_complement","proof":[]}
 {"goal":"u(i) = seq_union[K](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_seq_union_right_family[K](family, x0) = u(x0) }(i)","function[T0](x0: (Nat, Nat) -> Set[T0], x1: Nat) { seq_union[T0](set_right_slice_family[T0, Nat, Nat](x0, x1)) = set_seq_union_right_family[T0](x0, x1) }[K](family, i)"]}
 {"goal":"v(i) = set_sSup[K, Nat](set_right_slice_family[K, Nat, Nat](family, i))","proof":["function(x0: Nat) { set_sSup_right_family[K, Nat, Nat](family, x0) = v(x0) }(i)","function[T0, T1, T2](x0: (T2, T1) -> Set[T0], x1: T2) { set_sSup[T0, T1](set_right_slice_family[T0, T2, T1](x0, x1)) = set_sSup_right_family[T0, T2, T1](x0, x1) }[K, Nat, Nat](family, i)"]}
 {"goal":"u(i) = v(i)","proof":[]}
