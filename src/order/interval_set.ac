@@ -86,6 +86,72 @@ theorem closed_interval_set_le_upper[L: LinearOrder](lower: L, upper: L, point: 
     }
 }
 
+/// The right endpoint belongs to a left-open interval when the endpoints are strictly ordered.
+theorem left_open_interval_set_contains_upper[L: LinearOrder](lower: L, upper: L) {
+    lower < upper implies left_open_interval_set(lower, upper).contains(upper)
+} by {
+    lte_refl(upper)
+    left_open_interval(lower, upper, upper)
+    left_open_interval_set(lower, upper).contains(upper)
+}
+
+/// The left endpoint belongs to a right-open interval when the endpoints are strictly ordered.
+theorem right_open_interval_set_contains_lower[L: LinearOrder](lower: L, upper: L) {
+    lower < upper implies right_open_interval_set(lower, upper).contains(lower)
+} by {
+    lte_refl(lower)
+    right_open_interval(lower, upper, lower)
+    right_open_interval_set(lower, upper).contains(lower)
+}
+
+/// The lower strict endpoint inequality follows from membership in an open interval set.
+theorem open_interval_set_lower_lt[L: LinearOrder](lower: L, upper: L, point: L) {
+    open_interval_set(lower, upper).contains(point) implies lower < point
+} by {
+    open_interval(lower, upper, point)
+    lower < point
+}
+
+/// The upper strict endpoint inequality follows from membership in an open interval set.
+theorem open_interval_set_lt_upper[L: LinearOrder](lower: L, upper: L, point: L) {
+    open_interval_set(lower, upper).contains(point) implies point < upper
+} by {
+    open_interval(lower, upper, point)
+    point < upper
+}
+
+/// The lower strict endpoint inequality follows from membership in a left-open interval set.
+theorem left_open_interval_set_lower_lt[L: LinearOrder](lower: L, upper: L, point: L) {
+    left_open_interval_set(lower, upper).contains(point) implies lower < point
+} by {
+    left_open_interval(lower, upper, point)
+    lower < point
+}
+
+/// The upper endpoint inequality follows from membership in a left-open interval set.
+theorem left_open_interval_set_le_upper[L: LinearOrder](lower: L, upper: L, point: L) {
+    left_open_interval_set(lower, upper).contains(point) implies point <= upper
+} by {
+    left_open_interval(lower, upper, point)
+    point <= upper
+}
+
+/// The lower endpoint inequality follows from membership in a right-open interval set.
+theorem right_open_interval_set_lower_le[L: LinearOrder](lower: L, upper: L, point: L) {
+    right_open_interval_set(lower, upper).contains(point) implies lower <= point
+} by {
+    right_open_interval(lower, upper, point)
+    lower <= point
+}
+
+/// The upper strict endpoint inequality follows from membership in a right-open interval set.
+theorem right_open_interval_set_lt_upper[L: LinearOrder](lower: L, upper: L, point: L) {
+    right_open_interval_set(lower, upper).contains(point) implies point < upper
+} by {
+    right_open_interval(lower, upper, point)
+    point < upper
+}
+
 /// Every point of an open interval belongs to the corresponding closed interval.
 theorem open_interval_set_subset_closed_interval_set[L: LinearOrder](lower: L, upper: L) {
     open_interval_set(lower, upper).subset(closed_interval_set(lower, upper))
