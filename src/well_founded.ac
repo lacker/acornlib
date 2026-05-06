@@ -1,0 +1,115 @@
+/// Well-founded relations: every nonempty predicate admits an `r`-minimal element.
+
+from relation_basic import is_irreflexive
+from relation_transport import relation_pullback, predicate_pullback
+
+/// True if every nonempty predicate on `T` has an element that is `r`-minimal,
+/// i.e. has no `r`-predecessor inside the predicate.
+define is_well_founded[T](r: (T, T) -> Bool) -> Bool {
+    forall(p: T -> Bool) {
+        (exists(x: T) { p(x) }) implies exists(m: T) {
+            p(m) and forall(y: T) {
+                r(y, m) implies not p(y)
+            }
+        }
+    }
+}
+
+/// A well-founded relation is irreflexive.
+theorem well_founded_is_irreflexive[T](r: (T, T) -> Bool) {
+    is_well_founded(r) implies is_irreflexive(r)
+} by {
+    if is_well_founded(r) {
+        is_well_founded(r) = forall(p: T -> Bool) {
+            (exists(x: T) { p(x) }) implies exists(m: T) {
+                p(m) and forall(y: T) {
+                    r(y, m) implies not p(y)
+                }
+            }
+        }
+        forall(x: T) {
+            let p: T -> Bool = function(z: T) { z = x }
+            p(x) = (x = x)
+            p(x)
+            exists(z: T) { p(z) }
+            exists(m: T) {
+                p(m) and forall(y: T) {
+                    r(y, m) implies not p(y)
+                }
+            }
+            let m: T satisfy {
+                p(m) and forall(y: T) {
+                    r(y, m) implies not p(y)
+                }
+            }
+            p(m)
+            m = x
+            forall(y: T) {
+                r(y, m) implies not p(y)
+            }
+            if r(x, x) {
+                r(x, m)
+                not p(x)
+                false
+            }
+            not r(x, x)
+        }
+        is_irreflexive(r)
+    }
+}
+
+/// The pullback of a well-founded relation along any function is well-founded.
+theorem relation_pullback_is_well_founded[A, B](f: A -> B, r: (B, B) -> Bool) {
+    is_well_founded(r) implies is_well_founded(relation_pullback(f, r))
+} by {
+    if is_well_founded(r) {
+        is_well_founded(r) = forall(p: B -> Bool) {
+            (exists(x: B) { p(x) }) implies exists(m: B) {
+                p(m) and forall(y: B) {
+                    r(y, m) implies not p(y)
+                }
+            }
+        }
+        forall(p: A -> Bool) {
+            if exists(x: A) { p(x) } {
+                let q: B -> Bool = function(b: B) {
+                    exists(a: A) { f(a) = b and p(a) }
+                }
+                let x0: A satisfy { p(x0) }
+                q(f(x0))
+                exists(b: B) { q(b) }
+                exists(mb: B) {
+                    q(mb) and forall(yb: B) {
+                        r(yb, mb) implies not q(yb)
+                    }
+                }
+                let mb: B satisfy {
+                    q(mb) and forall(yb: B) {
+                        r(yb, mb) implies not q(yb)
+                    }
+                }
+                q(mb)
+                let ma: A satisfy { f(ma) = mb and p(ma) }
+                forall(ya: A) {
+                    if relation_pullback(f, r, ya, ma) {
+                        r(f(ya), f(ma))
+                        r(f(ya), mb)
+                        not q(f(ya))
+                        if p(ya) {
+                            f(ya) = f(ya)
+                            q(f(ya))
+                            false
+                        }
+                        not p(ya)
+                    }
+                }
+                exists(m: A) {
+                    p(m) and forall(y: A) {
+                        relation_pullback(f, r, y, m) implies not p(y)
+                    }
+                }
+            }
+        }
+        is_well_founded(relation_pullback(f, r))
+    }
+}
