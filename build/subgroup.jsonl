@@ -389,3 +389,5 @@
 {"goal":"group_hom_kernel_contains_of_maps_to_identity","proof":[]}
 {"goal":"f.hom(a) = H.1","proof":[]}
 {"goal":"group_hom_maps_to_identity_of_kernel_contains","proof":[]}
+{"goal":"subgroup_sup_comm","proof":["not subgroup_subset[G](subgroup_sup[G](a, b), subgroup_sup[G](b, a)) or not subgroup_subset[G](subgroup_sup[G](b, a), subgroup_sup[G](a, b))","subgroup_subset[G](subgroup_sup[G](a, b), subgroup_sup[G](b, a))","subgroup_subset[G](subgroup_sup[G](b, a), subgroup_sup[G](a, b))","not subgroup_subset[G](subgroup_sup[G](b, a), subgroup_sup[G](a, b))"]}
+{"goal":"subgroup_sup_idempotent","proof":["not subgroup_subset[G](a, subgroup_sup[G](a, a)) or not subgroup_subset[G](subgroup_sup[G](a, a), a)","subgroup_subset[G](subgroup_sup[G](a, a), a)","not subgroup_subset[G](a, subgroup_sup[G](a, a))"]}

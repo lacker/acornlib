@@ -1466,3 +1466,27 @@ theorem add_monoid_hom_maps_to_zero_of_kernel_contains[A: AddMonoid, B: AddMonoi
         f.hom(a) = B.0
     }
 }
+
+
+/// Additive submonoid join is commutative.
+theorem add_submonoid_sup_comm[M: AddMonoid](a: AddSubmonoid[M], b: AddSubmonoid[M]) {
+    add_submonoid_sup(a, b) = add_submonoid_sup(b, a)
+} by {
+    add_submonoid_subset_sup_right(b, a)
+    add_submonoid_subset_sup_left(b, a)
+    add_submonoid_sup_subset_of_subset_left_right(a, b, add_submonoid_sup(b, a))
+    add_submonoid_subset_sup_right(a, b)
+    add_submonoid_subset_sup_left(a, b)
+    add_submonoid_sup_subset_of_subset_left_right(b, a, add_submonoid_sup(a, b))
+    add_submonoid_subset_antisymm(add_submonoid_sup(a, b), add_submonoid_sup(b, a))
+}
+
+/// Joining an additive submonoid with itself gives the same submonoid.
+theorem add_submonoid_sup_idempotent[M: AddMonoid](a: AddSubmonoid[M]) {
+    add_submonoid_sup(a, a) = a
+} by {
+    add_submonoid_subset_refl(a)
+    add_submonoid_sup_subset_of_subset_left_right(a, a, a)
+    add_submonoid_subset_sup_left(a, a)
+    add_submonoid_subset_antisymm(add_submonoid_sup(a, a), a)
+}

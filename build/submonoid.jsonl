@@ -349,3 +349,5 @@
 {"goal":"monoid_hom_kernel_contains_of_maps_to_identity","proof":[]}
 {"goal":"f.hom(a) = N.1","proof":[]}
 {"goal":"monoid_hom_maps_to_identity_of_kernel_contains","proof":[]}
+{"goal":"submonoid_sup_comm","proof":["not submonoid_subset[M](submonoid_sup[M](a, b), submonoid_sup[M](b, a)) or not submonoid_subset[M](submonoid_sup[M](b, a), submonoid_sup[M](a, b))","submonoid_subset[M](submonoid_sup[M](a, b), submonoid_sup[M](b, a))","submonoid_subset[M](submonoid_sup[M](b, a), submonoid_sup[M](a, b))","not submonoid_subset[M](submonoid_sup[M](b, a), submonoid_sup[M](a, b))"]}
+{"goal":"submonoid_sup_idempotent","proof":["not submonoid_subset[M](a, submonoid_sup[M](a, a)) or not submonoid_subset[M](submonoid_sup[M](a, a), a)","submonoid_subset[M](submonoid_sup[M](a, a), a)","not submonoid_subset[M](a, submonoid_sup[M](a, a))"]}
