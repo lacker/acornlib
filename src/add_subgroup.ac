@@ -2171,3 +2171,27 @@ theorem add_group_hom_maps_to_zero_of_kernel_contains[A: AddGroup, B: AddGroup](
         f.hom(a) = B.0
     }
 }
+
+
+/// Additive subgroup join is commutative.
+theorem add_subgroup_sup_comm[G: AddGroup](a: AddSubgroup[G], b: AddSubgroup[G]) {
+    add_subgroup_sup(a, b) = add_subgroup_sup(b, a)
+} by {
+    add_subgroup_subset_sup_right(b, a)
+    add_subgroup_subset_sup_left(b, a)
+    add_subgroup_sup_subset_of_subset_left_right(a, b, add_subgroup_sup(b, a))
+    add_subgroup_subset_sup_right(a, b)
+    add_subgroup_subset_sup_left(a, b)
+    add_subgroup_sup_subset_of_subset_left_right(b, a, add_subgroup_sup(a, b))
+    add_subgroup_subset_antisymm(add_subgroup_sup(a, b), add_subgroup_sup(b, a))
+}
+
+/// Joining an additive subgroup with itself gives the same subgroup.
+theorem add_subgroup_sup_idempotent[G: AddGroup](a: AddSubgroup[G]) {
+    add_subgroup_sup(a, a) = a
+} by {
+    add_subgroup_subset_refl(a)
+    add_subgroup_sup_subset_of_subset_left_right(a, a, a)
+    add_subgroup_subset_sup_left(a, a)
+    add_subgroup_subset_antisymm(add_subgroup_sup(a, a), a)
+}

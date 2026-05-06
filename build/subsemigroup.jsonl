@@ -253,3 +253,5 @@
 {"goal":"subsemigroup_is_finitely_generated[S](subsemigroup_closure[S](Set.empty_set[S]))","proof":[]}
 {"goal":"subsemigroup_is_finitely_generated[S](empty_subsemigroup[S])","proof":[]}
 {"goal":"empty_subsemigroup_is_finitely_generated","proof":[]}
+{"goal":"subsemigroup_sup_comm","proof":["not subsemigroup_subset[S](subsemigroup_sup[S](a, b), subsemigroup_sup[S](b, a)) or not subsemigroup_subset[S](subsemigroup_sup[S](b, a), subsemigroup_sup[S](a, b))","subsemigroup_subset[S](subsemigroup_sup[S](a, b), subsemigroup_sup[S](b, a))","subsemigroup_subset[S](subsemigroup_sup[S](b, a), subsemigroup_sup[S](a, b))","not subsemigroup_subset[S](subsemigroup_sup[S](b, a), subsemigroup_sup[S](a, b))"]}
+{"goal":"subsemigroup_sup_idempotent","proof":["not subsemigroup_subset[S](a, subsemigroup_sup[S](a, a)) or not subsemigroup_subset[S](subsemigroup_sup[S](a, a), a)","subsemigroup_subset[S](subsemigroup_sup[S](a, a), a)","not subsemigroup_subset[S](a, subsemigroup_sup[S](a, a))"]}
