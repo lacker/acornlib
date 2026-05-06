@@ -319,3 +319,5 @@
 {"goal":"add_monoid_hom_kernel_contains_of_maps_to_zero","proof":[]}
 {"goal":"f.hom(a) = B.0","proof":[]}
 {"goal":"add_monoid_hom_maps_to_zero_of_kernel_contains","proof":[]}
+{"goal":"add_submonoid_sup_comm","proof":["not add_submonoid_subset[M](add_submonoid_sup[M](a, b), add_submonoid_sup[M](b, a)) or not add_submonoid_subset[M](add_submonoid_sup[M](b, a), add_submonoid_sup[M](a, b))","add_submonoid_subset[M](add_submonoid_sup[M](a, b), add_submonoid_sup[M](b, a))","add_submonoid_subset[M](add_submonoid_sup[M](b, a), add_submonoid_sup[M](a, b))","not add_submonoid_subset[M](add_submonoid_sup[M](b, a), add_submonoid_sup[M](a, b))"]}
+{"goal":"add_submonoid_sup_idempotent","proof":["not add_submonoid_subset[M](a, add_submonoid_sup[M](a, a)) or not add_submonoid_subset[M](add_submonoid_sup[M](a, a), a)","add_submonoid_subset[M](add_submonoid_sup[M](a, a), a)","not add_submonoid_subset[M](a, add_submonoid_sup[M](a, a))"]}
