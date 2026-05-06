@@ -108,6 +108,26 @@ define attains_minimum_on[Domain, Value: PartialOrder](
     }
 }
 
+/// A point where a function attains a maximum belongs to the domain.
+theorem maximum_point_in_domain[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_maximum_at(domain, f, point) implies domain.contains(point)
+} by {
+    attains_maximum_at(domain, f, point)
+    domain.contains(point)
+}
+
+/// A point where a function attains a minimum belongs to the domain.
+theorem minimum_point_in_domain[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_minimum_at(domain, f, point) implies domain.contains(point)
+} by {
+    attains_minimum_at(domain, f, point)
+    domain.contains(point)
+}
+
 /// A maximum value is an upper bound.
 theorem maximum_value_is_upper_bound_on[Domain, Value: PartialOrder](
     domain: Set[Domain], f: Domain -> Value, point: Domain
@@ -229,6 +249,66 @@ theorem lower_bound_on_subset[Domain, Value: PartialOrder](
         }
         is_lower_bound_on(subset, f, bound)
     }
+}
+
+/// A maximum attained on a set remains a maximum on any subset containing its point.
+theorem attains_maximum_at_subset[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    subset.subset(superset) and subset.contains(point) and attains_maximum_at(superset, f, point)
+    implies attains_maximum_at(subset, f, point)
+} by {
+    maximum_value_is_upper_bound_on(superset, f, point)
+    is_upper_bound_on(superset, f, f(point))
+    upper_bound_on_subset(subset, superset, f, f(point))
+    is_upper_bound_on(subset, f, f(point))
+    subset.contains(point) and is_upper_bound_on(subset, f, f(point))
+    attains_maximum_at(subset, f, point)
+}
+
+/// A minimum attained on a set remains a minimum on any subset containing its point.
+theorem attains_minimum_at_subset[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    subset.subset(superset) and subset.contains(point) and attains_minimum_at(superset, f, point)
+    implies attains_minimum_at(subset, f, point)
+} by {
+    minimum_value_is_lower_bound_on(superset, f, point)
+    is_lower_bound_on(superset, f, f(point))
+    lower_bound_on_subset(subset, superset, f, f(point))
+    is_lower_bound_on(subset, f, f(point))
+    subset.contains(point) and is_lower_bound_on(subset, f, f(point))
+    attains_minimum_at(subset, f, point)
+}
+
+/// A subset containing a maximum point has an attained maximum.
+theorem attains_maximum_on_subset_from_point[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    subset.subset(superset) and subset.contains(point) and attains_maximum_at(superset, f, point)
+    implies attains_maximum_on(subset, f)
+} by {
+    attains_maximum_at_subset(subset, superset, f, point)
+    attains_maximum_at(subset, f, point)
+    exists(witness: Domain) {
+        attains_maximum_at(subset, f, witness)
+    }
+    attains_maximum_on(subset, f)
+}
+
+/// A subset containing a minimum point has an attained minimum.
+theorem attains_minimum_on_subset_from_point[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    subset.subset(superset) and subset.contains(point) and attains_minimum_at(superset, f, point)
+    implies attains_minimum_on(subset, f)
+} by {
+    attains_minimum_at_subset(subset, superset, f, point)
+    attains_minimum_at(subset, f, point)
+    exists(witness: Domain) {
+        attains_minimum_at(subset, f, witness)
+    }
+    attains_minimum_on(subset, f)
 }
 
 /// Boundedness above is preserved by restricting the domain.
