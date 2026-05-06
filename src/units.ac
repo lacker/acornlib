@@ -1,4 +1,6 @@
 from monoid import Monoid
+from ring import Ring
+from field import Field, unique_inverse
 
 /// True if an element of a monoid has a two-sided multiplicative inverse.
 define is_monoid_unit[M: Monoid](a: M) -> Bool {
@@ -292,4 +294,333 @@ theorem unit_inverse_mul[M: Monoid](u: Unit[M], v: Unit[M]) {
     rhs.inv = u.val * v.val
     lhs.inv = rhs.inv
     unit_ext(lhs, rhs)
+}
+
+/// Multiplication by the value of a unit on the left has trivial zero kernel.
+theorem unit_val_mul_eq_zero_left[R: Ring](u: Unit[R], a: R) {
+    u.val * a = R.0 implies a = R.0
+} by {
+    if u.val * a = R.0 {
+        a = R.1 * a
+        R.1 = u.inv * u.val
+        R.1 * a = (u.inv * u.val) * a
+        (u.inv * u.val) * a = u.inv * (u.val * a)
+        u.inv * (u.val * a) = u.inv * R.0
+        u.inv * R.0 = R.0
+        a = R.0
+    }
+}
+
+/// Multiplication by the value of a unit on the right has trivial zero kernel.
+theorem unit_val_mul_eq_zero_right[R: Ring](u: Unit[R], a: R) {
+    a * u.val = R.0 implies a = R.0
+} by {
+    if a * u.val = R.0 {
+        a = a * R.1
+        R.1 = u.val * u.inv
+        a * R.1 = a * (u.val * u.inv)
+        a * (u.val * u.inv) = (a * u.val) * u.inv
+        (a * u.val) * u.inv = R.0 * u.inv
+        R.0 * u.inv = R.0
+        a = R.0
+    }
+}
+
+/// A unit value cannot annihilate a nonzero element on the left.
+theorem unit_val_mul_nonzero_left[R: Ring](u: Unit[R], a: R) {
+    a != R.0 implies u.val * a != R.0
+} by {
+    if a != R.0 {
+        if u.val * a = R.0 {
+            unit_val_mul_eq_zero_left(u, a)
+            a = R.0
+        }
+    }
+}
+
+/// A unit value cannot annihilate a nonzero element on the right.
+theorem unit_val_mul_nonzero_right[R: Ring](u: Unit[R], a: R) {
+    a != R.0 implies a * u.val != R.0
+} by {
+    if a != R.0 {
+        if a * u.val = R.0 {
+            unit_val_mul_eq_zero_right(u, a)
+            a = R.0
+        }
+    }
+}
+
+/// A product by a unit value on the left is zero exactly when the other factor is zero.
+theorem unit_val_mul_zero_iff_left[R: Ring](u: Unit[R], a: R) {
+    (u.val * a = R.0) = (a = R.0)
+} by {
+    if u.val * a = R.0 {
+        unit_val_mul_eq_zero_left(u, a)
+        a = R.0
+    } else {
+        if a = R.0 {
+            u.val * a = u.val * R.0
+            u.val * R.0 = R.0
+        }
+    }
+}
+
+/// A product by a unit value on the right is zero exactly when the other factor is zero.
+theorem unit_val_mul_zero_iff_right[R: Ring](u: Unit[R], a: R) {
+    (a * u.val = R.0) = (a = R.0)
+} by {
+    if a * u.val = R.0 {
+        unit_val_mul_eq_zero_right(u, a)
+        a = R.0
+    } else {
+        if a = R.0 {
+            a * u.val = R.0 * u.val
+            R.0 * u.val = R.0
+        }
+    }
+}
+
+/// Multiplication by the value of a unit on the left is cancellative.
+theorem unit_val_mul_cancel_left[R: Ring](u: Unit[R], a: R, b: R) {
+    u.val * a = u.val * b implies a = b
+} by {
+    if u.val * a = u.val * b {
+        a = R.1 * a
+        R.1 = u.inv * u.val
+        R.1 * a = (u.inv * u.val) * a
+        (u.inv * u.val) * a = u.inv * (u.val * a)
+        b = R.1 * b
+        R.1 = u.inv * u.val
+        R.1 * b = (u.inv * u.val) * b
+        (u.inv * u.val) * b = u.inv * (u.val * b)
+        u.inv * (u.val * a) = u.inv * (u.val * b)
+        a = b
+    }
+}
+
+/// Multiplication by the value of a unit on the right is cancellative.
+theorem unit_val_mul_cancel_right[R: Ring](u: Unit[R], a: R, b: R) {
+    a * u.val = b * u.val implies a = b
+} by {
+    if a * u.val = b * u.val {
+        a = a * R.1
+        R.1 = u.val * u.inv
+        a * R.1 = a * (u.val * u.inv)
+        a * (u.val * u.inv) = (a * u.val) * u.inv
+        b = b * R.1
+        R.1 = u.val * u.inv
+        b * R.1 = b * (u.val * u.inv)
+        b * (u.val * u.inv) = (b * u.val) * u.inv
+        (a * u.val) * u.inv = (b * u.val) * u.inv
+        a = b
+    }
+}
+
+/// Left multiplication by a unit value reflects inequality.
+theorem unit_val_mul_ne_left[R: Ring](u: Unit[R], a: R, b: R) {
+    a != b implies u.val * a != u.val * b
+} by {
+    if a != b {
+        if u.val * a = u.val * b {
+            unit_val_mul_cancel_left(u, a, b)
+            a = b
+        }
+    }
+}
+
+/// Right multiplication by a unit value reflects inequality.
+theorem unit_val_mul_ne_right[R: Ring](u: Unit[R], a: R, b: R) {
+    a != b implies a * u.val != b * u.val
+} by {
+    if a != b {
+        if a * u.val = b * u.val {
+            unit_val_mul_cancel_right(u, a, b)
+            a = b
+        }
+    }
+}
+
+/// The value of a unit in a field is nonzero.
+theorem field_unit_val_nonzero[F: Field](u: Unit[F]) {
+    u.val != F.0
+} by {
+    if u.val = F.0 {
+        F.1 = u.inv * u.val
+        u.inv * u.val = u.inv * F.0
+        u.inv * F.0 = F.0
+        F.1 = F.0
+    }
+}
+
+/// The inverse value of a unit in a field is nonzero.
+theorem field_unit_inv_nonzero[F: Field](u: Unit[F]) {
+    u.inv != F.0
+} by {
+    if u.inv = F.0 {
+        F.1 = u.val * u.inv
+        u.val * u.inv = u.val * F.0
+        u.val * F.0 = F.0
+        F.1 = F.0
+    }
+}
+
+/// The inverse component of a field unit is the field inverse of its value.
+theorem field_unit_inv_eq_inverse[F: Field](u: Unit[F]) {
+    u.inv = u.val.inverse
+} by {
+    field_unit_val_nonzero(u)
+    u.val != F.0
+    u.val * u.inv = F.1
+    unique_inverse(u.val, u.inv)
+    u.inv = u.val.inverse
+}
+
+/// The value component of a field unit is the field inverse of its inverse component.
+theorem field_unit_val_eq_inverse_inv[F: Field](u: Unit[F]) {
+    u.val = u.inv.inverse
+} by {
+    field_unit_inv_nonzero(u)
+    u.inv != F.0
+    u.inv * u.val = F.1
+    unique_inverse(u.inv, u.val)
+    u.val = u.inv.inverse
+}
+
+/// The field inverse of the value of a unit is nonzero.
+theorem field_unit_val_inverse_nonzero[F: Field](u: Unit[F]) {
+    u.val.inverse != F.0
+} by {
+    field_unit_inv_nonzero(u)
+    field_unit_inv_eq_inverse(u)
+    u.inv = u.val.inverse
+    u.val.inverse != F.0
+}
+
+/// A field unit value multiplied by a nonzero element on the left is nonzero.
+theorem field_unit_val_mul_nonzero_left[F: Field](u: Unit[F], a: F) {
+    a != F.0 implies u.val * a != F.0
+} by {
+    unit_val_mul_nonzero_left(u, a)
+}
+
+/// A field unit value multiplied by a nonzero element on the right is nonzero.
+theorem field_unit_val_mul_nonzero_right[F: Field](u: Unit[F], a: F) {
+    a != F.0 implies a * u.val != F.0
+} by {
+    unit_val_mul_nonzero_right(u, a)
+}
+
+/// Every nonzero element of a field is a monoid unit.
+theorem field_nonzero_is_monoid_unit[F: Field](a: F) {
+    a != F.0 implies is_monoid_unit(a)
+} by {
+    if a != F.0 {
+        a * a.inverse = F.1
+        a.inverse * a = F.1
+        exists(b: F) {
+            b = a.inverse and a * b = F.1 and b * a = F.1
+        }
+    }
+}
+
+/// The inverse of a nonzero field element is a monoid unit.
+theorem field_inverse_is_monoid_unit[F: Field](a: F) {
+    a != F.0 implies is_monoid_unit(a.inverse)
+} by {
+    if a != F.0 {
+        a.inverse != F.0
+        field_nonzero_is_monoid_unit(a.inverse)
+        is_monoid_unit(a.inverse)
+    }
+}
+
+/// A field element is a monoid unit exactly when it is nonzero.
+theorem field_is_monoid_unit_iff_nonzero[F: Field](a: F) {
+    is_monoid_unit(a) = (a != F.0)
+} by {
+    if is_monoid_unit(a) {
+        let b: F satisfy {
+            a * b = F.1 and b * a = F.1
+        }
+        if a = F.0 {
+            F.1 = a * b
+            a * b = F.0 * b
+            F.0 * b = F.0
+            F.1 = F.0
+        }
+    } else {
+        if a != F.0 {
+            field_nonzero_is_monoid_unit(a)
+            is_monoid_unit(a)
+        }
+    }
+}
+
+/// Zero is not a monoid unit in a field.
+theorem field_zero_not_monoid_unit[F: Field] {
+    not(is_monoid_unit(F.0))
+} by {
+    if is_monoid_unit(F.0) {
+        let b: F satisfy {
+            F.0 * b = F.1 and b * F.0 = F.1
+        }
+        F.1 = F.0 * b
+        F.0 * b = F.0
+        F.1 = F.0
+    }
+}
+
+/// One is a monoid unit in a field.
+theorem field_one_is_monoid_unit[F: Field] {
+    is_monoid_unit(F.1)
+} by {
+    one_is_monoid_unit[F]
+}
+
+/// A product equal to one in a field has nonzero left factor.
+theorem field_mul_eq_one_left_nonzero[F: Field](a: F, b: F) {
+    a * b = F.1 implies a != F.0
+} by {
+    if a * b = F.1 {
+        if a = F.0 {
+            F.1 = a * b
+            a * b = F.0 * b
+            F.0 * b = F.0
+            F.1 = F.0
+        }
+    }
+}
+
+/// A product equal to one in a field has nonzero right factor.
+theorem field_mul_eq_one_right_nonzero[F: Field](a: F, b: F) {
+    a * b = F.1 implies b != F.0
+} by {
+    if a * b = F.1 {
+        if b = F.0 {
+            F.1 = a * b
+            a * b = a * F.0
+            a * F.0 = F.0
+            F.1 = F.0
+        }
+    }
+}
+
+/// A nonzero field element has a unit with the field inverse as inverse.
+theorem field_unit_exists_of_nonzero[F: Field](a: F) {
+    a != F.0 implies exists(u: Unit[F]) {
+        u.val = a and u.inv = a.inverse
+    }
+} by {
+    if a != F.0 {
+        a * a.inverse = F.1
+        a.inverse * a = F.1
+        let u: Unit[F] satisfy {
+            Unit.new(a, a.inverse) = Option.some(u)
+        }
+        u.val = a
+        u.inv = a.inverse
+        exists(v: Unit[F]) {
+            v = u and v.val = a and v.inv = a.inverse
+        }
+    }
 }
