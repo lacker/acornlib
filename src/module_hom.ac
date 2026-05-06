@@ -126,3 +126,21 @@ theorem compose_preserves_smul[R: Ring, M: AddCommGroup, N: AddCommGroup, K: Add
         }
     }
 }
+
+/// Composition of linear maps is linear.
+theorem compose_is_linear_map[R: Ring, M: AddCommGroup, N: AddCommGroup, K: AddCommGroup](
+    a: Module[R, M], b: Module[R, N], c: Module[R, K], f: N -> K, g: M -> N
+) {
+    is_linear_map(b, c, f) and is_linear_map(a, b, g)
+    implies is_linear_map(a, c, compose(f, g))
+} by {
+    if is_linear_map(b, c, f) and is_linear_map(a, b, g) {
+        is_linear_map(b, c, f) = preserves_add(f) and preserves_smul(b, c, f)
+        is_linear_map(a, b, g) = preserves_add(g) and preserves_smul(a, b, g)
+        compose_preserves_add(f, g)
+        preserves_add(compose(f, g))
+        compose_preserves_smul(a, b, c, f, g)
+        preserves_smul(a, c, compose(f, g))
+        is_linear_map(a, c, compose(f, g))
+    }
+}
