@@ -1,0 +1,28 @@
+{"goal":"from_nat[Real](n.suc) = lib(real.real_base).real_from_rat(Rat.from_nat(n.suc))","proof":[]}
+{"goal":"lib(real.real_base).real_from_rat(Rat.from_nat(n.suc)) > Real.0","proof":[]}
+{"goal":"from_nat_suc_pos_real","proof":[]}
+{"goal":"a.is_positive","proof":["function(x0: Real) { not x0 > Real.0 or x0.is_positive }(a)"]}
+{"goal":"a.inverse.is_positive","proof":["function(x0: Real) { not x0.is_positive or x0.inverse.is_positive }(a)"]}
+{"goal":"Real.1.is_positive","proof":["function(x0: Rat) { not x0.is_positive or lib(real.real_base).real_from_rat(x0).is_positive }(Rat.1)","not lib(real.real_base).real_from_rat(Rat.1).is_positive","not Rat.1.is_positive"]}
+{"goal":"(Real.1 * a.inverse).is_positive","proof":["function(x0: Real, x1: Real) { not x0.is_positive or not x1.is_positive or (x0 * x1).is_positive }(Real.1, a.inverse)"]}
+{"goal":"Real.1 / a = Real.1 * a.inverse","proof":["function(x0: Real, x1: Real) { x0 * x1.inverse = x0 / x1 }(Real.1, a)"]}
+{"goal":"(Real.1 / a).is_positive","proof":[]}
+{"goal":"Real.1 / a > Real.0","proof":["function(x0: Real) { not x0.is_positive or x0 > Real.0 }(Real.1 / a)"]}
+{"goal":"real_one_div_pos","proof":[]}
+{"goal":"from_nat[Real](k.suc) > Real.0","proof":["function(x0: Nat) { from_nat[Real](x0.suc) > Real.0 }(k)"]}
+{"goal":"Real.1 / from_nat[Real](k.suc) > Real.0","proof":["function(x0: Real) { not x0 > Real.0 or Real.1 / x0 > Real.0 }(from_nat[Real](k.suc))"]}
+{"goal":"harmonic(k) = Real.1 / from_nat[Real](k.suc)","proof":["function(x0: Nat) { Real.1 / from_nat[Real](x0.suc) = harmonic(x0) }(k)"]}
+{"goal":"harmonic(k) > Real.0","proof":["not Real.1 / from_nat[Real](k.suc) > Real.0"]}
+{"goal":"harmonic_pos","proof":[]}
+{"goal":"harmonic_nonnegative","proof":["function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0.max(x1) = x0 = x0 >= x1 }[Real](harmonic(k), Real.0)","function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { not x0 > x1 or x0.max(x1) = x0 }[Real](harmonic(k), Real.0)","harmonic(k).max(Real.0) != harmonic(k)","harmonic(k).max(Real.0) = harmonic(k)"]}
+{"goal":"Real.0 < a","proof":["function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x1 < x0 }[Real](a, Real.0)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { (not x0 <= x1 and x1 <= x0) = x0 > x1 }[Real](a, Real.0)","a > Real.0","not (not a <= Real.0 and Real.0 <= a)","not a <= Real.0 and Real.0 <= a"]}
+{"goal":"Real.0 < b","proof":["function(x0: Real, x1: Real, x2: Real) { not x0 < x1 or not x1 <= x2 or x0 < x2 }(Real.0, a, b)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 < x1 or x0 <= x1 }[Real](a, b)","function(x0: Real, x1: Real) { x0 <= x1 = x0 <= x1 }(a, b)","a < b","function(x0: Real) { not Real.0 < x0 or not x0 <= b }(a)","not a <= b","a <= b","not a <= b"]}
+{"goal":"real_inverse_antitone_pos_strict","proof":["not Real.0 < b or not Real.0 < a or not a < b","not a < b"]}
+{"goal":"a < b or a = b","proof":["function[T0: lib(order).LinearOrder](x0: T0, x1: T0) { x0 > x1 or x0 < x1 or x0 = x1 }[Real](a, b)","function(x0: Real, x1: Real) { not x0 > x1 or not x0 <= x1 }(a, b)","b != a","not a < b","a <= b","a > b","not a > b"]}
+{"goal":"b.inverse < a.inverse","proof":["not a > Real.0 or not a < b","not a > Real.0"]}
+{"goal":"Real.1 / b = b.inverse","proof":["function(x0: Real, x1: Real) { x0 * x1.inverse = x0 / x1 }(Real.1, b)","function(x0: Real) { Real.1 * x0 = x0 }(b.inverse)","Real.1 * b.inverse != b.inverse"]}
+{"goal":"Real.1 / a = a.inverse","proof":["function(x0: Real, x1: Real) { x0 * x1.inverse = x0 / x1 }(Real.1, a)","function(x0: Real) { Real.1 * x0 = x0 }(a.inverse)","Real.1 * a.inverse != a.inverse"]}
+{"goal":"Real.1 / b <= Real.1 / a","proof":["function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { (x0(x1, x2) and x1 != x2) = lib(order_relation).relation_strict_part[T0](x0, x1, x2) }[Real](Real.lte, Real.1 / b, Real.1 / a)","Real.lte = Real.lte","function[T0: lib(order).PartialOrder] { lib(order_relation).relation_strict_part[T0](T0.lte) = T0.lt }[Real]","function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(order_relation).relation_strict_part[T0](x0, x1, x2) or (x0(x1, x2) and x1 != x2) }[Real](Real.lte, Real.1 / b, Real.1 / a)","function[T0](x0: (T0, T0) -> Bool, x1: T0, x2: T0) { not lib(order_relation).relation_strict_part[T0](x0, x1, x2) or x0(x1, x2) }[Real](Real.lte, Real.1 / b, Real.1 / a)","not lib(order_relation).relation_strict_part(Real.lte, Real.1 / b, Real.1 / a)"]}
+{"goal":"Real.1 / b = Real.1 / a","proof":["b != a"]}
+{"goal":"Real.1 / b <= Real.1 / a","proof":["function(x0: Real, x1: Real) { x0 > x1 or x0 <= x1 }(Real.1 / b, Real.1 / a)","function[T0: lib(order).PartialOrder](x0: T0, x1: T0) { not x0 > x1 or x0 != x1 }[Real](Real.1 / b, Real.1 / a)","Real.1 / b > Real.1 / a","not Real.1 / b > Real.1 / a"]}
+{"goal":"real_recip_antitone_pos","proof":["not a < b","b != a","b = a"]}
