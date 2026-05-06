@@ -144,6 +144,8 @@
     "real.rectangular_sum": "fa92b0c7beed4c5a3e1b4d7011c9dad2e87571e6d3d1d7d499256249dd93be81",
     "real.supremum": "20ce01a731a9e7ee2fa84c2e5eb4341684e3218e7fb35727ccc0b75a34ebf099",
     "real.topology": "47ad96f6f0df28f400c26df11e906ba6a237be36830888220f77f018cf5c59c2",
+    "real.topology_closed_open": "08fbef4cab743211154bcf9c52a07e0bc9a07d91af9386b19b01b9f75ea9df1c",
+    "real.topology_complements": "6dbc89d3cf6086ae8f5d45cb75b2f6c8c994113f3737a72a671555a1f0342d51",
     "real.topology_sequences": "6789dd97f5834daf2dbaf97ca7a79f37ca65dd035c0e7026667adc2ec88ce3a3",
     "real.topology_singleton": "ad5d61374694250d9a9d68595e57cd7472a26fab35ae13c528107e015b956a4e",
     "real.triangular_sum": "18b4b1c100508ac134ea7f38efdcc0cf10082665874322866db28628cf1967db",
