@@ -599,6 +599,53 @@ theorem compose_two_sided_inverse_fn[T, U, V](f: T -> U, g: U -> V, invf: U -> T
     }
 }
 
+/// A two-sided inverse is symmetric.
+theorem two_sided_inverse_fn_symm[T, U](f: T -> U, g: U -> T) {
+    is_two_sided_inverse_fn(f, g) implies is_two_sided_inverse_fn(g, f)
+} by {
+    if is_two_sided_inverse_fn(f, g) {
+        forall(y: U) {
+            f(g(y)) = y
+        }
+        is_left_inverse_fn(g, f)
+
+        forall(x: T) {
+            g(f(x)) = x
+        }
+        is_right_inverse_fn(g, f)
+
+        is_two_sided_inverse_fn(g, f)
+    }
+}
+
+/// Two two-sided inverses of the same function are equal.
+theorem two_sided_inverse_fn_unique[T, U](f: T -> U, g1: U -> T, g2: U -> T) {
+    is_two_sided_inverse_fn(f, g1) and is_two_sided_inverse_fn(f, g2) implies g1 = g2
+} by {
+    if is_two_sided_inverse_fn(f, g1) and is_two_sided_inverse_fn(f, g2) {
+        forall(y: U) {
+            f(g2(y)) = y
+            g1(f(g2(y))) = g2(y)
+            g1(f(g2(y))) = g1(y)
+            g1(y) = g2(y)
+        }
+        function_extensionality(g1, g2)
+        g1 = g2
+    }
+}
+
+/// A two-sided inverse is itself a bijection.
+theorem inverse_of_two_sided_inverse_fn_is_bijection_fn[T, U](f: T -> U, g: U -> T) {
+    is_two_sided_inverse_fn(f, g) implies is_bijection_fn(g)
+} by {
+    if is_two_sided_inverse_fn(f, g) {
+        two_sided_inverse_fn_symm(f, g)
+        is_two_sided_inverse_fn(g, f)
+        two_sided_inverse_fn_imp_bijection_fn(g, f)
+        is_bijection_fn(g)
+    }
+}
+
 /// Composition preserves injectivity.
 theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     is_injective_fn(f) and is_injective_fn(g) implies is_injective_fn(compose(f, g))
@@ -618,6 +665,44 @@ theorem compose_injective_fn[T, U, V](f: U -> V, g: T -> U) {
     }
 }
 
+/// If a composite is injective, then its right factor is injective.
+theorem compose_injective_fn_imp_right_factor_injective[T, U, V](f: U -> V, g: T -> U) {
+    is_injective_fn(compose(f, g)) implies is_injective_fn(g)
+} by {
+    if is_injective_fn(compose(f, g)) {
+        forall(x1: T, x2: T) {
+            if g(x1) = g(x2) {
+                compose(f, g, x1) = f(g(x1))
+                compose(f, g, x2) = f(g(x2))
+                f(g(x1)) = f(g(x2))
+                compose(f, g, x1) = compose(f, g, x2)
+                injective_fn_eq(compose(f, g), x1, x2)
+                x1 = x2
+            }
+        }
+        is_injective_fn(g)
+    }
+}
+
+/// An injective left factor can be cancelled from an equality of composites.
+theorem compose_cancel_left_of_injective_fn[T, U, V](left: U -> V, f: T -> U, g: T -> U) {
+    is_injective_fn(left) and compose(left, f) = compose(left, g) implies f = g
+} by {
+    if is_injective_fn(left) and compose(left, f) = compose(left, g) {
+        forall(x: T) {
+            function_eq_apply(compose(left, f), compose(left, g), x)
+            compose(left, f, x) = compose(left, g, x)
+            compose(left, f, x) = left(f(x))
+            compose(left, g, x) = left(g(x))
+            left(f(x)) = left(g(x))
+            injective_fn_eq(left, f(x), g(x))
+            f(x) = g(x)
+        }
+        function_extensionality(f, g)
+        f = g
+    }
+}
+
 /// Surjectivity provides a preimage for every codomain point.
 theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
     is_surjective_fn(f) implies exists(x: T) {
@@ -628,6 +713,48 @@ theorem surjective_fn_has_preimage[T, U](f: T -> U, y: U) {
         exists(x: T) {
             f(x) = y
         }
+    }
+}
+
+/// If a composite is surjective, then its left factor is surjective.
+theorem compose_surjective_fn_imp_left_factor_surjective[T, U, V](f: U -> V, g: T -> U) {
+    is_surjective_fn(compose(f, g)) implies is_surjective_fn(f)
+} by {
+    if is_surjective_fn(compose(f, g)) {
+        forall(z: V) {
+            surjective_fn_has_preimage(compose(f, g), z)
+            let x: T satisfy {
+                compose(f, g)(x) = z
+            }
+            let y = g(x)
+            compose(f, g, x) = f(g(x))
+            f(y) = z
+            exists(preimage: U) {
+                f(preimage) = z
+            }
+        }
+        is_surjective_fn(f)
+    }
+}
+
+/// A surjective right factor can be cancelled from an equality of composites.
+theorem compose_cancel_right_of_surjective_fn[T, U, V](right: T -> U, f: U -> V, g: U -> V) {
+    is_surjective_fn(right) and compose(f, right) = compose(g, right) implies f = g
+} by {
+    if is_surjective_fn(right) and compose(f, right) = compose(g, right) {
+        forall(y: U) {
+            surjective_fn_has_preimage(right, y)
+            let x: T satisfy {
+                right(x) = y
+            }
+            function_eq_apply(compose(f, right), compose(g, right), x)
+            compose(f, right, x) = compose(g, right, x)
+            compose(f, right, x) = f(right(x))
+            compose(g, right, x) = g(right(x))
+            f(y) = g(y)
+        }
+        function_extensionality(f, g)
+        f = g
     }
 }
 
@@ -755,6 +882,92 @@ theorem compose_bijection_fn[T, U, V](f: U -> V, g: T -> U) {
         compose_surjective_fn(f, g)
         is_surjective_fn(compose(f, g))
         is_bijection_fn(compose(f, g))
+    }
+}
+
+/// If a composite is bijective, then its right factor is injective.
+theorem compose_bijection_fn_imp_right_factor_injective[T, U, V](f: U -> V, g: T -> U) {
+    is_bijection_fn(compose(f, g)) implies is_injective_fn(g)
+} by {
+    if is_bijection_fn(compose(f, g)) {
+        bijection_fn_is_injective(compose(f, g))
+        is_injective_fn(compose(f, g))
+        compose_injective_fn_imp_right_factor_injective(f, g)
+        is_injective_fn(g)
+    }
+}
+
+/// If a composite is bijective, then its left factor is surjective.
+theorem compose_bijection_fn_imp_left_factor_surjective[T, U, V](f: U -> V, g: T -> U) {
+    is_bijection_fn(compose(f, g)) implies is_surjective_fn(f)
+} by {
+    if is_bijection_fn(compose(f, g)) {
+        bijection_fn_is_surjective(compose(f, g))
+        is_surjective_fn(compose(f, g))
+        compose_surjective_fn_imp_left_factor_surjective(f, g)
+        is_surjective_fn(f)
+    }
+}
+
+/// If a composite is bijective and the left factor is injective, then the right factor is bijective.
+theorem compose_bijection_fn_and_left_injective_imp_right_bijection[T, U, V](f: U -> V, g: T -> U) {
+    is_bijection_fn(compose(f, g)) and is_injective_fn(f) implies is_bijection_fn(g)
+} by {
+    if is_bijection_fn(compose(f, g)) and is_injective_fn(f) {
+        compose_bijection_fn_imp_right_factor_injective(f, g)
+        is_injective_fn(g)
+
+        bijection_fn_is_surjective(compose(f, g))
+        is_surjective_fn(compose(f, g))
+        forall(y: U) {
+            surjective_fn_has_preimage(compose(f, g), f(y))
+            let x: T satisfy {
+                compose(f, g)(x) = f(y)
+            }
+            compose(f, g, x) = f(g(x))
+            f(g(x)) = f(y)
+            injective_fn_eq(f, g(x), y)
+            g(x) = y
+            exists(preimage: T) {
+                g(preimage) = y
+            }
+        }
+        is_surjective_fn(g)
+        is_bijection_fn(g)
+    }
+}
+
+/// If a composite is bijective and the right factor is surjective, then the left factor is bijective.
+theorem compose_bijection_fn_and_right_surjective_imp_left_bijection[T, U, V](f: U -> V, g: T -> U) {
+    is_bijection_fn(compose(f, g)) and is_surjective_fn(g) implies is_bijection_fn(f)
+} by {
+    if is_bijection_fn(compose(f, g)) and is_surjective_fn(g) {
+        compose_bijection_fn_imp_left_factor_surjective(f, g)
+        is_surjective_fn(f)
+
+        bijection_fn_is_injective(compose(f, g))
+        is_injective_fn(compose(f, g))
+        forall(y1: U, y2: U) {
+            if f(y1) = f(y2) {
+                surjective_fn_has_preimage(g, y1)
+                let x1: T satisfy {
+                    g(x1) = y1
+                }
+                surjective_fn_has_preimage(g, y2)
+                let x2: T satisfy {
+                    g(x2) = y2
+                }
+                compose(f, g, x1) = f(g(x1))
+                compose(f, g, x2) = f(g(x2))
+                compose(f, g, x1) = compose(f, g, x2)
+                injective_fn_eq(compose(f, g), x1, x2)
+                x1 = x2
+                g(x1) = g(x2)
+                y1 = y2
+            }
+        }
+        is_injective_fn(f)
+        is_bijection_fn(f)
     }
 }
 

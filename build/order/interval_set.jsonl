@@ -14,6 +14,30 @@
 {"goal":"closed_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ closed_interval_set[T0](x0, x1) = closed_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
 {"goal":"point <= upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not closed_interval[T0](x0, x1, x2) or x2 <= x1 }[L](lower, upper, point)"]}
 {"goal":"closed_interval_set_le_upper","proof":[]}
+{"goal":"left_open_interval(lower, upper, upper)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x1 <= x2 or left_open_interval[T0](x0, x2, x1) }[L](lower, upper, upper)"]}
+{"goal":"left_open_interval_set(lower, upper).contains(upper)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ left_open_interval_set[T0](x0, x1) = left_open_interval[T0](x0, x1, x2) }[L](lower, upper, upper)"]}
+{"goal":"left_open_interval_set_contains_upper","proof":[]}
+{"goal":"right_open_interval(lower, upper, lower)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x0 < x1 or not x2 <= x0 or right_open_interval[T0](x2, x1, x0) }[L](lower, upper, lower)"]}
+{"goal":"right_open_interval_set(lower, upper).contains(lower)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ right_open_interval_set[T0](x0, x1) = right_open_interval[T0](x0, x1, x2) }[L](lower, upper, lower)"]}
+{"goal":"right_open_interval_set_contains_lower","proof":[]}
+{"goal":"open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ open_interval_set[T0](x0, x1) = open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](lower, upper, point)"]}
+{"goal":"open_interval_set_lower_lt","proof":[]}
+{"goal":"open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ open_interval_set[T0](x0, x1) = open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](lower, upper, point)"]}
+{"goal":"open_interval_set_lt_upper","proof":[]}
+{"goal":"left_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ left_open_interval_set[T0](x0, x1) = left_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[L](lower, upper, point)"]}
+{"goal":"left_open_interval_set_lower_lt","proof":[]}
+{"goal":"left_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ left_open_interval_set[T0](x0, x1) = left_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"point <= upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[L](lower, upper, point)"]}
+{"goal":"left_open_interval_set_le_upper","proof":[]}
+{"goal":"right_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ right_open_interval_set[T0](x0, x1) = right_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"lower <= point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](lower, upper, point)"]}
+{"goal":"right_open_interval_set_lower_le","proof":[]}
+{"goal":"right_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ right_open_interval_set[T0](x0, x1) = right_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
+{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[L](lower, upper, point)"]}
+{"goal":"right_open_interval_set_lt_upper","proof":[]}
 {"goal":"open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ open_interval_set[T0](x0, x1) = open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
 {"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](lower, upper, point)"]}
 {"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](lower, upper, point)"]}
@@ -59,26 +83,26 @@
 {"goal":"closed_interval_set(outer_lower, outer_upper).contains(point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ closed_interval_set[T0](x0, x1) = closed_interval[T0](x0, x1, x2) }[L](outer_lower, outer_upper, point)"]}
 {"goal":"closed_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](closed_interval_set(lower, upper), closed_interval_set(outer_lower, outer_upper))"]}
 {"goal":"open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ open_interval_set[T0](x0, x1) = open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
-{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x0 < x2 }[L](lower, upper, point)"]}
-{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not open_interval[T0](x0, x1, x2) or x2 < x1 }[L](lower, upper, point)"]}
-{"goal":"outer_lower < point","proof":["not lower < point or not outer_lower <= lower","not outer_lower <= lower"]}
-{"goal":"point < outer_upper","proof":["not point < upper or not upper <= outer_upper","not upper <= outer_upper"]}
+{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ open_interval_set[T0](x0, x1) or x0 < x2 }[L](lower, upper, point)"]}
+{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ open_interval_set[T0](x0, x1) or x2 < x1 }[L](lower, upper, point)"]}
+{"goal":"outer_lower < point","proof":[]}
+{"goal":"point < outer_upper","proof":[]}
 {"goal":"open_interval(outer_lower, outer_upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](lower, point, upper)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 < x2) = open_interval[T0](x0, x2, x1) }[L](outer_lower, point, outer_upper)"]}
 {"goal":"open_interval_set(outer_lower, outer_upper).contains(point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ open_interval_set[T0](x0, x1) = open_interval[T0](x0, x1, x2) }[L](outer_lower, outer_upper, point)"]}
-{"goal":"open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](open_interval_set(lower, upper), open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ open_interval_set(lower, upper) and not w0 ∈ open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ open_interval_set(lower, upper) or x0 ∈ open_interval_set(outer_lower, outer_upper) }(w0)","w0 ∈ open_interval_set(lower, upper) and not w0 ∈ open_interval_set(outer_lower, outer_upper)","not w0 ∈ open_interval_set(lower, upper)"]}
+{"goal":"open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](open_interval_set(lower, upper), open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ open_interval_set(lower, upper) and not w0 ∈ open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ open_interval_set(lower, upper) or x0 ∈ open_interval_set(outer_lower, outer_upper) }(w0)"]}
 {"goal":"left_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ left_open_interval_set[T0](x0, x1) = left_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
-{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x0 < x2 }[L](lower, upper, point)"]}
-{"goal":"point <= upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not left_open_interval[T0](x0, x1, x2) or x2 <= x1 }[L](lower, upper, point)"]}
-{"goal":"outer_lower < point","proof":["not lower < point or not outer_lower <= lower","not outer_lower <= lower"]}
-{"goal":"point <= outer_upper","proof":["not point <= upper or not upper <= outer_upper","not upper <= outer_upper"]}
+{"goal":"lower < point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ left_open_interval_set[T0](x0, x1) or x0 < x2 }[L](lower, upper, point)"]}
+{"goal":"point <= upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ left_open_interval_set[T0](x0, x1) or x2 <= x1 }[L](lower, upper, point)"]}
+{"goal":"outer_lower < point","proof":[]}
+{"goal":"point <= outer_upper","proof":[]}
 {"goal":"left_open_interval(outer_lower, outer_upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](lower, point, upper)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 < x1 and x1 <= x2) = left_open_interval[T0](x0, x2, x1) }[L](outer_lower, point, outer_upper)"]}
 {"goal":"left_open_interval_set(outer_lower, outer_upper).contains(point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ left_open_interval_set[T0](x0, x1) = left_open_interval[T0](x0, x1, x2) }[L](outer_lower, outer_upper, point)"]}
-{"goal":"left_open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](left_open_interval_set(lower, upper), left_open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ left_open_interval_set(lower, upper) and not w0 ∈ left_open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ left_open_interval_set(lower, upper) or x0 ∈ left_open_interval_set(outer_lower, outer_upper) }(w0)","w0 ∈ left_open_interval_set(lower, upper) and not w0 ∈ left_open_interval_set(outer_lower, outer_upper)","not w0 ∈ left_open_interval_set(lower, upper)"]}
+{"goal":"left_open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](left_open_interval_set(lower, upper), left_open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ left_open_interval_set(lower, upper) and not w0 ∈ left_open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ left_open_interval_set(lower, upper) or x0 ∈ left_open_interval_set(outer_lower, outer_upper) }(w0)"]}
 {"goal":"right_open_interval(lower, upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ right_open_interval_set[T0](x0, x1) = right_open_interval[T0](x0, x1, x2) }[L](lower, upper, point)"]}
-{"goal":"lower <= point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x0 <= x2 }[L](lower, upper, point)"]}
-{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not right_open_interval[T0](x0, x1, x2) or x2 < x1 }[L](lower, upper, point)"]}
-{"goal":"outer_lower <= point","proof":["not lower <= point or not outer_lower <= lower","not outer_lower <= lower"]}
-{"goal":"point < outer_upper","proof":["not point < upper or not upper <= outer_upper","not upper <= outer_upper"]}
+{"goal":"lower <= point","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ right_open_interval_set[T0](x0, x1) or x0 <= x2 }[L](lower, upper, point)"]}
+{"goal":"point < upper","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { not x2 ∈ right_open_interval_set[T0](x0, x1) or x2 < x1 }[L](lower, upper, point)"]}
+{"goal":"outer_lower <= point","proof":[]}
+{"goal":"point < outer_upper","proof":[]}
 {"goal":"right_open_interval(outer_lower, outer_upper, point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](lower, point, upper)","function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { (x0 <= x1 and x1 < x2) = right_open_interval[T0](x0, x2, x1) }[L](outer_lower, point, outer_upper)"]}
 {"goal":"right_open_interval_set(outer_lower, outer_upper).contains(point)","proof":["function[T0: LinearOrder](x0: T0, x1: T0, x2: T0) { x2 ∈ right_open_interval_set[T0](x0, x1) = right_open_interval[T0](x0, x1, x2) }[L](outer_lower, outer_upper, point)"]}
-{"goal":"right_open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](right_open_interval_set(lower, upper), right_open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ right_open_interval_set(lower, upper) and not w0 ∈ right_open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ right_open_interval_set(lower, upper) or x0 ∈ right_open_interval_set(outer_lower, outer_upper) }(w0)","w0 ∈ right_open_interval_set(lower, upper) and not w0 ∈ right_open_interval_set(outer_lower, outer_upper)","not w0 ∈ right_open_interval_set(lower, upper)"]}
+{"goal":"right_open_interval_set_subset_of_bounds","proof":["function[T0](x0: Set[T0], x1: Set[T0]) { forall(x2: T0) { not x2 ∈ x0 or x2 ∈ x1 } = x0 ⊂ x1 }[L](right_open_interval_set(lower, upper), right_open_interval_set(outer_lower, outer_upper))","let w0: L satisfy { w0 ∈ right_open_interval_set(lower, upper) and not w0 ∈ right_open_interval_set(outer_lower, outer_upper) }","function(x0: L) { not x0 ∈ right_open_interval_set(lower, upper) or x0 ∈ right_open_interval_set(outer_lower, outer_upper) }(w0)"]}
