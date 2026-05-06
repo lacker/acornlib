@@ -2195,3 +2195,30 @@ theorem add_subgroup_sup_idempotent[G: AddGroup](a: AddSubgroup[G]) {
     add_subgroup_subset_sup_left(a, a)
     add_subgroup_subset_antisymm(add_subgroup_sup(a, a), a)
 }
+
+/// Additive subgroup join is associative.
+theorem add_subgroup_sup_assoc[G: AddGroup](
+    a: AddSubgroup[G],
+    b: AddSubgroup[G],
+    c: AddSubgroup[G]
+) {
+    add_subgroup_sup(add_subgroup_sup(a, b), c) = add_subgroup_sup(a, add_subgroup_sup(b, c))
+} by {
+    add_subgroup_subset_sup_left(a, add_subgroup_sup(b, c))
+    add_subgroup_subset_sup_right(a, add_subgroup_sup(b, c))
+    add_subgroup_subset_sup_left(b, c)
+    add_subgroup_subset_sup_right(b, c)
+    add_subgroup_subset_trans(b, add_subgroup_sup(b, c), add_subgroup_sup(a, add_subgroup_sup(b, c)))
+    add_subgroup_subset_trans(c, add_subgroup_sup(b, c), add_subgroup_sup(a, add_subgroup_sup(b, c)))
+    add_subgroup_sup_subset_of_subset_left_right(a, b, add_subgroup_sup(a, add_subgroup_sup(b, c)))
+    add_subgroup_sup_subset_of_subset_left_right(add_subgroup_sup(a, b), c, add_subgroup_sup(a, add_subgroup_sup(b, c)))
+    add_subgroup_subset_sup_left(add_subgroup_sup(a, b), c)
+    add_subgroup_subset_sup_right(add_subgroup_sup(a, b), c)
+    add_subgroup_subset_sup_left(a, b)
+    add_subgroup_subset_sup_right(a, b)
+    add_subgroup_subset_trans(a, add_subgroup_sup(a, b), add_subgroup_sup(add_subgroup_sup(a, b), c))
+    add_subgroup_subset_trans(b, add_subgroup_sup(a, b), add_subgroup_sup(add_subgroup_sup(a, b), c))
+    add_subgroup_sup_subset_of_subset_left_right(b, c, add_subgroup_sup(add_subgroup_sup(a, b), c))
+    add_subgroup_sup_subset_of_subset_left_right(a, add_subgroup_sup(b, c), add_subgroup_sup(add_subgroup_sup(a, b), c))
+    add_subgroup_subset_antisymm(add_subgroup_sup(add_subgroup_sup(a, b), c), add_subgroup_sup(a, add_subgroup_sup(b, c)))
+}
