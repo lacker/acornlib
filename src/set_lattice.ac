@@ -2,6 +2,7 @@ from list import List
 from functions import Inhabited, function_extensionality, inverse_fn, is_injective_fn, is_surjective_fn,
     is_bijection_fn, bijection_fn_is_injective, bijection_fn_is_surjective,
     injective_fn_eq, surjective_fn_has_preimage
+from logic import forall_forall_or_eq_or_forall
 from nat import Nat
 from pair import Pair
 from set import Set, set_ext, subset_refl, subset_trans, subset_antisymm,
@@ -2236,6 +2237,243 @@ theorem set_sSup_inf_product_family_monotone[K, I, J](a: I -> Set[K], b: J -> Se
             set_inf_product_family(c, d))
         set_sSup(set_pair_family(set_inf_product_family(a, b))).subset(
             set_sSup(set_pair_family(set_inf_product_family(c, d))))
+    }
+}
+
+/// Membership in the flattened infimum of pairwise suprema gives membership in the infimum of one factor.
+theorem set_sInf_sup_product_family_contains_forward[K, I, J](a: I -> Set[K],
+    b: J -> Set[K], x: K) {
+    set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x) implies
+        (set_sInf(a).contains(x) or set_sInf(b).contains(x))
+} by {
+    if set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x) {
+        set_sInf_pair_family_contains_eq(set_sup_product_family(a, b), x)
+        forall(i: I) {
+            forall(j: J) {
+                set_sup_product_family(a, b, i, j) = set_sup(a(i), b(j))
+                set_sup(a(i), b(j)).contains(x)
+                set_sup_contains_eq(a(i), b(j), x)
+                a(i).contains(x) or b(j).contains(x)
+            }
+        }
+        forall_forall_or_eq_or_forall(function(i: I) { a(i).contains(x) },
+            function(j: J) { b(j).contains(x) })
+        (forall(i: I) { a(i).contains(x) }) or (forall(j: J) { b(j).contains(x) })
+        set_sInf_contains_eq(a, x)
+        set_sInf_contains_eq(b, x)
+        if forall(i: I) { a(i).contains(x) } {
+            set_sInf(a).contains(x)
+            set_sInf(a).contains(x) or set_sInf(b).contains(x)
+        }
+        if forall(j: J) { b(j).contains(x) } {
+            set_sInf(b).contains(x)
+            set_sInf(a).contains(x) or set_sInf(b).contains(x)
+        }
+        set_sInf(a).contains(x) or set_sInf(b).contains(x)
+    }
+}
+
+/// Membership in the infimum of one factor gives membership in the flattened infimum of pairwise suprema.
+theorem set_sInf_sup_product_family_contains_backward[K, I, J](a: I -> Set[K],
+    b: J -> Set[K], x: K) {
+    (set_sInf(a).contains(x) or set_sInf(b).contains(x)) implies
+        set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x)
+} by {
+    if set_sInf(a).contains(x) or set_sInf(b).contains(x) {
+        set_sInf_contains_eq(a, x)
+        set_sInf_contains_eq(b, x)
+        forall_forall_or_eq_or_forall(function(i: I) { a(i).contains(x) },
+            function(j: J) { b(j).contains(x) })
+        forall(i: I) {
+            forall(j: J) {
+                if set_sInf(a).contains(x) {
+                    a(i).contains(x)
+                    a(i).contains(x) or b(j).contains(x)
+                }
+                if set_sInf(b).contains(x) {
+                    b(j).contains(x)
+                    a(i).contains(x) or b(j).contains(x)
+                }
+                a(i).contains(x) or b(j).contains(x)
+                set_sup(a(i), b(j)).contains(x)
+                set_sup_product_family(a, b, i, j) = set_sup(a(i), b(j))
+                set_sup_product_family(a, b, i, j).contains(x)
+            }
+        }
+        set_sInf_pair_family_contains_eq(set_sup_product_family(a, b), x)
+        set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x)
+    }
+}
+
+/// Membership in the flattened infimum of pairwise suprema is membership in the infimum of one factor.
+theorem set_sInf_sup_product_family_contains_eq[K, I, J](a: I -> Set[K],
+    b: J -> Set[K], x: K) {
+    set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x) =
+        (set_sInf(a).contains(x) or set_sInf(b).contains(x))
+} by {
+    if set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x) {
+        set_sInf_sup_product_family_contains_forward(a, b, x)
+        set_sInf(a).contains(x) or set_sInf(b).contains(x)
+    }
+    if set_sInf(a).contains(x) or set_sInf(b).contains(x) {
+        set_sInf_sup_product_family_contains_backward(a, b, x)
+        set_sInf(set_pair_family(set_sup_product_family(a, b))).contains(x)
+    }
+}
+
+/// The infimum of all pairwise suprema is the supremum of the two infima.
+theorem set_sInf_sup_product_family[K, I, J](a: I -> Set[K], b: J -> Set[K]) {
+    set_sInf(set_pair_family(set_sup_product_family(a, b))) =
+        set_sup(set_sInf(a), set_sInf(b))
+} by {
+    let u = set_sInf(set_pair_family(set_sup_product_family(a, b)))
+    let v = set_sup(set_sInf(a), set_sInf(b))
+    forall(x: K) {
+        set_sInf_sup_product_family_contains_eq(a, b, x)
+        u.contains(x) = v.contains(x)
+    }
+    set_ext(u, v)
+}
+
+/// The supremum of the two family infima is contained in each pairwise supremum.
+theorem set_sInf_sup_subset_product_family[K, I, J](a: I -> Set[K],
+    b: J -> Set[K], i: I, j: J) {
+    set_sup(set_sInf(a), set_sInf(b)).subset(set_sup_product_family(a, b, i, j))
+} by {
+    set_sInf_pair_family_subset_family(set_sup_product_family(a, b), i, j)
+    set_sInf_sup_product_family(a, b)
+    set_sInf(set_pair_family(set_sup_product_family(a, b))).subset(
+        set_sup_product_family(a, b, i, j))
+    set_sup(set_sInf(a), set_sInf(b)).subset(set_sup_product_family(a, b, i, j))
+}
+
+/// Every common lower bound of the pairwise suprema is contained in the supremum of the two family infima.
+theorem set_subset_sInf_sup_product_of_subset_family[K, I, J](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) {
+        forall(j: J) {
+            s.subset(set_sup_product_family(a, b, i, j))
+        }
+    }) implies s.subset(set_sup(set_sInf(a), set_sInf(b)))
+} by {
+    if forall(i: I) { forall(j: J) { s.subset(set_sup_product_family(a, b, i, j)) } } {
+        let u = set_sInf(set_pair_family(set_sup_product_family(a, b)))
+        let v = set_sup(set_sInf(a), set_sInf(b))
+        forall(p: Pair[I, J]) {
+            s.subset(set_sup_product_family(a, b, p.first, p.second))
+            set_pair_family(set_sup_product_family(a, b), p) =
+                set_sup_product_family(a, b, p.first, p.second)
+            s.subset(set_pair_family(set_sup_product_family(a, b), p))
+        }
+        set_subset_sInf_of_subset_family(s, set_pair_family(set_sup_product_family(a, b)))
+        s.subset(set_sInf(set_pair_family(set_sup_product_family(a, b))))
+        set_subset_sInf_pair_family_of_subset_family(s, set_sup_product_family(a, b))
+        s.subset(u)
+        set_sInf_sup_product_family(a, b)
+        u = v
+        s.subset(v)
+        s.subset(set_sup(set_sInf(a), set_sInf(b)))
+    }
+}
+
+/// A set is contained in the supremum of the two family infima exactly when it is below every pairwise supremum.
+theorem set_subset_sInf_sup_product_iff[K, I, J](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K]) {
+    s.subset(set_sup(set_sInf(a), set_sInf(b))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_sup_product_family(a, b, i, j))
+        }
+    }
+} by {
+    if s.subset(set_sup(set_sInf(a), set_sInf(b))) {
+        forall(i: I) {
+            forall(j: J) {
+                set_sInf_sup_subset_product_family(a, b, i, j)
+                subset_trans(s, set_sup(set_sInf(a), set_sInf(b)),
+                    set_sup_product_family(a, b, i, j))
+                s.subset(set_sup_product_family(a, b, i, j))
+            }
+        }
+    }
+    if forall(i: I) { forall(j: J) { s.subset(set_sup_product_family(a, b, i, j)) } } {
+        set_subset_sInf_sup_product_of_subset_family(s, a, b)
+        s.subset(set_sup(set_sInf(a), set_sInf(b)))
+    }
+    s.subset(set_sup(set_sInf(a), set_sInf(b))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_sup_product_family(a, b, i, j))
+        }
+    }
+}
+
+/// The supremum of the two family infima is the greatest lower bound of the pairwise suprema.
+theorem set_sInf_sup_product_family_is_glb[K, I, J](s: Set[K],
+    a: I -> Set[K], b: J -> Set[K]) {
+    (forall(i: I) {
+        forall(j: J) {
+            set_sup(set_sInf(a), set_sInf(b)).subset(set_sup_product_family(a, b, i, j))
+        }
+    }) and
+    (s.subset(set_sup(set_sInf(a), set_sInf(b))) = forall(i: I) {
+        forall(j: J) {
+            s.subset(set_sup_product_family(a, b, i, j))
+        }
+    })
+} by {
+    forall(i: I) {
+        forall(j: J) {
+            set_sInf_sup_subset_product_family(a, b, i, j)
+        }
+    }
+    set_subset_sInf_sup_product_iff(s, a, b)
+}
+
+/// Pointwise inclusion in both factors preserves each pairwise supremum.
+theorem set_sup_product_family_monotone[K, I, J](a: I -> Set[K], b: J -> Set[K],
+    c: I -> Set[K], d: J -> Set[K], i: I, j: J) {
+    a(i).subset(c(i)) and b(j).subset(d(j)) implies
+    set_sup_product_family(a, b, i, j).subset(set_sup_product_family(c, d, i, j))
+} by {
+    if a(i).subset(c(i)) and b(j).subset(d(j)) {
+        forall(x: K) {
+            if set_sup_product_family(a, b, i, j).contains(x) {
+                set_sup_product_family_contains_eq(a, b, i, j, x)
+                if a(i).contains(x) {
+                    c(i).contains(x)
+                    set_sup_product_family_contains_eq(c, d, i, j, x)
+                    set_sup_product_family(c, d, i, j).contains(x)
+                }
+                if b(j).contains(x) {
+                    d(j).contains(x)
+                    set_sup_product_family_contains_eq(c, d, i, j, x)
+                    set_sup_product_family(c, d, i, j).contains(x)
+                }
+                set_sup_product_family(c, d, i, j).contains(x)
+            }
+        }
+    }
+}
+
+/// Pointwise inclusion in both factors preserves infima of pairwise suprema.
+theorem set_sInf_sup_product_family_monotone[K, I, J](a: I -> Set[K], b: J -> Set[K],
+    c: I -> Set[K], d: J -> Set[K]) {
+    (forall(i: I) { a(i).subset(c(i)) }) and
+    (forall(j: J) { b(j).subset(d(j)) }) implies
+    set_sInf(set_pair_family(set_sup_product_family(a, b))).subset(
+        set_sInf(set_pair_family(set_sup_product_family(c, d))))
+} by {
+    if (forall(i: I) { a(i).subset(c(i)) }) and (forall(j: J) { b(j).subset(d(j)) }) {
+        forall(i: I) {
+            forall(j: J) {
+                a(i).subset(c(i))
+                b(j).subset(d(j))
+                set_sup_product_family_monotone(a, b, c, d, i, j)
+            }
+        }
+        set_sInf_pair_family_monotone(set_sup_product_family(a, b),
+            set_sup_product_family(c, d))
+        set_sInf(set_pair_family(set_sup_product_family(a, b))).subset(
+            set_sInf(set_pair_family(set_sup_product_family(c, d))))
     }
 }
 
