@@ -16,4 +16,6 @@ Progress: `src/units.ac` now provides bundled monoid units, the unbundled `is_mo
 
 Progress: `src/opposite_algebra.ac` now provides unbundled opposite multiplication with associativity, commutativity, monoid identity, group inverse, semiring zero/distributivity, and homomorphism preservation lemmas.
 
-Progress: `src/function_algebra.ac` now provides shared pointwise operations on functions (`pointwise_add`, `pointwise_mul`, `pointwise_zero`, `pointwise_one`, `pointwise_neg`, `pointwise_inverse`) with application, associativity, commutativity, identity, inverse, semiring distributivity, and zero-absorption laws. Finite-product specialization remains to be added on top of this shared API.
+Progress: `src/function_algebra.ac` now provides shared pointwise operations on functions (`pointwise_add`, `pointwise_mul`, `pointwise_zero`, `pointwise_one`, `pointwise_neg`, `pointwise_inverse`) with application, associativity, commutativity, identity, inverse, semiring distributivity, and zero-absorption laws.
+
+Progress: `src/function_product_algebra.ac` now specializes the shared function-level pointwise API to binary products of function spaces, with evaluation, coordinate, associativity, commutativity, identity, inverse, semiring distributivity, and zero-absorption laws. Higher-arity finite products and bundled product instances remain deferred until generic bundled instances are reliable.

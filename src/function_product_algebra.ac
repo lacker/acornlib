@@ -1,0 +1,686 @@
+/// Pointwise algebraic operations on finite products of function spaces.
+
+from pair import Pair, pair_ext
+from add import Add
+from add_semigroup import AddSemigroup
+from add_comm_semigroup import AddCommSemigroup
+from add_monoid import AddMonoid
+from add_group import AddGroup
+from mul import Mul
+from semigroup import Semigroup
+from comm_semigroup import CommSemigroup
+from one import One
+from zero import Zero
+from neg import Neg
+from monoid import Monoid
+from group import Group
+from semiring import Semiring
+from function_algebra import pointwise_add, pointwise_mul, pointwise_zero, pointwise_one,
+    pointwise_neg, pointwise_inverse, pointwise_add_assoc, pointwise_add_comm,
+    pointwise_add_zero_right, pointwise_add_zero_left, pointwise_add_neg_right,
+    pointwise_add_neg_left, pointwise_mul_assoc, pointwise_mul_comm, pointwise_mul_one_right,
+    pointwise_mul_one_left, pointwise_mul_inverse_right, pointwise_mul_inverse_left,
+    pointwise_mul_distrib_left, pointwise_mul_distrib_right, pointwise_mul_zero_right,
+    pointwise_mul_zero_left
+from product_algebra import pair_add, pair_mul, pair_zero, pair_one, pair_neg, pair_inverse
+
+/// The value of a binary product of functions at one point.
+define function_pair_apply[T, A, B](p: Pair[T -> A, T -> B], t: T) -> Pair[A, B] {
+    Pair.new(p.first(t), p.second(t))
+}
+
+/// The binary product of two functions.
+define function_pair[T, A, B](f: T -> A, g: T -> B) -> Pair[T -> A, T -> B] {
+    Pair.new(f, g)
+}
+
+/// The pointwise sum on a binary product of function spaces.
+define function_pair_add[T, A: Add, B: Add](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) -> Pair[T -> A, T -> B] {
+    Pair.new(pointwise_add(p.first, q.first), pointwise_add(p.second, q.second))
+}
+
+/// The pointwise product on a binary product of function spaces.
+define function_pair_mul[T, A: Mul, B: Mul](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) -> Pair[T -> A, T -> B] {
+    Pair.new(pointwise_mul(p.first, q.first), pointwise_mul(p.second, q.second))
+}
+
+/// The pointwise zero on a binary product of function spaces.
+let function_pair_zero[T, A: Zero, B: Zero]: Pair[T -> A, T -> B] =
+    Pair.new(pointwise_zero[T, A], pointwise_zero[T, B])
+
+/// The pointwise one on a binary product of function spaces.
+let function_pair_one[T, A: One, B: One]: Pair[T -> A, T -> B] =
+    Pair.new(pointwise_one[T, A], pointwise_one[T, B])
+
+/// The pointwise negation on a binary product of function spaces.
+define function_pair_neg[T, A: Neg, B: Neg](
+    p: Pair[T -> A, T -> B]
+) -> Pair[T -> A, T -> B] {
+    Pair.new(pointwise_neg(p.first), pointwise_neg(p.second))
+}
+
+/// The pointwise inverse on a binary product of function spaces.
+define function_pair_inverse[T, A: Group, B: Group](
+    p: Pair[T -> A, T -> B]
+) -> Pair[T -> A, T -> B] {
+    Pair.new(pointwise_inverse(p.first), pointwise_inverse(p.second))
+}
+
+/// Evaluation of a binary product of functions has the expected first coordinate.
+theorem function_pair_apply_first[T, A, B](p: Pair[T -> A, T -> B], t: T) {
+    function_pair_apply(p, t).first = p.first(t)
+}
+
+/// Evaluation of a binary product of functions has the expected second coordinate.
+theorem function_pair_apply_second[T, A, B](p: Pair[T -> A, T -> B], t: T) {
+    function_pair_apply(p, t).second = p.second(t)
+}
+
+/// The binary product of two functions has the expected first coordinate.
+theorem function_pair_first[T, A, B](f: T -> A, g: T -> B) {
+    function_pair(f, g).first = f
+}
+
+/// The binary product of two functions has the expected second coordinate.
+theorem function_pair_second[T, A, B](f: T -> A, g: T -> B) {
+    function_pair(f, g).second = g
+}
+
+/// Evaluation of a binary product of two functions gives the pair of values.
+theorem function_pair_apply_pair[T, A, B](f: T -> A, g: T -> B, t: T) {
+    function_pair_apply(function_pair(f, g), t) = Pair.new(f(t), g(t))
+}
+
+/// Function pairs are determined by their two coordinates.
+theorem function_pair_eta[T, A, B](p: Pair[T -> A, T -> B]) {
+    function_pair(p.first, p.second) = p
+} by {
+    let q = function_pair(p.first, p.second)
+    q.first = p.first
+    q.second = p.second
+    pair_ext(q, p)
+}
+
+/// The first coordinate of the pointwise sum is the pointwise sum of first coordinates.
+theorem function_pair_add_first[T, A: Add, B: Add](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, q).first = pointwise_add(p.first, q.first)
+}
+
+/// The second coordinate of the pointwise sum is the pointwise sum of second coordinates.
+theorem function_pair_add_second[T, A: Add, B: Add](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, q).second = pointwise_add(p.second, q.second)
+}
+
+/// The first coordinate of the pointwise product is the pointwise product of first coordinates.
+theorem function_pair_mul_first[T, A: Mul, B: Mul](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, q).first = pointwise_mul(p.first, q.first)
+}
+
+/// The second coordinate of the pointwise product is the pointwise product of second coordinates.
+theorem function_pair_mul_second[T, A: Mul, B: Mul](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, q).second = pointwise_mul(p.second, q.second)
+}
+
+/// The first coordinate of the pointwise zero is the pointwise zero.
+theorem function_pair_zero_first[T, A: Zero, B: Zero] {
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+}
+
+/// The second coordinate of the pointwise zero is the pointwise zero.
+theorem function_pair_zero_second[T, A: Zero, B: Zero] {
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+}
+
+/// The first coordinate of the pointwise one is the pointwise one.
+theorem function_pair_one_first[T, A: One, B: One] {
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+}
+
+/// The second coordinate of the pointwise one is the pointwise one.
+theorem function_pair_one_second[T, A: One, B: One] {
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+}
+
+/// The first coordinate of the pointwise negation is the pointwise negation.
+theorem function_pair_neg_first[T, A: Neg, B: Neg](p: Pair[T -> A, T -> B]) {
+    function_pair_neg(p).first = pointwise_neg(p.first)
+}
+
+/// The second coordinate of the pointwise negation is the pointwise negation.
+theorem function_pair_neg_second[T, A: Neg, B: Neg](p: Pair[T -> A, T -> B]) {
+    function_pair_neg(p).second = pointwise_neg(p.second)
+}
+
+/// The first coordinate of the pointwise inverse is the pointwise inverse.
+theorem function_pair_inverse_first[T, A: Group, B: Group](p: Pair[T -> A, T -> B]) {
+    function_pair_inverse(p).first = pointwise_inverse(p.first)
+}
+
+/// The second coordinate of the pointwise inverse is the pointwise inverse.
+theorem function_pair_inverse_second[T, A: Group, B: Group](p: Pair[T -> A, T -> B]) {
+    function_pair_inverse(p).second = pointwise_inverse(p.second)
+}
+
+/// Evaluation transports pointwise sums to componentwise sums of values.
+theorem function_pair_add_apply[T, A: Add, B: Add](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    t: T
+) {
+    function_pair_apply(function_pair_add(p, q), t) =
+    pair_add(function_pair_apply(p, t), function_pair_apply(q, t))
+} by {
+    let lhs = function_pair_apply(function_pair_add(p, q), t)
+    let rhs = pair_add(function_pair_apply(p, t), function_pair_apply(q, t))
+    lhs.first = function_pair_add(p, q).first(t)
+    function_pair_add(p, q).first = pointwise_add(p.first, q.first)
+    lhs.first = pointwise_add(p.first, q.first, t)
+    lhs.first = p.first(t) + q.first(t)
+    rhs.first = function_pair_apply(p, t).first + function_pair_apply(q, t).first
+    rhs.first = p.first(t) + q.first(t)
+    lhs.first = rhs.first
+    lhs.second = function_pair_add(p, q).second(t)
+    function_pair_add(p, q).second = pointwise_add(p.second, q.second)
+    lhs.second = pointwise_add(p.second, q.second, t)
+    lhs.second = p.second(t) + q.second(t)
+    rhs.second = function_pair_apply(p, t).second + function_pair_apply(q, t).second
+    rhs.second = p.second(t) + q.second(t)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Evaluation transports pointwise products to componentwise products of values.
+theorem function_pair_mul_apply[T, A: Mul, B: Mul](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    t: T
+) {
+    function_pair_apply(function_pair_mul(p, q), t) =
+    pair_mul(function_pair_apply(p, t), function_pair_apply(q, t))
+} by {
+    let lhs = function_pair_apply(function_pair_mul(p, q), t)
+    let rhs = pair_mul(function_pair_apply(p, t), function_pair_apply(q, t))
+    lhs.first = function_pair_mul(p, q).first(t)
+    function_pair_mul(p, q).first = pointwise_mul(p.first, q.first)
+    lhs.first = pointwise_mul(p.first, q.first, t)
+    lhs.first = p.first(t) * q.first(t)
+    rhs.first = function_pair_apply(p, t).first * function_pair_apply(q, t).first
+    rhs.first = p.first(t) * q.first(t)
+    lhs.first = rhs.first
+    lhs.second = function_pair_mul(p, q).second(t)
+    function_pair_mul(p, q).second = pointwise_mul(p.second, q.second)
+    lhs.second = pointwise_mul(p.second, q.second, t)
+    lhs.second = p.second(t) * q.second(t)
+    rhs.second = function_pair_apply(p, t).second * function_pair_apply(q, t).second
+    rhs.second = p.second(t) * q.second(t)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Evaluation transports the pointwise zero to the componentwise zero of values.
+theorem function_pair_zero_apply[T, A: Zero, B: Zero](t: T) {
+    function_pair_apply(function_pair_zero[T, A, B], t) = pair_zero[A, B]
+} by {
+    let lhs = function_pair_apply(function_pair_zero[T, A, B], t)
+    lhs.first = function_pair_zero[T, A, B].first(t)
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.first = pointwise_zero[T, A](t)
+    lhs.first = A.0
+    lhs.second = function_pair_zero[T, A, B].second(t)
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    lhs.second = pointwise_zero[T, B](t)
+    lhs.second = B.0
+    pair_ext(lhs, pair_zero[A, B])
+}
+
+/// Evaluation transports the pointwise one to the componentwise one of values.
+theorem function_pair_one_apply[T, A: One, B: One](t: T) {
+    function_pair_apply(function_pair_one[T, A, B], t) = pair_one[A, B]
+} by {
+    let lhs = function_pair_apply(function_pair_one[T, A, B], t)
+    lhs.first = function_pair_one[T, A, B].first(t)
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+    lhs.first = pointwise_one[T, A](t)
+    lhs.first = A.1
+    lhs.second = function_pair_one[T, A, B].second(t)
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+    lhs.second = pointwise_one[T, B](t)
+    lhs.second = B.1
+    pair_ext(lhs, pair_one[A, B])
+}
+
+/// Evaluation transports pointwise negation to componentwise negation of values.
+theorem function_pair_neg_apply[T, A: Neg, B: Neg](p: Pair[T -> A, T -> B], t: T) {
+    function_pair_apply(function_pair_neg(p), t) = pair_neg(function_pair_apply(p, t))
+} by {
+    let lhs = function_pair_apply(function_pair_neg(p), t)
+    let rhs = pair_neg(function_pair_apply(p, t))
+    lhs.first = function_pair_neg(p).first(t)
+    function_pair_neg(p).first = pointwise_neg(p.first)
+    lhs.first = pointwise_neg(p.first, t)
+    lhs.first = -p.first(t)
+    rhs.first = -function_pair_apply(p, t).first
+    rhs.first = -p.first(t)
+    lhs.first = rhs.first
+    lhs.second = function_pair_neg(p).second(t)
+    function_pair_neg(p).second = pointwise_neg(p.second)
+    lhs.second = pointwise_neg(p.second, t)
+    lhs.second = -p.second(t)
+    rhs.second = -function_pair_apply(p, t).second
+    rhs.second = -p.second(t)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Evaluation transports pointwise inversion to componentwise inversion of values.
+theorem function_pair_inverse_apply[T, A: Group, B: Group](p: Pair[T -> A, T -> B], t: T) {
+    function_pair_apply(function_pair_inverse(p), t) = pair_inverse(function_pair_apply(p, t))
+} by {
+    let lhs = function_pair_apply(function_pair_inverse(p), t)
+    let rhs = pair_inverse(function_pair_apply(p, t))
+    lhs.first = function_pair_inverse(p).first(t)
+    function_pair_inverse(p).first = pointwise_inverse(p.first)
+    lhs.first = pointwise_inverse(p.first, t)
+    lhs.first = p.first(t).inverse
+    rhs.first = function_pair_apply(p, t).first.inverse
+    rhs.first = p.first(t).inverse
+    lhs.first = rhs.first
+    lhs.second = function_pair_inverse(p).second(t)
+    function_pair_inverse(p).second = pointwise_inverse(p.second)
+    lhs.second = pointwise_inverse(p.second, t)
+    lhs.second = p.second(t).inverse
+    rhs.second = function_pair_apply(p, t).second.inverse
+    rhs.second = p.second(t).inverse
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Pointwise addition is associative on a binary product of function spaces.
+theorem function_pair_add_assoc[T, A: AddSemigroup, B: AddSemigroup](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    r: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, function_pair_add(q, r)) =
+    function_pair_add(function_pair_add(p, q), r)
+} by {
+    let lhs = function_pair_add(p, function_pair_add(q, r))
+    let rhs = function_pair_add(function_pair_add(p, q), r)
+    lhs.first = pointwise_add(p.first, function_pair_add(q, r).first)
+    function_pair_add(q, r).first = pointwise_add(q.first, r.first)
+    lhs.first = pointwise_add(p.first, pointwise_add(q.first, r.first))
+    rhs.first = pointwise_add(function_pair_add(p, q).first, r.first)
+    function_pair_add(p, q).first = pointwise_add(p.first, q.first)
+    rhs.first = pointwise_add(pointwise_add(p.first, q.first), r.first)
+    pointwise_add_assoc(p.first, q.first, r.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_add(p.second, function_pair_add(q, r).second)
+    function_pair_add(q, r).second = pointwise_add(q.second, r.second)
+    lhs.second = pointwise_add(p.second, pointwise_add(q.second, r.second))
+    rhs.second = pointwise_add(function_pair_add(p, q).second, r.second)
+    function_pair_add(p, q).second = pointwise_add(p.second, q.second)
+    rhs.second = pointwise_add(pointwise_add(p.second, q.second), r.second)
+    pointwise_add_assoc(p.second, q.second, r.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Pointwise addition is commutative on a binary product of function spaces.
+theorem function_pair_add_comm[T, A: AddCommSemigroup, B: AddCommSemigroup](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, q) = function_pair_add(q, p)
+} by {
+    let lhs = function_pair_add(p, q)
+    let rhs = function_pair_add(q, p)
+    lhs.first = pointwise_add(p.first, q.first)
+    rhs.first = pointwise_add(q.first, p.first)
+    pointwise_add_comm(p.first, q.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_add(p.second, q.second)
+    rhs.second = pointwise_add(q.second, p.second)
+    pointwise_add_comm(p.second, q.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Adding the pointwise zero on the right changes no coordinate.
+theorem function_pair_add_zero_right[T, A: AddMonoid, B: AddMonoid](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, function_pair_zero[T, A, B]) = p
+} by {
+    let lhs = function_pair_add(p, function_pair_zero[T, A, B])
+    lhs.first = pointwise_add(p.first, function_pair_zero[T, A, B].first)
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.first = pointwise_add(p.first, pointwise_zero[T, A])
+    pointwise_add_zero_right(p.first)
+    lhs.first = p.first
+    lhs.second = pointwise_add(p.second, function_pair_zero[T, A, B].second)
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    lhs.second = pointwise_add(p.second, pointwise_zero[T, B])
+    pointwise_add_zero_right(p.second)
+    lhs.second = p.second
+    pair_ext(lhs, p)
+}
+
+/// Adding the pointwise zero on the left changes no coordinate.
+theorem function_pair_add_zero_left[T, A: AddMonoid, B: AddMonoid](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_add(function_pair_zero[T, A, B], p) = p
+} by {
+    let lhs = function_pair_add(function_pair_zero[T, A, B], p)
+    lhs.first = pointwise_add(function_pair_zero[T, A, B].first, p.first)
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.first = pointwise_add(pointwise_zero[T, A], p.first)
+    pointwise_add_zero_left(p.first)
+    lhs.first = p.first
+    lhs.second = pointwise_add(function_pair_zero[T, A, B].second, p.second)
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    lhs.second = pointwise_add(pointwise_zero[T, B], p.second)
+    pointwise_add_zero_left(p.second)
+    lhs.second = p.second
+    pair_ext(lhs, p)
+}
+
+/// Pointwise negation is a right additive inverse on a binary product of function spaces.
+theorem function_pair_add_neg_right[T, A: AddGroup, B: AddGroup](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_add(p, function_pair_neg(p)) = function_pair_zero[T, A, B]
+} by {
+    let lhs = function_pair_add(p, function_pair_neg(p))
+    lhs.first = pointwise_add(p.first, function_pair_neg(p).first)
+    function_pair_neg(p).first = pointwise_neg(p.first)
+    lhs.first = pointwise_add(p.first, pointwise_neg(p.first))
+    pointwise_add_neg_right(p.first)
+    lhs.first = pointwise_zero[T, A]
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.second = pointwise_add(p.second, function_pair_neg(p).second)
+    function_pair_neg(p).second = pointwise_neg(p.second)
+    lhs.second = pointwise_add(p.second, pointwise_neg(p.second))
+    pointwise_add_neg_right(p.second)
+    lhs.second = pointwise_zero[T, B]
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    pair_ext(lhs, function_pair_zero[T, A, B])
+}
+
+/// Pointwise negation is a left additive inverse on a binary product of function spaces.
+theorem function_pair_add_neg_left[T, A: AddGroup, B: AddGroup](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_add(function_pair_neg(p), p) = function_pair_zero[T, A, B]
+} by {
+    let lhs = function_pair_add(function_pair_neg(p), p)
+    lhs.first = pointwise_add(function_pair_neg(p).first, p.first)
+    function_pair_neg(p).first = pointwise_neg(p.first)
+    lhs.first = pointwise_add(pointwise_neg(p.first), p.first)
+    pointwise_add_neg_left(p.first)
+    lhs.first = pointwise_zero[T, A]
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.second = pointwise_add(function_pair_neg(p).second, p.second)
+    function_pair_neg(p).second = pointwise_neg(p.second)
+    lhs.second = pointwise_add(pointwise_neg(p.second), p.second)
+    pointwise_add_neg_left(p.second)
+    lhs.second = pointwise_zero[T, B]
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    pair_ext(lhs, function_pair_zero[T, A, B])
+}
+
+/// Pointwise multiplication is associative on a binary product of function spaces.
+theorem function_pair_mul_assoc[T, A: Semigroup, B: Semigroup](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    r: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, function_pair_mul(q, r)) =
+    function_pair_mul(function_pair_mul(p, q), r)
+} by {
+    let lhs = function_pair_mul(p, function_pair_mul(q, r))
+    let rhs = function_pair_mul(function_pair_mul(p, q), r)
+    lhs.first = pointwise_mul(p.first, function_pair_mul(q, r).first)
+    function_pair_mul(q, r).first = pointwise_mul(q.first, r.first)
+    lhs.first = pointwise_mul(p.first, pointwise_mul(q.first, r.first))
+    rhs.first = pointwise_mul(function_pair_mul(p, q).first, r.first)
+    function_pair_mul(p, q).first = pointwise_mul(p.first, q.first)
+    rhs.first = pointwise_mul(pointwise_mul(p.first, q.first), r.first)
+    pointwise_mul_assoc(p.first, q.first, r.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_mul(p.second, function_pair_mul(q, r).second)
+    function_pair_mul(q, r).second = pointwise_mul(q.second, r.second)
+    lhs.second = pointwise_mul(p.second, pointwise_mul(q.second, r.second))
+    rhs.second = pointwise_mul(function_pair_mul(p, q).second, r.second)
+    function_pair_mul(p, q).second = pointwise_mul(p.second, q.second)
+    rhs.second = pointwise_mul(pointwise_mul(p.second, q.second), r.second)
+    pointwise_mul_assoc(p.second, q.second, r.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Pointwise multiplication is commutative on a binary product of function spaces.
+theorem function_pair_mul_comm[T, A: CommSemigroup, B: CommSemigroup](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, q) = function_pair_mul(q, p)
+} by {
+    let lhs = function_pair_mul(p, q)
+    let rhs = function_pair_mul(q, p)
+    lhs.first = pointwise_mul(p.first, q.first)
+    rhs.first = pointwise_mul(q.first, p.first)
+    pointwise_mul_comm(p.first, q.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_mul(p.second, q.second)
+    rhs.second = pointwise_mul(q.second, p.second)
+    pointwise_mul_comm(p.second, q.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Multiplying by the pointwise one on the right changes no coordinate.
+theorem function_pair_mul_one_right[T, A: Monoid, B: Monoid](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, function_pair_one[T, A, B]) = p
+} by {
+    let lhs = function_pair_mul(p, function_pair_one[T, A, B])
+    lhs.first = pointwise_mul(p.first, function_pair_one[T, A, B].first)
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+    lhs.first = pointwise_mul(p.first, pointwise_one[T, A])
+    pointwise_mul_one_right(p.first)
+    lhs.first = p.first
+    lhs.second = pointwise_mul(p.second, function_pair_one[T, A, B].second)
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+    lhs.second = pointwise_mul(p.second, pointwise_one[T, B])
+    pointwise_mul_one_right(p.second)
+    lhs.second = p.second
+    pair_ext(lhs, p)
+}
+
+/// Multiplying by the pointwise one on the left changes no coordinate.
+theorem function_pair_mul_one_left[T, A: Monoid, B: Monoid](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(function_pair_one[T, A, B], p) = p
+} by {
+    let lhs = function_pair_mul(function_pair_one[T, A, B], p)
+    lhs.first = pointwise_mul(function_pair_one[T, A, B].first, p.first)
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+    lhs.first = pointwise_mul(pointwise_one[T, A], p.first)
+    pointwise_mul_one_left(p.first)
+    lhs.first = p.first
+    lhs.second = pointwise_mul(function_pair_one[T, A, B].second, p.second)
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+    lhs.second = pointwise_mul(pointwise_one[T, B], p.second)
+    pointwise_mul_one_left(p.second)
+    lhs.second = p.second
+    pair_ext(lhs, p)
+}
+
+/// Pointwise inversion is a right inverse on a binary product of function spaces.
+theorem function_pair_mul_inverse_right[T, A: Group, B: Group](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, function_pair_inverse(p)) = function_pair_one[T, A, B]
+} by {
+    let lhs = function_pair_mul(p, function_pair_inverse(p))
+    lhs.first = pointwise_mul(p.first, function_pair_inverse(p).first)
+    function_pair_inverse(p).first = pointwise_inverse(p.first)
+    lhs.first = pointwise_mul(p.first, pointwise_inverse(p.first))
+    pointwise_mul_inverse_right(p.first)
+    lhs.first = pointwise_one[T, A]
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+    lhs.second = pointwise_mul(p.second, function_pair_inverse(p).second)
+    function_pair_inverse(p).second = pointwise_inverse(p.second)
+    lhs.second = pointwise_mul(p.second, pointwise_inverse(p.second))
+    pointwise_mul_inverse_right(p.second)
+    lhs.second = pointwise_one[T, B]
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+    pair_ext(lhs, function_pair_one[T, A, B])
+}
+
+/// Pointwise inversion is a left inverse on a binary product of function spaces.
+theorem function_pair_mul_inverse_left[T, A: Group, B: Group](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(function_pair_inverse(p), p) = function_pair_one[T, A, B]
+} by {
+    let lhs = function_pair_mul(function_pair_inverse(p), p)
+    lhs.first = pointwise_mul(function_pair_inverse(p).first, p.first)
+    function_pair_inverse(p).first = pointwise_inverse(p.first)
+    lhs.first = pointwise_mul(pointwise_inverse(p.first), p.first)
+    pointwise_mul_inverse_left(p.first)
+    lhs.first = pointwise_one[T, A]
+    function_pair_one[T, A, B].first = pointwise_one[T, A]
+    lhs.second = pointwise_mul(function_pair_inverse(p).second, p.second)
+    function_pair_inverse(p).second = pointwise_inverse(p.second)
+    lhs.second = pointwise_mul(pointwise_inverse(p.second), p.second)
+    pointwise_mul_inverse_left(p.second)
+    lhs.second = pointwise_one[T, B]
+    function_pair_one[T, A, B].second = pointwise_one[T, B]
+    pair_ext(lhs, function_pair_one[T, A, B])
+}
+
+/// Pointwise multiplication distributes over pointwise addition on the left.
+theorem function_pair_mul_distrib_left[T, A: Semiring, B: Semiring](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    r: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, function_pair_add(q, r)) =
+    function_pair_add(function_pair_mul(p, q), function_pair_mul(p, r))
+} by {
+    let lhs = function_pair_mul(p, function_pair_add(q, r))
+    let rhs = function_pair_add(function_pair_mul(p, q), function_pair_mul(p, r))
+    lhs.first = pointwise_mul(p.first, function_pair_add(q, r).first)
+    function_pair_add(q, r).first = pointwise_add(q.first, r.first)
+    lhs.first = pointwise_mul(p.first, pointwise_add(q.first, r.first))
+    rhs.first = pointwise_add(function_pair_mul(p, q).first, function_pair_mul(p, r).first)
+    function_pair_mul(p, q).first = pointwise_mul(p.first, q.first)
+    function_pair_mul(p, r).first = pointwise_mul(p.first, r.first)
+    rhs.first = pointwise_add(pointwise_mul(p.first, q.first), pointwise_mul(p.first, r.first))
+    pointwise_mul_distrib_left(p.first, q.first, r.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_mul(p.second, function_pair_add(q, r).second)
+    function_pair_add(q, r).second = pointwise_add(q.second, r.second)
+    lhs.second = pointwise_mul(p.second, pointwise_add(q.second, r.second))
+    rhs.second = pointwise_add(function_pair_mul(p, q).second, function_pair_mul(p, r).second)
+    function_pair_mul(p, q).second = pointwise_mul(p.second, q.second)
+    function_pair_mul(p, r).second = pointwise_mul(p.second, r.second)
+    rhs.second = pointwise_add(pointwise_mul(p.second, q.second), pointwise_mul(p.second, r.second))
+    pointwise_mul_distrib_left(p.second, q.second, r.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Pointwise multiplication distributes over pointwise addition on the right.
+theorem function_pair_mul_distrib_right[T, A: Semiring, B: Semiring](
+    p: Pair[T -> A, T -> B],
+    q: Pair[T -> A, T -> B],
+    r: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(function_pair_add(p, q), r) =
+    function_pair_add(function_pair_mul(p, r), function_pair_mul(q, r))
+} by {
+    let lhs = function_pair_mul(function_pair_add(p, q), r)
+    let rhs = function_pair_add(function_pair_mul(p, r), function_pair_mul(q, r))
+    lhs.first = pointwise_mul(function_pair_add(p, q).first, r.first)
+    function_pair_add(p, q).first = pointwise_add(p.first, q.first)
+    lhs.first = pointwise_mul(pointwise_add(p.first, q.first), r.first)
+    rhs.first = pointwise_add(function_pair_mul(p, r).first, function_pair_mul(q, r).first)
+    function_pair_mul(p, r).first = pointwise_mul(p.first, r.first)
+    function_pair_mul(q, r).first = pointwise_mul(q.first, r.first)
+    rhs.first = pointwise_add(pointwise_mul(p.first, r.first), pointwise_mul(q.first, r.first))
+    pointwise_mul_distrib_right(p.first, q.first, r.first)
+    lhs.first = rhs.first
+    lhs.second = pointwise_mul(function_pair_add(p, q).second, r.second)
+    function_pair_add(p, q).second = pointwise_add(p.second, q.second)
+    lhs.second = pointwise_mul(pointwise_add(p.second, q.second), r.second)
+    rhs.second = pointwise_add(function_pair_mul(p, r).second, function_pair_mul(q, r).second)
+    function_pair_mul(p, r).second = pointwise_mul(p.second, r.second)
+    function_pair_mul(q, r).second = pointwise_mul(q.second, r.second)
+    rhs.second = pointwise_add(pointwise_mul(p.second, r.second), pointwise_mul(q.second, r.second))
+    pointwise_mul_distrib_right(p.second, q.second, r.second)
+    lhs.second = rhs.second
+    pair_ext(lhs, rhs)
+}
+
+/// Multiplying by the pointwise zero on the right gives the pointwise zero.
+theorem function_pair_mul_zero_right[T, A: Semiring, B: Semiring](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(p, function_pair_zero[T, A, B]) = function_pair_zero[T, A, B]
+} by {
+    let lhs = function_pair_mul(p, function_pair_zero[T, A, B])
+    lhs.first = pointwise_mul(p.first, function_pair_zero[T, A, B].first)
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.first = pointwise_mul(p.first, pointwise_zero[T, A])
+    pointwise_mul_zero_right(p.first)
+    lhs.first = pointwise_zero[T, A]
+    lhs.second = pointwise_mul(p.second, function_pair_zero[T, A, B].second)
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    lhs.second = pointwise_mul(p.second, pointwise_zero[T, B])
+    pointwise_mul_zero_right(p.second)
+    lhs.second = pointwise_zero[T, B]
+    pair_ext(lhs, function_pair_zero[T, A, B])
+}
+
+/// Multiplying by the pointwise zero on the left gives the pointwise zero.
+theorem function_pair_mul_zero_left[T, A: Semiring, B: Semiring](
+    p: Pair[T -> A, T -> B]
+) {
+    function_pair_mul(function_pair_zero[T, A, B], p) = function_pair_zero[T, A, B]
+} by {
+    let lhs = function_pair_mul(function_pair_zero[T, A, B], p)
+    lhs.first = pointwise_mul(function_pair_zero[T, A, B].first, p.first)
+    function_pair_zero[T, A, B].first = pointwise_zero[T, A]
+    lhs.first = pointwise_mul(pointwise_zero[T, A], p.first)
+    pointwise_mul_zero_left(p.first)
+    lhs.first = pointwise_zero[T, A]
+    lhs.second = pointwise_mul(function_pair_zero[T, A, B].second, p.second)
+    function_pair_zero[T, A, B].second = pointwise_zero[T, B]
+    lhs.second = pointwise_mul(pointwise_zero[T, B], p.second)
+    pointwise_mul_zero_left(p.second)
+    lhs.second = pointwise_zero[T, B]
+    pair_ext(lhs, function_pair_zero[T, A, B])
+}
