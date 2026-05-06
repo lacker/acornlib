@@ -1,6 +1,7 @@
 /// Pointwise order comparisons for functions restricted to a subset of their domain.
 
-from order import PartialOrder, lte_refl, lte_trans, lte_antisymm, lt_imp_lte, lt_trans
+from order import PartialOrder, lte_refl, lte_trans, lte_antisymm, lt_imp_lte, lt_trans,
+    lt_of_lt_of_lte, lt_of_lte_of_lt
 from set import Set
 
 /// True if two functions are equal at every point of `domain`.
@@ -28,6 +29,20 @@ define function_lt_on[Domain, Value: PartialOrder](
     forall(point: Domain) {
         domain.contains(point) implies lower(point) < upper(point)
     }
+}
+
+/// True if `middle` lies pointwise between `lower` and `upper` on `domain`.
+define function_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) -> Bool {
+    function_lte_on(domain, lower, middle) and function_lte_on(domain, middle, upper)
+}
+
+/// True if `middle` lies pointwise strictly between `lower` and `upper` on `domain`.
+define function_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) -> Bool {
+    function_lt_on(domain, lower, middle) and function_lt_on(domain, middle, upper)
 }
 
 /// Pointwise equality on a set gives equality at any point of the set.
@@ -72,6 +87,26 @@ theorem function_eq_on_trans[Domain, Value](
             f(point) = g(point)
             g(point) = h(point)
             f(point) = h(point)
+        }
+    }
+}
+
+/// Pointwise equality remains true after restricting the domain.
+theorem function_eq_on_subset[Domain, Value](
+    subset: Set[Domain], superset: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    subset.subset(superset) and function_eq_on(superset, left, right)
+    implies function_eq_on(subset, left, right)
+} by {
+    forall(point: Domain) {
+        if subset.contains(point) {
+            subset.subset(superset) = forall(candidate: Domain) {
+                subset.contains(candidate) implies superset.contains(candidate)
+            }
+            subset.contains(point) implies superset.contains(point)
+            superset.contains(point)
+            function_eq_on_apply(superset, left, right, point)
+            left(point) = right(point)
         }
     }
 }
@@ -208,6 +243,60 @@ theorem function_lte_on_congr_right[Domain, Value: PartialOrder](
     }
 }
 
+/// Replacing the lower function by an equal one reflects pointwise order on the set.
+theorem function_lte_on_reflect_congr_left[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_eq_on(domain, f, g) and function_lte_on(domain, f, h)
+    implies function_lte_on(domain, g, h)
+} by {
+    function_eq_on_symm(domain, f, g)
+    function_eq_on(domain, g, f)
+    function_lte_on_congr_left(domain, g, f, h)
+    function_lte_on(domain, g, h)
+}
+
+/// Replacing the upper function by an equal one reflects pointwise order on the set.
+theorem function_lte_on_reflect_congr_right[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_lte_on(domain, f, h) and function_eq_on(domain, g, h)
+    implies function_lte_on(domain, f, g)
+} by {
+    function_eq_on_symm(domain, g, h)
+    function_eq_on(domain, h, g)
+    function_lte_on_congr_right(domain, f, h, g)
+    function_lte_on(domain, f, g)
+}
+
+/// Replacing both sides by equal functions preserves pointwise order on the set.
+theorem function_lte_on_congr[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value,
+    h: Domain -> Value, k: Domain -> Value
+) {
+    function_eq_on(domain, f, g) and function_lte_on(domain, g, h) and function_eq_on(domain, h, k)
+    implies function_lte_on(domain, f, k)
+} by {
+    function_lte_on_congr_left(domain, f, g, h)
+    function_lte_on(domain, f, h)
+    function_lte_on_congr_right(domain, f, h, k)
+    function_lte_on(domain, f, k)
+}
+
+/// Equal functions are pointwise ordered in both directions on the set.
+theorem function_lte_on_pair_of_eq_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], left: Domain -> Value, right: Domain -> Value
+) {
+    function_eq_on(domain, left, right)
+    implies function_lte_on(domain, left, right) and function_lte_on(domain, right, left)
+} by {
+    function_lte_on_of_eq_on(domain, left, right)
+    function_eq_on_symm(domain, left, right)
+    function_lte_on_of_eq_on(domain, right, left)
+    function_lte_on(domain, left, right)
+    function_lte_on(domain, right, left)
+}
+
 /// Pointwise strict order on a set is transitive.
 theorem function_lt_on_trans[Domain, Value: PartialOrder](
     domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
@@ -227,6 +316,44 @@ theorem function_lt_on_trans[Domain, Value: PartialOrder](
     }
 }
 
+/// A strict comparison followed by a non-strict comparison gives a strict comparison.
+theorem function_lt_lte_on_trans[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_lt_on(domain, f, g) and function_lte_on(domain, g, h)
+    implies function_lt_on(domain, f, h)
+} by {
+    forall(point: Domain) {
+        if domain.contains(point) {
+            function_lt_on_apply(domain, f, g, point)
+            function_lte_on_apply(domain, g, h, point)
+            f(point) < g(point)
+            g(point) <= h(point)
+            lt_of_lt_of_lte(f(point), g(point), h(point))
+            f(point) < h(point)
+        }
+    }
+}
+
+/// A non-strict comparison followed by a strict comparison gives a strict comparison.
+theorem function_lte_lt_on_trans[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_lte_on(domain, f, g) and function_lt_on(domain, g, h)
+    implies function_lt_on(domain, f, h)
+} by {
+    forall(point: Domain) {
+        if domain.contains(point) {
+            function_lte_on_apply(domain, f, g, point)
+            function_lt_on_apply(domain, g, h, point)
+            f(point) <= g(point)
+            g(point) < h(point)
+            lt_of_lte_of_lt(f(point), g(point), h(point))
+            f(point) < h(point)
+        }
+    }
+}
+
 /// Pointwise strict order on a set implies pointwise order on the same set.
 theorem function_lt_on_imp_lte_on[Domain, Value: PartialOrder](
     domain: Set[Domain], lower: Domain -> Value, upper: Domain -> Value
@@ -241,6 +368,208 @@ theorem function_lt_on_imp_lte_on[Domain, Value: PartialOrder](
             lower(point) <= upper(point)
         }
     }
+}
+
+/// Replacing the lower function by an equal one preserves strict pointwise order on the set.
+theorem function_lt_on_congr_left[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_eq_on(domain, f, g) and function_lt_on(domain, g, h)
+    implies function_lt_on(domain, f, h)
+} by {
+    forall(point: Domain) {
+        if domain.contains(point) {
+            function_eq_on_apply(domain, f, g, point)
+            function_lt_on_apply(domain, g, h, point)
+            f(point) = g(point)
+            g(point) < h(point)
+            f(point) < h(point)
+        }
+    }
+}
+
+/// Replacing the upper function by an equal one preserves strict pointwise order on the set.
+theorem function_lt_on_congr_right[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_lt_on(domain, f, g) and function_eq_on(domain, g, h)
+    implies function_lt_on(domain, f, h)
+} by {
+    forall(point: Domain) {
+        if domain.contains(point) {
+            function_lt_on_apply(domain, f, g, point)
+            function_eq_on_apply(domain, g, h, point)
+            f(point) < g(point)
+            g(point) = h(point)
+            f(point) < h(point)
+        }
+    }
+}
+
+/// Replacing the lower function by an equal one reflects strict pointwise order on the set.
+theorem function_lt_on_reflect_congr_left[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_eq_on(domain, f, g) and function_lt_on(domain, f, h)
+    implies function_lt_on(domain, g, h)
+} by {
+    function_eq_on_symm(domain, f, g)
+    function_eq_on(domain, g, f)
+    function_lt_on_congr_left(domain, g, f, h)
+    function_lt_on(domain, g, h)
+}
+
+/// Replacing the upper function by an equal one reflects strict pointwise order on the set.
+theorem function_lt_on_reflect_congr_right[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value, h: Domain -> Value
+) {
+    function_lt_on(domain, f, h) and function_eq_on(domain, g, h)
+    implies function_lt_on(domain, f, g)
+} by {
+    function_eq_on_symm(domain, g, h)
+    function_eq_on(domain, h, g)
+    function_lt_on_congr_right(domain, f, h, g)
+    function_lt_on(domain, f, g)
+}
+
+/// Replacing both sides by equal functions preserves strict pointwise order on the set.
+theorem function_lt_on_congr[Domain, Value: PartialOrder](
+    domain: Set[Domain], f: Domain -> Value, g: Domain -> Value,
+    h: Domain -> Value, k: Domain -> Value
+) {
+    function_eq_on(domain, f, g) and function_lt_on(domain, g, h) and function_eq_on(domain, h, k)
+    implies function_lt_on(domain, f, k)
+} by {
+    function_lt_on_congr_left(domain, f, g, h)
+    function_lt_on(domain, f, h)
+    function_lt_on_congr_right(domain, f, h, k)
+    function_lt_on(domain, f, k)
+}
+
+/// A pointwise between relation gives the lower comparison.
+theorem function_between_on_left[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) implies function_lte_on(domain, lower, middle)
+} by {
+    function_lte_on(domain, lower, middle)
+}
+
+/// A pointwise between relation gives the upper comparison.
+theorem function_between_on_right[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_between_on(domain, lower, middle, upper) implies function_lte_on(domain, middle, upper)
+} by {
+    function_lte_on(domain, middle, upper)
+}
+
+/// A strict pointwise between relation gives the lower strict comparison.
+theorem function_strict_between_on_left[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) implies function_lt_on(domain, lower, middle)
+} by {
+    function_lt_on(domain, lower, middle)
+}
+
+/// A strict pointwise between relation gives the upper strict comparison.
+theorem function_strict_between_on_right[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper) implies function_lt_on(domain, middle, upper)
+} by {
+    function_lt_on(domain, middle, upper)
+}
+
+/// A strict pointwise between relation implies a non-strict pointwise between relation.
+theorem function_between_on_of_strict_between_on[Domain, Value: PartialOrder](
+    domain: Set[Domain], lower: Domain -> Value, middle: Domain -> Value, upper: Domain -> Value
+) {
+    function_strict_between_on(domain, lower, middle, upper)
+    implies function_between_on(domain, lower, middle, upper)
+} by {
+    function_strict_between_on_left(domain, lower, middle, upper)
+    function_strict_between_on_right(domain, lower, middle, upper)
+    function_lt_on_imp_lte_on(domain, lower, middle)
+    function_lt_on_imp_lte_on(domain, middle, upper)
+    function_lte_on(domain, lower, middle)
+    function_lte_on(domain, middle, upper)
+    function_between_on(domain, lower, middle, upper)
+}
+
+/// A pointwise between relation remains true after restricting the domain.
+theorem function_between_on_subset[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    subset.subset(superset) and function_between_on(superset, lower, middle, upper)
+    implies function_between_on(subset, lower, middle, upper)
+} by {
+    function_between_on_left(superset, lower, middle, upper)
+    function_between_on_right(superset, lower, middle, upper)
+    forall(point: Domain) {
+        if subset.contains(point) {
+            subset.subset(superset) = forall(candidate: Domain) {
+                subset.contains(candidate) implies superset.contains(candidate)
+            }
+            subset.contains(point) implies superset.contains(point)
+            superset.contains(point)
+            function_lte_on_apply(superset, lower, middle, point)
+            lower(point) <= middle(point)
+        }
+    }
+    function_lte_on(subset, lower, middle)
+    forall(point: Domain) {
+        if subset.contains(point) {
+            subset.subset(superset) = forall(candidate: Domain) {
+                subset.contains(candidate) implies superset.contains(candidate)
+            }
+            subset.contains(point) implies superset.contains(point)
+            superset.contains(point)
+            function_lte_on_apply(superset, middle, upper, point)
+            middle(point) <= upper(point)
+        }
+    }
+    function_lte_on(subset, middle, upper)
+    function_between_on(subset, lower, middle, upper)
+}
+
+/// A strict pointwise between relation remains true after restricting the domain.
+theorem function_strict_between_on_subset[Domain, Value: PartialOrder](
+    subset: Set[Domain], superset: Set[Domain], lower: Domain -> Value,
+    middle: Domain -> Value, upper: Domain -> Value
+) {
+    subset.subset(superset) and function_strict_between_on(superset, lower, middle, upper)
+    implies function_strict_between_on(subset, lower, middle, upper)
+} by {
+    function_strict_between_on_left(superset, lower, middle, upper)
+    function_strict_between_on_right(superset, lower, middle, upper)
+    forall(point: Domain) {
+        if subset.contains(point) {
+            subset.subset(superset) = forall(candidate: Domain) {
+                subset.contains(candidate) implies superset.contains(candidate)
+            }
+            subset.contains(point) implies superset.contains(point)
+            superset.contains(point)
+            function_lt_on_apply(superset, lower, middle, point)
+            lower(point) < middle(point)
+        }
+    }
+    function_lt_on(subset, lower, middle)
+    forall(point: Domain) {
+        if subset.contains(point) {
+            subset.subset(superset) = forall(candidate: Domain) {
+                subset.contains(candidate) implies superset.contains(candidate)
+            }
+            subset.contains(point) implies superset.contains(point)
+            superset.contains(point)
+            function_lt_on_apply(superset, middle, upper, point)
+            middle(point) < upper(point)
+        }
+    }
+    function_lt_on(subset, middle, upper)
+    function_strict_between_on(subset, lower, middle, upper)
 }
 
 /// A pointwise order comparison remains true after restricting the domain.
