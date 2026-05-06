@@ -1,7 +1,7 @@
 /// Bounds and extrema for functions with partially ordered values.
 
 from order import PartialOrder
-from set import Set, sets_subset_intersection, difference_subset
+from set import Set, sets_subset_intersection, sets_subset_union, difference_subset
 
 /// The value `bound` is an upper bound for `f` on `domain`.
 define is_upper_bound_on[Domain, Value: PartialOrder](
@@ -44,6 +44,45 @@ define is_bounded_on[Domain, Value: PartialOrder](
     domain: Set[Domain], f: Domain -> Value
 ) -> Bool {
     is_bounded_above_on(domain, f) and is_bounded_below_on(domain, f)
+}
+
+/// The value `bound` is an upper bound for `f` on both domains.
+define is_common_upper_bound_on[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) -> Bool {
+    is_upper_bound_on(left, f, bound) and is_upper_bound_on(right, f, bound)
+}
+
+/// The value `bound` is a lower bound for `f` on both domains.
+define is_common_lower_bound_on[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) -> Bool {
+    is_lower_bound_on(left, f, bound) and is_lower_bound_on(right, f, bound)
+}
+
+/// The function `f` has a common upper bound on both domains.
+define is_common_bounded_above_on[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) -> Bool {
+    exists(bound: Value) {
+        is_common_upper_bound_on(left, right, f, bound)
+    }
+}
+
+/// The function `f` has a common lower bound on both domains.
+define is_common_bounded_below_on[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) -> Bool {
+    exists(bound: Value) {
+        is_common_lower_bound_on(left, right, f, bound)
+    }
+}
+
+/// The function `f` has both common upper and common lower bounds on both domains.
+define is_common_bounded_on[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) -> Bool {
+    is_common_bounded_above_on(left, right, f) and is_common_bounded_below_on(left, right, f)
 }
 
 /// An upper bound dominates the value at every point of its domain.
@@ -617,4 +656,310 @@ theorem attains_minimum_at_difference[Domain, Value: PartialOrder](
     difference_subset(domain, excluded)
     attains_minimum_at_subset(domain.difference(excluded), domain, f, point)
     attains_minimum_at(domain.difference(excluded), f, point)
+}
+
+/// A common upper bound is an upper bound on the left domain.
+theorem common_upper_bound_on_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_upper_bound_on(left, right, f, bound) implies is_upper_bound_on(left, f, bound)
+} by {
+    is_upper_bound_on(left, f, bound)
+}
+
+/// A common upper bound is an upper bound on the right domain.
+theorem common_upper_bound_on_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_upper_bound_on(left, right, f, bound) implies is_upper_bound_on(right, f, bound)
+} by {
+    is_upper_bound_on(right, f, bound)
+}
+
+/// A common lower bound is a lower bound on the left domain.
+theorem common_lower_bound_on_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_lower_bound_on(left, right, f, bound) implies is_lower_bound_on(left, f, bound)
+} by {
+    is_lower_bound_on(left, f, bound)
+}
+
+/// A common lower bound is a lower bound on the right domain.
+theorem common_lower_bound_on_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_lower_bound_on(left, right, f, bound) implies is_lower_bound_on(right, f, bound)
+} by {
+    is_lower_bound_on(right, f, bound)
+}
+
+/// Upper bounds on both domains form a common upper bound.
+theorem common_upper_bound_on_intro[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_upper_bound_on(left, f, bound) and is_upper_bound_on(right, f, bound)
+    implies is_common_upper_bound_on(left, right, f, bound)
+} by {
+    is_common_upper_bound_on(left, right, f, bound)
+}
+
+/// Lower bounds on both domains form a common lower bound.
+theorem common_lower_bound_on_intro[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_lower_bound_on(left, f, bound) and is_lower_bound_on(right, f, bound)
+    implies is_common_lower_bound_on(left, right, f, bound)
+} by {
+    is_common_lower_bound_on(left, right, f, bound)
+}
+
+/// A common upper bound on two domains is an upper bound on their union.
+theorem upper_bound_on_union_of_common[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_upper_bound_on(left, right, f, bound)
+    implies is_upper_bound_on(left.union(right), f, bound)
+} by {
+    forall(point: Domain) {
+        if left.union(right).contains(point) {
+            if left.contains(point) {
+                common_upper_bound_on_left(left, right, f, bound)
+                upper_bound_on_apply(left, f, bound, point)
+                f(point) <= bound
+            } else {
+                right.contains(point)
+                common_upper_bound_on_right(left, right, f, bound)
+                upper_bound_on_apply(right, f, bound, point)
+                f(point) <= bound
+            }
+        }
+    }
+}
+
+/// A common lower bound on two domains is a lower bound on their union.
+theorem lower_bound_on_union_of_common[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_common_lower_bound_on(left, right, f, bound)
+    implies is_lower_bound_on(left.union(right), f, bound)
+} by {
+    forall(point: Domain) {
+        if left.union(right).contains(point) {
+            if left.contains(point) {
+                common_lower_bound_on_left(left, right, f, bound)
+                lower_bound_on_apply(left, f, bound, point)
+                bound <= f(point)
+            } else {
+                right.contains(point)
+                common_lower_bound_on_right(left, right, f, bound)
+                lower_bound_on_apply(right, f, bound, point)
+                bound <= f(point)
+            }
+        }
+    }
+}
+
+/// An upper bound on a union is a common upper bound on the two domains.
+theorem common_upper_bound_on_of_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_upper_bound_on(left.union(right), f, bound)
+    implies is_common_upper_bound_on(left, right, f, bound)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    right.subset(left.union(right))
+    upper_bound_on_subset(left, left.union(right), f, bound)
+    upper_bound_on_subset(right, left.union(right), f, bound)
+    is_upper_bound_on(left, f, bound)
+    is_upper_bound_on(right, f, bound)
+    is_common_upper_bound_on(left, right, f, bound)
+}
+
+/// A lower bound on a union is a common lower bound on the two domains.
+theorem common_lower_bound_on_of_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, bound: Value
+) {
+    is_lower_bound_on(left.union(right), f, bound)
+    implies is_common_lower_bound_on(left, right, f, bound)
+} by {
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    right.subset(left.union(right))
+    lower_bound_on_subset(left, left.union(right), f, bound)
+    lower_bound_on_subset(right, left.union(right), f, bound)
+    is_lower_bound_on(left, f, bound)
+    is_lower_bound_on(right, f, bound)
+    is_common_lower_bound_on(left, right, f, bound)
+}
+
+/// A common upper bound gives boundedness above on the union.
+theorem bounded_above_on_union_of_common[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_common_bounded_above_on(left, right, f) implies is_bounded_above_on(left.union(right), f)
+} by {
+    let bound: Value satisfy {
+        is_common_upper_bound_on(left, right, f, bound)
+    }
+    upper_bound_on_union_of_common(left, right, f, bound)
+    is_upper_bound_on(left.union(right), f, bound)
+    exists(witness: Value) {
+        is_upper_bound_on(left.union(right), f, witness)
+    }
+    is_bounded_above_on(left.union(right), f)
+}
+
+/// A common lower bound gives boundedness below on the union.
+theorem bounded_below_on_union_of_common[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_common_bounded_below_on(left, right, f) implies is_bounded_below_on(left.union(right), f)
+} by {
+    let bound: Value satisfy {
+        is_common_lower_bound_on(left, right, f, bound)
+    }
+    lower_bound_on_union_of_common(left, right, f, bound)
+    is_lower_bound_on(left.union(right), f, bound)
+    exists(witness: Value) {
+        is_lower_bound_on(left.union(right), f, witness)
+    }
+    is_bounded_below_on(left.union(right), f)
+}
+
+/// Common boundedness gives boundedness on the union.
+theorem bounded_on_union_of_common[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_common_bounded_on(left, right, f) implies is_bounded_on(left.union(right), f)
+} by {
+    bounded_above_on_union_of_common(left, right, f)
+    bounded_below_on_union_of_common(left, right, f)
+    is_bounded_above_on(left.union(right), f)
+    is_bounded_below_on(left.union(right), f)
+    is_bounded_on(left.union(right), f)
+}
+
+/// Boundedness above on a union gives common boundedness above on the two domains.
+theorem common_bounded_above_on_of_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_above_on(left.union(right), f) implies is_common_bounded_above_on(left, right, f)
+} by {
+    let bound: Value satisfy {
+        is_upper_bound_on(left.union(right), f, bound)
+    }
+    common_upper_bound_on_of_union(left, right, f, bound)
+    is_common_upper_bound_on(left, right, f, bound)
+    exists(witness: Value) {
+        is_common_upper_bound_on(left, right, f, witness)
+    }
+    is_common_bounded_above_on(left, right, f)
+}
+
+/// Boundedness below on a union gives common boundedness below on the two domains.
+theorem common_bounded_below_on_of_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_below_on(left.union(right), f) implies is_common_bounded_below_on(left, right, f)
+} by {
+    let bound: Value satisfy {
+        is_lower_bound_on(left.union(right), f, bound)
+    }
+    common_lower_bound_on_of_union(left, right, f, bound)
+    is_common_lower_bound_on(left, right, f, bound)
+    exists(witness: Value) {
+        is_common_lower_bound_on(left, right, f, witness)
+    }
+    is_common_bounded_below_on(left, right, f)
+}
+
+/// Boundedness on a union gives common boundedness on the two domains.
+theorem common_bounded_on_of_union[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value
+) {
+    is_bounded_on(left.union(right), f) implies is_common_bounded_on(left, right, f)
+} by {
+    common_bounded_above_on_of_union(left, right, f)
+    common_bounded_below_on_of_union(left, right, f)
+    is_common_bounded_above_on(left, right, f)
+    is_common_bounded_below_on(left, right, f)
+    is_common_bounded_on(left, right, f)
+}
+
+/// A maximum on the left domain extends to the union when its value bounds the right domain above.
+theorem attains_maximum_at_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_maximum_at(left, f, point) and is_upper_bound_on(right, f, f(point))
+    implies attains_maximum_at(left.union(right), f, point)
+} by {
+    maximum_value_is_upper_bound_on(left, f, point)
+    is_upper_bound_on(left, f, f(point))
+    common_upper_bound_on_intro(left, right, f, f(point))
+    upper_bound_on_union_of_common(left, right, f, f(point))
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    left.contains(point)
+    left.union(right).contains(point)
+    is_upper_bound_on(left.union(right), f, f(point))
+    attains_maximum_at(left.union(right), f, point)
+}
+
+/// A maximum on the right domain extends to the union when its value bounds the left domain above.
+theorem attains_maximum_at_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_maximum_at(right, f, point) and is_upper_bound_on(left, f, f(point))
+    implies attains_maximum_at(left.union(right), f, point)
+} by {
+    maximum_value_is_upper_bound_on(right, f, point)
+    is_upper_bound_on(right, f, f(point))
+    common_upper_bound_on_intro(left, right, f, f(point))
+    upper_bound_on_union_of_common(left, right, f, f(point))
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    right.contains(point)
+    left.union(right).contains(point)
+    is_upper_bound_on(left.union(right), f, f(point))
+    attains_maximum_at(left.union(right), f, point)
+}
+
+/// A minimum on the left domain extends to the union when its value bounds the right domain below.
+theorem attains_minimum_at_union_left[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_minimum_at(left, f, point) and is_lower_bound_on(right, f, f(point))
+    implies attains_minimum_at(left.union(right), f, point)
+} by {
+    minimum_value_is_lower_bound_on(left, f, point)
+    is_lower_bound_on(left, f, f(point))
+    common_lower_bound_on_intro(left, right, f, f(point))
+    lower_bound_on_union_of_common(left, right, f, f(point))
+    sets_subset_union(left, right)
+    left.subset(left.union(right))
+    left.contains(point)
+    left.union(right).contains(point)
+    is_lower_bound_on(left.union(right), f, f(point))
+    attains_minimum_at(left.union(right), f, point)
+}
+
+/// A minimum on the right domain extends to the union when its value bounds the left domain below.
+theorem attains_minimum_at_union_right[Domain, Value: PartialOrder](
+    left: Set[Domain], right: Set[Domain], f: Domain -> Value, point: Domain
+) {
+    attains_minimum_at(right, f, point) and is_lower_bound_on(left, f, f(point))
+    implies attains_minimum_at(left.union(right), f, point)
+} by {
+    minimum_value_is_lower_bound_on(right, f, point)
+    is_lower_bound_on(right, f, f(point))
+    common_lower_bound_on_intro(left, right, f, f(point))
+    lower_bound_on_union_of_common(left, right, f, f(point))
+    sets_subset_union(left, right)
+    right.subset(left.union(right))
+    right.contains(point)
+    left.union(right).contains(point)
+    is_lower_bound_on(left.union(right), f, f(point))
+    attains_minimum_at(left.union(right), f, point)
 }
