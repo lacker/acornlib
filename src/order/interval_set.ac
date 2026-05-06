@@ -1,8 +1,10 @@
 /// Intervals of a linear order as sets.
 
-from order import LinearOrder, lte_refl, lte_trans, lt_imp_lte, lt_of_lte_of_lt, lt_of_lt_of_lte
+from order import LinearOrder, lte_refl, lte_trans, lt_imp_lte, lt_of_lte_of_lt, lt_of_lt_of_lte,
+    lte_max_left, lte_max_right, min_lte_left, min_lte_right, max_lte_of_upper_bounds,
+    max_lt_of_upper_bounds, lte_min_of_bounds, lt_min_of_bounds
 from order_interval import closed_interval, open_interval, left_open_interval, right_open_interval
-from set import Set
+from set import Set, set_ext, intersection_contains_eq
 
 /// The closed interval `[lower, upper]` as a set.
 define closed_interval_set[L: LinearOrder](lower: L, upper: L) -> Set[L] {
@@ -607,4 +609,232 @@ theorem right_open_interval_set_subset_open_interval_set_of_lower_strict_bound[L
             open_interval_set(outer_lower, outer_upper).contains(point)
         }
     }
+}
+
+/// The intersection of two closed interval sets is the closed interval set with joined lower endpoints and met upper endpoints.
+theorem closed_interval_set_intersection_eq[L: LinearOrder](a1: L, b1: L, a2: L, b2: L) {
+    closed_interval_set(a1, b1).intersection(closed_interval_set(a2, b2)) =
+    closed_interval_set(a1.max(a2), b1.min(b2))
+} by {
+    forall(point: L) {
+        intersection_contains_eq(closed_interval_set(a1, b1), closed_interval_set(a2, b2), point)
+        closed_interval_set_contains_eq(a1, b1, point)
+        closed_interval_set_contains_eq(a2, b2, point)
+        closed_interval_set_contains_eq(a1.max(a2), b1.min(b2), point)
+        if closed_interval_set(a1, b1).intersection(closed_interval_set(a2, b2)).contains(point) {
+            closed_interval(a1, b1, point)
+            closed_interval(a2, b2, point)
+            a1 <= point
+            a2 <= point
+            max_lte_of_upper_bounds(a1, a2, point)
+            a1.max(a2) <= point
+            point <= b1
+            point <= b2
+            lte_min_of_bounds(point, b1, b2)
+            point <= b1.min(b2)
+            closed_interval(a1.max(a2), b1.min(b2), point)
+            closed_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+        }
+        if closed_interval_set(a1.max(a2), b1.min(b2)).contains(point) {
+            closed_interval(a1.max(a2), b1.min(b2), point)
+            a1.max(a2) <= point
+            lte_max_left(a1, a2)
+            a1 <= a1.max(a2)
+            lte_trans(a1, a1.max(a2), point)
+            a1 <= point
+            lte_max_right(a1, a2)
+            a2 <= a1.max(a2)
+            lte_trans(a2, a1.max(a2), point)
+            a2 <= point
+            point <= b1.min(b2)
+            min_lte_left(b1, b2)
+            b1.min(b2) <= b1
+            lte_trans(point, b1.min(b2), b1)
+            point <= b1
+            min_lte_right(b1, b2)
+            b1.min(b2) <= b2
+            lte_trans(point, b1.min(b2), b2)
+            point <= b2
+            closed_interval(a1, b1, point)
+            closed_interval(a2, b2, point)
+            closed_interval_set(a1, b1).contains(point)
+            closed_interval_set(a2, b2).contains(point)
+            closed_interval_set(a1, b1).intersection(closed_interval_set(a2, b2)).contains(point)
+        }
+        closed_interval_set(a1, b1).intersection(closed_interval_set(a2, b2)).contains(point) =
+        closed_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+    }
+    set_ext(closed_interval_set(a1, b1).intersection(closed_interval_set(a2, b2)),
+        closed_interval_set(a1.max(a2), b1.min(b2)))
+}
+
+/// The intersection of two open interval sets is the open interval set with joined lower endpoints and met upper endpoints.
+theorem open_interval_set_intersection_eq[L: LinearOrder](a1: L, b1: L, a2: L, b2: L) {
+    open_interval_set(a1, b1).intersection(open_interval_set(a2, b2)) =
+    open_interval_set(a1.max(a2), b1.min(b2))
+} by {
+    forall(point: L) {
+        intersection_contains_eq(open_interval_set(a1, b1), open_interval_set(a2, b2), point)
+        open_interval_set_contains_eq(a1, b1, point)
+        open_interval_set_contains_eq(a2, b2, point)
+        open_interval_set_contains_eq(a1.max(a2), b1.min(b2), point)
+        if open_interval_set(a1, b1).intersection(open_interval_set(a2, b2)).contains(point) {
+            open_interval(a1, b1, point)
+            open_interval(a2, b2, point)
+            a1 < point
+            a2 < point
+            max_lt_of_upper_bounds(a1, a2, point)
+            a1.max(a2) < point
+            point < b1
+            point < b2
+            lt_min_of_bounds(point, b1, b2)
+            point < b1.min(b2)
+            open_interval(a1.max(a2), b1.min(b2), point)
+            open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+        }
+        if open_interval_set(a1.max(a2), b1.min(b2)).contains(point) {
+            open_interval(a1.max(a2), b1.min(b2), point)
+            a1.max(a2) < point
+            lte_max_left(a1, a2)
+            a1 <= a1.max(a2)
+            lt_of_lte_of_lt(a1, a1.max(a2), point)
+            a1 < point
+            lte_max_right(a1, a2)
+            a2 <= a1.max(a2)
+            lt_of_lte_of_lt(a2, a1.max(a2), point)
+            a2 < point
+            point < b1.min(b2)
+            min_lte_left(b1, b2)
+            b1.min(b2) <= b1
+            lt_of_lt_of_lte(point, b1.min(b2), b1)
+            point < b1
+            min_lte_right(b1, b2)
+            b1.min(b2) <= b2
+            lt_of_lt_of_lte(point, b1.min(b2), b2)
+            point < b2
+            open_interval(a1, b1, point)
+            open_interval(a2, b2, point)
+            open_interval_set(a1, b1).contains(point)
+            open_interval_set(a2, b2).contains(point)
+            open_interval_set(a1, b1).intersection(open_interval_set(a2, b2)).contains(point)
+        }
+        open_interval_set(a1, b1).intersection(open_interval_set(a2, b2)).contains(point) =
+        open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+    }
+    set_ext(open_interval_set(a1, b1).intersection(open_interval_set(a2, b2)),
+        open_interval_set(a1.max(a2), b1.min(b2)))
+}
+
+/// The intersection of two left-open interval sets is the left-open interval set with joined lower endpoints and met upper endpoints.
+theorem left_open_interval_set_intersection_eq[L: LinearOrder](a1: L, b1: L, a2: L, b2: L) {
+    left_open_interval_set(a1, b1).intersection(left_open_interval_set(a2, b2)) =
+    left_open_interval_set(a1.max(a2), b1.min(b2))
+} by {
+    forall(point: L) {
+        intersection_contains_eq(left_open_interval_set(a1, b1), left_open_interval_set(a2, b2), point)
+        left_open_interval_set_contains_eq(a1, b1, point)
+        left_open_interval_set_contains_eq(a2, b2, point)
+        left_open_interval_set_contains_eq(a1.max(a2), b1.min(b2), point)
+        if left_open_interval_set(a1, b1).intersection(left_open_interval_set(a2, b2)).contains(point) {
+            left_open_interval(a1, b1, point)
+            left_open_interval(a2, b2, point)
+            a1 < point
+            a2 < point
+            max_lt_of_upper_bounds(a1, a2, point)
+            a1.max(a2) < point
+            point <= b1
+            point <= b2
+            lte_min_of_bounds(point, b1, b2)
+            point <= b1.min(b2)
+            left_open_interval(a1.max(a2), b1.min(b2), point)
+            left_open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+        }
+        if left_open_interval_set(a1.max(a2), b1.min(b2)).contains(point) {
+            left_open_interval(a1.max(a2), b1.min(b2), point)
+            a1.max(a2) < point
+            lte_max_left(a1, a2)
+            a1 <= a1.max(a2)
+            lt_of_lte_of_lt(a1, a1.max(a2), point)
+            a1 < point
+            lte_max_right(a1, a2)
+            a2 <= a1.max(a2)
+            lt_of_lte_of_lt(a2, a1.max(a2), point)
+            a2 < point
+            point <= b1.min(b2)
+            min_lte_left(b1, b2)
+            b1.min(b2) <= b1
+            lte_trans(point, b1.min(b2), b1)
+            point <= b1
+            min_lte_right(b1, b2)
+            b1.min(b2) <= b2
+            lte_trans(point, b1.min(b2), b2)
+            point <= b2
+            left_open_interval(a1, b1, point)
+            left_open_interval(a2, b2, point)
+            left_open_interval_set(a1, b1).contains(point)
+            left_open_interval_set(a2, b2).contains(point)
+            left_open_interval_set(a1, b1).intersection(left_open_interval_set(a2, b2)).contains(point)
+        }
+        left_open_interval_set(a1, b1).intersection(left_open_interval_set(a2, b2)).contains(point) =
+        left_open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+    }
+    set_ext(left_open_interval_set(a1, b1).intersection(left_open_interval_set(a2, b2)),
+        left_open_interval_set(a1.max(a2), b1.min(b2)))
+}
+
+/// The intersection of two right-open interval sets is the right-open interval set with joined lower endpoints and met upper endpoints.
+theorem right_open_interval_set_intersection_eq[L: LinearOrder](a1: L, b1: L, a2: L, b2: L) {
+    right_open_interval_set(a1, b1).intersection(right_open_interval_set(a2, b2)) =
+    right_open_interval_set(a1.max(a2), b1.min(b2))
+} by {
+    forall(point: L) {
+        intersection_contains_eq(right_open_interval_set(a1, b1), right_open_interval_set(a2, b2), point)
+        right_open_interval_set_contains_eq(a1, b1, point)
+        right_open_interval_set_contains_eq(a2, b2, point)
+        right_open_interval_set_contains_eq(a1.max(a2), b1.min(b2), point)
+        if right_open_interval_set(a1, b1).intersection(right_open_interval_set(a2, b2)).contains(point) {
+            right_open_interval(a1, b1, point)
+            right_open_interval(a2, b2, point)
+            a1 <= point
+            a2 <= point
+            max_lte_of_upper_bounds(a1, a2, point)
+            a1.max(a2) <= point
+            point < b1
+            point < b2
+            lt_min_of_bounds(point, b1, b2)
+            point < b1.min(b2)
+            right_open_interval(a1.max(a2), b1.min(b2), point)
+            right_open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+        }
+        if right_open_interval_set(a1.max(a2), b1.min(b2)).contains(point) {
+            right_open_interval(a1.max(a2), b1.min(b2), point)
+            a1.max(a2) <= point
+            lte_max_left(a1, a2)
+            a1 <= a1.max(a2)
+            lte_trans(a1, a1.max(a2), point)
+            a1 <= point
+            lte_max_right(a1, a2)
+            a2 <= a1.max(a2)
+            lte_trans(a2, a1.max(a2), point)
+            a2 <= point
+            point < b1.min(b2)
+            min_lte_left(b1, b2)
+            b1.min(b2) <= b1
+            lt_of_lt_of_lte(point, b1.min(b2), b1)
+            point < b1
+            min_lte_right(b1, b2)
+            b1.min(b2) <= b2
+            lt_of_lt_of_lte(point, b1.min(b2), b2)
+            point < b2
+            right_open_interval(a1, b1, point)
+            right_open_interval(a2, b2, point)
+            right_open_interval_set(a1, b1).contains(point)
+            right_open_interval_set(a2, b2).contains(point)
+            right_open_interval_set(a1, b1).intersection(right_open_interval_set(a2, b2)).contains(point)
+        }
+        right_open_interval_set(a1, b1).intersection(right_open_interval_set(a2, b2)).contains(point) =
+        right_open_interval_set(a1.max(a2), b1.min(b2)).contains(point)
+    }
+    set_ext(right_open_interval_set(a1, b1).intersection(right_open_interval_set(a2, b2)),
+        right_open_interval_set(a1.max(a2), b1.min(b2)))
 }
