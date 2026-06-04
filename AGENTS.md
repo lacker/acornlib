@@ -38,7 +38,7 @@ Comments should be written using mathematical language, not using programming la
 
 ## Tips
 
-Never clean the build directory.
+Never clean the certs directory.
 
 **Always run `acorn` after every change.**
 
@@ -79,3 +79,8 @@ When a statement could not be verified, there are two possibilities.
 Possibility 1 is that the statement is false. Rewrite the proof so that it does not use false statements.
 
 Possibility 2 is that the statement is too big of a logical leap from the previous statement. Fix this by filling in the missing steps of reasoning, rather than rewriting the entire proof.
+
+
+## Pull Requests
+
+When submitting a pull request, be sure to set maintainerCanModify: true.
