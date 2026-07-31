@@ -159,15 +159,21 @@ Remaining:
 
       Both are stated at a successor rather than through a predecessor, since `Nat` has none.
 
-      The induction that assembles them is written out in `src/nat_primorial_bound.ac` but is
-      commented out, because its last step does not go through. Every case verifies on its own —
-      the parity split, the three even sub-cases, the two odd ones — and so do the three
-      supporting lemmas the file exports: `nat_parity`, `four_pow_mono`, and `lte_mul_pair`.
+      The bound itself is proved, in `src/nat_primorial_bound.ac`: the product of the primes up
+      to `n` is at most `4^n`. Strong induction split by parity — an even position above two is
+      composite and contributes nothing, so the product drops to the one below; an odd position
+      splits at the midpoint, where the lower half is the induction hypothesis and the upper half
+      is the interval bound.
 
-      What fails is only the final application of `strong_induction`: the hypothesis the block
-      establishes is not recognised as the one the theorem asks for, and `forall(k) { p(k) }`
-      after the citation times out. The block's shape matches `nat_lt_relation_induction` in
-      `src/well_founded.ac`, which is the library's one working use of `strong_induction`, so the
-      difference is not obvious. Trying `nat_lt_relation_induction` directly is the next thing to
-      attempt — its hypothesis is stated through `nat_lt_relation` rather than `true_below`.
+      Three supporting lemmas are there too, and `nat_parity` is worth knowing about: nothing in
+      `src/nat/` gives a parity split, and taking it from the division algorithm at two is easier
+      than defining evenness.
+
+      Applying `strong_induction` was the whole difficulty. It concludes a universal, and
+      discharging that universal against a predicate given by a `define` times out however the
+      hypothesis is arranged — as a block conclusion, as a named theorem, with the predicate's
+      parameter renamed. What works is `strong_induction_at` in
+      `src/nat_strong_induction_at.ac`: the same step stated once at an abstract predicate, in a
+      module of its own. It has to be its own module, since the identical text fails when other
+      definitions are in scope. Instantiating it at a concrete predicate is then first order.
 - [ ] Add valuation sums over residue classes, the tool shared by these two targets.

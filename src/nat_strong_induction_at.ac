@@ -1,0 +1,20 @@
+from nat import Nat, strong_induction, true_below
+
+/// Strong induction, applied at a point.
+///
+/// `strong_induction` concludes a universal, and discharging that universal is awkward at the
+/// point of use: against a predicate given by a `define`, in a module where other definitions are
+/// in scope, the citation times out however the hypothesis is arranged. Stated once at an
+/// abstract predicate in a module of its own, the same step is immediate, and instantiating it at
+/// a concrete predicate is then first order.
+theorem strong_induction_at(f: Nat -> Bool, n: Nat) {
+    (forall(k: Nat) { true_below(f, k) implies f(k) }) implies f(n)
+} by {
+    if forall(k: Nat) { true_below(f, k) implies f(k) } {
+        strong_induction(f)
+        forall(k: Nat) {
+            f(k)
+        }
+        f(n)
+    }
+}
